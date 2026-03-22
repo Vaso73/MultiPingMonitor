@@ -137,7 +137,7 @@ namespace MultiPingMonitor.Classes
                 // Delete old nodes then recreate them with current config.
                 root.Descendants("configuration").Remove();
                 root.Descendants("colors").Remove();
-                root.Descendants("window-placements").Remove();
+                root.Descendants("windowPlacements").Remove();
                 root.Add(GenerateConfigurationNode());
                 root.Add(GenerateColorsNode());
                 root.Add(WindowPlacementService.GeneratePlacementsNode());
@@ -289,7 +289,7 @@ namespace MultiPingMonitor.Classes
                 try
                 {
                     var xdoc = XDocument.Load(FilePath);
-                    var placementsNode = xdoc.Root?.Element("window-placements");
+                    var placementsNode = xdoc.Root?.Element("windowPlacements");
                     WindowPlacementService.LoadPlacements(placementsNode);
                 }
                 catch

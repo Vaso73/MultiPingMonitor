@@ -108,7 +108,7 @@ namespace MultiPingMonitor.Classes
         /// </summary>
         public static XElement GeneratePlacementsNode()
         {
-            var node = new XElement("window-placements");
+            var node = new XElement("windowPlacements");
             foreach (var kvp in _placements)
             {
                 node.Add(new XElement("window",
@@ -159,11 +159,11 @@ namespace MultiPingMonitor.Classes
 
         private class PlacementData
         {
-            public double Left;
-            public double Top;
-            public double Width;
-            public double Height;
-            public WindowState WindowState;
+            public double Left { get; set; }
+            public double Top { get; set; }
+            public double Width { get; set; }
+            public double Height { get; set; }
+            public WindowState WindowState { get; set; }
         }
     }
 }
