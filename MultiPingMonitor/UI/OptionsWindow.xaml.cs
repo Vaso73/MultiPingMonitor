@@ -30,6 +30,7 @@ namespace MultiPingMonitor.UI
         public OptionsWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "OptionsWindow");
 
             // Remember the current theme so we can revert if the user cancels.
             _originalTheme = ApplicationOptions.Theme;

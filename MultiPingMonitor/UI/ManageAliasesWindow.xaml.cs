@@ -24,6 +24,7 @@ namespace MultiPingMonitor.UI
         public ManageAliasesWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "ManageAliasesWindow");
             RefreshAliasList();
         }
 

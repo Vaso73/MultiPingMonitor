@@ -34,6 +34,7 @@ namespace MultiPingMonitor.UI
         public NewFavoriteWindow(List<string> hostList, int columnCount, bool isEditExisting = false, string title = "")
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "NewFavoriteWindow");
 
             HostList = hostList;
             ColumnCount = columnCount;

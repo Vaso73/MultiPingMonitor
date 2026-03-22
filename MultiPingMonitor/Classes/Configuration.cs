@@ -13,15 +13,19 @@ namespace MultiPingMonitor.Classes
 {
     internal static class Configuration
     {
-        public static string FilePath = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml");
+        public static string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MultiPingMonitor.xml");
 
         static Configuration()
         {
-            // If a configuration file exists in the current directory, use it (portable mode).
-            // Otherwise, the default location is used (%LocalAppData%\MultiPingMonitor).
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "MultiPingMonitor.xml"))
+            // Default: portable mode — config file next to the executable.
+            // Fallback: if no config exists next to the exe but one exists in %LocalAppData%, use that.
+            if (!File.Exists(FilePath))
             {
-                FilePath = AppDomain.CurrentDomain.BaseDirectory + "MultiPingMonitor.xml";
+                var appDataPath = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml");
+                if (File.Exists(appDataPath))
+                {
+                    FilePath = appDataPath;
+                }
             }
         }
 
@@ -133,8 +137,10 @@ namespace MultiPingMonitor.Classes
                 // Delete old nodes then recreate them with current config.
                 root.Descendants("configuration").Remove();
                 root.Descendants("colors").Remove();
+                root.Descendants("window-placements").Remove();
                 root.Add(GenerateConfigurationNode());
                 root.Add(GenerateColorsNode());
+                root.Add(WindowPlacementService.GeneratePlacementsNode());
 
                 // Atomic save: write to a temp file first, then replace the real file.
                 // This prevents a truncated/corrupted config if an error occurs mid-write.
@@ -278,6 +284,18 @@ namespace MultiPingMonitor.Classes
                 LoadAppOptions(xd.SelectNodes("/vmping/configuration/option"));
                 LoadColors(xd.SelectNodes("/vmping/colors/option"));
                 ApplicationOptions.UpdatePingOptions();
+
+                // Load window placements using XDocument (LINQ to XML).
+                try
+                {
+                    var xdoc = XDocument.Load(FilePath);
+                    var placementsNode = xdoc.Root?.Element("window-placements");
+                    WindowPlacementService.LoadPlacements(placementsNode);
+                }
+                catch
+                {
+                    // Ignore placement load errors; windows will use default positions.
+                }
             }
 
             catch (Exception ex)

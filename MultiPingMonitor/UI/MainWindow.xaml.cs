@@ -29,6 +29,7 @@ namespace MultiPingMonitor.UI
         public MainWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "MainWindow");
             InitializeApplication();
         }
 
@@ -824,6 +825,7 @@ namespace MultiPingMonitor.UI
             }
             else
             {
+                Configuration.Save();
                 NotifyIcon?.Dispose();
             }
         }

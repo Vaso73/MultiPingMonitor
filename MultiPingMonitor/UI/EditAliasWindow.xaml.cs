@@ -15,6 +15,7 @@ namespace MultiPingMonitor.UI
         public EditAliasWindow(string hostname, string alias)
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "EditAliasWindow");
 
             _hostname = hostname;
 

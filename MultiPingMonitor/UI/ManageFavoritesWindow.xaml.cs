@@ -26,6 +26,7 @@ namespace MultiPingMonitor.UI
         public ManageFavoritesWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "ManageFavoritesWindow");
             RefreshFavoriteList();
         }
 

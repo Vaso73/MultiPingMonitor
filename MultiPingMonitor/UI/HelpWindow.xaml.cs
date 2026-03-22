@@ -14,6 +14,7 @@ namespace MultiPingMonitor.UI
         public HelpWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "HelpWindow");
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
 
             Version version = typeof(MainWindow).Assembly.GetName().Version;
