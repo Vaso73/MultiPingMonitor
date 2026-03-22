@@ -11,7 +11,7 @@
         Width="800"
         MinHeight="200"
         MinWidth="350"
-        Background="White"
+        Background="{DynamicResource Theme.Background}"
         Loaded="Window_Loaded"
         StateChanged="Window_StateChanged"
         Closing="Window_Closing"
@@ -45,7 +45,7 @@
             </Grid>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="#333388"/>
+                    <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
                 </Trigger>
                 <MultiTrigger>
                     <MultiTrigger.Conditions>
@@ -61,7 +61,7 @@
     </Window.Resources>
 
     <!-- Root DockPanel -->
-    <DockPanel Background="#aaa">
+    <DockPanel Background="{DynamicResource Theme.Background}">
         <!-- Menu bar -->
         <Menu DockPanel.Dock="Top"
               FontStretch="Normal">
@@ -70,7 +70,7 @@
             </Menu.Resources>
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" Background="White"/>
+                    <DockPanel HorizontalAlignment="Stretch" LastChildFill="False" Background="{DynamicResource Theme.Surface}"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             
@@ -111,7 +111,7 @@
                             TickPlacement="BottomRight"
                             IsSnapToTickEnabled="True"
                             Width="200"
-                            Foreground="#202020"
+                            Foreground="{DynamicResource Theme.Text.Primary}"
                             Margin="0,8"/>
                 </StackPanel>
             </MenuItem>
@@ -230,10 +230,10 @@
 
 
         <!-- Items Control -->
-        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="#111" Margin="0,0,-2,-2">
+        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="0,0,-2,-2">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="#111" BorderThickness="0,0,2,2" Margin="0" CornerRadius="0"
+                    <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,2,2" Margin="0" CornerRadius="0"
                             Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
                         <Grid Name="gridItemsControl">
                             <Grid.RowDefinitions>
@@ -554,7 +554,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Border to set background color and top border for this section -->
-                                <Border Grid.ColumnSpan="3" Background="#e8ffffff" BorderThickness="0,1,0,0" BorderBrush="#20000000"/>
+                                <Border Grid.ColumnSpan="3" Background="{DynamicResource Theme.Surface}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}"/>
 
                                 <!-- Status glyph -->
                                 <TextBlock Grid.Column="0"
@@ -562,7 +562,7 @@
                                            FontSize="14"
                                            FontFamily="Marlett"
                                            VerticalAlignment="Center"
-                                           Foreground="Black"
+                                           Foreground="{DynamicResource Theme.Text.Primary}"
                                            Padding="4,0,1,0">
                                 </TextBlock>
 
@@ -572,7 +572,7 @@
                                          FontWeight="SemiBold"
                                          FontSize="{Binding ElementName=History, Path=ActualWidth, Converter={StaticResource HostnameFontsizeConverter}}"
                                          BorderThickness="0,0,0,0"
-                                         BorderBrush="#20000000"
+                                         BorderBrush="{DynamicResource Theme.Border}"
                                          VerticalContentAlignment="Center"
                                          Background="Transparent"
                                          Padding="0,0,0,0"
@@ -590,10 +590,10 @@
                                         Padding="0,2"
                                         Margin="2"
                                         HorizontalAlignment="Right"
-                                        Background="White">
+                                        Background="{DynamicResource Theme.Surface}">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
-                                            <Border Name="pingButton_border" BorderThickness="1" BorderBrush="#bb2e6da4"
+                                            <Border Name="pingButton_border" BorderThickness="1" BorderBrush="{DynamicResource Theme.Accent}"
                                                     CornerRadius="4"
                                                     Background="{TemplateBinding Background}">
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0">
@@ -601,7 +601,7 @@
                                                            Margin="0,6"/>
                                                     <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStringConverter}}"
                                                                Visibility="{Binding ElementName=History, Path=ActualWidth, Converter={StaticResource ButtonTextVisibilityConverter}}"
-                                                               Foreground="Black"
+                                                               Foreground="{DynamicResource Theme.Text.Primary}"
                                                                FontSize="13"
                                                                VerticalAlignment="Center"
                                                                Margin="8,0,0,0"/>
@@ -609,11 +609,11 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="pingButton_border" Property="Background" Value="#f0f0f0"/>
-                                                    <Setter TargetName="pingButton_border" Property="BorderBrush" Value="#ff2e6da4"/>
+                                                    <Setter TargetName="pingButton_border" Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
+                                                    <Setter TargetName="pingButton_border" Property="BorderBrush" Value="{DynamicResource Theme.AccentHover}"/>
                                                 </Trigger>
                                                 <Trigger Property="IsPressed" Value="True">
-                                                    <Setter TargetName="pingButton_border" Property="Background" Value="#d8d8d8"/>
+                                                    <Setter TargetName="pingButton_border" Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>

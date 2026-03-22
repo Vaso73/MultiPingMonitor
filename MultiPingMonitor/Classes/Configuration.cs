@@ -282,7 +282,30 @@ namespace MultiPingMonitor.Classes
 
             catch (Exception ex)
             {
-                Util.ShowError($"{Strings.Error_LoadConfig} {ex.Message}");
+                // Config is corrupted. Rename it to .corrupt and recreate a clean one.
+                var corruptPath = FilePath + ".corrupt";
+                try
+                {
+                    File.Copy(FilePath, corruptPath, overwrite: true);
+                    File.Delete(FilePath);
+
+                    var xd = new XDocument(
+                        new XElement("vmping",
+                            new XElement("aliases"),
+                            new XElement("favorites"),
+                            new XElement("configuration"),
+                            new XElement("colors")));
+                    xd.Save(FilePath);
+
+                    Util.ShowError(
+                        $"{Strings.Error_LoadConfig} {ex.Message}\n\n" +
+                        $"The corrupted configuration has been saved as:\n{corruptPath}\n\n" +
+                        "A clean configuration file has been created automatically.");
+                }
+                catch
+                {
+                    Util.ShowError($"{Strings.Error_LoadConfig} {ex.Message}");
+                }
             }
         }
 
