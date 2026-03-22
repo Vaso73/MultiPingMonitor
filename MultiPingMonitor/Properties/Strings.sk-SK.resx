@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Button_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Button_Stop" xml:space="preserve">
+    <value>Zastaviť</value>
+  </data>
+  <data name="DialogButton_Cancel" xml:space="preserve">
+    <value>Zrušiť</value>
+  </data>
+  <data name="DialogButton_Edit" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="DialogButton_New" xml:space="preserve">
+    <value>Nový</value>
+  </data>
+  <data name="DialogButton_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DialogButton_Overwrite" xml:space="preserve">
+    <value>Prepísať</value>
+  </data>
+  <data name="DialogButton_Remove" xml:space="preserve">
+    <value>Odstrániť</value>
+  </data>
+  <data name="DialogButton_Save" xml:space="preserve">
+    <value>Uložiť</value>
+  </data>
+  <data name="DialogTitle_ConfirmDelete" xml:space="preserve">
+    <value>Potvrdiť vymazanie</value>
+  </data>
+  <data name="DialogTitle_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="DialogTitle_Warning" xml:space="preserve">
+    <value>Upozornenie</value>
+  </data>
+  <data name="Email_Down" xml:space="preserve">
+    <value>nedostupný</value>
+  </data>
+  <data name="Email_Error" xml:space="preserve">
+    <value>chyba</value>
+  </data>
+  <data name="Email_Host" xml:space="preserve">
+    <value>Hostiteľ</value>
+  </data>
+  <data name="Email_Up" xml:space="preserve">
+    <value>dostupný</value>
+  </data>
+  <data name="Email_Verb" xml:space="preserve">
+    <value>je</value>
+  </data>
+  <data name="Error_AddAlias" xml:space="preserve">
+    <value>Zlyhalo pridanie aliasu.</value>
+  </data>
+  <data name="Error_CreateConfig" xml:space="preserve">
+    <value>Zlyhalo vytvorenie konfiguračného súboru MultiPingMonitor.</value>
+  </data>
+  <data name="Error_CreateDirectory" xml:space="preserve">
+    <value>Zlyhalo vytvorenie adresára pre konfiguračný súbor MultiPingMonitor.</value>
+  </data>
+  <data name="Error_DeleteAlias" xml:space="preserve">
+    <value>Zlyhalo vymazanie aliasu.</value>
+  </data>
+  <data name="Error_FailedToLaunch" xml:space="preserve">
+    <value>Zlyhalo spustenie novej inštancie MultiPingMonitor.</value>
+  </data>
+  <data name="Error_LoadAlias" xml:space="preserve">
+    <value>Zlyhalo načítanie aliasov.</value>
+  </data>
+  <data name="Error_LoadConfig" xml:space="preserve">
+    <value>Zlyhalo načítanie konfiguračného súboru.</value>
+  </data>
+  <data name="Error_ReadConfig" xml:space="preserve">
+    <value>Zlyhalo čítanie konfiguračného súboru.</value>
+  </data>
+  <data name="Error_UpgradeConfig" xml:space="preserve">
+    <value>Zlyhala aktualizácia konfiguračného súboru.</value>
+  </data>
+  <data name="Error_WindowTitle" xml:space="preserve">
+    <value>MultiPingMonitor - Chyba</value>
+  </data>
+  <data name="Error_WriteConfig" xml:space="preserve">
+    <value>Zlyhalo zapisovanie do konfiguračného súboru.</value>
+  </data>
+  <data name="ManageAliases_Alias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="ManageAliases_Header" xml:space="preserve">
+    <value>Spravujte svoje aliasy</value>
+  </data>
+  <data name="ManageAliases_Host" xml:space="preserve">
+    <value>Hostiteľ</value>
+  </data>
+  <data name="ManageAliases_Warn_DeleteA" xml:space="preserve">
+    <value>Naozaj chcete odstrániť</value>
+  </data>
+  <data name="ManageAliases_Warn_DeleteB" xml:space="preserve">
+    <value>z vašich aliasov?</value>
+  </data>
+  <data name="ManageAliases_WindowTitle" xml:space="preserve">
+    <value>Aliasy</value>
+  </data>
+  <data name="ManageFavorites_Header" xml:space="preserve">
+    <value>Spravujte svoje obľúbené</value>
+  </data>
+  <data name="ManageFavorites_Warn_DeleteA" xml:space="preserve">
+    <value>Naozaj chcete odstrániť</value>
+  </data>
+  <data name="ManageFavorites_Warn_DeleteB" xml:space="preserve">
+    <value>z vašich obľúbených?</value>
+  </data>
+  <data name="ManageFavorites_WindowTitle" xml:space="preserve">
+    <value>Obľúbené</value>
+  </data>
+  <data name="Menu_Aliases" xml:space="preserve">
+    <value>Aliasy</value>
+  </data>
+  <data name="Menu_FavoriteSets" xml:space="preserve">
+    <value>Obľúbené sady</value>
+  </data>
+  <data name="Menu_FloodHost" xml:space="preserve">
+    <value>Zahltiť hostiteľa</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Pomocník</value>
+  </data>
+  <data name="Menu_ManageAliases" xml:space="preserve">
+    <value>Spravovať aliasy</value>
+  </data>
+  <data name="Menu_ManageFavorites" xml:space="preserve">
+    <value>Spravovať obľúbené</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Menu_PopupAlerts" xml:space="preserve">
+    <value>Kontextové upozornenia</value>
+  </data>
+  <data name="Menu_SaveToFavorites" xml:space="preserve">
+    <value>Vytvoriť novú obľúbenú sadu</value>
+  </data>
+  <data name="Menu_StatusHistory" xml:space="preserve">
+    <value>História stavov</value>
+  </data>
+  <data name="Menu_Traceroute" xml:space="preserve">
+    <value>Traceroute</value>
+  </data>
+  <data name="Milliseconds_Symbol" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="NewAlias_Alias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="NewAlias_Error_InvalidAlias" xml:space="preserve">
+    <value>Prosím, zadajte platný alias.</value>
+  </data>
+  <data name="NewAlias_Error_InvalidHost" xml:space="preserve">
+    <value>Prosím, zadajte platný názov hostiteľa.</value>
+  </data>
+  <data name="NewAlias_Header" xml:space="preserve">
+    <value>Vytvoriť nový alias</value>
+  </data>
+  <data name="NewAlias_Host" xml:space="preserve">
+    <value>Hostiteľ</value>
+  </data>
+  <data name="NewFavorite_Error_InvalidName" xml:space="preserve">
+    <value>Prosím, zadajte platný názov pre túto obľúbenú sadu.</value>
+  </data>
+  <data name="NewFavorite_Header" xml:space="preserve">
+    <value>Vytvoriť novú obľúbenú sadu</value>
+  </data>
+  <data name="NewFavorite_SelectedHostsHeader" xml:space="preserve">
+    <value>Vybraní hostitelia</value>
+  </data>
+  <data name="NewFavorite_Title" xml:space="preserve">
+    <value>Zadajte názov</value>
+  </data>
+  <data name="NewFavorite_Warn_AlreadyExists" xml:space="preserve">
+    <value>už existuje. Chcete ho prepísať?</value>
+  </data>
+  <data name="Notification_Always" xml:space="preserve">
+    <value>Vždy</value>
+  </data>
+  <data name="Notification_Never" xml:space="preserve">
+    <value>Nikdy</value>
+  </data>
+  <data name="Notification_WhenMinimized" xml:space="preserve">
+    <value>Pri minimalizácii</value>
+  </data>
+  <data name="Probe_Error" xml:space="preserve">
+    <value>Chyba:</value>
+  </data>
+  <data name="Probe_HostUnreachable" xml:space="preserve">
+    <value>Odpoveď  [Hostiteľ nedostupný]</value>
+  </data>
+  <data name="Probe_InvalidPort" xml:space="preserve">
+    <value>Neplatné číslo portu.</value>
+  </data>
+  <data name="Probe_NetUnreachable" xml:space="preserve">
+    <value>Odpoveď  [Sieť nedostupná]</value>
+  </data>
+  <data name="Probe_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Probe_PortClosed" xml:space="preserve">
+    <value>ZATVORENÝ</value>
+  </data>
+  <data name="Probe_PortOpen" xml:space="preserve">
+    <value>OTVORENÝ</value>
+  </data>
+  <data name="Probe_Reply" xml:space="preserve">
+    <value>Odpoveď od</value>
+  </data>
+  <data name="Probe_StartPing" xml:space="preserve">
+    <value>Pinguje sa</value>
+  </data>
+  <data name="Probe_Stat_Lost" xml:space="preserve">
+    <value>Stratené:</value>
+  </data>
+  <data name="Probe_Stat_Received" xml:space="preserve">
+    <value>Prijaté:</value>
+  </data>
+  <data name="Probe_Stat_Sent" xml:space="preserve">
+    <value>Odoslané:</value>
+  </data>
+  <data name="Probe_Timeout" xml:space="preserve">
+    <value>Požiadavka vypršala.</value>
+  </data>
+  <data name="Probe_UnableToResolve" xml:space="preserve">
+    <value>Nie je možné preložiť názov hostiteľa.</value>
+  </data>
+  <data name="Probe_Unreachable" xml:space="preserve">
+    <value>Odpoveď  [Nedostupný]</value>
+  </data>
+  <data name="StatusChange_Down" xml:space="preserve">
+    <value>nedostupný</value>
+  </data>
+  <data name="StatusChange_Error" xml:space="preserve">
+    <value>[chyba]</value>
+  </data>
+  <data name="StatusChange_LatencyHigh" xml:space="preserve">
+    <value>vysoká latencia</value>
+  </data>
+  <data name="StatusChange_LatencyNormal" xml:space="preserve">
+    <value>normálna latencia</value>
+  </data>
+  <data name="StatusChange_Start" xml:space="preserve">
+    <value>spustený</value>
+  </data>
+  <data name="StatusChange_Stop" xml:space="preserve">
+    <value>zastavený</value>
+  </data>
+  <data name="StatusChange_Up" xml:space="preserve">
+    <value>dostupný</value>
+  </data>
+  <data name="StatusHistory_NoChanges" xml:space="preserve">
+    <value>Žiadna história stavov</value>
+  </data>
+  <data name="StatusHistory_NoChangesDescription" xml:space="preserve">
+    <value>Keď hostiteľ zmení stav z nedostupného na dostupný alebo naopak, zobrazí sa tu</value>
+  </data>
+  <data name="StatusHistory_WindowTitle" xml:space="preserve">
+    <value>História stavov</value>
+  </data>
+  <data name="Toolbar_Add" xml:space="preserve">
+    <value>_Pridať hostiteľa</value>
+  </data>
+  <data name="Toolbar_Columns" xml:space="preserve">
+    <value>_Stĺpce</value>
+  </data>
+  <data name="Toolbar_StartAll" xml:space="preserve">
+    <value>_Spustiť všetko (F5)</value>
+  </data>
+  <data name="Toolbar_StopAll" xml:space="preserve">
+    <value>_Zastaviť všetko (F5)</value>
+  </data>
+  <data name="Tooltip_Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
+  <data name="Tooltip_EditAlias" xml:space="preserve">
+    <value>Upraviť alias</value>
+  </data>
+  <data name="Tooltip_IsolatedView" xml:space="preserve">
+    <value>Otvoriť izolovaný pohľad</value>
+  </data>
+</root>
