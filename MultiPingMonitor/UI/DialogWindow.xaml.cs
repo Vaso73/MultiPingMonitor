@@ -1,5 +1,5 @@
-using MultiPingMonitor.Classes;
-﻿using System.Windows;
+﻿using MultiPingMonitor.Classes;
+using System.Windows;
 using System.Windows.Media;
 using MultiPingMonitor.Properties;
 

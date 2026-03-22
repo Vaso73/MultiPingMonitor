@@ -1,5 +1,5 @@
-using MultiPingMonitor.Classes;
-﻿using System;
+﻿using MultiPingMonitor.Classes;
+using System;
 using System.Windows;
 
 namespace MultiPingMonitor.UI

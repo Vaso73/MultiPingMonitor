@@ -30,10 +30,10 @@ namespace MultiPingMonitor.UI
         {
             InitializeComponent();
             WindowPlacementService.Attach(this, "MainWindow");
-            InitializeAplication();
+            InitializeApplication();
         }
 
-        private void InitializeAplication()
+        private void InitializeApplication()
         {
             InitializeCommandBindings();
             LoadFavorites();
@@ -442,7 +442,7 @@ namespace MultiPingMonitor.UI
 
             ColumnCount.Value = 1;  // Ensure window's grid column binding is updated, if needed.
             ColumnCount.Value = favorite.ColumnCount;
-            this.Title = $"{favoriteTitle} - vmPing";
+            this.Title = $"{favoriteTitle} - MultiPingMonitor";
         }
 
         private void LoadAliases()
