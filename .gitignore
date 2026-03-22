@@ -1,55 +1,55 @@
-# Prerequisites
-*.d
+## .NET / Visual Studio
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+# Build output
+[Bb]in/
+[Oo]bj/
 
-# Linker output
-*.ilk
-*.map
-*.exp
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.assets.json
+*.user
 
-# Precompiled Headers
-*.gch
-*.pch
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+*.rsuser
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+# Rider
+.idea/
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+# Logs
+*.log
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+# Publish output
+publish/
+publish-folder/
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
+# User secrets
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+
+# Symbols
 *.pdb
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# NuGet (redundant but common)
+*.nupkg
 
-# debug information files
-*.dwo
+# Coverage
+coverage*.xml
