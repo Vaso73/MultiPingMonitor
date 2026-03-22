@@ -74,7 +74,7 @@ namespace MultiPingMonitor.UI
 
         private void ScaleWindowSize()
         {
-            // ScaleWindowSize resizes the window baased on the number of displayed items.
+            // ScaleWindowSize resizes the window based on the number of displayed items.
             switch (StatusHistoryList.Items.Count)
             {
                 case 1:

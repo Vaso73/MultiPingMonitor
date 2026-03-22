@@ -170,10 +170,10 @@
                 </Paragraph>
                 <Paragraph Style="{StaticResource ParagraphText}">
                     Enter a hostname or IP address into the textbox, then press Enter or click Ping.
-                    MultiPingMonitor will continuosly ping the host until you click Stop.
+                    MultiPingMonitor will continuously ping the host until you click Stop.
                     Responses are displayed in the output area above the textbox.
                     The output section will turn green when the host is responding and red when it is not responding.
-                    If an error occurrs, the output area will turn orange.
+                    If an error occurs, the output area will turn orange.
                 </Paragraph>
                 <Paragraph Style="{StaticResource SubHeaderText}">
                     Add a host monitor

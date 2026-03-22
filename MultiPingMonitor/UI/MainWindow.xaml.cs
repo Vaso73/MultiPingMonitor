@@ -29,10 +29,10 @@ namespace MultiPingMonitor.UI
         public MainWindow()
         {
             InitializeComponent();
-            InitializeAplication();
+            InitializeApplication();
         }
 
-        private void InitializeAplication()
+        private void InitializeApplication()
         {
             InitializeCommandBindings();
             LoadFavorites();
