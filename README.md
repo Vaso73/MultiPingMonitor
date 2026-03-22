@@ -2,7 +2,7 @@
 
 A network monitoring tool that pings multiple hosts simultaneously, giving you real-time status for all your network targets at a glance.
 
-Built on [vmPing](https://github.com/Vaso73/vmPing) by Vaso73, rebranded and extended with multi-theme support and Slovak localization.
+Based on [vmPing](https://github.com/r-smith/vmPing) by [Ryan Smith](https://github.com/r-smith) (MIT License), rebranded and extended with multi-theme support, window placement persistence, and Slovak localization.
 
 ## Features
 
@@ -18,6 +18,7 @@ Built on [vmPing](https://github.com/Vaso73/vmPing) by Vaso73, rebranded and ext
 - Configurable probe interval, timeout, TTL, and packet size
 - Audio alerts on up/down transitions
 - Log output to file
+- Window position and size remembered across restarts (multi-monitor safe)
 
 ## Themes
 
@@ -50,14 +51,40 @@ To run:
 dotnet run --project MultiPingMonitor/MultiPingMonitor.csproj
 ```
 
+## Publishing
+
+### Single-file self-contained executable (recommended)
+
+Produces a single `MultiPingMonitor.exe` (win-x64) that includes the .NET runtime — no installation required on the target machine:
+
+```bash
+dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -p:PublishProfile=SingleFile
+```
+
+Output: `MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe`
+
+### Folder publish
+
+Produces a self-contained folder layout with all DLLs alongside the executable:
+
+```bash
+dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -p:PublishProfile=FolderPublish
+```
+
+Output: `MultiPingMonitor/bin/publish/folder/`
+
 ## Localization
 
 MultiPingMonitor includes English (default) and Slovak (`sk-SK`) localizations.
 
 ## Configuration
 
-Configuration is stored in `%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml`. A portable mode is available: place a `MultiPingMonitor.xml` file in the application directory and it will be used instead.
+Configuration is stored by default next to the executable as `MultiPingMonitor.xml` (portable mode). If no config file exists next to the executable but one exists in `%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml`, the latter is used as a fallback.
 
 ## License
 
 See [LICENSE](LICENSE).
+
+## Attribution
+
+This project is a derivative of [vmPing](https://github.com/r-smith/vmPing) by Ryan Smith, released under the MIT License.

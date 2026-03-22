@@ -16,6 +16,7 @@ namespace MultiPingMonitor.UI
         public FloodHostWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "FloodHostWindow");
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
 
             DataContext = _floodHost;

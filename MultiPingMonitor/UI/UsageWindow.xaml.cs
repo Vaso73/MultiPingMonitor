@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.UI
 {
@@ -8,6 +9,7 @@ namespace MultiPingMonitor.UI
         public UsageWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "UsageWindow");
 
             Version version = typeof(MainWindow).Assembly.GetName().Version;
             AppVersion.Text = $"{version.Major}.{version.Minor}.{version.Build}";

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.UI
 {
@@ -37,6 +38,7 @@ namespace MultiPingMonitor.UI
         public MultiInputWindow(List<string> addresses = null)
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "MultiInputWindow");
 
             // Set initial keyboard focus to text box.
             Loaded += (sender, e) => MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));

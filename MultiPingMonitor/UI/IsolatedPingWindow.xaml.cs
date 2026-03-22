@@ -13,6 +13,7 @@ namespace MultiPingMonitor.UI
         public IsolatedPingWindow(Probe pingItem)
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "IsolatedPingWindow");
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             pingItem.IsolatedWindow = this;
             DataContext = pingItem;

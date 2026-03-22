@@ -10,6 +10,7 @@ namespace MultiPingMonitor.UI
         public NewAliasWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "NewAliasWindow");
 
             // Set initial keyboard focus.
             Loaded += (sender, e) => MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));

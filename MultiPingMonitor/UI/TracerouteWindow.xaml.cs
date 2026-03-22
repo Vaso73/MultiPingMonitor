@@ -10,6 +10,7 @@ namespace MultiPingMonitor.UI
         public TracerouteWindow()
         {
             InitializeComponent();
+            WindowPlacementService.Attach(this, "TracerouteWindow");
         }
 
         private void TraceButton_Click(object sender, RoutedEventArgs e)
