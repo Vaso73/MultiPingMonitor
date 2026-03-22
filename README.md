@@ -1,15 +1,63 @@
-# PingMonitor
+# MultiPingMonitor
 
-## Project Description
-PingMonitor is a network monitoring application designed to continuously check the status of network connections. By sending periodic ping requests to specified hosts, it allows users to detect outages and performance issues in real-time.
+A network monitoring tool that pings multiple hosts simultaneously, giving you real-time status for all your network targets at a glance.
+
+Built on [vmPing](https://github.com/Vaso73/vmPing) by Vaso73, rebranded and extended with multi-theme support and Slovak localization.
 
 ## Features
-- **Real-time Monitoring**: Provides instant feedback on the status of network connections.
-- **Customizable Ping Frequency**: Users can set their desired interval for ping requests.
-- **Alert Notifications**: Notifies users via email or other channels when a connection issue is detected.
-- **Historical Data**: Records past ping results for analysis and troubleshooting.
-- **User-Friendly Interface**: Easy to navigate dashboard for monitoring multiple hosts at once.
-- **Cross-Platform Support**: Works on various operating systems, ensuring accessibility for all users.
 
-## Usage
-To use PingMonitor, simply configure the desired host addresses and set your preferred ping intervals. The application will then start monitoring automatically.
+- Monitor multiple hosts in parallel with continuous ICMP ping
+- TCP port probing (prefix host with a port, e.g. `80/example.com`)
+- DNS lookup probing (prefix with `D/`)
+- Traceroute window
+- Flood host utility
+- Popup and email alerts on status changes
+- Status history log
+- Favorite sets to quickly restore monitored hosts
+- Aliases for friendly host names
+- Configurable probe interval, timeout, TTL, and packet size
+- Audio alerts on up/down transitions
+- Log output to file
+
+## Themes
+
+MultiPingMonitor supports 10 built-in themes, selectable from **Options → Display → Theme**:
+
+| Theme          | Description                           |
+|----------------|---------------------------------------|
+| Auto           | Follows Windows light/dark mode       |
+| Light          | Clean light theme                     |
+| Dark           | Modern dark theme (Catppuccin Mocha)  |
+| Nord           | Arctic Nord color palette             |
+| Dracula        | Classic Dracula palette               |
+| Solarized Light| Solarized light variant               |
+| Solarized Dark | Solarized dark variant                |
+| Forest         | Deep green forest theme               |
+| Ocean          | Deep ocean blue theme                 |
+| Sunset         | Warm sunset orange/red theme          |
+
+## Building
+
+Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+
+```bash
+dotnet build
+```
+
+To run:
+
+```bash
+dotnet run --project MultiPingMonitor/MultiPingMonitor.csproj
+```
+
+## Localization
+
+MultiPingMonitor includes English (default) and Slovak (`sk-SK`) localizations.
+
+## Configuration
+
+Configuration is stored in `%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml`. A portable mode is available: place a `MultiPingMonitor.xml` file in the application directory and it will be used instead.
+
+## License
+
+See [LICENSE](LICENSE).
