@@ -790,7 +790,7 @@ namespace MultiPingMonitor.UI
 
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    LogStatusChangesPath.Text = dialog.SelectedPath + "\\vmping-status.txt";
+                    LogStatusChangesPath.Text = dialog.SelectedPath + "\\multipingmonitor-status.txt";
                 }
             }
         }

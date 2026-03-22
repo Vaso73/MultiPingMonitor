@@ -9,7 +9,7 @@
         Width="600"
         ResizeMode="NoResize"
         SizeToContent="Height"
-        Background="White"
+        Background="{StaticResource Theme.Background}"
         WindowStartupLocation="CenterScreen">
     
     <Grid Margin="0">
