@@ -24,9 +24,15 @@ namespace MultiPingMonitor.UI
         private const int WS_MAXIMIZEBOX = 0x10000; //maximize button
         private const int WS_MINIMIZEBOX = 0x20000; //minimize button
 
+        // Store original theme so it can be reverted if the user cancels.
+        private readonly string _originalTheme;
+
         public OptionsWindow()
         {
             InitializeComponent();
+
+            // Remember the current theme so we can revert if the user cancels.
+            _originalTheme = ApplicationOptions.Theme;
 
             PopulateGeneralOptions();
             PopulateNotificationOptions();
@@ -229,6 +235,17 @@ namespace MultiPingMonitor.UI
             }
 
             DialogResult = true;
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // If the user dismissed the window without clicking OK, revert the theme preview.
+            if (DialogResult != true)
+            {
+                ApplicationOptions.Theme = _originalTheme;
+                ThemeManager.ApplyTheme(ThemeManager.ParseTheme(_originalTheme));
+            }
+            base.OnClosing(e);
         }
 
         private bool SaveGeneralOptions()

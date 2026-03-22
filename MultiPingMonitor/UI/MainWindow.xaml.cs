@@ -38,6 +38,7 @@ namespace MultiPingMonitor.UI
             LoadFavorites();
             LoadAliases();
             Configuration.Load();
+            ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             RefreshGuiState();
 
             // Set items source for main GUI ItemsControl.
