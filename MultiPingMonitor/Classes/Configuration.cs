@@ -120,6 +120,9 @@ namespace MultiPingMonitor.Classes
                 return;
             }
 
+            var tempPath = FilePath + ".tmp";
+            var bakPath = FilePath + ".bak";
+
             try
             {
                 // Open XML configuration file and get root <vmping> node.
@@ -133,10 +136,31 @@ namespace MultiPingMonitor.Classes
                 root.Add(GenerateConfigurationNode());
                 root.Add(GenerateColorsNode());
 
-                xd.Save(FilePath);
+                // Atomic save: write to a temp file first, then replace the real file.
+                // This prevents a truncated/corrupted config if an error occurs mid-write.
+                xd.Save(tempPath);
+
+                if (File.Exists(FilePath))
+                {
+                    File.Copy(FilePath, bakPath, overwrite: true);
+                }
+
+                File.Move(tempPath, FilePath, overwrite: true);
             }
             catch (Exception ex)
             {
+                // Clean up the temporary file if it was created.
+                if (File.Exists(tempPath))
+                {
+                    try { File.Delete(tempPath); } catch { }
+                }
+
+                // If the real config is gone but a backup exists, restore it.
+                if (!File.Exists(FilePath) && File.Exists(bakPath))
+                {
+                    try { File.Copy(bakPath, FilePath); } catch { }
+                }
+
                 Util.ShowError($"{Strings.Error_WriteConfig} {ex.Message}");
             }
         }
@@ -158,7 +182,7 @@ namespace MultiPingMonitor.Classes
                 Node("TTL", ApplicationOptions.TTL),
                 Node("DontFragment", ApplicationOptions.DontFragment),
                 Node("UseCustomBuffer", ApplicationOptions.UseCustomBuffer),
-                Node("Buffer", Encoding.ASCII.GetString(ApplicationOptions.Buffer)),
+                Node("Buffer", "base64:" + Convert.ToBase64String(ApplicationOptions.Buffer ?? Array.Empty<byte>())),
                 Node("AlertThreshold", ApplicationOptions.AlertThreshold),
                 new XComment(" InitialStartMode: [Blank, MultiInput, Favorite] "),
                 Node("InitialStartMode", ApplicationOptions.InitialStartMode),
@@ -335,7 +359,16 @@ namespace MultiPingMonitor.Classes
             }
             if (options.TryGetValue("Buffer", out optionValue))
             {
-                ApplicationOptions.Buffer = Encoding.ASCII.GetBytes(optionValue);
+                // New format uses "base64:" prefix to avoid NUL chars in XML.
+                // Old format stored the buffer as a raw ASCII string (backward compat).
+                if (optionValue.StartsWith("base64:", StringComparison.Ordinal))
+                {
+                    ApplicationOptions.Buffer = Convert.FromBase64String(optionValue.Substring(7));
+                }
+                else
+                {
+                    ApplicationOptions.Buffer = Encoding.ASCII.GetBytes(optionValue);
+                }
             }
             if (options.TryGetValue("AlertThreshold", out optionValue))
             {

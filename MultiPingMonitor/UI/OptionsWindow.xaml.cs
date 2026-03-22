@@ -229,10 +229,7 @@ namespace MultiPingMonitor.UI
             if (SaveLayoutOptions() == false) return;
             if (SaveDisplayOptions() == false) return;
 
-            if (SaveAsDefaults.IsChecked == true)
-            {
-                Configuration.Save();
-            }
+            Configuration.Save();
 
             DialogResult = true;
         }

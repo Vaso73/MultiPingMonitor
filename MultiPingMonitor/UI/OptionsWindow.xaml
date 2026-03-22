@@ -879,12 +879,6 @@
         <!-- Button Section -->
         <Border Grid.Row="1" BorderBrush="#dfdfdf" Background="#f0f0f0" BorderThickness="0,1,0,0">
             <DockPanel Margin="9" HorizontalAlignment="Right">
-                <CheckBox DockPanel.Dock="Top"
-                          Name="SaveAsDefaults"
-                          Content="Save as MultiPingMonitor defaults"
-                          FontSize="13"
-                          Foreground="#111"
-                          HorizontalAlignment="Right"/>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
                     <Button Style="{StaticResource ButtonStandardStyle}"
                             Click="OK_Click"
