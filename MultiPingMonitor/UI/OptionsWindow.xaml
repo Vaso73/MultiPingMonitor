@@ -698,6 +698,15 @@
                             </TextBlock>
                         </Label>
                     </DockPanel>
+                    <!-- Remember window position -->
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
+                        <CheckBox DockPanel.Dock="Left"
+                                  Name="RememberWindowPosition"
+                                  Content="Remember window position"/>
+                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
+                            Save and restore the window position and size between sessions.
+                        </Label>
+                    </DockPanel>
                     <!-- Theme selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
                         <TextBlock Text="Theme:" Width="120"/>

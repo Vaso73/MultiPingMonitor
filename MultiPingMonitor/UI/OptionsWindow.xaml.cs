@@ -183,6 +183,7 @@ namespace MultiPingMonitor.UI
             IsAlwaysOnTopEnabled.IsChecked = ApplicationOptions.IsAlwaysOnTopEnabled;
             IsMinimizeToTrayEnabled.IsChecked = ApplicationOptions.IsMinimizeToTrayEnabled;
             IsExitToTrayEnabled.IsChecked = ApplicationOptions.IsExitToTrayEnabled;
+            RememberWindowPosition.IsChecked = ApplicationOptions.RememberWindowPosition;
 
             // Populate theme ComboBox.
             foreach (AppTheme theme in Enum.GetValues(typeof(AppTheme)))
@@ -625,6 +626,7 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.IsAlwaysOnTopEnabled = IsAlwaysOnTopEnabled.IsChecked == true;
             ApplicationOptions.IsMinimizeToTrayEnabled = IsMinimizeToTrayEnabled.IsChecked == true;
             ApplicationOptions.IsExitToTrayEnabled = IsExitToTrayEnabled.IsChecked == true;
+            ApplicationOptions.RememberWindowPosition = RememberWindowPosition.IsChecked == true;
 
             return true;
         }
