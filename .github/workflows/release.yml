@@ -24,7 +24,7 @@ jobs:
         run: dotnet restore MultiPingMonitor.sln
 
       - name: Publish (win-x64)
-        run: dotnet publish MultiPingMonitor.sln -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+        run: dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 
       - name: Zip
         shell: pwsh
