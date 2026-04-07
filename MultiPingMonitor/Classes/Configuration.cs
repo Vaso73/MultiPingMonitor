@@ -17,16 +17,10 @@ namespace MultiPingMonitor.Classes
 
         static Configuration()
         {
-            // Default: portable mode — config file next to the executable.
-            // Fallback: if no config exists next to the exe but one exists in %LocalAppData%, use that.
-            if (!File.Exists(FilePath))
-            {
-                var appDataPath = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml");
-                if (File.Exists(appDataPath))
-                {
-                    FilePath = appDataPath;
-                }
-            }
+            // Strict portable mode: configuration file always lives next to the executable.
+            // No silent fallback to %LOCALAPPDATA% or any other system path.
+            // Logs, exports, or backups may go to user-chosen paths, but the primary
+            // config file is always co-located with the application.
         }
 
         public static bool Exists()
@@ -116,6 +110,23 @@ namespace MultiPingMonitor.Classes
                 return "concat('" + xpath.Replace("'", "',\"'\",'") + "')";
             }
         }
+
+        // ── Config root name decision ──────────────────────────────────────────────
+        //
+        // The XML root element is kept as <vmping> deliberately for backward
+        // compatibility.  MultiPingMonitor is a derivative of vmPing and existing
+        // users may have config files with that root.
+        //
+        // Decision (feature/window-placement-v2): keep <vmping> as the only
+        // supported root.  Rationale:
+        //   1. Introducing a second accepted root (<MultiPingMonitor>) would add
+        //      branch logic throughout Load() and Save() for zero user benefit.
+        //   2. The root name is an implementation detail invisible to users.
+        //   3. A future major version bump can rename the root in a single commit
+        //      by adding a one-time migration step inside Load().
+        //
+        // See docs/ARCHITECTURE.md for the full architecture note.
+        // ──────────────────────────────────────────────────────────────────────────
 
         public static void Save()
         {
@@ -223,6 +234,7 @@ namespace MultiPingMonitor.Classes
                 Node("IsAlwaysOnTopEnabled", ApplicationOptions.IsAlwaysOnTopEnabled),
                 Node("IsMinimizeToTrayEnabled", ApplicationOptions.IsMinimizeToTrayEnabled),
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
+                Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
                 Node("Theme", ApplicationOptions.Theme)
             );
         }
@@ -560,6 +572,10 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("IsExitToTrayEnabled", out optionValue))
             {
                 ApplicationOptions.IsExitToTrayEnabled = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("RememberWindowPosition", out optionValue))
+            {
+                ApplicationOptions.RememberWindowPosition = bool.Parse(optionValue);
             }
             if (options.TryGetValue("Theme", out optionValue))
             {
