@@ -9,33 +9,10 @@ _Last updated: 2026-04-07_
 | Project | Role |
 |---|---|
 | `MultiPingMonitor/` | Main WPF application (net8.0-windows). All user-facing features live here. |
-| `PingMonitor/` | Stub library (net8.0). Currently contains only a placeholder `ApplicationOptions` class. |
 
 ---
 
-## 2. PingMonitor – extract or keep minimal?
-
-**Recommendation: keep minimal for now.**
-
-`PingMonitor` currently contains a single placeholder class with no shared logic.
-Extracting the ping core into a real library would require:
-
-- Moving `Probe`, `Probe-Icmp`, `Probe-Tcp`, `Probe-Dns`, `Probe-Traceroute`, and
-  related helpers out of `MultiPingMonitor`.
-- Removing WPF/UI dependencies from those classes (several use `Dispatcher`,
-  `Application.Current`, etc.).
-- Defining a clean public API surface and keeping it stable.
-
-This is medium-risk and medium-effort work that is not justified while there is only
-one consumer.  When a second consumer appears (e.g. a CLI or a service wrapper),
-that is the right time to extract.
-
-**Action for this phase:** leave `PingMonitor` as-is.  Do not add to it.  A future
-task can rename it `MultiPingMonitor.Core` and begin the extraction incrementally.
-
----
-
-## 3. Configuration – XML root name decision
+## 2. Configuration – XML root name decision
 
 The config file XML root element is `<vmping>`.  This is a carry-over from the
 vmPing lineage.
@@ -68,7 +45,7 @@ Until then, `<vmping>` is kept and no migration is performed.
 
 ---
 
-## 4. Window placement – v1 vs v2
+## 3. Window placement – v1 vs v2
 
 ### v1 (before this branch)
 
@@ -113,7 +90,7 @@ self-positions to the lower-right corner of the working area by design.
 
 ---
 
-## 5. Portable vs. AppData config
+## 4. Portable vs. AppData config
 
 **Strict portable (always):** `MultiPingMonitor.xml` next to the executable.
 
@@ -123,7 +100,7 @@ always co-located with the application binary.
 
 ---
 
-## 6. Manual test checklist – window placement
+## 5. Manual test checklist – window placement
 
 These scenarios must be verified manually after any placement change:
 
@@ -145,7 +122,7 @@ These scenarios must be verified manually after any placement change:
 
 ---
 
-## 7. Risk summary
+## 6. Risk summary
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
@@ -153,4 +130,3 @@ These scenarios must be verified manually after any placement change:
 | Monitor device name changes (driver reinstall) | Low | Low | Falls back to intersect check then primary monitor |
 | DPI rescale produces off-screen position | Low | Low | Clamp step (step 5) corrects this |
 | `RememberWindowPosition` serialization breaks existing config | None | None | New field; absent in old config → default `true` applied |
-| `PingMonitor` stub causing build issues | None | Low | `PingMonitor` is not referenced by `MultiPingMonitor` |

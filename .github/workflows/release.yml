@@ -21,7 +21,7 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Restore
-        run: dotnet restore MultiPingMonitor.sln
+        run: dotnet restore MultiPingMonitor/MultiPingMonitor.csproj
 
       - name: Publish (win-x64)
         run: dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
