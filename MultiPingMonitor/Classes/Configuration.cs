@@ -117,6 +117,23 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        // ── Config root name decision ──────────────────────────────────────────────
+        //
+        // The XML root element is kept as <vmping> deliberately for backward
+        // compatibility.  MultiPingMonitor is a derivative of vmPing and existing
+        // users may have config files with that root.
+        //
+        // Decision (feature/window-placement-v2): keep <vmping> as the only
+        // supported root.  Rationale:
+        //   1. Introducing a second accepted root (<MultiPingMonitor>) would add
+        //      branch logic throughout Load() and Save() for zero user benefit.
+        //   2. The root name is an implementation detail invisible to users.
+        //   3. A future major version bump can rename the root in a single commit
+        //      by adding a one-time migration step inside Load().
+        //
+        // See docs/ARCHITECTURE.md for the full architecture note.
+        // ──────────────────────────────────────────────────────────────────────────
+
         public static void Save()
         {
             if (!IsReady())
@@ -223,6 +240,7 @@ namespace MultiPingMonitor.Classes
                 Node("IsAlwaysOnTopEnabled", ApplicationOptions.IsAlwaysOnTopEnabled),
                 Node("IsMinimizeToTrayEnabled", ApplicationOptions.IsMinimizeToTrayEnabled),
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
+                Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
                 Node("Theme", ApplicationOptions.Theme)
             );
         }
@@ -560,6 +578,10 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("IsExitToTrayEnabled", out optionValue))
             {
                 ApplicationOptions.IsExitToTrayEnabled = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("RememberWindowPosition", out optionValue))
+            {
+                ApplicationOptions.RememberWindowPosition = bool.Parse(optionValue);
             }
             if (options.TryGetValue("Theme", out optionValue))
             {
