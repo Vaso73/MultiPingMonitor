@@ -29,8 +29,8 @@ namespace MultiPingMonitor.UI
         public MainWindow()
         {
             InitializeComponent();
-            WindowPlacementService.Attach(this, "MainWindow");
             InitializeApplication();
+            WindowPlacementService.Attach(this, "MainWindow");
         }
 
         private void InitializeApplication()

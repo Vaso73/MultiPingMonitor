@@ -55,12 +55,25 @@ namespace MultiPingMonitor.Classes
 
         /// <summary>
         /// Attach placement persistence to a window.
-        /// Call this in the window constructor after InitializeComponent().
+        /// Call this in the window constructor after InitializeComponent() and
+        /// after Configuration.Load() so that saved placement data is available
+        /// for immediate restore before the window is shown.
         /// </summary>
         /// <param name="window">The WPF window to track.</param>
         /// <param name="key">Unique key for this window type (e.g. "MainWindow").</param>
         public static void Attach(Window window, string key)
         {
+            // Apply saved placement immediately, before the Win32 window handle
+            // is created.  When Left/Top/Width/Height are set before Show(),
+            // WPF passes them directly to CreateWindowEx, making the restore
+            // deterministic.  Relying solely on the SourceInitialized event was
+            // unreliable because the handle had already been created with the
+            // XAML-default dimensions and a subsequent SetWindowPos could be
+            // overridden by the system during ShowWindow processing.
+            Restore(window, key);
+
+            // Retained as a safety-net for any window whose placement data is
+            // loaded after Attach (currently none, but keeps the contract safe).
             window.SourceInitialized += (s, e) => Restore(window, key);
             window.Closing += (s, e) => Save(window, key);
         }
