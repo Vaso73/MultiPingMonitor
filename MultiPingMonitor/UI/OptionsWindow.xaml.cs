@@ -217,6 +217,9 @@ namespace MultiPingMonitor.UI
             ForegroundColor_Alias_Down.Text = ApplicationOptions.ForegroundColor_Alias_Down;
             ForegroundColor_Alias_Error.Text = ApplicationOptions.ForegroundColor_Alias_Error;
             ForegroundColor_Alias_Indeterminate.Text = ApplicationOptions.ForegroundColor_Alias_Indeterminate;
+            BackgroundColor_Probe_Scanner.Text = ApplicationOptions.BackgroundColor_Probe_Scanner;
+            ForegroundColor_Probe_Scanner.Text = ApplicationOptions.ForegroundColor_Probe_Scanner;
+            ForegroundColor_Alias_Scanner.Text = ApplicationOptions.ForegroundColor_Alias_Scanner;
         }
 
 
@@ -677,6 +680,9 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.ForegroundColor_Alias_Down = ForegroundColor_Alias_Down.Text;
             ApplicationOptions.ForegroundColor_Alias_Indeterminate = ForegroundColor_Alias_Indeterminate.Text;
             ApplicationOptions.ForegroundColor_Alias_Error = ForegroundColor_Alias_Error.Text;
+            ApplicationOptions.BackgroundColor_Probe_Scanner = BackgroundColor_Probe_Scanner.Text;
+            ApplicationOptions.ForegroundColor_Probe_Scanner = ForegroundColor_Probe_Scanner.Text;
+            ApplicationOptions.ForegroundColor_Alias_Scanner = ForegroundColor_Alias_Scanner.Text;
 
             return true;
         }
@@ -949,6 +955,9 @@ namespace MultiPingMonitor.UI
             ForegroundColor_Alias_Down.Text = Constants.Color_Alias_Foreground_Down;
             ForegroundColor_Alias_Error.Text = Constants.Color_Alias_Foreground_Error;
             ForegroundColor_Alias_Indeterminate.Text = Constants.Color_Alias_Foreground_Indeterminate;
+            BackgroundColor_Probe_Scanner.Text = Constants.Color_Probe_Background_Scanner;
+            ForegroundColor_Probe_Scanner.Text = Constants.Color_Probe_Foreground_Scanner;
+            ForegroundColor_Alias_Scanner.Text = Constants.Color_Alias_Foreground_Scanner;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
