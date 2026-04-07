@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.UI
@@ -16,24 +14,7 @@ namespace MultiPingMonitor.UI
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            if (PortableMode.IsChecked == true)
-            {
-                Configuration.FilePath = GetPortableFilePath();
-            }
-
             DialogResult = true;
-        }
-
-        private void PortableMode_Click(object sender, RoutedEventArgs e)
-        {
-            FilePath.Text = PortableMode.IsChecked == true
-                ? GetPortableFilePath()
-                : Configuration.FilePath;
-        }
-
-        private string GetPortableFilePath()
-        {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MultiPingMonitor.xml");
         }
     }
 }
