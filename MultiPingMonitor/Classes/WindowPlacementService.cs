@@ -87,6 +87,9 @@ namespace MultiPingMonitor.Classes
                 contentRenderedHandler = (s, e) =>
                 {
                     window.ContentRendered -= contentRenderedHandler;
+                    // Re-check in case the option was toggled before ContentRendered fired.
+                    if (!ApplicationOptions.RememberWindowPosition || !_placements.ContainsKey(key))
+                        return;
                     window.Dispatcher.BeginInvoke(
                         System.Windows.Threading.DispatcherPriority.Loaded,
                         new Action(() => Restore(window, key)));
