@@ -79,7 +79,7 @@ MultiPingMonitor includes English (default) and Slovak (`sk-SK`) localizations.
 
 ## Configuration
 
-Configuration is stored by default next to the executable as `MultiPingMonitor.xml` (portable mode). If no config file exists next to the executable but one exists in `%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml`, the latter is used as a fallback.
+Configuration is stored strictly next to the executable as `MultiPingMonitor.xml` (portable-only). There is no fallback to `%LOCALAPPDATA%` or any other system path.
 
 ## License
 
