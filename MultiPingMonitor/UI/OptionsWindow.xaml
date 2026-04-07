@@ -870,6 +870,28 @@
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Error, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
 
+                        <!-- Scanner colors -->
+                        <Separator DockPanel.Dock="Top" Height="1" Width="20" Background="Transparent" Margin="0,20,0,0"/>
+                        <TextBlock DockPanel.Dock="Top"
+                                   Text="Scanner"
+                                   Margin="0"
+                                   Style="{StaticResource OptionSubHeaderTextStyle}"/>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Width="150" Text="Probe Background"/>
+                            <TextBox Name="BackgroundColor_Probe_Scanner"/>
+                            <Border Background="{Binding ElementName=BackgroundColor_Probe_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Width="150" Text="Probe Foreground"/>
+                            <TextBox Name="ForegroundColor_Probe_Scanner"/>
+                            <Border Background="{Binding ElementName=ForegroundColor_Probe_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,10">
+                            <TextBlock Width="150" Text="Alias Foreground"/>
+                            <TextBox Name="ForegroundColor_Alias_Scanner"/>
+                            <Border Background="{Binding ElementName=ForegroundColor_Alias_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
+                        </StackPanel>
+
                         <!-- Restore defaults button -->
                         <Grid DockPanel.Dock="Top" Margin="0,15,0,0">
                             <Button Style="{StaticResource ButtonStandardStyle}"
