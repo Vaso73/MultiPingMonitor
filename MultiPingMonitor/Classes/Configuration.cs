@@ -17,16 +17,10 @@ namespace MultiPingMonitor.Classes
 
         static Configuration()
         {
-            // Default: portable mode — config file next to the executable.
-            // Fallback: if no config exists next to the exe but one exists in %LocalAppData%, use that.
-            if (!File.Exists(FilePath))
-            {
-                var appDataPath = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml");
-                if (File.Exists(appDataPath))
-                {
-                    FilePath = appDataPath;
-                }
-            }
+            // Strict portable mode: configuration file always lives next to the executable.
+            // No silent fallback to %LOCALAPPDATA% or any other system path.
+            // Logs, exports, or backups may go to user-chosen paths, but the primary
+            // config file is always co-located with the application.
         }
 
         public static bool Exists()

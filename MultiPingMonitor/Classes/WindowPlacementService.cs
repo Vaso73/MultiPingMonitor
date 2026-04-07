@@ -65,6 +65,19 @@ namespace MultiPingMonitor.Classes
             window.Closing += (s, e) => Save(window, key);
         }
 
+        /// <summary>
+        /// Immediately capture and store the current placement of a window.
+        /// Call this explicitly before Configuration.Save() for the main window,
+        /// where the Closing event ordering would otherwise cause the placement to
+        /// be written after the config has already been serialized to disk.
+        /// </summary>
+        /// <param name="window">The window to snapshot.</param>
+        /// <param name="key">The same key used in the matching Attach() call.</param>
+        public static void SaveWindow(Window window, string key)
+        {
+            Save(window, key);
+        }
+
         // ── Save ──────────────────────────────────────────────────────────────
 
         private static void Save(Window window, string key)

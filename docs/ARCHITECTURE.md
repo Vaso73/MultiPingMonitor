@@ -115,10 +115,11 @@ self-positions to the lower-right corner of the working area by design.
 
 ## 5. Portable vs. AppData config
 
-- **Portable (default):** `MultiPingMonitor.xml` next to the executable.
-- **Fallback:** if no config exists next to the exe but one exists at
-  `%LOCALAPPDATA%\MultiPingMonitor\MultiPingMonitor.xml`, that path is used.
-- No second config file is introduced.
+**Strict portable (always):** `MultiPingMonitor.xml` next to the executable.
+
+There is no silent fallback to `%LOCALAPPDATA%` or any other system path.  Logs,
+exports, and backups may go to user-chosen paths, but the primary config file is
+always co-located with the application binary.
 
 ---
 
@@ -137,7 +138,7 @@ These scenarios must be verified manually after any placement change:
 | 7 | Unplug monitor while app is open on it → replug → restart | Window still visible |
 | 8 | DPI change (e.g. 100% → 125%) between sessions | Window proportionally rescaled, still on correct monitor |
 | 9 | Portable config next to exe | Config read/written next to exe |
-| 10 | Config only in `%LOCALAPPDATA%` | Fallback path used |
+| 10 | No config file present | New config creation dialog shown; file created next to exe |
 | 11 | Config created by older build (v1 records, no v2 attributes) | Window restores without error; v2 fields written on next save |
 | 12 | Set `RememberWindowPosition=false` | Window position not saved or restored |
 | 13 | All secondary windows (Options, StatusHistory, Traceroute, etc.) | Each window restores its own last position |

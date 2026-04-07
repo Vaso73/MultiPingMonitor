@@ -825,6 +825,11 @@ namespace MultiPingMonitor.UI
             }
             else
             {
+                // Capture MainWindow placement before serializing config.
+                // WindowPlacementService.Attach registers its Closing handler after the
+                // XAML-declared Window_Closing, so Configuration.Save would otherwise
+                // run before the placement dict is updated for this window.
+                WindowPlacementService.SaveWindow(this, "MainWindow");
                 Configuration.Save();
                 NotifyIcon?.Dispose();
             }
