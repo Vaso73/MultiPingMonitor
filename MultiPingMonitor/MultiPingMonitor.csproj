@@ -15,6 +15,10 @@
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="MultiPingMonitor.ico" />
+    <Resource Include="MultiPingMonitor.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Properties\Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>

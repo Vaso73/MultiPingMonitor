@@ -736,12 +736,23 @@ namespace MultiPingMonitor.UI
 
         private void HideToTray()
         {
-            Visibility = Visibility.Hidden;
-            WindowState = WindowState.Minimized;
             try
             {
                 if (NotifyIcon == null)
                 {
+                    // Load icon: prefer embedded WPF resource, fall back to system default.
+                    System.Drawing.Icon trayIcon;
+                    var sri = Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico"));
+                    if (sri != null)
+                    {
+                        trayIcon = new System.Drawing.Icon(sri.Stream);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine("MultiPingMonitor: Could not load tray icon from embedded resource; using fallback.");
+                        trayIcon = System.Drawing.SystemIcons.Application;
+                    }
+
                     // Build context menu for tray icon.
                     System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
                     System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem("Options");
@@ -759,16 +770,19 @@ namespace MultiPingMonitor.UI
                     // Create tray icon.
                     NotifyIcon = new System.Windows.Forms.NotifyIcon
                     {
-                        Icon = new System.Drawing.Icon(Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico")).Stream),
+                        Icon = trayIcon,
                         Text = "MultiPingMonitor",
                         ContextMenuStrip = menuStrip
                     };
                     NotifyIcon.MouseUp += NotifyIcon_MouseUp;
                 }
                 NotifyIcon.Visible = true;
+                Visibility = Visibility.Hidden;
+                WindowState = WindowState.Minimized;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
                 Visibility = Visibility.Visible;
             }
         }
