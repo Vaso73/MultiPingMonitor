@@ -712,6 +712,34 @@
                         <TextBlock Text="Theme:" Width="120"/>
                         <ComboBox x:Name="ThemeComboBox" Width="160" SelectionChanged="ThemeComboBox_SelectionChanged"/>
                     </StackPanel>
+
+                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+
+                    <!-- Font Sizes -->
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Font Sizes"
+                               Margin="0,10,0,0"
+                               Style="{StaticResource OptionSubHeaderTextStyle}"/>
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Probe font size:"
+                                   Width="120"/>
+                        <TextBox Name="FontSizeProbe"
+                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                 Width="60"
+                                 MaxLength="2"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0">
+                        <TextBlock Text="Scanner font size:"
+                                   Width="120"/>
+                        <TextBox Name="FontSizeScanner"
+                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                 Width="60"
+                                 MaxLength="2"/>
+                    </StackPanel>
                 </DockPanel>
             </TabItem>
             
