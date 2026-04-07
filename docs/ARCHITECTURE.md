@@ -1,6 +1,6 @@
 # MultiPingMonitor – Architecture Notes
 
-_Last updated: feature/window-placement-v2_
+_Last updated: 2026-04-07_
 
 ---
 

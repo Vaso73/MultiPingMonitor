@@ -36,11 +36,20 @@ namespace MultiPingMonitor.Classes
     /// </summary>
     internal static class WindowPlacementService
     {
-        // Minimum pixels of window that must remain visible on-screen.
+        // Minimum pixels of window that must remain visible on-screen (title bar reachable).
         private const int MinVisibleMargin = 40;
 
         // Current schema version written to the XML attribute "v".
         private const int SchemaVersion = 2;
+
+        // Minimum usable window dimensions to prevent a window from becoming invisible.
+        private const double MinWindowWidth = 100;
+        private const double MinWindowHeight = 60;
+
+        // DPI difference tolerance before triggering a proportional rescale.
+        // 0.5 is chosen to ignore floating-point rounding on identical DPI settings
+        // while still catching a real DPI change (e.g. 96→120 → delta = 24).
+        private const double DpiChangeTolerance = 0.5;
 
         private static readonly Dictionary<string, PlacementData> _placements = new Dictionary<string, PlacementData>();
 
@@ -126,8 +135,8 @@ namespace MultiPingMonitor.Classes
                 return;
 
             // Clamp saved dimensions to sensible minimums.
-            double w = Math.Max(data.Width, 100);
-            double h = Math.Max(data.Height, 60);
+            double w = Math.Max(data.Width, MinWindowWidth);
+            double h = Math.Max(data.Height, MinWindowHeight);
             double l = data.Left;
             double t = data.Top;
 
@@ -177,7 +186,7 @@ namespace MultiPingMonitor.Classes
                 double currentDpiX = GetDpiForScreen(Screen.FromRectangle(targetArea));
                 double currentDpiY = currentDpiX; // Windows uses uniform scaling per monitor.
 
-                if (Math.Abs(currentDpiX - data.SavedDpiX) > 0.5)
+                if (Math.Abs(currentDpiX - data.SavedDpiX) > DpiChangeTolerance)
                 {
                     double scaleX = currentDpiX / data.SavedDpiX;
                     double scaleY = currentDpiY / data.SavedDpiY;
@@ -363,15 +372,17 @@ namespace MultiPingMonitor.Classes
 
         private static double GetDpiForScreen(Screen screen)
         {
-            // Use the Graphics object from the screen's device context to read
-            // the actual DPI. Falls back to 96 if unavailable.
+            // NOTE: Graphics.FromHwnd(IntPtr.Zero) retrieves the desktop device context,
+            // which reports the primary monitor's DPI.  For per-monitor DPI accuracy,
+            // the Win32 GetDpiForMonitor API would be needed via P/Invoke.  Using the
+            // primary-monitor DPI is an intentional approximation: it is correct for
+            // single-monitor setups and for the most common multi-monitor configuration
+            // where all monitors share the same DPI scaling.  The error on mixed-DPI
+            // setups is bounded by the clamp step that follows, so no window is ever
+            // placed fully off-screen.
             try
             {
                 using var g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero);
-                // System.Drawing.Graphics.DpiX reports the primary-monitor DPI; for a
-                // per-monitor value we query via the Win32 GetDpiForMonitor API through
-                // the Screen bounds heuristic. Using g.DpiX is a good-enough approximation
-                // for the purpose of proportional rescaling.
                 return g.DpiX;
             }
             catch
