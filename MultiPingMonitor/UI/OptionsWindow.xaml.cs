@@ -193,6 +193,10 @@ namespace MultiPingMonitor.UI
             ThemeComboBox.SelectedItem = ApplicationOptions.Theme;
             if (ThemeComboBox.SelectedItem == null)
                 ThemeComboBox.SelectedIndex = 0;
+
+            // Font sizes.
+            FontSizeProbe.Text = ApplicationOptions.FontSize_Probe.ToString();
+            FontSizeScanner.Text = ApplicationOptions.FontSize_Scanner.ToString();
         }
 
         private void PopulateLayoutOptions()
@@ -630,6 +634,20 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.IsMinimizeToTrayEnabled = IsMinimizeToTrayEnabled.IsChecked == true;
             ApplicationOptions.IsExitToTrayEnabled = IsExitToTrayEnabled.IsChecked == true;
             ApplicationOptions.RememberWindowPosition = RememberWindowPosition.IsChecked == true;
+
+            // Validate and save font sizes.
+            if (!int.TryParse(FontSizeProbe.Text, out int fontSizeProbe) || fontSizeProbe < 6 || fontSizeProbe > 72)
+            {
+                ShowError("Probe font size must be a number between 6 and 72.", DisplayTab, FontSizeProbe);
+                return false;
+            }
+            if (!int.TryParse(FontSizeScanner.Text, out int fontSizeScanner) || fontSizeScanner < 6 || fontSizeScanner > 72)
+            {
+                ShowError("Scanner font size must be a number between 6 and 72.", DisplayTab, FontSizeScanner);
+                return false;
+            }
+            ApplicationOptions.FontSize_Probe = fontSizeProbe;
+            ApplicationOptions.FontSize_Scanner = fontSizeScanner;
 
             return true;
         }
