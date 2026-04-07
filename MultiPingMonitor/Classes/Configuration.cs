@@ -201,6 +201,10 @@ namespace MultiPingMonitor.Classes
                 Node("UseCustomBuffer", ApplicationOptions.UseCustomBuffer),
                 Node("Buffer", "base64:" + Convert.ToBase64String(ApplicationOptions.Buffer ?? Array.Empty<byte>())),
                 Node("AlertThreshold", ApplicationOptions.AlertThreshold),
+                new XComment(" LatencyDetectionMode: [Off, Auto, Fixed] "),
+                Node("LatencyDetectionMode", ApplicationOptions.LatencyDetectionMode),
+                Node("HighLatencyMilliseconds", ApplicationOptions.HighLatencyMilliseconds),
+                Node("HighLatencyAlertTiggerCount", ApplicationOptions.HighLatencyAlertTiggerCount),
                 new XComment(" InitialStartMode: [Blank, MultiInput, Favorite] "),
                 Node("InitialStartMode", ApplicationOptions.InitialStartMode),
                 Node("InitialProbeCount", ApplicationOptions.InitialProbeCount),
@@ -235,7 +239,9 @@ namespace MultiPingMonitor.Classes
                 Node("IsMinimizeToTrayEnabled", ApplicationOptions.IsMinimizeToTrayEnabled),
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
                 Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
-                Node("Theme", ApplicationOptions.Theme)
+                Node("Theme", ApplicationOptions.Theme),
+                Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
+                Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner)
             );
         }
 
@@ -277,7 +283,12 @@ namespace MultiPingMonitor.Classes
                 Node("Alias.Foreground.Up", ApplicationOptions.ForegroundColor_Alias_Up),
                 Node("Alias.Foreground.Down", ApplicationOptions.ForegroundColor_Alias_Down),
                 Node("Alias.Foreground.Indeterminate", ApplicationOptions.ForegroundColor_Alias_Indeterminate),
-                Node("Alias.Foreground.Error", ApplicationOptions.ForegroundColor_Alias_Error)
+                Node("Alias.Foreground.Error", ApplicationOptions.ForegroundColor_Alias_Error),
+
+                new XComment(" Scanner "),
+                Node("Probe.Background.Scanner", ApplicationOptions.BackgroundColor_Probe_Scanner),
+                Node("Probe.Foreground.Scanner", ApplicationOptions.ForegroundColor_Probe_Scanner),
+                Node("Alias.Foreground.Scanner", ApplicationOptions.ForegroundColor_Alias_Scanner)
             );
         }
 
@@ -371,6 +382,9 @@ namespace MultiPingMonitor.Classes
             ApplyColor("Alias.Foreground.Down", v => ApplicationOptions.ForegroundColor_Alias_Down = v, options);
             ApplyColor("Alias.Foreground.Indeterminate", v => ApplicationOptions.ForegroundColor_Alias_Indeterminate = v, options);
             ApplyColor("Alias.Foreground.Error", v => ApplicationOptions.ForegroundColor_Alias_Error = v, options);
+            ApplyColor("Probe.Background.Scanner", v => ApplicationOptions.BackgroundColor_Probe_Scanner = v, options);
+            ApplyColor("Probe.Foreground.Scanner", v => ApplicationOptions.ForegroundColor_Probe_Scanner = v, options);
+            ApplyColor("Alias.Foreground.Scanner", v => ApplicationOptions.ForegroundColor_Alias_Scanner = v, options);
         }
 
         private static void ApplyColor(string key, Action<string> setter, IDictionary<string, string> options)
@@ -426,6 +440,23 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("AlertThreshold", out optionValue))
             {
                 ApplicationOptions.AlertThreshold = int.Parse(optionValue);
+            }
+            if (options.TryGetValue("LatencyDetectionMode", out optionValue))
+            {
+                if (optionValue.Equals(ApplicationOptions.LatencyMode.Auto.ToString()))
+                    ApplicationOptions.LatencyDetectionMode = ApplicationOptions.LatencyMode.Auto;
+                else if (optionValue.Equals(ApplicationOptions.LatencyMode.Fixed.ToString()))
+                    ApplicationOptions.LatencyDetectionMode = ApplicationOptions.LatencyMode.Fixed;
+                else
+                    ApplicationOptions.LatencyDetectionMode = ApplicationOptions.LatencyMode.Off;
+            }
+            if (options.TryGetValue("HighLatencyMilliseconds", out optionValue))
+            {
+                ApplicationOptions.HighLatencyMilliseconds = long.Parse(optionValue);
+            }
+            if (options.TryGetValue("HighLatencyAlertTiggerCount", out optionValue))
+            {
+                ApplicationOptions.HighLatencyAlertTiggerCount = int.Parse(optionValue);
             }
             if (options.TryGetValue("InitialStartMode", out optionValue))
             {
@@ -580,6 +611,14 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("Theme", out optionValue))
             {
                 ApplicationOptions.Theme = optionValue;
+            }
+            if (options.TryGetValue("FontSize_Probe", out optionValue))
+            {
+                ApplicationOptions.FontSize_Probe = int.Parse(optionValue);
+            }
+            if (options.TryGetValue("FontSize_Scanner", out optionValue))
+            {
+                ApplicationOptions.FontSize_Scanner = int.Parse(optionValue);
             }
         }
     }
