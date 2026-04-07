@@ -75,6 +75,28 @@ namespace MultiPingMonitor.Classes
             // Retained as a safety-net for any window whose placement data is
             // loaded after Attach (currently none, but keeps the contract safe).
             window.SourceInitialized += (s, e) => Restore(window, key);
+
+            // One-time post-layout verify: WPF's ShowWindow / layout processing
+            // can silently override Left/Top even when they were set before Show().
+            // Re-apply the saved placement once after ContentRendered (the earliest
+            // point where all startup layout passes are guaranteed complete) via
+            // Dispatcher.BeginInvoke so it runs after any pending layout work.
+            if (ApplicationOptions.RememberWindowPosition && _placements.ContainsKey(key))
+            {
+                EventHandler contentRenderedHandler = null;
+                contentRenderedHandler = (s, e) =>
+                {
+                    window.ContentRendered -= contentRenderedHandler;
+                    // Re-check in case the option was toggled before ContentRendered fired.
+                    if (!ApplicationOptions.RememberWindowPosition || !_placements.ContainsKey(key))
+                        return;
+                    window.Dispatcher.BeginInvoke(
+                        System.Windows.Threading.DispatcherPriority.Loaded,
+                        new Action(() => Restore(window, key)));
+                };
+                window.ContentRendered += contentRenderedHandler;
+            }
+
             window.Closing += (s, e) => Save(window, key);
         }
 

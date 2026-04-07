@@ -5,6 +5,7 @@
         xmlns:c="clr-namespace:MultiPingMonitor.Controls"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="MultiPingMonitor"
+        WindowStartupLocation="Manual"
         UseLayoutRounding="False"
         SnapsToDevicePixels="True"
         Height="400"
