@@ -745,7 +745,8 @@ namespace MultiPingMonitor.UI
                     var sri = Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico"));
                     if (sri != null)
                     {
-                        trayIcon = new System.Drawing.Icon(sri.Stream);
+                        using (var iconStream = sri.Stream)
+                            trayIcon = new System.Drawing.Icon(iconStream);
                     }
                     else
                     {
