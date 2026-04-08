@@ -16,6 +16,10 @@ namespace MultiPingMonitor.UI
         private Dictionary<string, string> _Aliases = new Dictionary<string, string>();
         private System.Windows.Forms.NotifyIcon NotifyIcon;
 
+        // Set to true when a deliberate application shutdown is initiated from the tray exit
+        // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
+        private bool _isShuttingDown = false;
+
         public static RoutedCommand OptionsCommand = new RoutedCommand();
         public static RoutedCommand StartStopCommand = new RoutedCommand();
         public static RoutedCommand HelpCommand = new RoutedCommand();
@@ -761,7 +765,13 @@ namespace MultiPingMonitor.UI
                     System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem("Status History");
                     menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
                     System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem("Exit MultiPingMonitor");
-                    menuExit.Click += (s, args) => Application.Current.Shutdown();
+                    menuExit.Click += (s, args) =>
+                    {
+                        // Signal Window_Closing to take the save-and-exit path rather than
+                        // hiding to tray again, then request a clean application shutdown.
+                        _isShuttingDown = true;
+                        Application.Current.Shutdown();
+                    };
 
                     menuStrip.Items.Add(menuOptions);
                     menuStrip.Items.Add(menuStatusHistory);
@@ -833,8 +843,14 @@ namespace MultiPingMonitor.UI
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (ApplicationOptions.IsExitToTrayEnabled)
+            System.Diagnostics.Trace.WriteLine(
+                $"[MainWindow] Window_Closing: IsExitToTrayEnabled={ApplicationOptions.IsExitToTrayEnabled}" +
+                $"  _isShuttingDown={_isShuttingDown}" +
+                $"  WindowState={WindowState}  Left={Left}  Top={Top}  Width={Width}  Height={Height}");
+
+            if (ApplicationOptions.IsExitToTrayEnabled && !_isShuttingDown)
             {
+                System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: hiding to tray (cancel close).");
                 HideToTray();
                 e.Cancel = true;
             }
@@ -844,6 +860,7 @@ namespace MultiPingMonitor.UI
                 // WindowPlacementService.Attach registers its Closing handler after the
                 // XAML-declared Window_Closing, so Configuration.Save would otherwise
                 // run before the placement dict is updated for this window.
+                System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: saving placement and config.");
                 WindowPlacementService.SaveWindow(this, "MainWindow");
                 Configuration.Save();
                 NotifyIcon?.Dispose();
