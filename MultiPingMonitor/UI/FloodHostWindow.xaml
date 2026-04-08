@@ -5,10 +5,12 @@
         xmlns:classes="clr-namespace:MultiPingMonitor.Classes"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="{x:Static resource:Strings.FloodHost_Title}"
+        UseLayoutRounding="True"
         Height="250"
         Width="400"
         WindowStyle="None"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Background="{DynamicResource Theme.Background}">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"
                       ResizeBorderThickness="0"
@@ -17,61 +19,15 @@
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-        <!-- Value converters -->
+        <!-- Flood Host specific converter (localized in code-behind) -->
         <classes:BoolToStringConverter x:Key="BoolToStringConverter" FalseValue="Flood Host" TrueValue="Stop Flood"/>
-        <classes:BooleanToHiddenVisibilityConverter x:Key="BooleanToHiddenVisibilityConverter" />
-        <classes:InverseBooleanConverter x:Key="InverseBooleanConverter" />
-        <classes:BooleanToImageConverter x:Key="BooleanToImageConverter" />
-        
-
-        <!-- Style for hostname textbox -->
-        <ControlTemplate x:Key="TextBoxBaseControlTemplatez" TargetType="{x:Type TextBoxBase}">
-            <Border Background="{TemplateBinding Background}"
-                    x:Name="Bd"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    BorderBrush="{TemplateBinding BorderBrush}">
-                <ScrollViewer x:Name="PART_ContentHost" />
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#EEEEFF" />
-                    <Setter Property="Foreground" Value="#333388" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
     </Window.Resources>
-    <Window.Style>
-        <Style TargetType="Window">
-            <Setter Property="Background" Value="#002b36"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsActive}" Value="True">
-                    <DataTrigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation From="#002b36" To="#201b26" Storyboard.TargetProperty="(Window.Background).(SolidColorBrush.Color)"
-                                    RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:.6" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.EnterActions>
-                    <DataTrigger.ExitActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation From="#002b36" To="#002b36" Storyboard.TargetProperty="(Window.Background).(SolidColorBrush.Color)"
-                                    Duration="0:0:0.0" FillBehavior="HoldEnd" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.ExitActions>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Style>
 
-
-    <Border BorderBrush="{DynamicResource WindowBorderBrush}" BorderThickness="1">
-    <DockPanel>
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
 
         <!-- Custom title bar -->
-        <Grid DockPanel.Dock="Top" Height="32" Background="#073642">
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -80,17 +36,16 @@
             <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
                    Source="/Resources/bomb-16.png" />
             <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
-                       Foreground="#93a1a1"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <Button Grid.Column="2" Click="OnCloseButtonClick"
                     Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
-                    Foreground="#93a1a1"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
             </Button>
         </Grid>
-        <Border DockPanel.Dock="Top" Height="1" Background="#586e75" />
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
 
     <Grid>
         <Grid.RowDefinitions>
@@ -98,8 +53,8 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        
+
+
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -109,43 +64,24 @@
             <!-- Hostname textbox -->
             <TextBox Name="txtHostname"
                      FontSize="18" FontWeight="Bold"
-                     BorderThickness="2,2,0,2"
-                     BorderBrush="Black"
                      VerticalContentAlignment="Center"
-                     Template="{StaticResource TextBoxBaseControlTemplatez}"
                      IsEnabled="{Binding IsActive, Converter={StaticResource InverseBooleanConverter}}"
                      />
 
-            <!-- Trace Route button -->
+            <!-- Flood Host button -->
             <Button Name="btnFloodHost"
                     Click="btnFloodHost_Click"
                     Grid.Column="1"
                     IsDefault="True"
-                    FontSize="14"
-                    Padding="0,6"
-                    Width="125"
-                    Background="#268bd2">
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="floodHostButton_border" BorderThickness="2" BorderBrush="Black"
-                                Background="{TemplateBinding Background}"
-                                Padding="{TemplateBinding Padding}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image Source="{Binding IsActive, Converter={StaticResource BooleanToImageConverter}}"
-                                       Margin="0,0,8,0" Width="16" Height="16" />
-                                <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStringConverter}}" />
-                            </StackPanel>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="floodHostButton_border" Property="Background" Value="#167bc2" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="floodHostButton_border" Property="Background" Value="#066ba2" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
+                    Margin="10,0,0,0"
+                    Padding="8,6"
+                    MinWidth="125"
+                    Style="{StaticResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding IsActive, Converter={StaticResource BooleanToImageConverter}}"
+                           Margin="0,0,8,0" Width="16" Height="16" />
+                    <TextBlock Text="{Binding IsActive, Converter={StaticResource BoolToStringConverter}}" />
+                </StackPanel>
             </Button>
         </Grid>
 
@@ -165,11 +101,11 @@
                 <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsSent}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
-                           Foreground="#93a1a1"
+                           Foreground="{DynamicResource Theme.Text.Secondary}"
                            FontSize="16" FontWeight="Bold" />
                 <TextBlock Grid.Column="1" Name="tbPacketsSent"
                            Text="{Binding Path=PacketsSent, StringFormat='#,0'}"
-                           Foreground="#859900"
+                           Foreground="{DynamicResource Theme.Info}"
                            FontSize="22" />
             </Grid>
 
@@ -181,11 +117,11 @@
                 <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsReceived}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
-                           Foreground="#93a1a1"
+                           Foreground="{DynamicResource Theme.Text.Secondary}"
                            FontSize="16" FontWeight="Bold" />
                 <TextBlock Grid.Column="1" Name="tbPacketsReceived"
                            Text="{Binding Path=PacketsReceived, StringFormat='#,0'}"
-                           Foreground="#6c71c4"
+                           Foreground="{DynamicResource Theme.Success}"
                            FontSize="22" />
             </Grid>
 
@@ -197,11 +133,11 @@
                 <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsLost}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
-                           Foreground="#93a1a1"
+                           Foreground="{DynamicResource Theme.Text.Secondary}"
                            FontSize="16" FontWeight="Bold" />
                 <TextBlock Grid.Column="1" Name="tbPacketsLost"
                            Text="{Binding Path=PacketsLost, StringFormat='#,0'}"
-                           Foreground="#dc322f"
+                           Foreground="{DynamicResource Theme.Danger}"
                            FontSize="22" />
             </Grid>
         </Grid>
@@ -209,7 +145,7 @@
         <TextBlock Grid.Row="2" Text="{x:Static resource:Strings.FloodHost_InProgress}"
                    Name="tbStatus"
                    Margin="0,7" HorizontalAlignment="Center"
-                   Foreground="#657b83"
+                   Foreground="{DynamicResource Theme.Text.Secondary}"
                    FontSize="13"
                    Visibility="{Binding IsActive, Converter={StaticResource BooleanToHiddenVisibilityConverter}}">
             <TextBlock.Style>
@@ -239,16 +175,17 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        
+
         <Label Grid.Row="1" Grid.RowSpan="2"
                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                Name="lblInformation"
-               Foreground="#657b83" Background="#002b36"
+               Foreground="{DynamicResource Theme.Text.Secondary}"
+               Background="{DynamicResource Theme.Background}"
                Padding="40,0"
                FontSize="14">
             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="{x:Static resource:Strings.FloodHost_Description}"/>
         </Label>
-        
+
     </Grid>
     </DockPanel>
     </Border>
