@@ -1,33 +1,242 @@
 <Window x:Class="MultiPingMonitor.UI.TracerouteWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:classes="clr-namespace:MultiPingMonitor.Classes"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        UseLayoutRounding="True"
         Title="{x:Static resource:Strings.Traceroute_Title}"
-        Height="500"
-        Width="700"
+        Height="460"
+        Width="680"
         MinHeight="300"
-        MinWidth="500"
-        WindowStartupLocation="CenterOwner">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        MinWidth="350"
+        WindowStartupLocation="Manual"
+        Background="{DynamicResource Theme.Background}">
 
-        <TextBlock Grid.Row="0" Text="{x:Static resource:Strings.Traceroute_Header}" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+    <Window.Resources>
+        <classes:BoolToStringConverter x:Key="TracerouteTraceStopConverter"
+            FalseValue="{x:Static resource:Strings.Traceroute_Trace}"
+            TrueValue="{x:Static resource:Strings.Traceroute_Stop}"/>
+    </Window.Resources>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="{x:Static resource:Strings.Traceroute_Host}" VerticalAlignment="Center" Width="50"/>
-            <TextBox x:Name="HostTextBox" Width="300" Margin="5,0"/>
-            <Button Content="{x:Static resource:Strings.Traceroute_Trace}" Click="TraceButton_Click" Padding="8,4"/>
-            <Button Content="{x:Static resource:Strings.Traceroute_Stop}" Click="StopButton_Click" Padding="8,4" Margin="5,0,0,0"/>
-        </StackPanel>
+    <DockPanel LastChildFill="True" Margin="15">
+        <!-- Header -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="{x:Static resource:Strings.Traceroute_Header}"
+                   Foreground="{DynamicResource Theme.Text.Primary}"
+                   Style="{StaticResource ResourceKey=OptionHeaderTextStyle}"
+                   Margin="0,5,0,10"/>
 
-        <ListBox x:Name="ResultsListBox" Grid.Row="2" FontFamily="Consolas" FontSize="12"/>
+        <!-- Hostname + Trace/Stop button -->
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="3" Content="{x:Static resource:Strings.Traceroute_Close}" Click="CloseButton_Click"
-                HorizontalAlignment="Right" Padding="12,4" Margin="0,10,0,0"/>
-    </Grid>
+            <Grid>
+                <TextBox x:Name="Hostname"
+                         FontSize="16"
+                         FontFamily="Consolas"
+                         Padding="6,4"
+                         VerticalContentAlignment="Center"
+                         IsEnabled="{Binding IsActive, Converter={StaticResource InverseBooleanConverter}}"/>
+                <TextBlock x:Name="PlaceholderText"
+                           Text="{x:Static resource:Strings.Traceroute_Placeholder}"
+                           IsHitTestVisible="False"
+                           Opacity="0.4"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=Hostname}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+
+            <Button x:Name="TraceButton"
+                    Click="Trace_Click"
+                    Grid.Column="1"
+                    IsDefault="True"
+                    Margin="10,0,0,0"
+                    Padding="8,6"
+                    MinWidth="100"
+                    Style="{StaticResource ButtonStyle}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding IsActive, Converter={StaticResource BooleanToImageConverter}}"
+                           Width="16" Height="16" Margin="0,0,6,0"/>
+                    <TextBlock Text="{Binding IsActive, Converter={StaticResource TracerouteTraceStopConverter}}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Status bar (bottom) -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{DynamicResource Theme.SurfaceAlt}"
+                BorderBrush="{DynamicResource Theme.Border}"
+                BorderThickness="1"
+                Margin="0,10,0,0"
+                Padding="9,4"
+                UseLayoutRounding="True"
+                SnapsToDevicePixels="True">
+            <TextBlock x:Name="TraceStatus"
+                       Text=""
+                       Visibility="Collapsed"
+                       Foreground="{DynamicResource Theme.Warning}"
+                       VerticalAlignment="Center"
+                       FontSize="14"
+                       FontWeight="SemiBold">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                                             From="1" To=".2"
+                                                             BeginTime="0:0:0.0"
+                                                             Duration="0:0:0.4"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                                             From="1" To="1" Duration="0:0:0.0" FillBehavior="HoldEnd"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Border>
+
+        <!-- Trace result DataGrid -->
+        <DataGrid x:Name="TraceData"
+                  DockPanel.Dock="Top"
+                  Margin="0,15,0,0"
+                  Padding="0"
+                  CanUserSortColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False"
+                  SelectionMode="Single"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="{DynamicResource Theme.Border}"
+                  ColumnWidth="SizeToCells"
+                  BorderBrush="{DynamicResource Theme.Border}"
+                  BorderThickness="1"
+                  FontSize="15"
+                  FontFamily="Consolas"
+                  Background="{DynamicResource Theme.Surface}"
+                  Foreground="{DynamicResource Theme.Text.Primary}"
+                  RowBackground="{DynamicResource Theme.Surface}"
+                  AlternatingRowBackground="{DynamicResource Theme.SurfaceAlt}"
+                  Style="{StaticResource DataGridStyle}">
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+
+                <!-- Hop number -->
+                <DataGridTextColumn Binding="{Binding HopId}"
+                                    Header="{x:Static resource:Strings.Traceroute_ColumnHop}"
+                                    Width="60" MinWidth="40">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="10,2,20,2"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- IP address -->
+                <DataGridTextColumn Binding="{Binding HostAddress}"
+                                    Header="{x:Static resource:Strings.Traceroute_ColumnAddress}"
+                                    Width="Auto" MinWidth="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="5,2,25,2"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Success}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ReplyStatus}" Value="TimedOut">
+                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding HostAddress}" Value="0.0.0.0">
+                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Hostname (reverse DNS) -->
+                <DataGridTextColumn Binding="{Binding HostName}"
+                                    Header="{x:Static resource:Strings.Traceroute_ColumnHostname}"
+                                    Width="Auto" MinWidth="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="5,2,25,2"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Round trip time -->
+                <DataGridTextColumn Binding="{Binding RoundTripTime, StringFormat=[{0} ms]}"
+                                    Header="{x:Static resource:Strings.Traceroute_ColumnRTT}"
+                                    Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Info}"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="5,2"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ReplyStatus}" Value="TimedOut">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding HostAddress}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
 </Window>

@@ -1968,7 +1968,7 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Traceroute.
+        ///   Looks up a localized string similar to Trace Route to Destination.
         /// </summary>
         public static string Traceroute_Header {
             get {
@@ -2009,6 +2009,96 @@ namespace MultiPingMonitor.Properties {
         public static string Traceroute_Trace {
             get {
                 return ResourceManager.GetString("Traceroute_Trace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace cancelled.
+        /// </summary>
+        public static string Traceroute_TraceCancelled {
+            get {
+                return ResourceManager.GetString("Traceroute_TraceCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace complete.
+        /// </summary>
+        public static string Traceroute_TraceComplete {
+            get {
+                return ResourceManager.GetString("Traceroute_TraceComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tracing route....
+        /// </summary>
+        public static string Traceroute_TracingRoute {
+            get {
+                return ResourceManager.GetString("Traceroute_TracingRoute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid hostname.
+        /// </summary>
+        public static string Traceroute_InvalidHostname {
+            get {
+                return ResourceManager.GetString("Traceroute_InvalidHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timed out.
+        /// </summary>
+        public static string Traceroute_TimedOut {
+            get {
+                return ResourceManager.GetString("Traceroute_TimedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hop.
+        /// </summary>
+        public static string Traceroute_ColumnHop {
+            get {
+                return ResourceManager.GetString("Traceroute_ColumnHop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IP Address.
+        /// </summary>
+        public static string Traceroute_ColumnAddress {
+            get {
+                return ResourceManager.GetString("Traceroute_ColumnAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hostname.
+        /// </summary>
+        public static string Traceroute_ColumnHostname {
+            get {
+                return ResourceManager.GetString("Traceroute_ColumnHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RTT.
+        /// </summary>
+        public static string Traceroute_ColumnRTT {
+            get {
+                return ResourceManager.GetString("Traceroute_ColumnRTT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter target address.
+        /// </summary>
+        public static string Traceroute_Placeholder {
+            get {
+                return ResourceManager.GetString("Traceroute_Placeholder", resourceCulture);
             }
         }
         
