@@ -330,11 +330,5 @@ namespace MultiPingMonitor.UI
         private void Window_Closed(object sender, EventArgs e)
         {
         }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                DragMove();
-        }
     }
 }

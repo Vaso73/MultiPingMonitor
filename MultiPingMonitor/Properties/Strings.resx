@@ -305,6 +305,45 @@
     <value>already exists.  Would you like to overwrite?</value>
     <comment>Parsed as:  {Title} already exists.  Would you like to overwrite?</comment>
   </data>
+  <data name="NewFavorite_WindowTitle" xml:space="preserve">
+    <value>New Favorite</value>
+  </data>
+  <data name="NewFavorite_EditWindowTitle" xml:space="preserve">
+    <value>Edit Favorite</value>
+  </data>
+  <data name="NewFavorite_EditHeader" xml:space="preserve">
+    <value>Edit an existing favorite</value>
+  </data>
+  <data name="NewFavorite_Columns" xml:space="preserve">
+    <value>Columns</value>
+  </data>
+  <data name="NewFavorite_HostsHeader" xml:space="preserve">
+    <value>Hosts to include in favorite set</value>
+  </data>
+  <data name="EditAlias_WindowTitle" xml:space="preserve">
+    <value>Edit Alias</value>
+  </data>
+  <data name="EditAlias_Header" xml:space="preserve">
+    <value>Enter an alias for </value>
+  </data>
+  <data name="NewAlias_WindowTitle" xml:space="preserve">
+    <value>New Alias</value>
+  </data>
+  <data name="NewConfiguration_WindowTitle" xml:space="preserve">
+    <value>New Configuration</value>
+  </data>
+  <data name="NewConfiguration_Description" xml:space="preserve">
+    <value>To save your settings, a new configuration file is needed.</value>
+  </data>
+  <data name="NewConfiguration_PathDescription" xml:space="preserve">
+    <value>The configuration file will be created alongside the application:</value>
+  </data>
+  <data name="MultiInput_WindowTitle" xml:space="preserve">
+    <value>Input Addresses</value>
+  </data>
+  <data name="MultiInput_Header" xml:space="preserve">
+    <value>Enter addresses to ping</value>
+  </data>
   <data name="Notification_Always" xml:space="preserve">
     <value>Always</value>
   </data>

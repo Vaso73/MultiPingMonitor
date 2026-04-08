@@ -25,12 +25,12 @@
             <Setter Property="FontWeight" Value="Regular"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="#505050"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="OptionSubHeaderTextStyle">
             <Setter Property="Margin" Value="0,0,0,4"/>
-            <Setter Property="Foreground" Value="#268bd2"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
@@ -104,7 +104,7 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Alert threshold -->
                     <StackPanel DockPanel.Dock="Top"
@@ -121,7 +121,7 @@
                     </StackPanel>
 
                     <!-- Latency detection separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Latency detection header -->
                     <TextBlock DockPanel.Dock="Top"
@@ -273,7 +273,7 @@
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Packet size -->
                     <StackPanel DockPanel.Dock="Top"
@@ -330,7 +330,7 @@
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Fragment / Don't fragment -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
@@ -771,7 +771,7 @@
                                Text="{x:Static resource:Strings.Options_LanguageRestart}"
                                Foreground="#888" FontSize="12" Margin="122,3,0,0"/>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Font Sizes -->
                     <TextBlock DockPanel.Dock="Top"
@@ -994,7 +994,7 @@
 
 
         <!-- Button Section -->
-        <Border Grid.Row="1" BorderBrush="#dfdfdf" Background="#f0f0f0" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" BorderBrush="{DynamicResource Theme.Border}" Background="{DynamicResource Theme.Surface}" BorderThickness="0,1,0,0">
             <DockPanel Margin="9" HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
                     <Button Style="{StaticResource ButtonStandardStyle}"

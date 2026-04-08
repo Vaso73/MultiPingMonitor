@@ -7,10 +7,10 @@
         <Setter Property="Margin" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="#FFACACAC"/>
+        <Setter Property="Background" Value="{DynamicResource Theme.Background}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="{StaticResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabControl}">
@@ -50,12 +50,12 @@
     </Style>
 
     <SolidColorBrush x:Key="TabItem.Static.Background" Color="Transparent"/>
-    <SolidColorBrush x:Key="TabItem.Static.Foreground" Color="#444"/>
-    <SolidColorBrush x:Key="TabItem.MouseOver.Background" Color="#faf9f8"/>
-    <SolidColorBrush x:Key="TabItem.MouseOver.Foreground" Color="Black"/>
-    <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#007acc"/>
+    <SolidColorBrush x:Key="TabItem.Static.Foreground" Color="{DynamicResource Theme.Text.Secondary.Color}"/>
+    <SolidColorBrush x:Key="TabItem.MouseOver.Background" Color="{DynamicResource Theme.SurfaceAlt.Color}"/>
+    <SolidColorBrush x:Key="TabItem.MouseOver.Foreground" Color="{DynamicResource Theme.Text.Primary.Color}"/>
+    <SolidColorBrush x:Key="TabItem.Selected.Border" Color="{DynamicResource Theme.Accent.Color}"/>
     <SolidColorBrush x:Key="TabItem.Selected.Background" Color="Transparent"/>
-    <SolidColorBrush x:Key="TabItem.Selected.Foreground" Color="Black"/>
+    <SolidColorBrush x:Key="TabItem.Selected.Foreground" Color="{DynamicResource Theme.Text.Primary.Color}"/>
 
     <!-- TabItem style -->
     <DataTemplate x:Key="TabHeader">

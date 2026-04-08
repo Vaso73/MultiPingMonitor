@@ -16,5 +16,10 @@ namespace MultiPingMonitor.UI
         {
             DialogResult = true;
         }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

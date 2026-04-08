@@ -195,6 +195,45 @@
   <data name="NewFavorite_Warn_AlreadyExists" xml:space="preserve">
     <value>už existuje. Chcete ho prepísať?</value>
   </data>
+  <data name="NewFavorite_WindowTitle" xml:space="preserve">
+    <value>Nová obľúbená</value>
+  </data>
+  <data name="NewFavorite_EditWindowTitle" xml:space="preserve">
+    <value>Upraviť obľúbenú</value>
+  </data>
+  <data name="NewFavorite_EditHeader" xml:space="preserve">
+    <value>Upraviť existujúcu obľúbenú</value>
+  </data>
+  <data name="NewFavorite_Columns" xml:space="preserve">
+    <value>Stĺpce</value>
+  </data>
+  <data name="NewFavorite_HostsHeader" xml:space="preserve">
+    <value>Hostitelia na zahrnutie do obľúbenej sady</value>
+  </data>
+  <data name="EditAlias_WindowTitle" xml:space="preserve">
+    <value>Upraviť alias</value>
+  </data>
+  <data name="EditAlias_Header" xml:space="preserve">
+    <value>Zadajte alias pre </value>
+  </data>
+  <data name="NewAlias_WindowTitle" xml:space="preserve">
+    <value>Nový alias</value>
+  </data>
+  <data name="NewConfiguration_WindowTitle" xml:space="preserve">
+    <value>Nová konfigurácia</value>
+  </data>
+  <data name="NewConfiguration_Description" xml:space="preserve">
+    <value>Na uloženie nastavení je potrebný nový konfiguračný súbor.</value>
+  </data>
+  <data name="NewConfiguration_PathDescription" xml:space="preserve">
+    <value>Konfiguračný súbor bude vytvorený vedľa aplikácie:</value>
+  </data>
+  <data name="MultiInput_WindowTitle" xml:space="preserve">
+    <value>Zadať adresy</value>
+  </data>
+  <data name="MultiInput_Header" xml:space="preserve">
+    <value>Zadajte adresy na ping</value>
+  </data>
   <data name="Notification_Always" xml:space="preserve">
     <value>Vždy</value>
   </data>

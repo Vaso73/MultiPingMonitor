@@ -610,6 +610,123 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Favorite.
+        /// </summary>
+        public static string NewFavorite_WindowTitle {
+            get {
+                return ResourceManager.GetString("NewFavorite_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Favorite.
+        /// </summary>
+        public static string NewFavorite_EditWindowTitle {
+            get {
+                return ResourceManager.GetString("NewFavorite_EditWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit an existing favorite.
+        /// </summary>
+        public static string NewFavorite_EditHeader {
+            get {
+                return ResourceManager.GetString("NewFavorite_EditHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string NewFavorite_Columns {
+            get {
+                return ResourceManager.GetString("NewFavorite_Columns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hosts to include in favorite set.
+        /// </summary>
+        public static string NewFavorite_HostsHeader {
+            get {
+                return ResourceManager.GetString("NewFavorite_HostsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Alias.
+        /// </summary>
+        public static string EditAlias_WindowTitle {
+            get {
+                return ResourceManager.GetString("EditAlias_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter an alias for .
+        /// </summary>
+        public static string EditAlias_Header {
+            get {
+                return ResourceManager.GetString("EditAlias_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Alias.
+        /// </summary>
+        public static string NewAlias_WindowTitle {
+            get {
+                return ResourceManager.GetString("NewAlias_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Configuration.
+        /// </summary>
+        public static string NewConfiguration_WindowTitle {
+            get {
+                return ResourceManager.GetString("NewConfiguration_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To save your settings, a new configuration file is needed..
+        /// </summary>
+        public static string NewConfiguration_Description {
+            get {
+                return ResourceManager.GetString("NewConfiguration_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The configuration file will be created alongside the application:.
+        /// </summary>
+        public static string NewConfiguration_PathDescription {
+            get {
+                return ResourceManager.GetString("NewConfiguration_PathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Addresses.
+        /// </summary>
+        public static string MultiInput_WindowTitle {
+            get {
+                return ResourceManager.GetString("MultiInput_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter addresses to ping.
+        /// </summary>
+        public static string MultiInput_Header {
+            get {
+                return ResourceManager.GetString("MultiInput_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Always.
         /// </summary>
         public static string Notification_Always {

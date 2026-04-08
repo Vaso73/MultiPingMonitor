@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         mc:Ignorable="d"
-        Title="Input Addresses"
+        Title="{x:Static resource:Strings.MultiInput_WindowTitle}"
         UseLayoutRounding="True"
         WindowStyle="None"
         Height="450" MinHeight="250"
@@ -98,7 +99,7 @@
         <DockPanel LastChildFill="False">
             <Image DockPanel.Dock="Left" Source="{StaticResource icon.input-addresses}" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,8,0"/>
             <TextBlock DockPanel.Dock="Left"
-                       Text="Enter addresses to ping"
+                       Text="{x:Static resource:Strings.MultiInput_Header}"
                        Style="{StaticResource OptionHeaderTextStyle}" />
             <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}" MaxWidth="250">
                 <TextBlock>

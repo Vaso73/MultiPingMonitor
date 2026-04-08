@@ -5,15 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         mc:Ignorable="d"
-        Title="Edit Alias"
+        Title="{x:Static resource:Strings.EditAlias_WindowTitle}"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Height="Auto"
         Width="400"
         ResizeMode="NoResize"
-        Background="#f0f0f0"
+        Background="{DynamicResource Theme.Background}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="0"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.edit}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
 
     <Grid>
         <Grid.RowDefinitions>
@@ -33,7 +64,7 @@
                        Height="20"
                        Margin="0,0,8,0"/>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Enter an alias for "
+                    <TextBlock Text="{x:Static resource:Strings.EditAlias_Header}"
                                Style="{StaticResource ResourceKey=OptionHeaderTextStyle}"/>
                     <TextBlock x:Name="Hostname"
                                d:Text="hostname"
@@ -66,4 +97,6 @@
                     Content="{x:Static resource:Strings.DialogButton_Cancel}" />
         </StackPanel>
     </Grid>
+    </DockPanel>
+    </Border>
 </Window>
