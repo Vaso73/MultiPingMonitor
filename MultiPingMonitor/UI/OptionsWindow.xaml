@@ -5,9 +5,9 @@
         Title="{x:Static resource:Strings.Options_Title}"
         UseLayoutRounding="True"
         Height="540"
-        Width="580"
+        Width="640"
         MinHeight="500"
-        MinWidth="580"
+        MinWidth="640"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Background="#e1e1e1"
@@ -48,7 +48,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_PingInterval}"
-                                   Width="110"/>
+                                   Width="200"/>
                         <TextBox Name="PingInterval"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -65,7 +65,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_PingTimeout}"
-                                   Width="110"/>
+                                   Width="200"/>
                         <TextBox Name="PingTimeout"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -81,7 +81,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_AlertThreshold}"
-                                   Width="130"/>
+                                   Width="155"/>
                         <TextBox Name="AlertThreshold"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -103,7 +103,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_DetectionMode}"
-                                   Width="130"/>
+                                   Width="155"/>
                         <ComboBox Name="LatencyDetectionMode" Width="80">
                             <ComboBoxItem Content="{x:Static resource:Strings.Options_Off}"/>
                             <ComboBoxItem Content="{x:Static resource:Strings.Options_Auto}"/>
@@ -116,7 +116,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_HighLatency}"
-                                   Width="130"/>
+                                   Width="155"/>
                         <TextBox Name="HighLatencyMilliseconds"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -130,7 +130,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_LatencyTriggers}"
-                                   Width="130"/>
+                                   Width="155"/>
                         <TextBox Name="HighLatencyTriggerCount"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -233,7 +233,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_TTL}"
-                                   Width="110"/>
+                                   Width="135"/>
                         <TextBox Name="TTL"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="80"
@@ -413,7 +413,7 @@
 
                             <!-- SMTP Server-->
                             <DockPanel>
-                                <Grid Width="120">
+                                <Grid Width="165">
                                     <TextBlock Text="{x:Static resource:Strings.Options_SmtpServer}"/>
                                 </Grid>
                                 <TextBox Name="SmtpServer"/>
@@ -421,7 +421,7 @@
 
                             <!-- Smtp Port -->
                             <DockPanel>
-                                <Grid Width="120">
+                                <Grid Width="165">
                                     <TextBlock Text="{x:Static resource:Strings.Options_Port}"/>
                                 </Grid>
                                 <TextBox Name="SmtpPort"
@@ -443,12 +443,12 @@
                                       Click="IsSmtpAuthenticationRequired_Click"
                                       Foreground="#888"
                                       FontSize="13"
-                                      Margin="120,8,0,0"/>
+                                      Margin="165,8,0,0"/>
                             <StackPanel DockPanel.Dock="Top"
                                         Visibility="{Binding IsChecked, ElementName=IsSmtpAuthenticationRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <!-- Smtp User -->
                                 <DockPanel>
-                                    <Grid Width="120">
+                                    <Grid Width="165">
                                         <TextBlock Text="{x:Static resource:Strings.Options_Username}"/>
                                     </Grid>
                                     <TextBox Name="SmtpUsername"/>
@@ -456,7 +456,7 @@
 
                                 <!-- Smtp Password -->
                                 <DockPanel>
-                                    <Grid Width="120">
+                                    <Grid Width="165">
                                         <TextBlock Text="{x:Static resource:Strings.Options_Password}"/>
                                     </Grid>
                                     <PasswordBox Name="SmtpPassword"/>
@@ -471,7 +471,7 @@
 
                             <!-- Recipient Address-->
                             <DockPanel>
-                                <Grid Width="120">
+                                <Grid Width="165">
                                     <TextBlock Text="{x:Static resource:Strings.Options_RecipientAddress}"/>
                                 </Grid>
                                 <TextBox Name="EmailRecipientAddress"
@@ -480,7 +480,7 @@
 
                             <!-- From Address-->
                             <DockPanel>
-                                <Grid Width="120">
+                                <Grid Width="165">
                                     <TextBlock Text="{x:Static resource:Strings.Options_FromAddress}"/>
                                 </Grid>
                                 <TextBox Name="EmailFromAddress"/>
@@ -743,7 +743,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_ProbeFontSize}"
-                                   Width="120"/>
+                                   Width="200"/>
                         <TextBox Name="FontSizeProbe"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -753,7 +753,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_ScannerFontSize}"
-                                   Width="120"/>
+                                   Width="200"/>
                         <TextBox Name="FontSizeScanner"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
@@ -792,7 +792,7 @@
 
                         <!-- Probe background colors -->
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Probe Background"
+                                   Text="{x:Static resource:Strings.Options_Header_ProbeBackground}"
                                    Margin="0,10,0,0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
@@ -824,7 +824,7 @@
                         <!-- Probe foreground colors -->
                         <Separator DockPanel.Dock="Top" Height="1" Width="20" Background="Transparent" Margin="0,20,0,0"/>
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Probe Foreground"
+                                   Text="{x:Static resource:Strings.Options_Header_ProbeForeground}"
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
@@ -856,7 +856,7 @@
                         <!-- Statistics foreground colors -->
                         <Separator DockPanel.Dock="Top" Height="1" Width="20" Background="Transparent" Margin="0,20,0,0"/>
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Statistics Foreground"
+                                   Text="{x:Static resource:Strings.Options_Header_StatsForeground}"
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
@@ -888,7 +888,7 @@
                         <!-- Alias foreground colors -->
                         <Separator DockPanel.Dock="Top" Height="1" Width="20" Background="Transparent" Margin="0,20,0,0"/>
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Alias Foreground"
+                                   Text="{x:Static resource:Strings.Options_Header_AliasForeground}"
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
@@ -920,7 +920,7 @@
                         <!-- Scanner colors -->
                         <Separator DockPanel.Dock="Top" Height="1" Width="20" Background="Transparent" Margin="0,20,0,0"/>
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Scanner"
+                                   Text="{x:Static resource:Strings.Options_Header_Scanner}"
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
