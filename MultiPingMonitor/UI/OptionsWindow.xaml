@@ -1,6 +1,7 @@
 ﻿<Window x:Class="MultiPingMonitor.UI.OptionsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="Options"
         UseLayoutRounding="True"
         Height="540"
@@ -37,25 +38,25 @@
 
         <TabControl TabStripPlacement="Left" HorizontalContentAlignment="Left">
             <!-- Tab: General -->
-            <TabItem Header="General" Name="GeneralTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_General}" Name="GeneralTab">
                 <DockPanel Margin="20,0" LastChildFill="False">
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Probe Options"
+                               Text="{x:Static resource:Strings.Options_Header_ProbeOptions}"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
                     <!-- Ping interval -->
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ping interval:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_PingInterval}"
                                    Width="110"/>
                         <TextBox Name="PingInterval"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="5"/>
                         <ComboBox Name="PingIntervalUnits" Width="100" Margin="10,0,0,0">
-                            <ComboBoxItem Content="seconds" IsSelected="True"/>
-                            <ComboBoxItem Content="minutes"/>
-                            <ComboBoxItem Content="hours"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Seconds}" IsSelected="True"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Minutes}"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Hours}"/>
                         </ComboBox>
                     </StackPanel>
 
@@ -63,13 +64,13 @@
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Ping timeout:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_PingTimeout}"
                                    Width="110"/>
                         <TextBox Name="PingTimeout"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="2"/>
-                        <TextBlock Text="seconds"
+                        <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
@@ -79,13 +80,13 @@
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Alert threshold:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_AlertThreshold}"
                                    Width="130"/>
                         <TextBox Name="AlertThreshold"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="2"/>
-                        <TextBlock Text="dropped pings"
+                        <TextBlock Text="{x:Static resource:Strings.Options_DroppedPings}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
@@ -94,19 +95,19 @@
 
                     <!-- Latency detection header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Latency Detection"
+                               Text="{x:Static resource:Strings.Options_Header_LatencyDetection}"
                                Style="{StaticResource OptionSubHeaderTextStyle}"/>
 
                     <!-- Latency detection mode -->
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
-                        <TextBlock Text="Detection mode:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_DetectionMode}"
                                    Width="130"/>
                         <ComboBox Name="LatencyDetectionMode" Width="80">
-                            <ComboBoxItem Content="Off"/>
-                            <ComboBoxItem Content="Auto"/>
-                            <ComboBoxItem Content="Fixed"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Off}"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Auto}"/>
+                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Fixed}"/>
                         </ComboBox>
                     </StackPanel>
 
@@ -114,13 +115,13 @@
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
-                        <TextBlock Text="High latency:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_HighLatency}"
                                    Width="130"/>
                         <TextBox Name="HighLatencyMilliseconds"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="6"/>
-                        <TextBlock Text="ms"
+                        <TextBlock Text="{x:Static resource:Strings.Options_Ms}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
@@ -128,31 +129,31 @@
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,8,0,0">
-                        <TextBlock Text="Latency triggers:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_LatencyTriggers}"
                                    Width="130"/>
                         <TextBox Name="HighLatencyTriggerCount"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="3"/>
-                        <TextBlock Text="probes"
+                        <TextBlock Text="{x:Static resource:Strings.Options_Probes}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
                     <!-- Startup header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Startup"
+                               Text="{x:Static resource:Strings.Options_Header_Startup}"
                                Margin="0,25,0,10"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Choose how MultiPingMonitor should start:"
+                               Text="{x:Static resource:Strings.Options_StartupPrompt}"
                                Margin="0,0,0,5"/>
                     <!-- Startup mode selection -->
                     <ComboBox DockPanel.Dock="Top"
                               Name="StartupMode"
                               Width="200">
-                        <ComboBoxItem Content="Blank (default)" Tag="Standard" IsSelected="True"/>
-                        <ComboBoxItem Content="List input window" Tag="Standard"/>
-                        <ComboBoxItem Content="Load a favorite" Tag="Favorite"/>
+                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupBlank}" Tag="Standard" IsSelected="True"/>
+                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupListInput}" Tag="Standard"/>
+                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupFavorite}" Tag="Favorite"/>
                     </ComboBox>
                     <!-- Initial probe / column count -->
                     <StackPanel DockPanel.Dock="Top"
@@ -171,7 +172,7 @@
                         </StackPanel.Style>
                         <!-- Probe count -->
                         <StackPanel Margin="0,0,30,0">
-                            <TextBlock Text="Probe count:"
+                            <TextBlock Text="{x:Static resource:Strings.Options_ProbeCount}"
                                        Margin="0,0,0,4"/>
                             <TextBox Name="InitialProbeCount"
                                      PreviewTextInput="NumericTextbox_PreviewTextInput"
@@ -181,7 +182,7 @@
                         </StackPanel>
                         <!-- Column count-->
                         <StackPanel>
-                            <TextBlock Text="Column count:"
+                            <TextBlock Text="{x:Static resource:Strings.Options_ColumnCount}"
                                        Margin="0,0,0,4"/>
                             <TextBox Name="InitialColumnCount"
                                      PreviewTextInput="NumericTextbox_PreviewTextInput"
@@ -207,7 +208,7 @@
                         </StackPanel.Style>
                         <!-- Favorite selection -->
                         <StackPanel Margin="0,0,35,0">
-                            <TextBlock Text="Select a favorite:"
+                            <TextBlock Text="{x:Static resource:Strings.Options_SelectFavorite}"
                                        Margin="0,0,0,4"/>
                             <ComboBox DockPanel.Dock="Top"
                                       Name="InitialFavorite"
@@ -219,25 +220,25 @@
             </TabItem>
 
             <!-- Tab: Advanced -->
-            <TabItem Header="Advanced" Name="AdvancedTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Advanced}" Name="AdvancedTab">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Advanced ICMP Options"
+                               Text="{x:Static resource:Strings.Options_Header_AdvancedICMP}"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
 
                     <!-- TTL -->
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Time to live:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_TTL}"
                                    Width="110"/>
                         <TextBox Name="TTL"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="80"
                                  MaxLength="3"/>
-                        <TextBlock Text="hops"
+                        <TextBlock Text="{x:Static resource:Strings.Options_Hops}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
@@ -249,7 +250,7 @@
                                 Orientation="Horizontal"
                                 Margin="0">
                         <RadioButton GroupName="IcmpData"
-                                     Content="Packet data size"
+                                     Content="{x:Static resource:Strings.Options_PacketDataSize}"
                                      Name="PacketSizeOption"
                                      Checked="PacketSizeOption_Checked"
                                      IsChecked="True"
@@ -268,7 +269,7 @@
                     <DockPanel DockPanel.Dock="Top"
                                 Margin="0,7,0,0">
                         <RadioButton GroupName="IcmpData"
-                                     Content="Custom packet data"
+                                     Content="{x:Static resource:Strings.Options_CustomPacketData}"
                                      Name="UseCustomPacketOption"
                                      Checked="UseCustomPacketOption_Checked"
                                      DockPanel.Dock="Left"
@@ -289,13 +290,13 @@
                     <!-- Total packet size -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,15,0,0">
                         <TextBlock Foreground="#0e70c0"
-                                   Text="Total packet size:"/>
+                                   Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
                         <TextBlock Foreground="#dc322f"
                                    Name="Bytes"
                                    Margin="6,0,4,0"
                                    Text="64"/>
                         <TextBlock Foreground="#dc322f"
-                                   Text="bytes"/>
+                                   Text="{x:Static resource:Strings.Options_Bytes}"/>
                     </StackPanel>
 
                     <!-- Separator -->
@@ -305,7 +306,7 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="DontFragment"
-                                  Content="Don't fragment"/>
+                                  Content="{x:Static resource:Strings.Options_DontFragment}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             <TextBlock>
                                 The don't fragment flag instructs routers to discard the packet if it is too big.
@@ -319,13 +320,13 @@
             </TabItem>
             
             <!-- Tab: Popup Alerts -->
-            <TabItem Header="Notifications" Name="PopupAlertsTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Notifications}" Name="PopupAlertsTab">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                         <TextBlock DockPanel.Dock="Left"
-                                   Text="Popup Alerts"
+                                   Text="{x:Static resource:Strings.Options_Header_PopupAlerts}"
                                    Style="{StaticResource OptionHeaderTextStyle}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             <TextBlock>
@@ -341,17 +342,17 @@
                     <!-- Popup notification option radio button group -->
                     <RadioButton DockPanel.Dock="Top"
                                  GroupName="PopupAlerts"
-                                 Content="Disabled"
+                                 Content="{x:Static resource:Strings.Options_Disabled}"
                                  Name="PopupsDisabledOption"
                                  Margin="0,15,0,0"/>
                     <RadioButton DockPanel.Dock="Top"
                                  GroupName="PopupAlerts"
-                                 Content="Show when minimized"
+                                 Content="{x:Static resource:Strings.Options_ShowWhenMinimized}"
                                  Name="PopupsMinimizedOption"
                                  Margin="0,6"/>
                     <RadioButton DockPanel.Dock="Top"
                                  GroupName="PopupAlerts"
-                                 Content="Always show"
+                                 Content="{x:Static resource:Strings.Options_AlwaysShow}"
                                  Name="PopupsAlwaysOption"
                                  IsChecked="True"/>
 
@@ -359,7 +360,7 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,20,0,5">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="IsAutoDismissEnabled"
-                                  Content="Auto-dismiss notifications"
+                                  Content="{x:Static resource:Strings.Options_AutoDismiss}"
                                   IsChecked="True"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             Automatically close popup alerts after the specified number of seconds.
@@ -375,26 +376,26 @@
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="2"/>
-                        <TextBlock Text="seconds"
+                        <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
                 </DockPanel>
             </TabItem>
 
             <!-- Tab: Email Alerts -->
-            <TabItem Header="Email" Name="EmailAlertsTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Email}" Name="EmailAlertsTab">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel Margin="20,0,20,15">
 
                         <!-- Header -->
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Email Alerts"
+                                   Text="{x:Static resource:Strings.Options_Header_EmailAlerts}"
                                    Style="{StaticResource OptionHeaderTextStyle}"/>
 
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,15">
                             <CheckBox DockPanel.Dock="Top"
                                       Name="IsEmailAlertsEnabled"
-                                      Content="Enable email alerts"
+                                      Content="{x:Static resource:Strings.Options_EnableEmailAlerts}"
                                       Click="IsEmailAlertsEnabled_Click"
                                       IsChecked="True"/>
                             <Label Style="{StaticResource LabelToolTip}">
@@ -419,13 +420,13 @@
 
                             <!-- Server information subheading -->
                             <TextBlock DockPanel.Dock="Top"
-                                       Text="Server Information"
+                                       Text="{x:Static resource:Strings.Options_Header_ServerInfo}"
                                        Style="{StaticResource OptionSubHeaderTextStyle}"/>
 
                             <!-- SMTP Server-->
                             <DockPanel>
                                 <Grid Width="120">
-                                    <TextBlock Text="SMTP server"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_SmtpServer}"/>
                                 </Grid>
                                 <TextBox Name="SmtpServer"/>
                             </DockPanel>
@@ -433,7 +434,7 @@
                             <!-- Smtp Port -->
                             <DockPanel>
                                 <Grid Width="120">
-                                    <TextBlock Text="Port"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_Port}"/>
                                 </Grid>
                                 <TextBox Name="SmtpPort"
                                          PreviewTextInput="NumericTextbox_PreviewTextInput"
@@ -441,7 +442,7 @@
                                          MaxLength="5"
                                          Width="75"/>
                                 <CheckBox Name="IsSmtpSslEnabled"
-                                          Content="Enable SSL/TLS"
+                                          Content="{x:Static resource:Strings.Options_EnableSSL}"
                                           FontSize="13"
                                           Margin="50,0,0,0"/>
                             </DockPanel>
@@ -450,7 +451,7 @@
                             <!-- Smtp Authentication -->
                             <CheckBox DockPanel.Dock="Top"
                                       Name="IsSmtpAuthenticationRequired"
-                                      Content="This server requires authentication"
+                                      Content="{x:Static resource:Strings.Options_SmtpAuth}"
                                       Click="IsSmtpAuthenticationRequired_Click"
                                       Foreground="#888"
                                       FontSize="13"
@@ -460,7 +461,7 @@
                                 <!-- Smtp User -->
                                 <DockPanel>
                                     <Grid Width="120">
-                                        <TextBlock Text="Username"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_Username}"/>
                                     </Grid>
                                     <TextBox Name="SmtpUsername"/>
                                 </DockPanel>
@@ -468,7 +469,7 @@
                                 <!-- Smtp Password -->
                                 <DockPanel>
                                     <Grid Width="120">
-                                        <TextBlock Text="Password"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_Password}"/>
                                     </Grid>
                                     <PasswordBox Name="SmtpPassword"/>
                                 </DockPanel>
@@ -476,14 +477,14 @@
 
                             <!-- Email addresses subheading -->
                             <TextBlock DockPanel.Dock="Top"
-                                       Text="Email Addresses"
+                                       Text="{x:Static resource:Strings.Options_Header_EmailAddresses}"
                                        Margin="0,12,0,5"
                                        Style="{StaticResource OptionSubHeaderTextStyle}"/>
 
                             <!-- Recipient Address-->
                             <DockPanel>
                                 <Grid Width="120">
-                                    <TextBlock Text="Recipient address"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_RecipientAddress}"/>
                                 </Grid>
                                 <TextBox Name="EmailRecipientAddress"
                                          LostFocus="EmailRecipientAddress_LostFocus"/>
@@ -492,7 +493,7 @@
                             <!-- From Address-->
                             <DockPanel>
                                 <Grid Width="120">
-                                    <TextBlock Text="From address"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_FromAddress}"/>
                                 </Grid>
                                 <TextBox Name="EmailFromAddress"/>
                             </DockPanel>
@@ -513,19 +514,19 @@
             </TabItem>
 
             <!-- Tab: Audio Alerts -->
-            <TabItem Header="Sounds" Name="AudioAlertTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Sounds}" Name="AudioAlertTab">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Audio Alerts"
+                               Text="{x:Static resource:Strings.Options_Header_AudioAlerts}"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
 
                     <!-- Audio Alert Down: checkbox / tooltip -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
                         <CheckBox Name="IsAudioDownAlertEnabled"
                                   Click="IsAudioDownAlertEnabled_Click"
-                                  Content="Enable audio alert: host down"
+                                  Content="{x:Static resource:Strings.Options_EnableAudioDown}"
                                   IsChecked="True"/>
                         <Label Style="{StaticResource LabelToolTip}">
                             Enable this option to play a sound when a host goes down.
@@ -538,7 +539,7 @@
                           VerticalAlignment="Top"
                           Visibility="{Binding IsChecked, ElementName=IsAudioDownAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
-                            <TextBlock Text="Audio file path"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
                             <TextBox Name="AudioDownFilePath"
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -546,7 +547,7 @@
                                 <Button Style="{StaticResource ButtonStandardStyle}"
                                         Click="AudioDownBrowse_Click"
                                         Width="85"
-                                        Content="Browse..."/>
+                                        Content="{x:Static resource:Strings.Options_Browse}"/>
                                 <!-- Play button -->
                                 <Grid>
                                     <Grid.Style>
@@ -562,7 +563,7 @@
                                             Click="AudioDownPlay_Click"
                                             Width="85"
                                             Margin="10,0,0,0"
-                                            Content="Test">
+                                            Content="{x:Static resource:Strings.Options_Test}">
                                     </Button>
                                 </Grid>
                             </StackPanel>
@@ -577,7 +578,7 @@
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
                         <CheckBox Name="IsAudioUpAlertEnabled"
                                   Click="IsAudioUpAlertEnabled_Click"
-                                  Content="Enable audio alert: host up"
+                                  Content="{x:Static resource:Strings.Options_EnableAudioUp}"
                                   IsChecked="True"/>
                         <Label Style="{StaticResource LabelToolTip}">
                             Enable this option to play a sound when a host comes up.
@@ -590,7 +591,7 @@
                           VerticalAlignment="Top"
                           Visibility="{Binding IsChecked, ElementName=IsAudioUpAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
-                            <TextBlock Text="Audio file path"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
                             <TextBox Name="AudioUpFilePath"
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
@@ -598,7 +599,7 @@
                                 <Button Style="{StaticResource ButtonStandardStyle}"
                                         Click="AudioUpBrowse_Click"
                                         Width="85"
-                                        Content="Browse..."/>
+                                        Content="{x:Static resource:Strings.Options_Browse}"/>
                                 <!-- Play button -->
                                 <Grid>
                                     <Grid.Style>
@@ -614,7 +615,7 @@
                                             Click="AudioUpPlay_Click"
                                             Width="85"
                                             Margin="10,0,0,0"
-                                            Content="Test">
+                                            Content="{x:Static resource:Strings.Options_Test}">
                                     </Button>
                                 </Grid>
                             </StackPanel>
@@ -624,18 +625,18 @@
             </TabItem>
 
             <!-- Tab: Logging -->
-            <TabItem Header="Logging" Name="LogOutputTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Logging}" Name="LogOutputTab">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Log Output"
+                               Text="{x:Static resource:Strings.Options_Header_LogOutput}"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
 
                     <!-- Log all ping output -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
                         <CheckBox Name="IsLogOutputEnabled"
-                                  Content="Write ping output to plain text files"
+                                  Content="{x:Static resource:Strings.Options_WritePingOutput}"
                                   IsChecked="True"/>
                         <Label Style="{StaticResource LabelToolTip}">
                             If this option is enabled, all ping output is written to a text file.
@@ -647,13 +648,13 @@
                           VerticalAlignment="Top"
                           Visibility="{Binding IsChecked, ElementName=IsLogOutputEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
-                            <TextBlock Text="Log path (base directory)"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_LogPath}"/>
                             <TextBox Name="LogPath"
                                      Margin="0,4,0,8"/>
                             <Button Style="{StaticResource ButtonStandardStyle}"
                                     Click="BrowseLogPath_Click"
                                     Width="85"
-                                    Content="Browse..."
+                                    Content="{x:Static resource:Strings.Options_Browse}"
                                     HorizontalAlignment="Left"/>
                         </StackPanel>
                     </Grid>
@@ -665,7 +666,7 @@
                     <!-- Log status changes -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
                         <CheckBox Name="IsLogStatusChangesEnabled"
-                                  Content="Log status changes to text file"
+                                  Content="{x:Static resource:Strings.Options_LogStatusChanges}"
                                   IsChecked="True"/>
                         <Label Style="{StaticResource LabelToolTip}">
                             When enabled, this option writes all status changes to a text file.
@@ -678,13 +679,13 @@
                           VerticalAlignment="Top"
                           Visibility="{Binding IsChecked, ElementName=IsLogStatusChangesEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <StackPanel>
-                            <TextBlock Text="Log path"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_LogPathSimple}"/>
                             <TextBox Name="LogStatusChangesPath"
                                      Margin="0,4,0,8"/>
                             <Button Style="{StaticResource ButtonStandardStyle}"
                                     Click="BrowseLogStatusChangesPath_Click"
                                     Width="85"
-                                    Content="Browse..."
+                                    Content="{x:Static resource:Strings.Options_Browse}"
                                     HorizontalAlignment="Left"/>
                         </StackPanel>
                     </Grid>
@@ -692,19 +693,19 @@
             </TabItem>
 
             <!-- Tab: Display -->
-            <TabItem Header="Display" Name="DisplayTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Display}" Name="DisplayTab">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Display Options"
+                               Text="{x:Static resource:Strings.Options_Header_DisplayOptions}"
                                Style="{StaticResource OptionHeaderTextStyle}"/>
 
                     <!-- Always on top -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="IsAlwaysOnTopEnabled"
-                                  Content="Always on top"/>
+                                  Content="{x:Static resource:Strings.Options_AlwaysOnTop}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             Keep the MultiPingMonitor application on top and always visible over other windows.
                         </Label>
@@ -713,7 +714,7 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="IsMinimizeToTrayEnabled"
-                                  Content="Minimize to tray"/>
+                                  Content="{x:Static resource:Strings.Options_MinimizeToTray}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             <TextBlock>
                                 Place an icon in the system tray when MultiPingMonitor is minimized.
@@ -732,7 +733,7 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="IsExitToTrayEnabled"
-                                  Content="Exit to tray"/>
+                                  Content="{x:Static resource:Strings.Options_ExitToTray}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             <TextBlock>
                                 When closing MultiPingMonitor, the application will minimize to the system tray rather than exit. Right-click the tray icon to exit.
@@ -751,28 +752,36 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
                         <CheckBox DockPanel.Dock="Left"
                                   Name="RememberWindowPosition"
-                                  Content="Remember window position"/>
+                                  Content="{x:Static resource:Strings.Options_RememberWindowPosition}"/>
                         <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
                             Save and restore the window position and size between sessions.
                         </Label>
                     </DockPanel>
                     <!-- Theme selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <TextBlock Text="Theme:" Width="120"/>
+                        <TextBlock Text="{x:Static resource:Strings.Options_Theme}" Width="120"/>
                         <ComboBox x:Name="ThemeComboBox" Width="160" SelectionChanged="ThemeComboBox_SelectionChanged"/>
                     </StackPanel>
+                    <!-- Language selection -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="{x:Static resource:Strings.Options_Language}" Width="120"/>
+                        <ComboBox x:Name="LanguageComboBox" Width="160"/>
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="{x:Static resource:Strings.Options_LanguageRestart}"
+                               Foreground="#888" FontSize="12" Margin="122,3,0,0"/>
 
                     <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
 
                     <!-- Font Sizes -->
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Font Sizes"
+                               Text="{x:Static resource:Strings.Options_Header_FontSizes}"
                                Margin="0,10,0,0"
                                Style="{StaticResource OptionSubHeaderTextStyle}"/>
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Probe font size:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_ProbeFontSize}"
                                    Width="120"/>
                         <TextBox Name="FontSizeProbe"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
@@ -782,7 +791,7 @@
                     <StackPanel DockPanel.Dock="Top"
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
-                        <TextBlock Text="Scanner font size:"
+                        <TextBlock Text="{x:Static resource:Strings.Options_ScannerFontSize}"
                                    Width="120"/>
                         <TextBox Name="FontSizeScanner"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
@@ -793,7 +802,7 @@
             </TabItem>
             
             <!-- Tab: Layout -->
-            <TabItem Header="Colors" Name="LayoutTab">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Colors}" Name="LayoutTab">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel LastChildFill="False"
                                Name="ColorsDockPanel"
@@ -817,7 +826,7 @@
 
                         <!-- Header -->
                         <TextBlock DockPanel.Dock="Top"
-                                   Text="Colors"
+                                   Text="{x:Static resource:Strings.Options_Header_Colors}"
                                    Style="{StaticResource OptionHeaderTextStyle}"/>
 
                         <!-- Probe background colors -->
@@ -826,27 +835,27 @@
                                    Margin="0,10,0,0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Inactive"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Inactive}"/>
                             <TextBox Name="BackgroundColor_Probe_Inactive"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Inactive, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Up"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Up}"/>
                             <TextBox Name="BackgroundColor_Probe_Up"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Up, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Down"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Down}"/>
                             <TextBox Name="BackgroundColor_Probe_Down"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Down, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Indeterminate"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Indeterminate}"/>
                             <TextBox Name="BackgroundColor_Probe_Indeterminate"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Indeterminate, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Error"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Error}"/>
                             <TextBox Name="BackgroundColor_Probe_Error"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Error, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
@@ -858,27 +867,27 @@
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Inactive"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Inactive}"/>
                             <TextBox Name="ForegroundColor_Probe_Inactive"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Inactive, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Up"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Up}"/>
                             <TextBox Name="ForegroundColor_Probe_Up"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Up, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Down"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Down}"/>
                             <TextBox Name="ForegroundColor_Probe_Down"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Down, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Indeterminate"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Indeterminate}"/>
                             <TextBox Name="ForegroundColor_Probe_Indeterminate"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Indeterminate, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Error"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Error}"/>
                             <TextBox Name="ForegroundColor_Probe_Error"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Error, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
@@ -890,27 +899,27 @@
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Inactive"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Inactive}"/>
                             <TextBox Name="ForegroundColor_Stats_Inactive"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Stats_Inactive, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Up"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Up}"/>
                             <TextBox Name="ForegroundColor_Stats_Up"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Stats_Up, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Down"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Down}"/>
                             <TextBox Name="ForegroundColor_Stats_Down"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Stats_Down, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Indeterminate"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Indeterminate}"/>
                             <TextBox Name="ForegroundColor_Stats_Indeterminate"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Stats_Indeterminate, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,10">
-                            <TextBlock Width="150" Text="Error"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Error}"/>
                             <TextBox Name="ForegroundColor_Stats_Error"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Stats_Error, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
@@ -922,27 +931,27 @@
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Inactive"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Inactive}"/>
                             <TextBox Name="ForegroundColor_Alias_Inactive"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Inactive, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Up"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Up}"/>
                             <TextBox Name="ForegroundColor_Alias_Up"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Up, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Down"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Down}"/>
                             <TextBox Name="ForegroundColor_Alias_Down"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Down, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Indeterminate"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Indeterminate}"/>
                             <TextBox Name="ForegroundColor_Alias_Indeterminate"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Indeterminate, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,10">
-                            <TextBlock Width="150" Text="Error"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_Error}"/>
                             <TextBox Name="ForegroundColor_Alias_Error"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Error, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
@@ -954,17 +963,17 @@
                                    Margin="0"
                                    Style="{StaticResource OptionSubHeaderTextStyle}"/>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Probe Background"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_ProbeBackground}"/>
                             <TextBox Name="BackgroundColor_Probe_Scanner"/>
                             <Border Background="{Binding ElementName=BackgroundColor_Probe_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,0">
-                            <TextBlock Width="150" Text="Probe Foreground"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_ProbeForeground}"/>
                             <TextBox Name="ForegroundColor_Probe_Scanner"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Probe_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5,0,10">
-                            <TextBlock Width="150" Text="Alias Foreground"/>
+                            <TextBlock Width="150" Text="{x:Static resource:Strings.Options_Color_AliasForeground}"/>
                             <TextBox Name="ForegroundColor_Alias_Scanner"/>
                             <Border Background="{Binding ElementName=ForegroundColor_Alias_Scanner, Path=Text, Converter={StaticResource StringToBrushConverter}}"/>
                         </StackPanel>
@@ -974,7 +983,7 @@
                             <Button Style="{StaticResource ButtonStandardStyle}"
                                     Click="RestoreDefaultColors_Click"
                                     Padding="15,5"
-                                    Content="Restore Defaults"
+                                    Content="{x:Static resource:Strings.Options_RestoreDefaults}"
                                     HorizontalAlignment="Left"/>
                         </Grid>
                     </DockPanel>
@@ -993,11 +1002,11 @@
                             Margin="0,0,9,0"
                             IsDefault="True"
                             Width="85"
-                            Content="OK"/>
+                            Content="{x:Static resource:Strings.DialogButton_OK}"/>
                     <Button Style="{StaticResource ButtonStandardStyle}"
                             IsCancel="True"
                             Width="85"
-                            Content="Cancel"/>
+                            Content="{x:Static resource:Strings.DialogButton_Cancel}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

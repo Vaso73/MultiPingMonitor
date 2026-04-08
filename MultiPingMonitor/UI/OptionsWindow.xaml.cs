@@ -100,7 +100,12 @@ namespace MultiPingMonitor.UI
             PingInterval.Text = pingInterval.ToString();
             PingTimeout.Text = pingTimeout.ToString();
             AlertThreshold.Text = ApplicationOptions.AlertThreshold.ToString();
-            PingIntervalUnits.Text = pingIntervalUnits;
+            if (pingIntervalUnits == "hours")
+                PingIntervalUnits.SelectedIndex = 2;
+            else if (pingIntervalUnits == "minutes")
+                PingIntervalUnits.SelectedIndex = 1;
+            else
+                PingIntervalUnits.SelectedIndex = 0;
 
             // Latency detection settings.
             LatencyDetectionMode.SelectedIndex = (int)ApplicationOptions.LatencyDetectionMode;
@@ -199,6 +204,12 @@ namespace MultiPingMonitor.UI
             if (ThemeComboBox.SelectedItem == null)
                 ThemeComboBox.SelectedIndex = 0;
 
+            // Populate language ComboBox.
+            LanguageComboBox.Items.Add(Properties.Strings.Language_System);
+            LanguageComboBox.Items.Add(Properties.Strings.Language_English);
+            LanguageComboBox.Items.Add(Properties.Strings.Language_Slovak);
+            LanguageComboBox.SelectedIndex = (int)ApplicationOptions.Language;
+
             // Font sizes.
             FontSizeProbe.Text = ApplicationOptions.FontSize_Probe.ToString();
             FontSizeScanner.Text = ApplicationOptions.FontSize_Scanner.ToString();
@@ -281,15 +292,15 @@ namespace MultiPingMonitor.UI
             int pingInterval;
             int multiplier = 1000;
 
-            switch (PingIntervalUnits.Text)
+            switch (PingIntervalUnits.SelectedIndex)
             {
-                case "seconds":
+                case 0:
                     multiplier = 1000;
                     break;
-                case "minutes":
+                case 1:
                     multiplier = 1000 * 60;
                     break;
-                case "hours":
+                case 2:
                     multiplier = 1000 * 60 * 60;
                     break;
             }
@@ -663,6 +674,9 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.IsMinimizeToTrayEnabled = IsMinimizeToTrayEnabled.IsChecked == true;
             ApplicationOptions.IsExitToTrayEnabled = IsExitToTrayEnabled.IsChecked == true;
             ApplicationOptions.RememberWindowPosition = RememberWindowPosition.IsChecked == true;
+
+            // Save language selection.
+            ApplicationOptions.Language = (ApplicationOptions.AppLanguage)LanguageComboBox.SelectedIndex;
 
             // Validate and save font sizes.
             if (!int.TryParse(FontSizeProbe.Text, out int fontSizeProbe) || fontSizeProbe < 6 || fontSizeProbe > 72)

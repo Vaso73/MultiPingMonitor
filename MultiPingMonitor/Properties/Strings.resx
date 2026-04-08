@@ -407,4 +407,376 @@
   <data name="Tooltip_IsolatedView" xml:space="preserve">
     <value>Open isolated view</value>
   </data>
+  <data name="FloodHost_Description" xml:space="preserve">
+    <value>This tool will send a continuous stream of ICMP ping packets to the destination host. It typically will not generate any more than 32 kilobytes per second of network traffic.</value>
+  </data>
+  <data name="FloodHost_InProgress" xml:space="preserve">
+    <value>Flood in progress...</value>
+  </data>
+  <data name="FloodHost_PacketsLost" xml:space="preserve">
+    <value>Packets Lost:</value>
+  </data>
+  <data name="FloodHost_PacketsReceived" xml:space="preserve">
+    <value>Packets Received:</value>
+  </data>
+  <data name="FloodHost_PacketsSent" xml:space="preserve">
+    <value>Packets Sent:</value>
+  </data>
+  <data name="FloodHost_Start" xml:space="preserve">
+    <value>Flood Host</value>
+  </data>
+  <data name="FloodHost_Stop" xml:space="preserve">
+    <value>Stop Flood</value>
+  </data>
+  <data name="FloodHost_Title" xml:space="preserve">
+    <value>MultiPingMonitor - Flood Host</value>
+  </data>
+  <data name="Help_Nav_BasicUsage" xml:space="preserve">
+    <value>Basic Usage</value>
+  </data>
+  <data name="Help_Nav_CommandLine" xml:space="preserve">
+    <value>Command Line Usage</value>
+  </data>
+  <data name="Help_Nav_ExtraFeatures" xml:space="preserve">
+    <value>Extra Features</value>
+  </data>
+  <data name="Help_Nav_Intro" xml:space="preserve">
+    <value>Intro</value>
+  </data>
+  <data name="Help_Nav_Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Help_Title" xml:space="preserve">
+    <value>MultiPingMonitor Help</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Slovak" xml:space="preserve">
+    <value>Slovak</value>
+  </data>
+  <data name="Language_System" xml:space="preserve">
+    <value>System (OS default)</value>
+  </data>
+  <data name="MainWindow_EnterHostname" xml:space="preserve">
+    <value>Enter a hostname</value>
+  </data>
+  <data name="Menu_InputAddresses" xml:space="preserve">
+    <value>Input Addresses</value>
+  </data>
+  <data name="Menu_NewInstance" xml:space="preserve">
+    <value>MultiPingMonitor</value>
+  </data>
+  <data name="Options_AlwaysOnTop" xml:space="preserve">
+    <value>Always on top</value>
+  </data>
+  <data name="Options_AlertThreshold" xml:space="preserve">
+    <value>Alert threshold:</value>
+  </data>
+  <data name="Options_AudioFilePath" xml:space="preserve">
+    <value>Audio file path</value>
+  </data>
+  <data name="Options_Auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Options_AutoDismiss" xml:space="preserve">
+    <value>Auto-dismiss notifications</value>
+  </data>
+  <data name="Options_Browse" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
+  <data name="Options_Bytes" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="Options_Color_AliasForeground" xml:space="preserve">
+    <value>Alias Foreground</value>
+  </data>
+  <data name="Options_Color_Down" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="Options_Color_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Options_Color_Inactive" xml:space="preserve">
+    <value>Inactive</value>
+  </data>
+  <data name="Options_Color_Indeterminate" xml:space="preserve">
+    <value>Indeterminate</value>
+  </data>
+  <data name="Options_Color_ProbeBackground" xml:space="preserve">
+    <value>Probe Background</value>
+  </data>
+  <data name="Options_Color_ProbeForeground" xml:space="preserve">
+    <value>Probe Foreground</value>
+  </data>
+  <data name="Options_Color_Up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="Options_ColumnCount" xml:space="preserve">
+    <value>Column count:</value>
+  </data>
+  <data name="Options_CustomPacketData" xml:space="preserve">
+    <value>Custom packet data</value>
+  </data>
+  <data name="Options_DetectionMode" xml:space="preserve">
+    <value>Detection mode:</value>
+  </data>
+  <data name="Options_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Options_DontFragment" xml:space="preserve">
+    <value>Don't fragment</value>
+  </data>
+  <data name="Options_DroppedPings" xml:space="preserve">
+    <value>dropped pings</value>
+  </data>
+  <data name="Options_EnableAudioDown" xml:space="preserve">
+    <value>Enable audio alert: host down</value>
+  </data>
+  <data name="Options_EnableAudioUp" xml:space="preserve">
+    <value>Enable audio alert: host up</value>
+  </data>
+  <data name="Options_EnableEmailAlerts" xml:space="preserve">
+    <value>Enable email alerts</value>
+  </data>
+  <data name="Options_EnableSSL" xml:space="preserve">
+    <value>Enable SSL/TLS</value>
+  </data>
+  <data name="Options_ExitToTray" xml:space="preserve">
+    <value>Exit to tray</value>
+  </data>
+  <data name="Options_Fixed" xml:space="preserve">
+    <value>Fixed</value>
+  </data>
+  <data name="Options_FromAddress" xml:space="preserve">
+    <value>From address</value>
+  </data>
+  <data name="Options_Header_AdvancedICMP" xml:space="preserve">
+    <value>Advanced ICMP Options</value>
+  </data>
+  <data name="Options_Header_AliasForeground" xml:space="preserve">
+    <value>Alias Foreground</value>
+  </data>
+  <data name="Options_Header_AudioAlerts" xml:space="preserve">
+    <value>Audio Alerts</value>
+  </data>
+  <data name="Options_Header_Colors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="Options_Header_DisplayOptions" xml:space="preserve">
+    <value>Display Options</value>
+  </data>
+  <data name="Options_Header_EmailAddresses" xml:space="preserve">
+    <value>Email Addresses</value>
+  </data>
+  <data name="Options_Header_EmailAlerts" xml:space="preserve">
+    <value>Email Alerts</value>
+  </data>
+  <data name="Options_Header_FontSizes" xml:space="preserve">
+    <value>Font Sizes</value>
+  </data>
+  <data name="Options_Header_LatencyDetection" xml:space="preserve">
+    <value>Latency Detection</value>
+  </data>
+  <data name="Options_Header_LogOutput" xml:space="preserve">
+    <value>Log Output</value>
+  </data>
+  <data name="Options_Header_PopupAlerts" xml:space="preserve">
+    <value>Popup Alerts</value>
+  </data>
+  <data name="Options_Header_ProbeBackground" xml:space="preserve">
+    <value>Probe Background</value>
+  </data>
+  <data name="Options_Header_ProbeForeground" xml:space="preserve">
+    <value>Probe Foreground</value>
+  </data>
+  <data name="Options_Header_ProbeOptions" xml:space="preserve">
+    <value>Probe Options</value>
+  </data>
+  <data name="Options_Header_Scanner" xml:space="preserve">
+    <value>Scanner</value>
+  </data>
+  <data name="Options_Header_ServerInfo" xml:space="preserve">
+    <value>Server Information</value>
+  </data>
+  <data name="Options_Header_StatsForeground" xml:space="preserve">
+    <value>Statistics Foreground</value>
+  </data>
+  <data name="Options_Header_Startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Options_HighLatency" xml:space="preserve">
+    <value>High latency:</value>
+  </data>
+  <data name="Options_Hops" xml:space="preserve">
+    <value>hops</value>
+  </data>
+  <data name="Options_Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="Options_Language" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="Options_LanguageRestart" xml:space="preserve">
+    <value>(Language change takes effect on next start)</value>
+  </data>
+  <data name="Options_LatencyTriggers" xml:space="preserve">
+    <value>Latency triggers:</value>
+  </data>
+  <data name="Options_LogPath" xml:space="preserve">
+    <value>Log path (base directory)</value>
+  </data>
+  <data name="Options_LogPathSimple" xml:space="preserve">
+    <value>Log path</value>
+  </data>
+  <data name="Options_LogStatusChanges" xml:space="preserve">
+    <value>Log status changes to text file</value>
+  </data>
+  <data name="Options_MinimizeToTray" xml:space="preserve">
+    <value>Minimize to tray</value>
+  </data>
+  <data name="Options_Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="Options_Ms" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="Options_Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Options_PacketDataSize" xml:space="preserve">
+    <value>Packet data size</value>
+  </data>
+  <data name="Options_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Options_PingInterval" xml:space="preserve">
+    <value>Ping interval:</value>
+  </data>
+  <data name="Options_PingTimeout" xml:space="preserve">
+    <value>Ping timeout:</value>
+  </data>
+  <data name="Options_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Options_ProbeCount" xml:space="preserve">
+    <value>Probe count:</value>
+  </data>
+  <data name="Options_ProbeFontSize" xml:space="preserve">
+    <value>Probe font size:</value>
+  </data>
+  <data name="Options_Probes" xml:space="preserve">
+    <value>probes</value>
+  </data>
+  <data name="Options_RecipientAddress" xml:space="preserve">
+    <value>Recipient address</value>
+  </data>
+  <data name="Options_RememberWindowPosition" xml:space="preserve">
+    <value>Remember window position</value>
+  </data>
+  <data name="Options_RestoreDefaults" xml:space="preserve">
+    <value>Restore Defaults</value>
+  </data>
+  <data name="Options_ScannerFontSize" xml:space="preserve">
+    <value>Scanner font size:</value>
+  </data>
+  <data name="Options_Seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="Options_SelectFavorite" xml:space="preserve">
+    <value>Select a favorite:</value>
+  </data>
+  <data name="Options_ShowWhenMinimized" xml:space="preserve">
+    <value>Show when minimized</value>
+  </data>
+  <data name="Options_AlwaysShow" xml:space="preserve">
+    <value>Always show</value>
+  </data>
+  <data name="Options_SmtpAuth" xml:space="preserve">
+    <value>This server requires authentication</value>
+  </data>
+  <data name="Options_SmtpServer" xml:space="preserve">
+    <value>SMTP server</value>
+  </data>
+  <data name="Options_StartupBlank" xml:space="preserve">
+    <value>Blank (default)</value>
+  </data>
+  <data name="Options_StartupFavorite" xml:space="preserve">
+    <value>Load a favorite</value>
+  </data>
+  <data name="Options_StartupListInput" xml:space="preserve">
+    <value>List input window</value>
+  </data>
+  <data name="Options_StartupPrompt" xml:space="preserve">
+    <value>Choose how MultiPingMonitor should start:</value>
+  </data>
+  <data name="Options_Tab_Advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="Options_Tab_Colors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="Options_Tab_Display" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="Options_Tab_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Options_Tab_General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Options_Tab_Logging" xml:space="preserve">
+    <value>Logging</value>
+  </data>
+  <data name="Options_Tab_Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="Options_Tab_Sounds" xml:space="preserve">
+    <value>Sounds</value>
+  </data>
+  <data name="Options_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="Options_Theme" xml:space="preserve">
+    <value>Theme:</value>
+  </data>
+  <data name="Options_TotalPacketSize" xml:space="preserve">
+    <value>Total packet size:</value>
+  </data>
+  <data name="Options_TTL" xml:space="preserve">
+    <value>Time to live:</value>
+  </data>
+  <data name="Options_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Options_WritePingOutput" xml:space="preserve">
+    <value>Write ping output to plain text files</value>
+  </data>
+  <data name="Traceroute_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Traceroute_Header" xml:space="preserve">
+    <value>Traceroute</value>
+  </data>
+  <data name="Traceroute_Host" xml:space="preserve">
+    <value>Host:</value>
+  </data>
+  <data name="Traceroute_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Traceroute_Title" xml:space="preserve">
+    <value>Traceroute - MultiPingMonitor</value>
+  </data>
+  <data name="Traceroute_Trace" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Exit MultiPingMonitor</value>
+  </data>
+  <data name="Tray_Options" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Tray_StatusHistory" xml:space="preserve">
+    <value>Status History</value>
+  </data>
 </root>

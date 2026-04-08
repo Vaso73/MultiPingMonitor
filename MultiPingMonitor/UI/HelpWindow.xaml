@@ -1,7 +1,8 @@
 ﻿<Window x:Class="MultiPingMonitor.UI.HelpWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MultiPingMonitor Help"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        Title="{x:Static resource:Strings.Help_Title}"
         UseLayoutRounding="True"
         Height="575"
         Width="750"
@@ -87,15 +88,15 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <TreeView Name="tree" FontSize="10pt" BorderThickness="0" Padding="0,20,20,20" Margin="0">
-            <TreeViewItem Header="Intro"
+            <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_Intro}"
                           Selected="Intro_Selected" />
-            <TreeViewItem Header="Basic Usage"
+            <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_BasicUsage}"
                           Selected="BasicUsage_Selected" />
-            <TreeViewItem Header="Extra Features"
+            <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_ExtraFeatures}"
                           Selected="ExtraFeatures_Selected" />
-            <TreeViewItem Header="Options"
+            <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_Options}"
                           Selected="Options_Selected" />
-            <TreeViewItem Header="Command Line Usage"
+            <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_CommandLine}"
                           Selected="CommandLineUsage_Selected" />
         </TreeView>
         <GridSplitter Grid.Column="1" Width="4"

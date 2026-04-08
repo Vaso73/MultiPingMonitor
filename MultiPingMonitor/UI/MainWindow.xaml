@@ -35,7 +35,7 @@
                     <ScrollViewer x:Name="PART_ContentHost"/>
                 </Border>
                 <TextBlock x:Name="placeholderText"
-                           Text="Enter a hostname"
+                           Text="{x:Static resource:Strings.MainWindow_EnterHostname}"
                            Visibility="Hidden"
                            FontSize="12"
                            Opacity="0.3"
@@ -156,7 +156,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Input addresses-->
-                <MenuItem Name="MultiInputMenu" Header="Input Addresses" InputGestureText="F2">
+                <MenuItem Name="MultiInputMenu" Header="{x:Static resource:Strings.Menu_InputAddresses}" InputGestureText="F2">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource icon.input-addresses}" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>
@@ -214,7 +214,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: New instance -->
-                <MenuItem Header="MultiPingMonitor" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
+                <MenuItem Header="{x:Static resource:Strings.Menu_NewInstance}" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource icon.vmping-logo-simple}" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>

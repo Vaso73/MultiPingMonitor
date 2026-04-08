@@ -21,6 +21,11 @@ namespace MultiPingMonitor.UI
 
             DataContext = _floodHost;
 
+            // Update BoolToStringConverter with localized strings.
+            var converter = (Classes.BoolToStringConverter)Resources["BoolToStringConverter"];
+            converter.FalseValue = Properties.Strings.FloodHost_Start;
+            converter.TrueValue = Properties.Strings.FloodHost_Stop;
+
             // Set initial focus to text box.
             Loaded += (sender, e) =>
                 MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));

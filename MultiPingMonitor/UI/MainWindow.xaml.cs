@@ -791,11 +791,11 @@ namespace MultiPingMonitor.UI
 
                     // Build context menu for tray icon.
                     System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
-                    System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem("Options");
+                    System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Options);
                     menuOptions.Click += (s, args) => OptionsExecute(null, null);
-                    System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem("Status History");
+                    System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_StatusHistory);
                     menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
-                    System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem("Exit MultiPingMonitor");
+                    System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Exit);
                     menuExit.Click += (s, args) =>
                     {
                         // Signal Window_Closing to take the save-and-exit path rather than

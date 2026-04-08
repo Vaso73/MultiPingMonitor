@@ -241,7 +241,9 @@ namespace MultiPingMonitor.Classes
                 Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
                 Node("Theme", ApplicationOptions.Theme),
                 Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
-                Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner)
+                Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner),
+                new XComment(" Language: [System, English, Slovak] "),
+                Node("Language", ApplicationOptions.Language)
             );
         }
 
@@ -620,6 +622,32 @@ namespace MultiPingMonitor.Classes
             {
                 ApplicationOptions.FontSize_Scanner = int.Parse(optionValue);
             }
+            if (options.TryGetValue("Language", out optionValue))
+            {
+                if (Enum.TryParse<ApplicationOptions.AppLanguage>(optionValue, out var lang))
+                    ApplicationOptions.Language = lang;
+            }
+        }
+
+        public static void LoadLanguageSetting()
+        {
+            if (!Exists()) return;
+            try
+            {
+                var xd = new XmlDocument();
+                xd.Load(FilePath);
+                var nodes = xd.SelectNodes("/vmping/configuration/option");
+                if (nodes == null) return;
+                var options = nodes.Cast<XmlNode>()
+                    .Where(n => n.Attributes?["name"] != null)
+                    .ToDictionary(n => n.Attributes["name"].Value, n => n.InnerText);
+                if (options.TryGetValue("Language", out var val))
+                {
+                    if (Enum.TryParse<ApplicationOptions.AppLanguage>(val, out var lang))
+                        ApplicationOptions.Language = lang;
+                }
+            }
+            catch { /* Ignore */ }
         }
     }
 }

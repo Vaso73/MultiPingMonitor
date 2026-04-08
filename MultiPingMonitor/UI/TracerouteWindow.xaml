@@ -1,7 +1,8 @@
 <Window x:Class="MultiPingMonitor.UI.TracerouteWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Traceroute - MultiPingMonitor"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        Title="{x:Static resource:Strings.Traceroute_Title}"
         Height="500"
         Width="700"
         MinHeight="300"
@@ -15,18 +16,18 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Traceroute" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="0" Text="{x:Static resource:Strings.Traceroute_Header}" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Host:" VerticalAlignment="Center" Width="50"/>
+            <TextBlock Text="{x:Static resource:Strings.Traceroute_Host}" VerticalAlignment="Center" Width="50"/>
             <TextBox x:Name="HostTextBox" Width="300" Margin="5,0"/>
-            <Button Content="Trace" Click="TraceButton_Click" Padding="8,4"/>
-            <Button Content="Stop" Click="StopButton_Click" Padding="8,4" Margin="5,0,0,0"/>
+            <Button Content="{x:Static resource:Strings.Traceroute_Trace}" Click="TraceButton_Click" Padding="8,4"/>
+            <Button Content="{x:Static resource:Strings.Traceroute_Stop}" Click="StopButton_Click" Padding="8,4" Margin="5,0,0,0"/>
         </StackPanel>
 
         <ListBox x:Name="ResultsListBox" Grid.Row="2" FontFamily="Consolas" FontSize="12"/>
 
-        <Button Grid.Row="3" Content="Close" Click="CloseButton_Click"
+        <Button Grid.Row="3" Content="{x:Static resource:Strings.Traceroute_Close}" Click="CloseButton_Click"
                 HorizontalAlignment="Right" Padding="12,4" Margin="0,10,0,0"/>
     </Grid>
 </Window>
