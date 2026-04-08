@@ -2804,5 +2804,77 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Start in tray.
+        /// </summary>
+        public static string Help_Options_StartInTray_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_StartInTray_Sub", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled in Options, MultiPingMonitor starts minimized to the system tray....
+        /// </summary>
+        public static string Help_Options_StartInTray_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_StartInTray_Text", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Help_Options_Language_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_Language_Sub", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor supports English and Slovak....
+        /// </summary>
+        public static string Help_Options_Language_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_Language_Text", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Portable configuration.
+        /// </summary>
+        public static string Help_Options_PortableConfig_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_PortableConfig_Sub", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All settings are stored in a MultiPingMonitor.xml file located next to the executable....
+        /// </summary>
+        public static string Help_Options_PortableConfig_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_PortableConfig_Text", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to System tray.
+        /// </summary>
+        public static string Help_Options_TrayBehavior_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_TrayBehavior_Sub", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When the main window is closed, MultiPingMonitor minimizes to the system tray....
+        /// </summary>
+        public static string Help_Options_TrayBehavior_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_TrayBehavior_Text", resourceCulture);
+            }
+        }
+
     }
 }

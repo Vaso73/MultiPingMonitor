@@ -25,7 +25,7 @@ namespace MultiPingMonitor.UI
 
             // Generate copyright text based on the current year.
             Copyright.Inlines.Clear();
-            Copyright.Inlines.Add(new Run($"Copyright \u00a9 {DateTime.Now.Year.ToString()} Ryan Smith"));
+            Copyright.Inlines.Add(new Run($"Copyright \u00a9 {DateTime.Now.Year.ToString()} Vaso73"));
 
             // Localize all body text from string resources.
             ApplyLocalizedHelpContent();
@@ -96,7 +96,7 @@ namespace MultiPingMonitor.UI
             Para_PortMonitor.Inlines.Add(new Bold(new Run("SERVER01:80")));
             Para_PortMonitor.Inlines.Add(new Run(Properties.Strings.Help_PortMonitor_Text_After));
 
-            // Trace Route
+            // Traceroute
             Sub_TraceRoute.Inlines.Clear();
             Sub_TraceRoute.Inlines.Add(new Run(Properties.Strings.Help_TraceRoute_Sub));
             Para_TraceRoute.Inlines.Clear();
@@ -142,6 +142,30 @@ namespace MultiPingMonitor.UI
             Para_LogOutputHelp.Inlines.Clear();
             Para_LogOutputHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Logging_Text));
 
+            // Start in tray
+            Sub_StartInTrayHelp.Inlines.Clear();
+            Sub_StartInTrayHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_StartInTray_Sub));
+            Para_StartInTrayHelp.Inlines.Clear();
+            Para_StartInTrayHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_StartInTray_Text));
+
+            // Language
+            Sub_LanguageHelp.Inlines.Clear();
+            Sub_LanguageHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Language_Sub));
+            Para_LanguageHelp.Inlines.Clear();
+            Para_LanguageHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Language_Text));
+
+            // Portable configuration
+            Sub_PortableConfigHelp.Inlines.Clear();
+            Sub_PortableConfigHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PortableConfig_Sub));
+            Para_PortableConfigHelp.Inlines.Clear();
+            Para_PortableConfigHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PortableConfig_Text));
+
+            // Tray behavior
+            Sub_TrayBehaviorHelp.Inlines.Clear();
+            Sub_TrayBehaviorHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_TrayBehavior_Sub));
+            Para_TrayBehaviorHelp.Inlines.Clear();
+            Para_TrayBehaviorHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_TrayBehavior_Text));
+
             // Command Line Usage section header
             CommandLineUsage.Inlines.Clear();
             CommandLineUsage.Inlines.Add(new Run(Properties.Strings.Help_CommandLine_Header));
@@ -155,11 +179,11 @@ namespace MultiPingMonitor.UI
         {
             try
             {
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             }
-            catch
+            catch (Exception)
             {
-                // TODO
+                // Silently handle if the browser cannot be launched.
             }
             finally
             {
