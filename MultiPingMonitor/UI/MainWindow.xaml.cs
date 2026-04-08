@@ -18,7 +18,7 @@ namespace MultiPingMonitor.UI
 
         // Set to true when a deliberate application shutdown is initiated from the tray exit
         // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
-        private bool _isShuttingDown = false;
+        private bool _IsShuttingDown = false;
 
         public static RoutedCommand OptionsCommand = new RoutedCommand();
         public static RoutedCommand StartStopCommand = new RoutedCommand();
@@ -769,7 +769,7 @@ namespace MultiPingMonitor.UI
                     {
                         // Signal Window_Closing to take the save-and-exit path rather than
                         // hiding to tray again, then request a clean application shutdown.
-                        _isShuttingDown = true;
+                        _IsShuttingDown = true;
                         Application.Current.Shutdown();
                     };
 
@@ -845,10 +845,10 @@ namespace MultiPingMonitor.UI
         {
             System.Diagnostics.Trace.WriteLine(
                 $"[MainWindow] Window_Closing: IsExitToTrayEnabled={ApplicationOptions.IsExitToTrayEnabled}" +
-                $"  _isShuttingDown={_isShuttingDown}" +
-                $"  WindowState={WindowState}  Left={Left}  Top={Top}  Width={Width}  Height={Height}");
+                $" _IsShuttingDown={_IsShuttingDown} WindowState={WindowState}" +
+                $" Left={Left} Top={Top} Width={Width} Height={Height}");
 
-            if (ApplicationOptions.IsExitToTrayEnabled && !_isShuttingDown)
+            if (ApplicationOptions.IsExitToTrayEnabled && !_IsShuttingDown)
             {
                 System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: hiding to tray (cancel close).");
                 HideToTray();
