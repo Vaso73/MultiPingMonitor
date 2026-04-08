@@ -922,15 +922,18 @@ namespace MultiPingMonitor.UI
             }
 
             // Toggle maximize / restore title bar buttons.
-            if (WindowState == WindowState.Maximized)
+            if (maximizeButton != null && restoreButton != null)
             {
-                maximizeButton.Visibility = Visibility.Collapsed;
-                restoreButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                maximizeButton.Visibility = Visibility.Visible;
-                restoreButton.Visibility = Visibility.Collapsed;
+                if (WindowState == WindowState.Maximized)
+                {
+                    maximizeButton.Visibility = Visibility.Collapsed;
+                    restoreButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    maximizeButton.Visibility = Visibility.Visible;
+                    restoreButton.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
