@@ -405,9 +405,19 @@ namespace MultiPingMonitor.UI
         {
             try
             {
+                var exePath = Environment.ProcessPath
+                    ?? System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    var errorWindow = DialogWindow.ErrorWindow(Strings.Error_ExecutableNotFound);
+                    errorWindow.Owner = this;
+                    errorWindow.ShowDialog();
+                    return;
+                }
+
                 var p = new System.Diagnostics.Process();
-                p.StartInfo.FileName =
-                    System.Reflection.Assembly.GetExecutingAssembly().Location;
+                p.StartInfo.FileName = exePath;
                 p.Start();
             }
 

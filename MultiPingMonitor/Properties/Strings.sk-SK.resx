@@ -75,6 +75,9 @@
   <data name="Error_DeleteAlias" xml:space="preserve">
     <value>Zlyhalo vymazanie aliasu.</value>
   </data>
+  <data name="Error_ExecutableNotFound" xml:space="preserve">
+    <value>Nepodarilo sa zistiť cestu k spustiteľnému súboru aplikácie. Skúste spustiť MultiPingMonitor priamo z jeho spustiteľného súboru.</value>
+  </data>
   <data name="Error_FailedToLaunch" xml:space="preserve">
     <value>Zlyhalo spustenie novej inštancie MultiPingMonitor.</value>
   </data>

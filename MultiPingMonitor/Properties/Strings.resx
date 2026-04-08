@@ -181,6 +181,9 @@
   <data name="Error_DeleteAlias" xml:space="preserve">
     <value>Failed to delete alias.</value>
   </data>
+  <data name="Error_ExecutableNotFound" xml:space="preserve">
+    <value>Could not determine the application executable path. Please try running MultiPingMonitor directly from its executable file.</value>
+  </data>
   <data name="Error_FailedToLaunch" xml:space="preserve">
     <value>Failed to launch a new instance of MultiPingMonitor.</value>
   </data>

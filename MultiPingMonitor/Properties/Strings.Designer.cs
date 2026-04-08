@@ -250,6 +250,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not determine the application executable path. Please try running MultiPingMonitor directly from its executable file..
+        /// </summary>
+        public static string Error_ExecutableNotFound {
+            get {
+                return ResourceManager.GetString("Error_ExecutableNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to launch a new instance of MultiPingMonitor..
         /// </summary>
         public static string Error_FailedToLaunch {
