@@ -102,6 +102,11 @@ namespace MultiPingMonitor.UI
             AlertThreshold.Text = ApplicationOptions.AlertThreshold.ToString();
             PingIntervalUnits.Text = pingIntervalUnits;
 
+            // Latency detection settings.
+            LatencyDetectionMode.SelectedIndex = (int)ApplicationOptions.LatencyDetectionMode;
+            HighLatencyMilliseconds.Text = ApplicationOptions.HighLatencyMilliseconds.ToString();
+            HighLatencyTriggerCount.Text = ApplicationOptions.HighLatencyAlertTiggerCount.ToString(); // "Tigger" is the persisted XML key name — do not rename.
+
             // Get startup mode settings.
             InitialProbeCount.Text = ApplicationOptions.InitialProbeCount.ToString();
             InitialColumnCount.Text = ApplicationOptions.InitialColumnCount.ToString();
@@ -321,6 +326,30 @@ namespace MultiPingMonitor.UI
             }
 
             ApplicationOptions.AlertThreshold = alertThreshold;
+
+            // Latency detection mode.
+            ApplicationOptions.LatencyDetectionMode = (ApplicationOptions.LatencyMode)LatencyDetectionMode.SelectedIndex;
+
+            // High latency threshold in milliseconds.
+            if (long.TryParse(HighLatencyMilliseconds.Text, out long highLatMs) && highLatMs >= 1)
+            {
+                ApplicationOptions.HighLatencyMilliseconds = highLatMs;
+            }
+            else
+            {
+                ApplicationOptions.HighLatencyMilliseconds = 50;
+            }
+
+            // High latency trigger count.
+            // Note: "HighLatencyAlertTiggerCount" preserves the existing persisted XML key name (typo intentional — do not rename).
+            if (int.TryParse(HighLatencyTriggerCount.Text, out int highLatCount) && highLatCount >= 1)
+            {
+                ApplicationOptions.HighLatencyAlertTiggerCount = highLatCount;
+            }
+            else
+            {
+                ApplicationOptions.HighLatencyAlertTiggerCount = 2;
+            }
 
             // Startup mode.
             ApplicationOptions.InitialStartMode = (ApplicationOptions.StartMode)StartupMode.SelectedIndex;

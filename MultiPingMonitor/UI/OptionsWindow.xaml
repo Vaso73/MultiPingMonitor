@@ -80,12 +80,61 @@
                                 Orientation="Horizontal"
                                 Margin="0,10,0,0">
                         <TextBlock Text="Alert threshold:"
-                                   Width="110"/>
+                                   Width="130"/>
                         <TextBox Name="AlertThreshold"
                                  PreviewTextInput="NumericTextbox_PreviewTextInput"
                                  Width="60"
                                  MaxLength="2"/>
                         <TextBlock Text="dropped pings"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Latency detection separator -->
+                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+
+                    <!-- Latency detection header -->
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Latency Detection"
+                               Style="{StaticResource OptionSubHeaderTextStyle}"/>
+
+                    <!-- Latency detection mode -->
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,8,0,0">
+                        <TextBlock Text="Detection mode:"
+                                   Width="130"/>
+                        <ComboBox Name="LatencyDetectionMode" Width="80">
+                            <ComboBoxItem Content="Off"/>
+                            <ComboBoxItem Content="Auto"/>
+                            <ComboBoxItem Content="Fixed"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- High latency threshold -->
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,8,0,0">
+                        <TextBlock Text="High latency:"
+                                   Width="130"/>
+                        <TextBox Name="HighLatencyMilliseconds"
+                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                 Width="60"
+                                 MaxLength="6"/>
+                        <TextBlock Text="ms"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- High latency trigger count -->
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,8,0,0">
+                        <TextBlock Text="Latency triggers:"
+                                   Width="130"/>
+                        <TextBox Name="HighLatencyTriggerCount"
+                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                 Width="60"
+                                 MaxLength="3"/>
+                        <TextBlock Text="probes"
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
