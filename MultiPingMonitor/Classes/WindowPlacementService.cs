@@ -70,11 +70,16 @@ namespace MultiPingMonitor.Classes
             // unreliable because the handle had already been created with the
             // XAML-default dimensions and a subsequent SetWindowPos could be
             // overridden by the system during ShowWindow processing.
+            System.Diagnostics.Trace.WriteLine($"[WPS] Attach({key}): immediate pre-Show restore.");
             Restore(window, key);
 
             // Retained as a safety-net for any window whose placement data is
             // loaded after Attach (currently none, but keeps the contract safe).
-            window.SourceInitialized += (s, e) => Restore(window, key);
+            window.SourceInitialized += (s, e) =>
+            {
+                System.Diagnostics.Trace.WriteLine($"[WPS] Attach({key}): SourceInitialized restore.");
+                Restore(window, key);
+            };
 
             // One-time post-layout verify: WPF's ShowWindow / layout processing
             // can silently override Left/Top even when they were set before Show().
@@ -90,9 +95,15 @@ namespace MultiPingMonitor.Classes
                     // Re-check in case the option was toggled before ContentRendered fired.
                     if (!ApplicationOptions.RememberWindowPosition || !_placements.ContainsKey(key))
                         return;
+                    System.Diagnostics.Trace.WriteLine(
+                        $"[WPS] Attach({key}): ContentRendered → scheduling post-layout verify restore.");
                     window.Dispatcher.BeginInvoke(
                         System.Windows.Threading.DispatcherPriority.Loaded,
-                        new Action(() => Restore(window, key)));
+                        new Action(() =>
+                        {
+                            System.Diagnostics.Trace.WriteLine($"[WPS] Attach({key}): post-layout verify restore (BeginInvoke/Loaded).");
+                            Restore(window, key);
+                        }));
                 };
                 window.ContentRendered += contentRenderedHandler;
             }
@@ -121,6 +132,12 @@ namespace MultiPingMonitor.Classes
                 return;
 
             var data = new PlacementData();
+
+            System.Diagnostics.Trace.WriteLine(
+                $"[WPS] Save({key}): WindowState={window.WindowState}" +
+                $"  Left={window.Left}  Top={window.Top}" +
+                $"  Width={window.Width}  Height={window.Height}" +
+                $"  RestoreBounds={window.RestoreBounds}");
 
             // Always persist the normal (restored) bounds.
             if (window.WindowState == WindowState.Normal)
@@ -156,6 +173,12 @@ namespace MultiPingMonitor.Classes
                     : WindowState.Normal;
             }
 
+            System.Diagnostics.Trace.WriteLine(
+                $"[WPS] Save({key}) → writing:" +
+                $"  Left={data.Left}  Top={data.Top}" +
+                $"  Width={data.Width}  Height={data.Height}" +
+                $"  State={data.WindowState}");
+
             // Capture current monitor context.
             var screen = ScreenFromWindow(window);
             if (screen != null)
@@ -180,7 +203,21 @@ namespace MultiPingMonitor.Classes
                 return;
 
             if (!_placements.TryGetValue(key, out var data))
+            {
+                System.Diagnostics.Trace.WriteLine($"[WPS] Restore({key}): no saved placement found.");
                 return;
+            }
+
+            System.Diagnostics.Trace.WriteLine(
+                $"[WPS] Restore({key}): saved placement found:" +
+                $"  Left={data.Left}  Top={data.Top}" +
+                $"  Width={data.Width}  Height={data.Height}" +
+                $"  State={data.WindowState}  Monitor={data.MonitorDeviceName}");
+            System.Diagnostics.Trace.WriteLine(
+                $"[WPS] Restore({key}): window BEFORE restore:" +
+                $"  Left={window.Left}  Top={window.Top}" +
+                $"  Width={window.Width}  Height={window.Height}" +
+                $"  State={window.WindowState}");
 
             // Clamp saved dimensions to sensible minimums.
             double w = Math.Max(data.Width, MinWindowWidth);
@@ -293,6 +330,12 @@ namespace MultiPingMonitor.Classes
             window.Width = w;
             window.Height = h;
             window.WindowState = data.WindowState;
+
+            System.Diagnostics.Trace.WriteLine(
+                $"[WPS] Restore({key}): window AFTER restore:" +
+                $"  Left={window.Left}  Top={window.Top}" +
+                $"  Width={window.Width}  Height={window.Height}" +
+                $"  State={window.WindowState}");
         }
 
         // ── XML serialization ─────────────────────────────────────────────────
