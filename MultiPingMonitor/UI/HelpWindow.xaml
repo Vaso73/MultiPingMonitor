@@ -4,9 +4,12 @@
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="{x:Static resource:Strings.Help_Title}"
         UseLayoutRounding="True"
-        Height="575"
-        Width="750"
+        Height="600"
+        Width="780"
+        MinHeight="400"
+        MinWidth="550"
         WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource Theme.Background}"
         PreviewKeyDown="Window_PreviewKeyDown"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
@@ -14,12 +17,13 @@
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="TextWrapping" Value="Wrap" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         </Style>
         <Style TargetType="Paragraph">
             <Setter Property="TextAlignment" Value="Left" />
             <Setter Property="FontFamily" Value="Segoe UI, Arial" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="14" />
         </Style>
 
         <!-- Title style -->
@@ -27,10 +31,11 @@
                BasedOn="{StaticResource {x:Type TextBlock}}"
                TargetType="TextBlock">
             <Setter Property="Margin" Value="0,0,0,0" />
-            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontSize" Value="24" />
             <Setter Property="FontFamily" Value="Segoe UI" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         </Style>
 
         <!-- HyperLink style -->
@@ -38,16 +43,16 @@
                BasedOn="{StaticResource {x:Type Hyperlink}}"
                TargetType="Hyperlink">
             <Setter Property="TextDecorations" Value="None" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Foreground" Value="#6c71c4" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}" />
         </Style>
 
         <!-- Version style -->
         <Style x:Key="VersionText"
                BasedOn="{StaticResource {x:Type Paragraph}}"
                TargetType="Paragraph">
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Foreground" Value="#707070" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
             <Setter Property="Margin" Value="0,0,0,0" />
             <Setter Property="TextAlignment" Value="Center" />
         </Style>
@@ -57,37 +62,44 @@
                BasedOn="{StaticResource {x:Type Paragraph}}"
                TargetType="Paragraph">
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Margin" Value="0,40,0,0" />
-            <Setter Property="Foreground" Value="#4040c0" />
-            <Setter Property="FontSize" Value="26" />
+            <Setter Property="Margin" Value="0,30,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}" />
+            <Setter Property="FontSize" Value="22" />
         </Style>
 
         <!-- Sub-header style -->
         <Style x:Key="SubHeaderText"
                BasedOn="{StaticResource {x:Type Paragraph}}"
                TargetType="Paragraph">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Margin" Value="0,25,0,0" />
-            <Setter Property="Foreground" Value="#404040" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+            <Setter Property="FontSize" Value="15" />
         </Style>
 
         <!-- Paragraph style -->
         <Style x:Key="ParagraphText"
                BasedOn="{StaticResource {x:Type Paragraph}}"
                TargetType="Paragraph">
-            <Setter Property="Margin" Value="0,2,0,0" />
-            <Setter Property="Foreground" Value="#606060" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
+        </Style>
+
+        <!-- TreeView theme-aware style -->
+        <Style TargetType="TreeView">
+            <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" MinWidth="130" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TreeView Name="tree" FontSize="10pt" BorderThickness="0" Padding="0,20,20,20" Margin="0">
+        <TreeView Name="tree" FontSize="10pt" Padding="8,16,12,16" Margin="0">
             <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_Intro}"
                           Selected="Intro_Selected" />
             <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_BasicUsage}"
@@ -99,60 +111,57 @@
             <TreeViewItem Header="{x:Static resource:Strings.Help_Nav_CommandLine}"
                           Selected="CommandLineUsage_Selected" />
         </TreeView>
-        <GridSplitter Grid.Column="1" Width="4"
+        <GridSplitter Grid.Column="1" Width="1"
                       HorizontalAlignment="Center"
-                      BorderBrush="Black"
+                      Background="{DynamicResource Theme.Border}"
                       BorderThickness="0"
                       VerticalAlignment="Stretch" />
 
-        <FlowDocumentScrollViewer Name="MainDocument" Grid.Column="2" FocusVisualStyle="{x:Null}">
+        <FlowDocumentScrollViewer Name="MainDocument" Grid.Column="2"
+                                  Background="{DynamicResource Theme.Background}"
+                                  Foreground="{DynamicResource Theme.Text.Primary}"
+                                  FocusVisualStyle="{x:Null}">
             <FlowDocument>
                 <!-- Logo and title -->
                 <BlockUIContainer>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,20">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,16">
                         <Image Source="/MultiPingMonitor.ico" Width="32" Height="32" Margin="0,0,12,0" />
                         <TextBlock Style="{StaticResource TitleText}"
                                    VerticalAlignment="Center"
-                                   Text="MultiPingMonitor">
-                            <TextBlock.Effect>
-                                <DropShadowEffect ShadowDepth="4" Direction="330" Color="Black" Opacity="0.15" BlurRadius="4" />
-                            </TextBlock.Effect>
-                        </TextBlock>
+                                   Text="MultiPingMonitor" />
                     </StackPanel>
                 </BlockUIContainer>
 
                 <!-- Link to homepage -->
                 <Paragraph TextAlignment="Center">
-                    <Hyperlink NavigateUri="https://github.com/R-Smith/MultiPingMonitor"
+                    <Hyperlink NavigateUri="https://github.com/Vaso73/MultiPingMonitor"
                                RequestNavigate="Hyperlink_RequestNavigate"
                                Style="{StaticResource HyperlinkStyle}">
-                        https://github.com/R-Smith/MultiPingMonitor
+                        https://github.com/Vaso73/MultiPingMonitor
                     </Hyperlink>
                 </Paragraph>
 
                 <!-- Version -->
                 <Paragraph Name="Version"
-                           Style="{StaticResource  VersionText}"
+                           Style="{StaticResource VersionText}"
                            Margin="0,3,0,0">
                     Version X.XXXX.XXXX
                 </Paragraph>
                 <Paragraph Name="Copyright"
                            Style="{StaticResource VersionText}">
-                    Copyright (C) Ryan Smith
+                    Copyright
                 </Paragraph>
 
                 <!-- Intro section -->
                 <BlockUIContainer>
-                    <Rectangle Margin="0,30,0,0" HorizontalAlignment="Stretch" Fill="#f0f0f0" Height="1" />
+                    <Rectangle Margin="0,24,0,0" HorizontalAlignment="Stretch" Fill="{DynamicResource Theme.Border}" Height="1" />
                 </BlockUIContainer>
-                <Paragraph Name="Intro" Margin="0,5"
-                           Foreground="#073642">
+                <Paragraph Name="Intro" Margin="0,8"
+                           Foreground="{DynamicResource Theme.Text.Primary}">
                     MultiPingMonitor is a network utility that allows you to quickly monitor the availability of multiple hosts.
-                    Host monitors are easily added and removed, and dynamically resize with the application window.
-                    Color-coding allows you to tell at a glance the status of each host.
                 </Paragraph>
                 <BlockUIContainer>
-                    <Rectangle HorizontalAlignment="Stretch" Fill="#f0f0f0" Height="1" />
+                    <Rectangle HorizontalAlignment="Stretch" Fill="{DynamicResource Theme.Border}" Height="1" />
                 </BlockUIContainer>
 
                 <!-- Basic Usage section -->
@@ -170,36 +179,25 @@
                     Monitor a host
                 </Paragraph>
                 <Paragraph Name="Para_MonitorHost" Style="{StaticResource ParagraphText}">
-                    Enter a hostname or IP address into the textbox, then press Enter or click Ping.
-                    MultiPingMonitor will continuously ping the host until you click Stop.
-                    Responses are displayed in the output area above the textbox.
-                    The output section will turn green when the host is responding and red when it is not responding.
-                    If an error occurs, the output area will turn orange.
+                    Monitor a host
                 </Paragraph>
                 <Paragraph Name="Sub_AddHost" Style="{StaticResource SubHeaderText}">
                     Add a host monitor
                 </Paragraph>
                 <Paragraph Name="Para_AddHost" Style="{StaticResource ParagraphText}">
-                    <Run>Click</Run>
-                    <Image Source="{StaticResource icon.add}" Width="14" Height="14" Margin="3,0,0,0"/>
-                    <Run FontWeight="SemiBold">Add Host</Run>
-                    <Run>from the menu bar, or use the keyboard shortcut,</Run>
-                    <Run FontWeight="SemiBold">Alt-A</Run> .
+                    Add a host monitor
                 </Paragraph>
                 <Paragraph Name="Sub_RemoveHost" Style="{StaticResource SubHeaderText}">
                     Remove a host monitor
                 </Paragraph>
                 <Paragraph Name="Para_RemoveHost" Style="{StaticResource ParagraphText}">
-                    When you hover your mouse over a host monitor, an X icon will appear in the top-right corner.
-                    Click the X icon to remove that instance.
+                    Remove a host monitor
                 </Paragraph>
                 <Paragraph Name="Sub_Columns" Style="{StaticResource SubHeaderText}">
                     Columns
                 </Paragraph>
                 <Paragraph Name="Para_Columns" Style="{StaticResource ParagraphText}">
-                    Click Columns in the menu bar then move the slider to the desired number of columns.
-                    This sets the number of host monitors to display in a single row.
-                    Additional rows will be created as needed.
+                    Columns
                 </Paragraph>
 
                 <!-- Extra Features section -->
@@ -211,25 +209,19 @@
                     Port Monitor
                 </Paragraph>
                 <Paragraph Name="Para_PortMonitor" Style="{StaticResource ParagraphText}">
-                    To monitor a specific TCP port, simply enter the hostname or IP address followed by a colon and the desired port number.
-                    MultiPingMonitor will then continuously try to connect to the given port and display whether or not the connection is successful.
-                    Example -
-                    <Bold>SERVER01:80</Bold> , will monitor port 80 on SERVER01.
+                    Port Monitor
                 </Paragraph>
                 <Paragraph Name="Sub_TraceRoute" Style="{StaticResource SubHeaderText}">
-                    Trace Route
+                    Traceroute
                 </Paragraph>
                 <Paragraph Name="Para_TraceRoute" Style="{StaticResource ParagraphText}">
-                    The trace route utility is used to measure network delays and determine the path taken to the given destination host.
-                    The utility can be accessed from the dropdown icon in the top right or by pressing Ctrl-T.
+                    Traceroute
                 </Paragraph>
                 <Paragraph Name="Sub_FloodHostHelp" Style="{StaticResource SubHeaderText}">
                     Flood Host
                 </Paragraph>
                 <Paragraph Name="Para_FloodHostHelp" Style="{StaticResource ParagraphText}">
-                    The flood host utility is used to generate a significant amount of ICMP packets.
-                    To limit the flow, the utility waits until a reply is received before sending the next ICMP packet.
-                    The utility can be accessed from dropdown icon in the top right or by pressing Ctrl-F.
+                    Flood Host
                 </Paragraph>
 
                 <!-- Options section -->
@@ -241,34 +233,55 @@
                     Ping interval
                 </Paragraph>
                 <Paragraph Name="Para_PingIntervalHelp" Style="{StaticResource ParagraphText}">
-                    The time to wait between sending each packet.  The time can be specified in seconds, minutes, or hours.
+                    Ping interval
                 </Paragraph>
                 <Paragraph Name="Sub_PingTimeoutHelp" Style="{StaticResource SubHeaderText}">
                     Ping timeout
                 </Paragraph>
                 <Paragraph Name="Para_PingTimeoutHelp" Style="{StaticResource ParagraphText}">
-                    The maximum time to wait for a response, in seconds.
+                    Ping timeout
                 </Paragraph>
                 <Paragraph Name="Sub_SendEmailHelp" Style="{StaticResource SubHeaderText}">
-                    Send email when host goes down or up
+                    Send email
                 </Paragraph>
                 <Paragraph Name="Para_SendEmailHelp" Style="{StaticResource ParagraphText}">
-                    Send an email each time a host changes status (from down to up or from up to down).
-                    A mail server, recipient email address, and from email address must all be specified.
+                    Send email
                 </Paragraph>
                 <Paragraph Name="Sub_AlwaysOnTopHelp" Style="{StaticResource SubHeaderText}">
-                    Keep window always on top
+                    Always on top
                 </Paragraph>
                 <Paragraph Name="Para_AlwaysOnTopHelp" Style="{StaticResource ParagraphText}">
-                    The MultiPingMonitor window will remain on top of all other application windows.
+                    Always on top
                 </Paragraph>
                 <Paragraph Name="Sub_LogOutputHelp" Style="{StaticResource SubHeaderText}">
-                    Log all output to files
+                    Log output
                 </Paragraph>
                 <Paragraph Name="Para_LogOutputHelp" Style="{StaticResource ParagraphText}">
-                    Write all ping responses to a text file.
-                    The file will be named &lt;hostname&gt;.txt and will be saved to the specified directory.
-                    If the file already exists, new output will be appended to the existing file.
+                    Log output
+                </Paragraph>
+                <Paragraph Name="Sub_StartInTrayHelp" Style="{StaticResource SubHeaderText}">
+                    Start in tray
+                </Paragraph>
+                <Paragraph Name="Para_StartInTrayHelp" Style="{StaticResource ParagraphText}">
+                    Start in tray
+                </Paragraph>
+                <Paragraph Name="Sub_LanguageHelp" Style="{StaticResource SubHeaderText}">
+                    Language
+                </Paragraph>
+                <Paragraph Name="Para_LanguageHelp" Style="{StaticResource ParagraphText}">
+                    Language
+                </Paragraph>
+                <Paragraph Name="Sub_PortableConfigHelp" Style="{StaticResource SubHeaderText}">
+                    Portable configuration
+                </Paragraph>
+                <Paragraph Name="Para_PortableConfigHelp" Style="{StaticResource ParagraphText}">
+                    Portable configuration
+                </Paragraph>
+                <Paragraph Name="Sub_TrayBehaviorHelp" Style="{StaticResource SubHeaderText}">
+                    System tray
+                </Paragraph>
+                <Paragraph Name="Para_TrayBehaviorHelp" Style="{StaticResource ParagraphText}">
+                    System tray
                 </Paragraph>
 
                 <!-- Command Line Usage section -->
@@ -277,45 +290,8 @@
                     Command Line Usage
                 </Paragraph>
                 <Paragraph Name="Sub_CommandLineUsageHelp" Style="{StaticResource SubHeaderText}">
-                    Usage: MultiPingMonitor [-i interval] [-w timeout] [&lt;target_host>...]
+                    Usage: MultiPingMonitor [-i interval] [-w timeout] [&lt;target_host&gt;...]
                 </Paragraph>
-
-                <!-- TODO: Convert to table-->
-                <!--<DockPanel>
-                    <TextBlock Style="{StaticResource ParagraphText}"
-                                   FontFamily="Consolas Courier New"
-                                   FontSize="14"
-                                   Width="90">
-                            -i interval
-                    </TextBlock>
-                    <TextBlock Style="{StaticResource ParagraphText}"
-                                   TextWrapping="Wrap">
-                            Time, in seconds, to wait between sending each ping.
-                    </TextBlock>
-                </DockPanel>
-                <DockPanel>
-                    <TextBlock Style="{StaticResource ParagraphText}"
-                                   FontFamily="Consolas Courier New"
-                                   FontSize="14"
-                                   Width="90">
-                            -w timeout
-                    </TextBlock>
-                    <TextBlock Style="{StaticResource ParagraphText}"
-                                   TextWrapping="Wrap">
-                            Timeout, in seconds, to wait for each reply.
-                    </TextBlock>
-                </DockPanel>
-                <DockPanel>
-                    <TextBlock Style="{StaticResource ParagraphText}"
-                                   FontFamily="Consolas Courier New"
-                                   FontSize="14"
-                                   Width="90">
-                            target_host
-                    </TextBlock>
-                    <TextBlock Style="{StaticResource ParagraphText}">
-                            Ping the specified host.  Multiple hostnames may be specified.
-                    </TextBlock>
-                </DockPanel>-->
             </FlowDocument>
         </FlowDocumentScrollViewer>
     </Grid>

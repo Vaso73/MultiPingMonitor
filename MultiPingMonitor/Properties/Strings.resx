@@ -1004,16 +1004,16 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>, will monitor port 80 on SERVER01.</value>
   </data>
   <data name="Help_TraceRoute_Sub" xml:space="preserve">
-    <value>Trace Route</value>
+    <value>Traceroute</value>
   </data>
   <data name="Help_TraceRoute_Text" xml:space="preserve">
-    <value>The trace route utility is used to measure network delays and determine the path taken to the given destination host. The utility can be accessed from the dropdown icon in the top right or by pressing Ctrl-T.</value>
+    <value>The Traceroute utility measures network delays and determines the path taken to a destination host. Results are displayed in a grid with Hop, Address, Hostname, and RTT columns. Access it from the menu (Ctrl-T).</value>
   </data>
   <data name="Help_FloodHost_Sub" xml:space="preserve">
     <value>Flood Host</value>
   </data>
   <data name="Help_FloodHost_Text" xml:space="preserve">
-    <value>The flood host utility is used to generate a significant amount of ICMP packets. To limit the flow, the utility waits until a reply is received before sending the next ICMP packet. The utility can be accessed from dropdown icon in the top right or by pressing Ctrl-F.</value>
+    <value>The Flood Host utility generates a significant amount of ICMP packets. To limit the flow, it waits until a reply is received before sending the next packet. Access it from the menu (Ctrl-F).</value>
   </data>
   <data name="Help_Options_Header" xml:space="preserve">
     <value>Options</value>
@@ -1053,5 +1053,29 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   </data>
   <data name="Help_CommandLine_Usage" xml:space="preserve">
     <value>Usage: MultiPingMonitor [-i interval] [-w timeout] [&lt;target_host&gt;...]</value>
+  </data>
+  <data name="Help_Options_StartInTray_Sub" xml:space="preserve">
+    <value>Start in tray</value>
+  </data>
+  <data name="Help_Options_StartInTray_Text" xml:space="preserve">
+    <value>When enabled in Options, MultiPingMonitor starts minimized to the system tray instead of showing the main window. Pinging begins immediately in the background. Double-click the tray icon to restore the window.</value>
+  </data>
+  <data name="Help_Options_Language_Sub" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Help_Options_Language_Text" xml:space="preserve">
+    <value>MultiPingMonitor supports English and Slovak. The language can be changed in Options. The change takes effect after restarting the application.</value>
+  </data>
+  <data name="Help_Options_PortableConfig_Sub" xml:space="preserve">
+    <value>Portable configuration</value>
+  </data>
+  <data name="Help_Options_PortableConfig_Text" xml:space="preserve">
+    <value>All settings are stored in a MultiPingMonitor.xml file located next to the executable. This makes the application fully portable — just copy the folder to another location or USB drive.</value>
+  </data>
+  <data name="Help_Options_TrayBehavior_Sub" xml:space="preserve">
+    <value>System tray</value>
+  </data>
+  <data name="Help_Options_TrayBehavior_Text" xml:space="preserve">
+    <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access options such as Open, New Instance, Status History, Options, and Exit.</value>
   </data>
 </root>
