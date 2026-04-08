@@ -54,7 +54,7 @@ namespace MultiPingMonitor.UI
             DialogWindow errorWindow;
             if (isWarning == true)
             {
-                errorWindow = DialogWindow.WarningWindow(message, "Save");
+                errorWindow = DialogWindow.WarningWindow(message, Properties.Strings.DialogButton_Save);
             }
             else
             {
@@ -274,17 +274,17 @@ namespace MultiPingMonitor.UI
         {
             if (PingInterval.Text.Length == 0)
             {
-                ShowError("Please enter a valid ping interval.", GeneralTab, PingInterval);
+                ShowError(Properties.Strings.Options_Validation_PingInterval, GeneralTab, PingInterval);
                 return false;
             }
             else if (PingTimeout.Text.Length == 0)
             {
-                ShowError("Please enter a valid ping timeout.", GeneralTab, PingTimeout);
+                ShowError(Properties.Strings.Options_Validation_PingTimeout, GeneralTab, PingTimeout);
                 return false;
             }
             else if (AlertThreshold.Text.Length == 0)
             {
-                ShowError("Please enter a valid alert threshold.", GeneralTab, AlertThreshold);
+                ShowError(Properties.Strings.Options_Validation_AlertThreshold, GeneralTab, AlertThreshold);
                 return false;
             }
 
@@ -425,7 +425,7 @@ namespace MultiPingMonitor.UI
                 }
                 else
                 {
-                    ShowError("Please enter a valid number of seconds for the auto-dismiss interval.", PopupAlertsTab, AutoDismissInterval);
+                    ShowError(Properties.Strings.Options_Validation_AutoDismiss, PopupAlertsTab, AutoDismissInterval);
                     return false;
                 }
             }
@@ -459,7 +459,7 @@ namespace MultiPingMonitor.UI
             // Validate TTL.
             if (!regex.IsMatch(TTL.Text) || int.Parse(TTL.Text) < 1 || int.Parse(TTL.Text) > 255)
             {
-                ShowError("Please enter a valid time to live (TTL) between 1 and 255.", AdvancedTab, TTL);
+                ShowError(Properties.Strings.Options_Validation_TTL, AdvancedTab, TTL);
                 return false;
             }
 
@@ -471,7 +471,7 @@ namespace MultiPingMonitor.UI
             {
                 if (!regex.IsMatch(PacketSize.Text) || int.Parse(PacketSize.Text) < 0 || int.Parse(PacketSize.Text) > 65500)
                 {
-                    ShowError("Please enter a valid data size between 0 and 65,500.", AdvancedTab, PacketSize);
+                    ShowError(Properties.Strings.Options_Validation_PacketSize, AdvancedTab, PacketSize);
                     return false;
                 }
 
@@ -517,22 +517,22 @@ namespace MultiPingMonitor.UI
 
                 if (SmtpServer.Text.Length == 0)
                 {
-                    ShowError("Please enter a valid SMTP server address.", EmailAlertsTab, SmtpServer);
+                    ShowError(Properties.Strings.Options_Validation_SmtpServer, EmailAlertsTab, SmtpServer);
                     return false;
                 }
                 else if (SmtpPort.Text.Length == 0 || !regex.IsMatch(SmtpPort.Text))
                 {
-                    ShowError("Please enter a valid port number for your SMTP server.", EmailAlertsTab, SmtpPort);
+                    ShowError(Properties.Strings.Options_Validation_SmtpPort, EmailAlertsTab, SmtpPort);
                     return false;
                 }
                 else if (EmailRecipientAddress.Text.Length == 0)
                 {
-                    ShowError("Please enter a valid recipient email address. This address will receive email alerts from MultiPingMonitor.", EmailAlertsTab, EmailRecipientAddress);
+                    ShowError(Properties.Strings.Options_Validation_EmailRecipient, EmailAlertsTab, EmailRecipientAddress);
                     return false;
                 }
                 else if (EmailFromAddress.Text.Length == 0)
                 {
-                    ShowError("Please enter a valid 'from' address. This address appears as the sender for any alerts that are sent.", EmailAlertsTab, EmailFromAddress);
+                    ShowError(Properties.Strings.Options_Validation_EmailFrom, EmailAlertsTab, EmailFromAddress);
                     return false;
                 }
                 if (IsSmtpAuthenticationRequired.IsChecked == true)
@@ -540,7 +540,7 @@ namespace MultiPingMonitor.UI
                     ApplicationOptions.IsEmailAuthenticationRequired = true;
                     if (SmtpUsername.Text.Length == 0)
                     {
-                        ShowError("Please enter a valid username for your mail server.", EmailAlertsTab, SmtpUsername);
+                        ShowError(Properties.Strings.Options_Validation_SmtpUsername, EmailAlertsTab, SmtpUsername);
                         return false;
                     }
                 }
@@ -584,7 +584,7 @@ namespace MultiPingMonitor.UI
                 }
                 catch
                 {
-                    ShowError("The specified path does not exist. Please enter a valid path.", AudioAlertTab, AudioDownFilePath);
+                    ShowError(Properties.Strings.Options_Validation_AudioPath, AudioAlertTab, AudioDownFilePath);
                     return false;
                 }
                 ApplicationOptions.IsAudioDownAlertEnabled = true;
@@ -608,7 +608,7 @@ namespace MultiPingMonitor.UI
                 }
                 catch
                 {
-                    ShowError("The specified path does not exist. Please enter a valid path.", AudioAlertTab, AudioUpFilePath);
+                    ShowError(Properties.Strings.Options_Validation_AudioPath, AudioAlertTab, AudioUpFilePath);
                     return false;
                 }
                 ApplicationOptions.IsAudioUpAlertEnabled = true;
@@ -628,7 +628,7 @@ namespace MultiPingMonitor.UI
             {
                 if (!Directory.Exists(LogPath.Text))
                 {
-                    ShowError("The specified path does not exist.  Please enter a valid path.", LogOutputTab, LogPath);
+                    ShowError(Properties.Strings.Options_Validation_LogPath, LogOutputTab, LogPath);
                     return false;
                 }
 
@@ -653,7 +653,7 @@ namespace MultiPingMonitor.UI
                 }
                 catch
                 {
-                    ShowError("The specified path does not exist.  Please enter a valid path.", LogOutputTab, LogStatusChangesPath);
+                    ShowError(Properties.Strings.Options_Validation_LogPath, LogOutputTab, LogStatusChangesPath);
                     return false;
                 }
 
@@ -681,12 +681,12 @@ namespace MultiPingMonitor.UI
             // Validate and save font sizes.
             if (!int.TryParse(FontSizeProbe.Text, out int fontSizeProbe) || fontSizeProbe < 6 || fontSizeProbe > 72)
             {
-                ShowError("Probe font size must be a number between 6 and 72.", DisplayTab, FontSizeProbe);
+                ShowError(Properties.Strings.Options_Validation_FontSizeProbe, DisplayTab, FontSizeProbe);
                 return false;
             }
             if (!int.TryParse(FontSizeScanner.Text, out int fontSizeScanner) || fontSizeScanner < 6 || fontSizeScanner > 72)
             {
-                ShowError("Scanner font size must be a number between 6 and 72.", DisplayTab, FontSizeScanner);
+                ShowError(Properties.Strings.Options_Validation_FontSizeScanner, DisplayTab, FontSizeScanner);
                 return false;
             }
             ApplicationOptions.FontSize_Probe = fontSizeProbe;
@@ -713,7 +713,7 @@ namespace MultiPingMonitor.UI
                 {
                     if (!Util.IsValidHtmlColor(box.Text))
                     {
-                        ShowError("Please enter a valid HTML color code.  Accepted formats are #RGB, #RRGGBB, and #AARRGGBB.  Example: #3266CF", LayoutTab, box);
+                        ShowError(Properties.Strings.Options_Validation_HtmlColor, LayoutTab, box);
                         box.SelectAll();
 
                         return false;
@@ -794,7 +794,7 @@ namespace MultiPingMonitor.UI
         private async void TestEmail_Click(object sender, RoutedEventArgs e)
         {
             TestEmailButton.IsEnabled = false;
-            TestEmailButton.Content = "Sending...";
+            TestEmailButton.Content = Properties.Strings.Options_Email_Test_Sending;
             var serverAddress = SmtpServer.Text;
             var serverPort = SmtpPort.Text;
             var isSslEnabled = IsSmtpSslEnabled.IsChecked == true;
@@ -824,9 +824,9 @@ namespace MultiPingMonitor.UI
                             {
                                 var dialogWindow = new DialogWindow(
                                     DialogWindow.DialogIcon.Info,
-                                    "Email Test",
-                                    "A test email was sent.",
-                                    "OK",
+                                    Properties.Strings.Options_Email_Test_Title,
+                                    Properties.Strings.Options_Email_Test_Success,
+                                    Properties.Strings.DialogButton_OK,
                                     false)
                                 {
                                     Owner = this
@@ -842,20 +842,20 @@ namespace MultiPingMonitor.UI
                         {
                             if (IsLoaded)
                             {
-                                ShowError($"Test failed: {ex.Message}", EmailAlertsTab, TestEmailButton);
+                                ShowError(string.Format(Properties.Strings.Options_Email_Test_Failed, ex.Message), EmailAlertsTab, TestEmailButton);
                             }
                         }));
                 }
             });
             TestEmailButton.IsEnabled = true;
-            TestEmailButton.Content = "Test";
+            TestEmailButton.Content = Properties.Strings.Options_Test;
         }
 
         private void BrowseLogPath_Click(object sender, RoutedEventArgs e)
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-                dialog.Description = "Select a location for the log files.";
+                dialog.Description = Properties.Strings.Options_Log_SelectFolder;
                 System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK)
@@ -869,7 +869,7 @@ namespace MultiPingMonitor.UI
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
-                dialog.Description = "Select a location for the log files.";
+                dialog.Description = Properties.Strings.Options_Log_SelectFolder;
                 System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK)
@@ -893,10 +893,10 @@ namespace MultiPingMonitor.UI
         {
             using (var audiofileDialog = new System.Windows.Forms.OpenFileDialog())
             {
-                audiofileDialog.Title = "Select an audio file";
+                audiofileDialog.Title = Properties.Strings.Options_Audio_SelectFile_Title;
                 audiofileDialog.RestoreDirectory = true;
                 audiofileDialog.Multiselect = false;
-                audiofileDialog.Filter = "WAV files (*.wav)|*.wav|All files|*.*";
+                audiofileDialog.Filter = Properties.Strings.Options_Audio_SelectFile_Filter;
                 audiofileDialog.DefaultExt = ".wav";
 
                 if (audiofileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -927,7 +927,7 @@ namespace MultiPingMonitor.UI
             }
             catch
             {
-                ShowError("Unable to play audio file.", AudioAlertTab, AudioAlertTab);
+                ShowError(Properties.Strings.Options_Audio_PlayError, AudioAlertTab, AudioAlertTab);
             }
         }
 

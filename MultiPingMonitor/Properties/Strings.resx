@@ -779,4 +779,234 @@
   <data name="Tray_StatusHistory" xml:space="preserve">
     <value>Status History</value>
   </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Tooltip_DontFragment" xml:space="preserve">
+    <value>The don't fragment flag instructs routers to discard the packet if it is too big.
+
+Your maximum transmission unit (MTU) can be determined by enabling this option and adjusting the packet data size.</value>
+  </data>
+  <data name="Tooltip_PopupAlerts" xml:space="preserve">
+    <value>Popup alerts appear in the lower right corner of your screen when a host you are monitoring changes status (down or up).
+
+You can always show popup alerts, show only when MultiPingMonitor is minimized, or disable entirely.</value>
+  </data>
+  <data name="Tooltip_AutoDismiss" xml:space="preserve">
+    <value>Automatically close popup alerts after the specified number of seconds.</value>
+  </data>
+  <data name="Tooltip_EnableEmailAlerts" xml:space="preserve">
+    <value>Enable this option to send an email alert every time a host changes status (down or up).</value>
+  </data>
+  <data name="Tooltip_AudioDown" xml:space="preserve">
+    <value>Enable this option to play a sound when a host goes down.</value>
+  </data>
+  <data name="Tooltip_AudioUp" xml:space="preserve">
+    <value>Enable this option to play a sound when a host comes up.</value>
+  </data>
+  <data name="Tooltip_LogOutput" xml:space="preserve">
+    <value>If this option is enabled, all ping output is written to a text file.
+You specify the base directory, and MultiPingMonitor will generate a separate log file for each host (hostname.txt).</value>
+  </data>
+  <data name="Tooltip_LogStatusChanges" xml:space="preserve">
+    <value>When enabled, this option writes all status changes to a text file.
+A status change is when a host you are pinging goes down, or a down host comes back up.
+The text file is saved in a tab delimited format that is suitable for Excel or database imports.</value>
+  </data>
+  <data name="Tooltip_AlwaysOnTop" xml:space="preserve">
+    <value>Keep the MultiPingMonitor application on top and always visible over other windows.</value>
+  </data>
+  <data name="Tooltip_MinimizeToTray" xml:space="preserve">
+    <value>Place an icon in the system tray when MultiPingMonitor is minimized.
+
+To keep the system tray icon always visible:
+Right-click the Windows taskbar and choose 'Taskbar settings'.
+Under 'Notifications area' click 'Select which icons to appear on the taskbar'. Look for MultiPingMonitor and set to 'On'.
+(Steps may vary)</value>
+  </data>
+  <data name="Tooltip_ExitToTray" xml:space="preserve">
+    <value>When closing MultiPingMonitor, the application will minimize to the system tray rather than exit. Right-click the tray icon to exit.
+
+To keep the system tray icon always visible:
+Right-click the Windows taskbar and choose 'Taskbar settings'.
+Under 'Notifications area' click 'Select which icons to appear on the taskbar'. Look for MultiPingMonitor and set to 'On'.
+(Steps may vary)</value>
+  </data>
+  <data name="Tooltip_RememberWindowPosition" xml:space="preserve">
+    <value>Save and restore the window position and size between sessions.</value>
+  </data>
+  <data name="Options_Validation_PingInterval" xml:space="preserve">
+    <value>Please enter a valid ping interval.</value>
+  </data>
+  <data name="Options_Validation_PingTimeout" xml:space="preserve">
+    <value>Please enter a valid ping timeout.</value>
+  </data>
+  <data name="Options_Validation_AlertThreshold" xml:space="preserve">
+    <value>Please enter a valid alert threshold.</value>
+  </data>
+  <data name="Options_Validation_AutoDismiss" xml:space="preserve">
+    <value>Please enter a valid number of seconds for the auto-dismiss interval.</value>
+  </data>
+  <data name="Options_Validation_TTL" xml:space="preserve">
+    <value>Please enter a valid time to live (TTL) between 1 and 255.</value>
+  </data>
+  <data name="Options_Validation_PacketSize" xml:space="preserve">
+    <value>Please enter a valid data size between 0 and 65,500.</value>
+  </data>
+  <data name="Options_Validation_SmtpServer" xml:space="preserve">
+    <value>Please enter a valid SMTP server address.</value>
+  </data>
+  <data name="Options_Validation_SmtpPort" xml:space="preserve">
+    <value>Please enter a valid port number for your SMTP server.</value>
+  </data>
+  <data name="Options_Validation_EmailRecipient" xml:space="preserve">
+    <value>Please enter a valid recipient email address. This address will receive email alerts from MultiPingMonitor.</value>
+  </data>
+  <data name="Options_Validation_EmailFrom" xml:space="preserve">
+    <value>Please enter a valid 'from' address. This address appears as the sender for any alerts that are sent.</value>
+  </data>
+  <data name="Options_Validation_SmtpUsername" xml:space="preserve">
+    <value>Please enter a valid username for your mail server.</value>
+  </data>
+  <data name="Options_Validation_AudioPath" xml:space="preserve">
+    <value>The specified path does not exist. Please enter a valid path.</value>
+  </data>
+  <data name="Options_Validation_LogPath" xml:space="preserve">
+    <value>The specified path does not exist. Please enter a valid path.</value>
+  </data>
+  <data name="Options_Validation_FontSizeProbe" xml:space="preserve">
+    <value>Probe font size must be a number between 6 and 72.</value>
+  </data>
+  <data name="Options_Validation_FontSizeScanner" xml:space="preserve">
+    <value>Scanner font size must be a number between 6 and 72.</value>
+  </data>
+  <data name="Options_Validation_HtmlColor" xml:space="preserve">
+    <value>Please enter a valid HTML color code. Accepted formats are #RGB, #RRGGBB, and #AARRGGBB. Example: #3266CF</value>
+  </data>
+  <data name="Options_Email_Test_Title" xml:space="preserve">
+    <value>Email Test</value>
+  </data>
+  <data name="Options_Email_Test_Success" xml:space="preserve">
+    <value>A test email was sent.</value>
+  </data>
+  <data name="Options_Email_Test_Sending" xml:space="preserve">
+    <value>Sending...</value>
+  </data>
+  <data name="Options_Email_Test_Failed" xml:space="preserve">
+    <value>Test failed: {0}</value>
+  </data>
+  <data name="Options_Log_SelectFolder" xml:space="preserve">
+    <value>Select a location for the log files.</value>
+  </data>
+  <data name="Options_Audio_SelectFile_Title" xml:space="preserve">
+    <value>Select an audio file</value>
+  </data>
+  <data name="Options_Audio_SelectFile_Filter" xml:space="preserve">
+    <value>WAV files (*.wav)|*.wav|All files|*.*</value>
+  </data>
+  <data name="Options_Audio_PlayError" xml:space="preserve">
+    <value>Unable to play audio file.</value>
+  </data>
+  <data name="Help_Intro" xml:space="preserve">
+    <value>MultiPingMonitor is a network utility that allows you to quickly monitor the availability of multiple hosts. Host monitors are easily added and removed, and dynamically resize with the application window. Color-coding allows you to tell at a glance the status of each host.</value>
+  </data>
+  <data name="Help_BasicUsage_Header" xml:space="preserve">
+    <value>Basic Usage</value>
+  </data>
+  <data name="Help_BasicUsage_AppOverview_Sub" xml:space="preserve">
+    <value>Application overview</value>
+  </data>
+  <data name="Help_BasicUsage_MonitorHost_Sub" xml:space="preserve">
+    <value>Monitor a host</value>
+  </data>
+  <data name="Help_BasicUsage_MonitorHost_Text" xml:space="preserve">
+    <value>Enter a hostname or IP address into the textbox, then press Enter or click Ping. MultiPingMonitor will continuously ping the host until you click Stop. Responses are displayed in the output area above the textbox. The output section will turn green when the host is responding and red when it is not responding. If an error occurs, the output area will turn orange.</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Sub" xml:space="preserve">
+    <value>Add a host monitor</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Prefix" xml:space="preserve">
+    <value>Click</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Button" xml:space="preserve">
+    <value>Add Host</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Suffix" xml:space="preserve">
+    <value>from the menu bar, or use the keyboard shortcut,</value>
+  </data>
+  <data name="Help_BasicUsage_RemoveHost_Sub" xml:space="preserve">
+    <value>Remove a host monitor</value>
+  </data>
+  <data name="Help_BasicUsage_RemoveHost_Text" xml:space="preserve">
+    <value>When you hover your mouse over a host monitor, an X icon will appear in the top-right corner. Click the X icon to remove that instance.</value>
+  </data>
+  <data name="Help_BasicUsage_Columns_Sub" xml:space="preserve">
+    <value>Columns</value>
+  </data>
+  <data name="Help_BasicUsage_Columns_Text" xml:space="preserve">
+    <value>Click Columns in the menu bar then move the slider to the desired number of columns. This sets the number of host monitors to display in a single row. Additional rows will be created as needed.</value>
+  </data>
+  <data name="Help_ExtraFeatures_Header" xml:space="preserve">
+    <value>Extra Features</value>
+  </data>
+  <data name="Help_PortMonitor_Sub" xml:space="preserve">
+    <value>Port Monitor</value>
+  </data>
+  <data name="Help_PortMonitor_Text_Before" xml:space="preserve">
+    <value>To monitor a specific TCP port, simply enter the hostname or IP address followed by a colon and the desired port number. MultiPingMonitor will then continuously try to connect to the given port and display whether or not the connection is successful. Example -</value>
+  </data>
+  <data name="Help_PortMonitor_Text_After" xml:space="preserve">
+    <value>, will monitor port 80 on SERVER01.</value>
+  </data>
+  <data name="Help_TraceRoute_Sub" xml:space="preserve">
+    <value>Trace Route</value>
+  </data>
+  <data name="Help_TraceRoute_Text" xml:space="preserve">
+    <value>The trace route utility is used to measure network delays and determine the path taken to the given destination host. The utility can be accessed from the dropdown icon in the top right or by pressing Ctrl-T.</value>
+  </data>
+  <data name="Help_FloodHost_Sub" xml:space="preserve">
+    <value>Flood Host</value>
+  </data>
+  <data name="Help_FloodHost_Text" xml:space="preserve">
+    <value>The flood host utility is used to generate a significant amount of ICMP packets. To limit the flow, the utility waits until a reply is received before sending the next ICMP packet. The utility can be accessed from dropdown icon in the top right or by pressing Ctrl-F.</value>
+  </data>
+  <data name="Help_Options_Header" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Help_Options_PingInterval_Sub" xml:space="preserve">
+    <value>Ping interval</value>
+  </data>
+  <data name="Help_Options_PingInterval_Text" xml:space="preserve">
+    <value>The time to wait between sending each packet. The time can be specified in seconds, minutes, or hours.</value>
+  </data>
+  <data name="Help_Options_PingTimeout_Sub" xml:space="preserve">
+    <value>Ping timeout</value>
+  </data>
+  <data name="Help_Options_PingTimeout_Text" xml:space="preserve">
+    <value>The maximum time to wait for a response, in seconds.</value>
+  </data>
+  <data name="Help_Options_Email_Sub" xml:space="preserve">
+    <value>Send email when host goes down or up</value>
+  </data>
+  <data name="Help_Options_Email_Text" xml:space="preserve">
+    <value>Send an email each time a host changes status (from down to up or from up to down). A mail server, recipient email address, and from email address must all be specified.</value>
+  </data>
+  <data name="Help_Options_AlwaysOnTop_Sub" xml:space="preserve">
+    <value>Keep window always on top</value>
+  </data>
+  <data name="Help_Options_AlwaysOnTop_Text" xml:space="preserve">
+    <value>The MultiPingMonitor window will remain on top of all other application windows.</value>
+  </data>
+  <data name="Help_Options_Logging_Sub" xml:space="preserve">
+    <value>Log all output to files</value>
+  </data>
+  <data name="Help_Options_Logging_Text" xml:space="preserve">
+    <value>Write all ping responses to a text file. The file will be named &lt;hostname&gt;.txt and will be saved to the specified directory. If the file already exists, new output will be appended to the existing file.</value>
+  </data>
+  <data name="Help_CommandLine_Header" xml:space="preserve">
+    <value>Command Line Usage</value>
+  </data>
+  <data name="Help_CommandLine_Usage" xml:space="preserve">
+    <value>Usage: MultiPingMonitor [-i interval] [-w timeout] [&lt;target_host&gt;...]</value>
+  </data>
 </root>

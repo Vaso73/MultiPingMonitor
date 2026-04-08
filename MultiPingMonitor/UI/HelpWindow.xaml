@@ -160,43 +160,43 @@
                            Style="{StaticResource HeaderText}">
                     Basic Usage
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_AppOverview" Style="{StaticResource SubHeaderText}">
                     Application overview
                 </Paragraph>
                 <Paragraph Style="{StaticResource ParagraphText}">
 
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_MonitorHost" Style="{StaticResource SubHeaderText}">
                     Monitor a host
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_MonitorHost" Style="{StaticResource ParagraphText}">
                     Enter a hostname or IP address into the textbox, then press Enter or click Ping.
                     MultiPingMonitor will continuously ping the host until you click Stop.
                     Responses are displayed in the output area above the textbox.
                     The output section will turn green when the host is responding and red when it is not responding.
                     If an error occurs, the output area will turn orange.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_AddHost" Style="{StaticResource SubHeaderText}">
                     Add a host monitor
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_AddHost" Style="{StaticResource ParagraphText}">
                     <Run>Click</Run>
                     <Image Source="{StaticResource icon.add}" Width="14" Height="14" Margin="3,0,0,0"/>
                     <Run FontWeight="SemiBold">Add Host</Run>
                     <Run>from the menu bar, or use the keyboard shortcut,</Run>
                     <Run FontWeight="SemiBold">Alt-A</Run> .
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_RemoveHost" Style="{StaticResource SubHeaderText}">
                     Remove a host monitor
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_RemoveHost" Style="{StaticResource ParagraphText}">
                     When you hover your mouse over a host monitor, an X icon will appear in the top-right corner.
                     Click the X icon to remove that instance.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_Columns" Style="{StaticResource SubHeaderText}">
                     Columns
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_Columns" Style="{StaticResource ParagraphText}">
                     Click Columns in the menu bar then move the slider to the desired number of columns.
                     This sets the number of host monitors to display in a single row.
                     Additional rows will be created as needed.
@@ -207,26 +207,26 @@
                            Style="{StaticResource HeaderText}">
                     Extra Features
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_PortMonitor" Style="{StaticResource SubHeaderText}">
                     Port Monitor
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_PortMonitor" Style="{StaticResource ParagraphText}">
                     To monitor a specific TCP port, simply enter the hostname or IP address followed by a colon and the desired port number.
                     MultiPingMonitor will then continuously try to connect to the given port and display whether or not the connection is successful.
                     Example -
                     <Bold>SERVER01:80</Bold> , will monitor port 80 on SERVER01.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_TraceRoute" Style="{StaticResource SubHeaderText}">
                     Trace Route
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_TraceRoute" Style="{StaticResource ParagraphText}">
                     The trace route utility is used to measure network delays and determine the path taken to the given destination host.
                     The utility can be accessed from the dropdown icon in the top right or by pressing Ctrl-T.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_FloodHostHelp" Style="{StaticResource SubHeaderText}">
                     Flood Host
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_FloodHostHelp" Style="{StaticResource ParagraphText}">
                     The flood host utility is used to generate a significant amount of ICMP packets.
                     To limit the flow, the utility waits until a reply is received before sending the next ICMP packet.
                     The utility can be accessed from dropdown icon in the top right or by pressing Ctrl-F.
@@ -237,35 +237,35 @@
                            Style="{StaticResource HeaderText}">
                     Options
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_PingIntervalHelp" Style="{StaticResource SubHeaderText}">
                     Ping interval
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_PingIntervalHelp" Style="{StaticResource ParagraphText}">
                     The time to wait between sending each packet.  The time can be specified in seconds, minutes, or hours.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_PingTimeoutHelp" Style="{StaticResource SubHeaderText}">
                     Ping timeout
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_PingTimeoutHelp" Style="{StaticResource ParagraphText}">
                     The maximum time to wait for a response, in seconds.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_SendEmailHelp" Style="{StaticResource SubHeaderText}">
                     Send email when host goes down or up
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_SendEmailHelp" Style="{StaticResource ParagraphText}">
                     Send an email each time a host changes status (from down to up or from up to down).
                     A mail server, recipient email address, and from email address must all be specified.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_AlwaysOnTopHelp" Style="{StaticResource SubHeaderText}">
                     Keep window always on top
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_AlwaysOnTopHelp" Style="{StaticResource ParagraphText}">
                     The MultiPingMonitor window will remain on top of all other application windows.
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_LogOutputHelp" Style="{StaticResource SubHeaderText}">
                     Log all output to files
                 </Paragraph>
-                <Paragraph Style="{StaticResource ParagraphText}">
+                <Paragraph Name="Para_LogOutputHelp" Style="{StaticResource ParagraphText}">
                     Write all ping responses to a text file.
                     The file will be named &lt;hostname&gt;.txt and will be saved to the specified directory.
                     If the file already exists, new output will be appended to the existing file.
@@ -276,7 +276,7 @@
                            Style="{StaticResource HeaderText}">
                     Command Line Usage
                 </Paragraph>
-                <Paragraph Style="{StaticResource SubHeaderText}">
+                <Paragraph Name="Sub_CommandLineUsageHelp" Style="{StaticResource SubHeaderText}">
                     Usage: MultiPingMonitor [-i interval] [-w timeout] [&lt;target_host>...]
                 </Paragraph>
 

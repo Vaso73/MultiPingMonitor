@@ -2029,6 +2029,645 @@ namespace MultiPingMonitor.Properties {
                 return ResourceManager.GetString("Tray_StatusHistory", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Options_Title {
+            get {
+                return ResourceManager.GetString("Options_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The don't fragment flag instructs routers to discard the packet if it is too big.
+        /// </summary>
+        public static string Tooltip_DontFragment {
+            get {
+                return ResourceManager.GetString("Tooltip_DontFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popup alerts appear in the lower right corner of your screen...
+        /// </summary>
+        public static string Tooltip_PopupAlerts {
+            get {
+                return ResourceManager.GetString("Tooltip_PopupAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically close popup alerts after the specified number of seconds.
+        /// </summary>
+        public static string Tooltip_AutoDismiss {
+            get {
+                return ResourceManager.GetString("Tooltip_AutoDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to send an email alert every time a host changes status.
+        /// </summary>
+        public static string Tooltip_EnableEmailAlerts {
+            get {
+                return ResourceManager.GetString("Tooltip_EnableEmailAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to play a sound when a host goes down.
+        /// </summary>
+        public static string Tooltip_AudioDown {
+            get {
+                return ResourceManager.GetString("Tooltip_AudioDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to play a sound when a host comes up.
+        /// </summary>
+        public static string Tooltip_AudioUp {
+            get {
+                return ResourceManager.GetString("Tooltip_AudioUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If this option is enabled, all ping output is written to a text file.
+        /// </summary>
+        public static string Tooltip_LogOutput {
+            get {
+                return ResourceManager.GetString("Tooltip_LogOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, this option writes all status changes to a text file.
+        /// </summary>
+        public static string Tooltip_LogStatusChanges {
+            get {
+                return ResourceManager.GetString("Tooltip_LogStatusChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep the MultiPingMonitor application on top and always visible over other windows.
+        /// </summary>
+        public static string Tooltip_AlwaysOnTop {
+            get {
+                return ResourceManager.GetString("Tooltip_AlwaysOnTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place an icon in the system tray when MultiPingMonitor is minimized.
+        /// </summary>
+        public static string Tooltip_MinimizeToTray {
+            get {
+                return ResourceManager.GetString("Tooltip_MinimizeToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When closing MultiPingMonitor, the application will minimize to the system tray rather than exit.
+        /// </summary>
+        public static string Tooltip_ExitToTray {
+            get {
+                return ResourceManager.GetString("Tooltip_ExitToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and restore the window position and size between sessions.
+        /// </summary>
+        public static string Tooltip_RememberWindowPosition {
+            get {
+                return ResourceManager.GetString("Tooltip_RememberWindowPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid ping interval.
+        /// </summary>
+        public static string Options_Validation_PingInterval {
+            get {
+                return ResourceManager.GetString("Options_Validation_PingInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid ping timeout.
+        /// </summary>
+        public static string Options_Validation_PingTimeout {
+            get {
+                return ResourceManager.GetString("Options_Validation_PingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid alert threshold.
+        /// </summary>
+        public static string Options_Validation_AlertThreshold {
+            get {
+                return ResourceManager.GetString("Options_Validation_AlertThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid number of seconds for the auto-dismiss interval.
+        /// </summary>
+        public static string Options_Validation_AutoDismiss {
+            get {
+                return ResourceManager.GetString("Options_Validation_AutoDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid time to live (TTL) between 1 and 255.
+        /// </summary>
+        public static string Options_Validation_TTL {
+            get {
+                return ResourceManager.GetString("Options_Validation_TTL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid data size between 0 and 65,500.
+        /// </summary>
+        public static string Options_Validation_PacketSize {
+            get {
+                return ResourceManager.GetString("Options_Validation_PacketSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid SMTP server address.
+        /// </summary>
+        public static string Options_Validation_SmtpServer {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid port number for your SMTP server.
+        /// </summary>
+        public static string Options_Validation_SmtpPort {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid recipient email address.
+        /// </summary>
+        public static string Options_Validation_EmailRecipient {
+            get {
+                return ResourceManager.GetString("Options_Validation_EmailRecipient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid 'from' address.
+        /// </summary>
+        public static string Options_Validation_EmailFrom {
+            get {
+                return ResourceManager.GetString("Options_Validation_EmailFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid username for your mail server.
+        /// </summary>
+        public static string Options_Validation_SmtpUsername {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified path does not exist. Please enter a valid path.
+        /// </summary>
+        public static string Options_Validation_AudioPath {
+            get {
+                return ResourceManager.GetString("Options_Validation_AudioPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified path does not exist. Please enter a valid path.
+        /// </summary>
+        public static string Options_Validation_LogPath {
+            get {
+                return ResourceManager.GetString("Options_Validation_LogPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe font size must be a number between 6 and 72.
+        /// </summary>
+        public static string Options_Validation_FontSizeProbe {
+            get {
+                return ResourceManager.GetString("Options_Validation_FontSizeProbe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanner font size must be a number between 6 and 72.
+        /// </summary>
+        public static string Options_Validation_FontSizeScanner {
+            get {
+                return ResourceManager.GetString("Options_Validation_FontSizeScanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid HTML color code.
+        /// </summary>
+        public static string Options_Validation_HtmlColor {
+            get {
+                return ResourceManager.GetString("Options_Validation_HtmlColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Test.
+        /// </summary>
+        public static string Options_Email_Test_Title {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A test email was sent.
+        /// </summary>
+        public static string Options_Email_Test_Success {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending...
+        /// </summary>
+        public static string Options_Email_Test_Sending {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Sending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test failed: {0}.
+        /// </summary>
+        public static string Options_Email_Test_Failed {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a location for the log files.
+        /// </summary>
+        public static string Options_Log_SelectFolder {
+            get {
+                return ResourceManager.GetString("Options_Log_SelectFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an audio file.
+        /// </summary>
+        public static string Options_Audio_SelectFile_Title {
+            get {
+                return ResourceManager.GetString("Options_Audio_SelectFile_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WAV files (*.wav)|*.wav|All files|*.*
+        /// </summary>
+        public static string Options_Audio_SelectFile_Filter {
+            get {
+                return ResourceManager.GetString("Options_Audio_SelectFile_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to play audio file.
+        /// </summary>
+        public static string Options_Audio_PlayError {
+            get {
+                return ResourceManager.GetString("Options_Audio_PlayError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor is a network utility...
+        /// </summary>
+        public static string Help_Intro {
+            get {
+                return ResourceManager.GetString("Help_Intro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Basic Usage.
+        /// </summary>
+        public static string Help_BasicUsage_Header {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application overview.
+        /// </summary>
+        public static string Help_BasicUsage_AppOverview_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AppOverview_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor a host.
+        /// </summary>
+        public static string Help_BasicUsage_MonitorHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_MonitorHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a hostname or IP address into the textbox...
+        /// </summary>
+        public static string Help_BasicUsage_MonitorHost_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_MonitorHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a host monitor.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Prefix {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Host.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Button {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to from the menu bar, or use the keyboard shortcut,.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Suffix {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Suffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove a host monitor.
+        /// </summary>
+        public static string Help_BasicUsage_RemoveHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_RemoveHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you hover your mouse over a host monitor...
+        /// </summary>
+        public static string Help_BasicUsage_RemoveHost_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_RemoveHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string Help_BasicUsage_Columns_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Columns_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click Columns in the menu bar...
+        /// </summary>
+        public static string Help_BasicUsage_Columns_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Columns_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra Features.
+        /// </summary>
+        public static string Help_ExtraFeatures_Header {
+            get {
+                return ResourceManager.GetString("Help_ExtraFeatures_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port Monitor.
+        /// </summary>
+        public static string Help_PortMonitor_Sub {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To monitor a specific TCP port...
+        /// </summary>
+        public static string Help_PortMonitor_Text_Before {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Text_Before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to , will monitor port 80 on SERVER01.
+        /// </summary>
+        public static string Help_PortMonitor_Text_After {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Text_After", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace Route.
+        /// </summary>
+        public static string Help_TraceRoute_Sub {
+            get {
+                return ResourceManager.GetString("Help_TraceRoute_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trace route utility is used to measure network delays...
+        /// </summary>
+        public static string Help_TraceRoute_Text {
+            get {
+                return ResourceManager.GetString("Help_TraceRoute_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flood Host.
+        /// </summary>
+        public static string Help_FloodHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_FloodHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The flood host utility is used to generate a significant amount of ICMP packets.
+        /// </summary>
+        public static string Help_FloodHost_Text {
+            get {
+                return ResourceManager.GetString("Help_FloodHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Help_Options_Header {
+            get {
+                return ResourceManager.GetString("Help_Options_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping interval.
+        /// </summary>
+        public static string Help_Options_PingInterval_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_PingInterval_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The time to wait between sending each packet.
+        /// </summary>
+        public static string Help_Options_PingInterval_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_PingInterval_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping timeout.
+        /// </summary>
+        public static string Help_Options_PingTimeout_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_PingTimeout_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum time to wait for a response, in seconds.
+        /// </summary>
+        public static string Help_Options_PingTimeout_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_PingTimeout_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send email when host goes down or up.
+        /// </summary>
+        public static string Help_Options_Email_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_Email_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send an email each time a host changes status.
+        /// </summary>
+        public static string Help_Options_Email_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_Email_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep window always on top.
+        /// </summary>
+        public static string Help_Options_AlwaysOnTop_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_AlwaysOnTop_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MultiPingMonitor window will remain on top of all other application windows.
+        /// </summary>
+        public static string Help_Options_AlwaysOnTop_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_AlwaysOnTop_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log all output to files.
+        /// </summary>
+        public static string Help_Options_Logging_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_Logging_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write all ping responses to a text file.
+        /// </summary>
+        public static string Help_Options_Logging_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_Logging_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Line Usage.
+        /// </summary>
+        public static string Help_CommandLine_Header {
+            get {
+                return ResourceManager.GetString("Help_CommandLine_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: MultiPingMonitor [-i interval] [-w timeout] [target_host...].
+        /// </summary>
+        public static string Help_CommandLine_Usage {
+            get {
+                return ResourceManager.GetString("Help_CommandLine_Usage", resourceCulture);
+            }
+        }
 
     }
 }

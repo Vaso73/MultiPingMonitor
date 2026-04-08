@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.UI
@@ -22,14 +24,131 @@ namespace MultiPingMonitor.UI
             Version.Inlines.Add(new Run($"Version: {version.Major}.{version.Minor}.{version.Build}"));
 
             // Generate copyright text based on the current year.
-            //Copyright.Text = $"Copyright \u00a9 {DateTime.Now.Year.ToString()} Ryan Smith";
             Copyright.Inlines.Clear();
             Copyright.Inlines.Add(new Run($"Copyright \u00a9 {DateTime.Now.Year.ToString()} Ryan Smith"));
+
+            // Localize all body text from string resources.
+            ApplyLocalizedHelpContent();
 
             // Set initial focus to scrollviewer.  That way you can scroll the help window with the keyboard
             // without having to first click in the window.
             MainDocument.Focus();
+        }
 
+        private void ApplyLocalizedHelpContent()
+        {
+            // Intro
+            Intro.Inlines.Clear();
+            Intro.Inlines.Add(new Run(Properties.Strings.Help_Intro));
+
+            // Basic Usage section header
+            BasicUsage.Inlines.Clear();
+            BasicUsage.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_Header));
+
+            // Application overview sub-header
+            Sub_AppOverview.Inlines.Clear();
+            Sub_AppOverview.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_AppOverview_Sub));
+
+            // Monitor a host
+            Sub_MonitorHost.Inlines.Clear();
+            Sub_MonitorHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_MonitorHost_Sub));
+            Para_MonitorHost.Inlines.Clear();
+            Para_MonitorHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_MonitorHost_Text));
+
+            // Add a host monitor
+            Sub_AddHost.Inlines.Clear();
+            Sub_AddHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_AddHost_Sub));
+            Para_AddHost.Inlines.Clear();
+            Para_AddHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_AddHost_Prefix + " "));
+            var addIconSource = (ImageSource)TryFindResource("icon.add");
+            if (addIconSource != null)
+            {
+                var addImage = new Image { Source = addIconSource, Width = 14, Height = 14 };
+                Para_AddHost.Inlines.Add(new InlineUIContainer(addImage));
+            }
+            Para_AddHost.Inlines.Add(new Run(" "));
+            Para_AddHost.Inlines.Add(new Bold(new Run(Properties.Strings.Help_BasicUsage_AddHost_Button)));
+            Para_AddHost.Inlines.Add(new Run(" " + Properties.Strings.Help_BasicUsage_AddHost_Suffix + " "));
+            Para_AddHost.Inlines.Add(new Bold(new Run("Alt-A")));
+            Para_AddHost.Inlines.Add(new Run("."));
+
+            // Remove a host monitor
+            Sub_RemoveHost.Inlines.Clear();
+            Sub_RemoveHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_RemoveHost_Sub));
+            Para_RemoveHost.Inlines.Clear();
+            Para_RemoveHost.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_RemoveHost_Text));
+
+            // Columns
+            Sub_Columns.Inlines.Clear();
+            Sub_Columns.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_Columns_Sub));
+            Para_Columns.Inlines.Clear();
+            Para_Columns.Inlines.Add(new Run(Properties.Strings.Help_BasicUsage_Columns_Text));
+
+            // Extra Features section header
+            ExtraFeatures.Inlines.Clear();
+            ExtraFeatures.Inlines.Add(new Run(Properties.Strings.Help_ExtraFeatures_Header));
+
+            // Port Monitor
+            Sub_PortMonitor.Inlines.Clear();
+            Sub_PortMonitor.Inlines.Add(new Run(Properties.Strings.Help_PortMonitor_Sub));
+            Para_PortMonitor.Inlines.Clear();
+            Para_PortMonitor.Inlines.Add(new Run(Properties.Strings.Help_PortMonitor_Text_Before + " "));
+            Para_PortMonitor.Inlines.Add(new Bold(new Run("SERVER01:80")));
+            Para_PortMonitor.Inlines.Add(new Run(Properties.Strings.Help_PortMonitor_Text_After));
+
+            // Trace Route
+            Sub_TraceRoute.Inlines.Clear();
+            Sub_TraceRoute.Inlines.Add(new Run(Properties.Strings.Help_TraceRoute_Sub));
+            Para_TraceRoute.Inlines.Clear();
+            Para_TraceRoute.Inlines.Add(new Run(Properties.Strings.Help_TraceRoute_Text));
+
+            // Flood Host
+            Sub_FloodHostHelp.Inlines.Clear();
+            Sub_FloodHostHelp.Inlines.Add(new Run(Properties.Strings.Help_FloodHost_Sub));
+            Para_FloodHostHelp.Inlines.Clear();
+            Para_FloodHostHelp.Inlines.Add(new Run(Properties.Strings.Help_FloodHost_Text));
+
+            // Options section header
+            Options.Inlines.Clear();
+            Options.Inlines.Add(new Run(Properties.Strings.Help_Options_Header));
+
+            // Ping interval
+            Sub_PingIntervalHelp.Inlines.Clear();
+            Sub_PingIntervalHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PingInterval_Sub));
+            Para_PingIntervalHelp.Inlines.Clear();
+            Para_PingIntervalHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PingInterval_Text));
+
+            // Ping timeout
+            Sub_PingTimeoutHelp.Inlines.Clear();
+            Sub_PingTimeoutHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PingTimeout_Sub));
+            Para_PingTimeoutHelp.Inlines.Clear();
+            Para_PingTimeoutHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_PingTimeout_Text));
+
+            // Send email
+            Sub_SendEmailHelp.Inlines.Clear();
+            Sub_SendEmailHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Email_Sub));
+            Para_SendEmailHelp.Inlines.Clear();
+            Para_SendEmailHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Email_Text));
+
+            // Always on top
+            Sub_AlwaysOnTopHelp.Inlines.Clear();
+            Sub_AlwaysOnTopHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_AlwaysOnTop_Sub));
+            Para_AlwaysOnTopHelp.Inlines.Clear();
+            Para_AlwaysOnTopHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_AlwaysOnTop_Text));
+
+            // Log output
+            Sub_LogOutputHelp.Inlines.Clear();
+            Sub_LogOutputHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Logging_Sub));
+            Para_LogOutputHelp.Inlines.Clear();
+            Para_LogOutputHelp.Inlines.Add(new Run(Properties.Strings.Help_Options_Logging_Text));
+
+            // Command Line Usage section header
+            CommandLineUsage.Inlines.Clear();
+            CommandLineUsage.Inlines.Add(new Run(Properties.Strings.Help_CommandLine_Header));
+
+            // Command line usage sub-header
+            Sub_CommandLineUsageHelp.Inlines.Clear();
+            Sub_CommandLineUsageHelp.Inlines.Add(new Run(Properties.Strings.Help_CommandLine_Usage));
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
