@@ -920,6 +920,18 @@ namespace MultiPingMonitor.UI
             {
                 HideToTray();
             }
+
+            // Toggle maximize / restore title bar buttons.
+            if (WindowState == WindowState.Maximized)
+            {
+                maximizeButton.Visibility = Visibility.Collapsed;
+                restoreButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                maximizeButton.Visibility = Visibility.Visible;
+                restoreButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -990,6 +1002,25 @@ namespace MultiPingMonitor.UI
             var tb = sender as TextBox;
             (tb.DataContext as Probe).SelStart = tb.SelectionStart;
             (tb.DataContext as Probe).SelLength = tb.SelectionLength;
+        }
+
+        // ── Custom title bar button handlers ─────────────────────────────────
+
+        private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         // ── Edge snap implementation ──────────────────────────────────────────
