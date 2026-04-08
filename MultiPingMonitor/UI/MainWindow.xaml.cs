@@ -68,6 +68,19 @@ namespace MultiPingMonitor.UI
         {
             InitializeComponent();
             InitializeApplication();
+
+            // Suppress any visual flash when starting directly in tray.
+            // Opacity=0 makes the window fully transparent (WS_EX_LAYERED / alpha=0)
+            // so Show()→Window_Loaded→HideToTray() completes without the user ever
+            // seeing the main window.  ShowInTaskbar=false prevents a taskbar button
+            // from appearing for that same brief period.
+            // Both are restored to their normal values in RestoreFromTray().
+            if (ApplicationOptions.StartInTray)
+            {
+                Opacity = 0;
+                ShowInTaskbar = false;
+            }
+
             InitializeTrayIcon();
             WindowPlacementService.Attach(this, "MainWindow");
         }
@@ -849,6 +862,10 @@ namespace MultiPingMonitor.UI
         private void RestoreFromTray()
         {
             _IsHiddenToTray = false;
+            // Ensure window is fully opaque and shows in the taskbar before
+            // making it visible (covers the StartInTray startup-suppression case).
+            Opacity = 1;
+            ShowInTaskbar = true;
             WindowState = WindowState.Minimized;
             Visibility = Visibility.Visible;
             Show();
