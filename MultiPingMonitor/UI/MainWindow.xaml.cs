@@ -25,6 +25,10 @@ namespace MultiPingMonitor.UI
         // Set to true when the main window is hidden to the system tray.
         private bool _IsHiddenToTray = false;
 
+        // Set to true once startup content (probes, CLI args) has been initialized.
+        // Prevents double-initialization when the window is first shown after a tray-only startup.
+        private bool _startupContentInitialized = false;
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -68,21 +72,18 @@ namespace MultiPingMonitor.UI
         {
             InitializeComponent();
             InitializeApplication();
-
-            // Suppress any visual flash when starting directly in tray.
-            // Opacity=0 makes the window fully transparent (WS_EX_LAYERED / alpha=0)
-            // so Show()→Window_Loaded→HideToTray() completes without the user ever
-            // seeing the main window.  ShowInTaskbar=false prevents a taskbar button
-            // from appearing for that same brief period.
-            // Both are restored to their normal values in RestoreFromTray().
-            if (ApplicationOptions.StartInTray)
-            {
-                Opacity = 0;
-                ShowInTaskbar = false;
-            }
-
             InitializeTrayIcon();
             WindowPlacementService.Attach(this, "MainWindow");
+        }
+
+        /// <summary>
+        /// Called by App.xaml.cs instead of Show() when StartInTray=true.
+        /// Initializes probes and CLI args without making the window visible,
+        /// so the app starts directly in the tray with zero visible window flash.
+        /// </summary>
+        internal void InitializeForStartInTray()
+        {
+            InitializeStartupContent();
         }
 
         private void InitializeApplication()
@@ -100,6 +101,26 @@ namespace MultiPingMonitor.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // When StartInTray=true the window is never shown at startup, so
+            // InitializeForStartInTray() is called directly from App.xaml.cs and
+            // sets _startupContentInitialized=true before this event can fire.
+            // Guard here prevents double-initialization if Window_Loaded fires later
+            // (e.g. when the user restores the window from tray for the first time).
+            if (!_startupContentInitialized)
+            {
+                InitializeStartupContent();
+            }
+        }
+
+        /// <summary>
+        /// Initializes probe collection, CLI arguments, and column layout.
+        /// Called either from Window_Loaded (normal startup) or InitializeForStartInTray()
+        /// (tray-only startup where the window is never shown).
+        /// </summary>
+        private void InitializeStartupContent()
+        {
+            _startupContentInitialized = true;
+
             // Set initial ColumnCount slider value.
             ColumnCount.Value = ApplicationOptions.InitialColumnCount > 0
                 ? ApplicationOptions.InitialColumnCount
@@ -132,12 +153,14 @@ namespace MultiPingMonitor.UI
                         ? ApplicationOptions.InitialProbeCount
                         : 2);
 
-                // Determine statup mode.
+                // Determine startup mode. Skip modes that require the window to be
+                // visible (e.g. MultiInput dialog) when starting hidden in tray.
                 switch (ApplicationOptions.InitialStartMode)
                 {
                     case ApplicationOptions.StartMode.MultiInput:
                         RefreshColumnCount();
-                        MultiInputWindowExecute(null, null);
+                        if (IsVisible)
+                            MultiInputWindowExecute(null, null);
                         break;
                     case ApplicationOptions.StartMode.Favorite:
                         if (ApplicationOptions.InitialFavorite != null
@@ -150,12 +173,6 @@ namespace MultiPingMonitor.UI
             }
 
             RefreshColumnCount();
-
-            // If configured to start in tray, hide the window immediately after loading.
-            if (ApplicationOptions.StartInTray)
-            {
-                HideToTray();
-            }
         }
 
         private void RefreshGuiState()
@@ -862,10 +879,6 @@ namespace MultiPingMonitor.UI
         private void RestoreFromTray()
         {
             _IsHiddenToTray = false;
-            // Ensure window is fully opaque and shows in the taskbar before
-            // making it visible (covers the StartInTray startup-suppression case).
-            Opacity = 1;
-            ShowInTaskbar = true;
             WindowState = WindowState.Minimized;
             Visibility = Visibility.Visible;
             Show();
