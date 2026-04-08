@@ -2076,6 +2076,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hostname.
+        /// </summary>
+        public static string Traceroute_ColumnHostname {
+            get {
+                return ResourceManager.GetString("Traceroute_ColumnHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RTT.
         /// </summary>
         public static string Traceroute_ColumnRTT {

@@ -794,6 +794,9 @@
   <data name="Traceroute_ColumnAddress" xml:space="preserve">
     <value>IP Address</value>
   </data>
+  <data name="Traceroute_ColumnHostname" xml:space="preserve">
+    <value>Hostname</value>
+  </data>
   <data name="Traceroute_ColumnRTT" xml:space="preserve">
     <value>RTT</value>
   </data>

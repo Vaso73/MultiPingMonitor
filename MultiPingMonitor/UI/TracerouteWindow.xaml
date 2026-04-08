@@ -6,7 +6,7 @@
         UseLayoutRounding="True"
         Title="{x:Static resource:Strings.Traceroute_Title}"
         Height="460"
-        Width="520"
+        Width="680"
         MinHeight="300"
         MinWidth="350"
         WindowStartupLocation="Manual"
@@ -192,6 +192,19 @@
                                     <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}"/>
                                 </DataTrigger>
                             </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Hostname (reverse DNS) -->
+                <DataGridTextColumn Binding="{Binding HostName}"
+                                    Header="{x:Static resource:Strings.Traceroute_ColumnHostname}"
+                                    Width="Auto" MinWidth="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="5,2,25,2"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

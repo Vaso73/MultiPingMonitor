@@ -145,6 +145,10 @@ namespace MultiPingMonitor.UI
                         _route.networkRoute.Add(node);
                         TraceData.ScrollIntoView(node);
 
+                        // Fire-and-forget async reverse DNS lookup for valid hops.
+                        if (reply.Status != IPStatus.TimedOut && reply.Address != null)
+                            _ = ResolveHostNameAsync(node, reply.Address, token);
+
                         if (reply.Status == IPStatus.Success)
                         {
                             TraceStatus.Text = "\u2605 " + Strings.Traceroute_TraceComplete;
@@ -178,6 +182,24 @@ namespace MultiPingMonitor.UI
             catch (TaskCanceledException)
             {
                 // Window may have closed during the delay.
+            }
+        }
+
+        private static async Task ResolveHostNameAsync(NetworkRouteNode node, IPAddress address, CancellationToken token)
+        {
+            try
+            {
+                var entry = await Dns.GetHostEntryAsync(address.ToString());
+                if (!token.IsCancellationRequested && !string.IsNullOrEmpty(entry.HostName))
+                {
+                    // Only set if the resolved name differs from the IP string.
+                    if (entry.HostName != address.ToString())
+                        node.HostName = entry.HostName;
+                }
+            }
+            catch
+            {
+                // DNS lookup failed — leave HostName empty.
             }
         }
 
