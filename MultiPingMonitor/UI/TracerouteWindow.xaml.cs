@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace MultiPingMonitor.UI
 {
     public partial class TracerouteWindow : Window
     {
+        private const int HopDelayMilliseconds = 100;
+        private const int FocusDelayMilliseconds = 100;
+
         private readonly NetworkRoute _route = new NetworkRoute();
         private CancellationTokenSource _cts;
 
@@ -41,10 +45,11 @@ namespace MultiPingMonitor.UI
                     return;
 
                 _cts?.Cancel();
-                _cts?.Dispose();
                 _cts = new CancellationTokenSource();
 
-                // Reset IP address column width so it auto-sizes for new data.
+                // Force the IP address column to recalculate auto width for new data.
+                // Setting a fixed width first then back to Auto is required because
+                // WPF DataGrid does not shrink auto-sized columns on its own.
                 TraceData.Columns[1].Width = new DataGridLength(100.0);
                 TraceData.Columns[1].Width = new DataGridLength(1.0, DataGridLengthUnitType.Auto);
 
@@ -73,15 +78,23 @@ namespace MultiPingMonitor.UI
             var pingBuffer = Encoding.ASCII.GetBytes(Constants.DefaultIcmpData);
 
             // Resolve hostname to IP address.
-            IPAddress destinationIp;
-            if (!IPAddress.TryParse(_route.DestinationHost, out destinationIp))
+            if (!IPAddress.TryParse(_route.DestinationHost, out var destinationIp))
             {
                 try
                 {
                     var entry = await Dns.GetHostEntryAsync(_route.DestinationHost);
                     destinationIp = entry.AddressList[0];
                 }
-                catch
+                catch (SocketException)
+                {
+                    if (!token.IsCancellationRequested)
+                    {
+                        TraceStatus.Text = "\u2022 " + Strings.Traceroute_InvalidHostname;
+                        _route.IsActive = false;
+                    }
+                    return;
+                }
+                catch (Exception)
                 {
                     if (!token.IsCancellationRequested)
                     {
@@ -141,13 +154,13 @@ namespace MultiPingMonitor.UI
                         ttl++;
                     }
 
-                    await Task.Delay(100, token);
+                    await Task.Delay(HopDelayMilliseconds, token);
                 }
                 catch (OperationCanceledException)
                 {
                     break;
                 }
-                catch
+                catch (PingException)
                 {
                     break;
                 }
@@ -158,13 +171,13 @@ namespace MultiPingMonitor.UI
             // Return focus to hostname after trace completes.
             try
             {
-                await Task.Delay(100);
+                await Task.Delay(FocusDelayMilliseconds);
                 if (!token.IsCancellationRequested)
                     Hostname.Focus();
             }
             catch (TaskCanceledException)
             {
-                // Window may have closed.
+                // Window may have closed during the delay.
             }
         }
 
