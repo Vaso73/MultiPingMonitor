@@ -189,7 +189,7 @@ namespace MultiPingMonitor.UI
         {
             try
             {
-                var entry = await Dns.GetHostEntryAsync(address.ToString());
+                var entry = await Dns.GetHostEntryAsync(address);
                 if (!token.IsCancellationRequested && !string.IsNullOrEmpty(entry.HostName))
                 {
                     // Only set if the resolved name differs from the IP string.
@@ -197,9 +197,13 @@ namespace MultiPingMonitor.UI
                         node.HostName = entry.HostName;
                 }
             }
-            catch
+            catch (SocketException)
             {
-                // DNS lookup failed — leave HostName empty.
+                // Reverse DNS lookup failed (no PTR record) — leave HostName empty.
+            }
+            catch (ArgumentException)
+            {
+                // Invalid address format — leave HostName empty.
             }
         }
 
