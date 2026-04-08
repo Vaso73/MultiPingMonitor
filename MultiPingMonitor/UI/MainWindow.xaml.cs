@@ -894,16 +894,27 @@ namespace MultiPingMonitor.UI
         {
             var menu = new ContextMenu();
 
+            // Apply theme-aware brushes explicitly. The ContextMenu popup lives in
+            // its own visual tree and does not inherit theme colors from the main
+            // window shell, so we bind directly to Theme.* brush keys via
+            // SetResourceReference (code equivalent of DynamicResource).  When the
+            // user switches theme, the brushes re-resolve automatically.
+            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => RestoreFromTray()));
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance()));
-            menu.Items.Add(new Separator());
+            menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null)));
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null)));
-            menu.Items.Add(new Separator());
+            menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null)));
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null)));
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null)));
-            menu.Items.Add(new Separator());
+            menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
             {
                 _IsShuttingDown = true;
@@ -919,8 +930,19 @@ namespace MultiPingMonitor.UI
         private static MenuItem CreateTrayMenuItem(string header, RoutedEventHandler clickHandler)
         {
             var item = new MenuItem { Header = header };
+            // Ensure text is readable: bind Foreground to theme text brush so it
+            // stays correct in both light and dark themes and across theme switches.
+            item.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
             item.Click += clickHandler;
             return item;
+        }
+
+        private static Separator CreateTraySeparator()
+        {
+            var sep = new Separator();
+            sep.SetResourceReference(Separator.BackgroundProperty, "Theme.Border");
+            sep.Margin = new Thickness(4, 2, 4, 2);
+            return sep;
         }
 
         /// <summary>
