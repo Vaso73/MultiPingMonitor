@@ -649,7 +649,7 @@
     <value>Zavrieť</value>
   </data>
   <data name="Traceroute_Header" xml:space="preserve">
-    <value>Traceroute</value>
+    <value>Trasovanie trasy k cieľu</value>
   </data>
   <data name="Traceroute_Host" xml:space="preserve">
     <value>Hostiteľ:</value>
@@ -662,6 +662,33 @@
   </data>
   <data name="Traceroute_Trace" xml:space="preserve">
     <value>Trasovať</value>
+  </data>
+  <data name="Traceroute_TracingRoute" xml:space="preserve">
+    <value>Trasovanie trasy...</value>
+  </data>
+  <data name="Traceroute_TraceComplete" xml:space="preserve">
+    <value>Trasovanie dokončené</value>
+  </data>
+  <data name="Traceroute_TraceCancelled" xml:space="preserve">
+    <value>Trasovanie zrušené</value>
+  </data>
+  <data name="Traceroute_InvalidHostname" xml:space="preserve">
+    <value>Neplatný hostname</value>
+  </data>
+  <data name="Traceroute_TimedOut" xml:space="preserve">
+    <value>Časový limit</value>
+  </data>
+  <data name="Traceroute_ColumnHop" xml:space="preserve">
+    <value>Hop</value>
+  </data>
+  <data name="Traceroute_ColumnAddress" xml:space="preserve">
+    <value>IP adresa</value>
+  </data>
+  <data name="Traceroute_ColumnRTT" xml:space="preserve">
+    <value>RTT</value>
+  </data>
+  <data name="Traceroute_Placeholder" xml:space="preserve">
+    <value>Zadajte cieľovú adresu</value>
   </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Ukončiť MultiPingMonitor</value>

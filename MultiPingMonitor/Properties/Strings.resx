@@ -759,7 +759,7 @@
     <value>Close</value>
   </data>
   <data name="Traceroute_Header" xml:space="preserve">
-    <value>Traceroute</value>
+    <value>Trace Route to Destination</value>
   </data>
   <data name="Traceroute_Host" xml:space="preserve">
     <value>Host:</value>
@@ -772,6 +772,33 @@
   </data>
   <data name="Traceroute_Trace" xml:space="preserve">
     <value>Trace</value>
+  </data>
+  <data name="Traceroute_TracingRoute" xml:space="preserve">
+    <value>Tracing route...</value>
+  </data>
+  <data name="Traceroute_TraceComplete" xml:space="preserve">
+    <value>Trace complete</value>
+  </data>
+  <data name="Traceroute_TraceCancelled" xml:space="preserve">
+    <value>Trace cancelled</value>
+  </data>
+  <data name="Traceroute_InvalidHostname" xml:space="preserve">
+    <value>Invalid hostname</value>
+  </data>
+  <data name="Traceroute_TimedOut" xml:space="preserve">
+    <value>Timed out</value>
+  </data>
+  <data name="Traceroute_ColumnHop" xml:space="preserve">
+    <value>Hop</value>
+  </data>
+  <data name="Traceroute_ColumnAddress" xml:space="preserve">
+    <value>IP Address</value>
+  </data>
+  <data name="Traceroute_ColumnRTT" xml:space="preserve">
+    <value>RTT</value>
+  </data>
+  <data name="Traceroute_Placeholder" xml:space="preserve">
+    <value>Enter target address</value>
   </data>
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit MultiPingMonitor</value>
