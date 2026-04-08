@@ -52,7 +52,6 @@
                             <Setter Property="Background" TargetName="border" Value="{DynamicResource Theme.AccentHover}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" TargetName="border" Value="{DynamicResource Theme.AccentHover}"/>
                             <Setter Property="Opacity" TargetName="border" Value="0.85"/>
                         </Trigger>
                         <Trigger Property="ToggleButton.IsChecked" Value="True">
@@ -111,7 +110,6 @@
                             <Setter Property="Background" TargetName="border" Value="{DynamicResource Theme.SurfaceAlt}"/>
                             <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Theme.Border}"/>
                             <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource Theme.Text.Secondary}"/>
-                            <Setter Property="Opacity" TargetName="border" Value="0.6"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -176,7 +174,6 @@
                             <Setter Property="Background" TargetName="border" Value="{DynamicResource Theme.SurfaceAlt}"/>
                             <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource Theme.Border}"/>
                             <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource Theme.Text.Secondary}"/>
-                            <Setter Property="Opacity" TargetName="border" Value="0.6"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
