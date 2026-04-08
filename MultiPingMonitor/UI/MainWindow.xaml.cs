@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using MultiPingMonitor.Classes;
 using MultiPingMonitor.Properties;
 
@@ -19,6 +21,35 @@ namespace MultiPingMonitor.UI
         // Set to true when a deliberate application shutdown is initiated from the tray exit
         // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
         private bool _IsShuttingDown = false;
+
+        // ── Edge snap ─────────────────────────────────────────────────────────
+        // Pixels within which a window edge is snapped flush to the working-area
+        // edge.  Only tiny accidental overshoots/gaps are corrected; the user
+        // can still drag deliberately further outside the screen.
+        private const int EdgeSnapThresholdPx = 12;
+
+        // Win32 messages handled by the WndProc hook.
+        private const int WM_MOVING = 0x0216;
+        private const int WM_SIZING = 0x0214;
+
+        // WM_SIZING wParam values that identify which edge / corner is being dragged.
+        private const int WMSZ_LEFT        = 1;
+        private const int WMSZ_RIGHT       = 2;
+        private const int WMSZ_TOP         = 3;
+        private const int WMSZ_TOPLEFT     = 4;
+        private const int WMSZ_TOPRIGHT    = 5;
+        private const int WMSZ_BOTTOM      = 6;
+        private const int WMSZ_BOTTOMLEFT  = 7;
+        private const int WMSZ_BOTTOMRIGHT = 8;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
 
         public static RoutedCommand OptionsCommand = new RoutedCommand();
         public static RoutedCommand StartStopCommand = new RoutedCommand();
@@ -883,6 +914,121 @@ namespace MultiPingMonitor.UI
             var tb = sender as TextBox;
             (tb.DataContext as Probe).SelStart = tb.SelectionStart;
             (tb.DataContext as Probe).SelLength = tb.SelectionLength;
+        }
+
+        // ── Edge snap implementation ──────────────────────────────────────────
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            var source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+            source?.AddHook(EdgeSnapWndProc);
+        }
+
+        private IntPtr EdgeSnapWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            // Only snap while the window is in Normal (restored) state.
+            if (WindowState != WindowState.Normal)
+                return IntPtr.Zero;
+
+            if (msg == WM_MOVING)
+            {
+                // lParam points to a RECT with the proposed window position.
+                var rect = Marshal.PtrToStructure<RECT>(lParam);
+                var wa = GetWorkingAreaForRect(rect);
+                SnapMovingRect(ref rect, wa);
+                Marshal.StructureToPtr(rect, lParam, false);
+                handled = true;
+            }
+            else if (msg == WM_SIZING)
+            {
+                // lParam points to a RECT with the proposed window bounds.
+                // wParam identifies which edge / corner is being dragged.
+                var rect = Marshal.PtrToStructure<RECT>(lParam);
+                var wa = GetWorkingAreaForRect(rect);
+                SnapSizingRect(ref rect, (int)wParam, wa);
+                Marshal.StructureToPtr(rect, lParam, false);
+                handled = true;
+            }
+
+            return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Returns the working area of the monitor that best contains <paramref name="rect"/>.
+        /// Falls back to the primary monitor's working area when no monitor matches.
+        /// </summary>
+        private static System.Drawing.Rectangle GetWorkingAreaForRect(RECT rect)
+        {
+            var r = new System.Drawing.Rectangle(rect.Left, rect.Top,
+                rect.Right - rect.Left, rect.Bottom - rect.Top);
+            var screen = System.Windows.Forms.Screen.FromRectangle(r);
+            return screen?.WorkingArea ?? System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+        }
+
+        /// <summary>
+        /// Applies soft edge snapping to a window rect being moved (all four
+        /// edges move together as a unit).  Only adjusts if the overshoot or
+        /// gap is within <see cref="EdgeSnapThresholdPx"/>.
+        /// Horizontal and vertical axes are evaluated independently so that
+        /// corner snapping (e.g. left+top) works correctly.
+        /// </summary>
+        private static void SnapMovingRect(ref RECT rect, System.Drawing.Rectangle wa)
+        {
+            int width  = rect.Right  - rect.Left;
+            int height = rect.Bottom - rect.Top;
+
+            // ── X axis: snap left or right, whichever is closer (nearest wins). ──
+            int distLeft  = Math.Abs(rect.Left  - wa.Left);
+            int distRight = Math.Abs(rect.Right - wa.Right);
+
+            if (distLeft <= EdgeSnapThresholdPx && distLeft <= distRight)
+            {
+                rect.Left  = wa.Left;
+                rect.Right = rect.Left + width;
+            }
+            else if (distRight <= EdgeSnapThresholdPx)
+            {
+                rect.Right = wa.Right;
+                rect.Left  = rect.Right - width;
+            }
+
+            // ── Y axis: snap top or bottom, whichever is closer (nearest wins). ──
+            int distTop    = Math.Abs(rect.Top    - wa.Top);
+            int distBottom = Math.Abs(rect.Bottom - wa.Bottom);
+
+            if (distTop <= EdgeSnapThresholdPx && distTop <= distBottom)
+            {
+                rect.Top    = wa.Top;
+                rect.Bottom = rect.Top + height;
+            }
+            else if (distBottom <= EdgeSnapThresholdPx)
+            {
+                rect.Bottom = wa.Bottom;
+                rect.Top    = rect.Bottom - height;
+            }
+        }
+
+        /// <summary>
+        /// Applies soft edge snapping to a window rect being resized.  Only the
+        /// edges that are actually being dragged are snapped, so the opposite
+        /// edges remain stable.
+        /// </summary>
+        private static void SnapSizingRect(ref RECT rect, int sizingEdge, System.Drawing.Rectangle wa)
+        {
+            bool snapLeft   = sizingEdge == WMSZ_LEFT   || sizingEdge == WMSZ_TOPLEFT  || sizingEdge == WMSZ_BOTTOMLEFT;
+            bool snapRight  = sizingEdge == WMSZ_RIGHT  || sizingEdge == WMSZ_TOPRIGHT || sizingEdge == WMSZ_BOTTOMRIGHT;
+            bool snapTop    = sizingEdge == WMSZ_TOP    || sizingEdge == WMSZ_TOPLEFT  || sizingEdge == WMSZ_TOPRIGHT;
+            bool snapBottom = sizingEdge == WMSZ_BOTTOM || sizingEdge == WMSZ_BOTTOMLEFT || sizingEdge == WMSZ_BOTTOMRIGHT;
+
+            if (snapLeft   && Math.Abs(rect.Left   - wa.Left  ) <= EdgeSnapThresholdPx)
+                rect.Left   = wa.Left;
+            if (snapRight  && Math.Abs(rect.Right  - wa.Right ) <= EdgeSnapThresholdPx)
+                rect.Right  = wa.Right;
+            if (snapTop    && Math.Abs(rect.Top    - wa.Top   ) <= EdgeSnapThresholdPx)
+                rect.Top    = wa.Top;
+            if (snapBottom && Math.Abs(rect.Bottom - wa.Bottom) <= EdgeSnapThresholdPx)
+                rect.Bottom = wa.Bottom;
         }
     }
 }
