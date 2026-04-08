@@ -970,41 +970,39 @@ namespace MultiPingMonitor.UI
         /// Applies soft edge snapping to a window rect being moved (all four
         /// edges move together as a unit).  Only adjusts if the overshoot or
         /// gap is within <see cref="EdgeSnapThresholdPx"/>.
+        /// Horizontal and vertical axes are evaluated independently so that
+        /// corner snapping (e.g. left+top) works correctly.
         /// </summary>
         private static void SnapMovingRect(ref RECT rect, System.Drawing.Rectangle wa)
         {
             int width  = rect.Right  - rect.Left;
             int height = rect.Bottom - rect.Top;
 
-            // Snap left edge → left working-area edge.
-            int distLeft = rect.Left - wa.Left;
-            if (Math.Abs(distLeft) <= EdgeSnapThresholdPx)
+            // ── X axis: snap left or right, whichever is closer (nearest wins). ──
+            int distLeft  = Math.Abs(rect.Left  - wa.Left);
+            int distRight = Math.Abs(rect.Right - wa.Right);
+
+            if (distLeft <= EdgeSnapThresholdPx && distLeft <= distRight)
             {
                 rect.Left  = wa.Left;
                 rect.Right = rect.Left + width;
-                return; // left wins; don't also snap right
             }
-
-            // Snap right edge → right working-area edge.
-            int distRight = rect.Right - wa.Right;
-            if (Math.Abs(distRight) <= EdgeSnapThresholdPx)
+            else if (distRight <= EdgeSnapThresholdPx)
             {
                 rect.Right = wa.Right;
                 rect.Left  = rect.Right - width;
             }
 
-            // Snap top edge → top working-area edge.
-            int distTop = rect.Top - wa.Top;
-            if (Math.Abs(distTop) <= EdgeSnapThresholdPx)
+            // ── Y axis: snap top or bottom, whichever is closer (nearest wins). ──
+            int distTop    = Math.Abs(rect.Top    - wa.Top);
+            int distBottom = Math.Abs(rect.Bottom - wa.Bottom);
+
+            if (distTop <= EdgeSnapThresholdPx && distTop <= distBottom)
             {
                 rect.Top    = wa.Top;
                 rect.Bottom = rect.Top + height;
-                return; // top wins; don't also snap bottom
             }
-
-            // Snap bottom edge → bottom working-area edge.
-            int distBottom = rect.Bottom - wa.Bottom;
-            if (Math.Abs(distBottom) <= EdgeSnapThresholdPx)
+            else if (distBottom <= EdgeSnapThresholdPx)
             {
                 rect.Bottom = wa.Bottom;
                 rect.Top    = rect.Bottom - height;
