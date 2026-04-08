@@ -9,7 +9,7 @@
         Width="600"
         ResizeMode="NoResize"
         SizeToContent="Height"
-        Background="{StaticResource Theme.Background}"
+        Background="{DynamicResource Theme.Background}"
         WindowStartupLocation="CenterScreen">
     
     <Grid Margin="0">
@@ -30,7 +30,7 @@
                     <Setter Property="DockPanel.Dock" Value="Left"/>
                 </Style>
                 <Style TargetType="{x:Type TextBlock}" x:Key="Desc" BasedOn="{StaticResource {x:Type TextBlock}}">
-                    <Setter Property="Foreground" Value="#223"/>
+                    <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
                 </Style>
             </StackPanel.Resources>
             <StackPanel Orientation="Horizontal">
@@ -40,7 +40,7 @@
                        Height="32"/>
                 <StackPanel Margin="10,0,0,0">
                     <TextBlock Text="MultiPingMonitor"
-                               Foreground="#000000"
+                               Foreground="{DynamicResource Theme.Text.Primary}"
                                VerticalAlignment="Center"
                                FontSize="15"
                                FontFamily="Arial"
@@ -113,7 +113,7 @@
         </StackPanel>
 
         <!-- Buttons -->
-        <Border Grid.Row="1" Background="#f0f0f0" BorderBrush="#dfdfdf" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" Background="{DynamicResource Theme.SurfaceAlt}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
                 <Button Style="{StaticResource ButtonStandardStyle}"
                         Width="100"

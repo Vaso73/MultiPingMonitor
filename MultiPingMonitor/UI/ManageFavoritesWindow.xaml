@@ -9,7 +9,7 @@
         Width="600"
         MinWidth="425"
         WindowStartupLocation="CenterScreen"
-        Background="#f0f0f0"
+        Background="{DynamicResource Theme.Background}"
         ResizeMode="CanResize"
         PreviewKeyDown="Window_PreviewKeyDown"
         SourceInitialized="Window_SourceInitialized">
@@ -54,12 +54,12 @@
             <!-- Contents of selected favorite -->
             <Border x:Name="ContentsSection"
                     Grid.Column="2"
-                    Background="#f4f4f4"
-                    BorderBrush="#abadb3"
+                    Background="{DynamicResource Theme.SurfaceAlt}"
+                    BorderBrush="{DynamicResource Theme.Border}"
                     Visibility="Visible"
                     VerticalAlignment="Stretch"
                     BorderThickness="1">
-                <DockPanel Background="#fcfcfc">
+                <DockPanel Background="{DynamicResource Theme.Surface}">
                     <!-- Contents title -->
                     <TextBlock DockPanel.Dock="Top"
                                Name="FavoriteTitle"
@@ -69,13 +69,13 @@
                                TextTrimming="CharacterEllipsis"
                                FontSize="14"
                                Padding="5,5,5,7"
-                               Foreground="#000"
+                               Foreground="{DynamicResource Theme.Text.Primary}"
                                Background="Transparent"
                                FontWeight="SemiBold"/>
 
                     <!-- Contents list -->
                     <ListBox Name="Contents"
-                             Foreground="#404040"
+                             Foreground="{DynamicResource Theme.Text.Secondary}"
                              Background="Transparent"
                              BorderThickness="0"
                              Margin="0"

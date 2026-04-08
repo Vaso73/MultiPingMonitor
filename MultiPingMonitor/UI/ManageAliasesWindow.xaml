@@ -9,7 +9,7 @@
         Width="460"
         MinHeight="250"
         MinWidth="360"
-        Background="#f0f0f0"
+        Background="{DynamicResource Theme.Background}"
         ResizeMode="CanResize"
         PreviewKeyDown="Window_PreviewKeyDown"
         SourceInitialized="Window_SourceInitialized">
@@ -58,7 +58,7 @@
                             </Style.Triggers>
                             <Setter Property="Padding" Value="7,2,10,2"/>
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-                            <Setter Property="Foreground" Value="#0067b8"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

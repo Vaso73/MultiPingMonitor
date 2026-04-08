@@ -10,7 +10,7 @@
         Height="Auto"
         Width="400"
         ResizeMode="NoResize"
-        Background="#f0f0f0"
+        Background="{DynamicResource Theme.Background}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False">

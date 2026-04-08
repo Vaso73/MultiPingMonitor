@@ -34,12 +34,12 @@
             <DockPanel Grid.Column="1" Margin="20,0,0,0">
                 <TextBlock DockPanel.Dock="Top"
                            FontSize="14"
-                           Foreground="#202020"
+                           Foreground="{DynamicResource Theme.Text.Primary}"
                            TextWrapping="Wrap"
                            Text="To save your settings, a new configuration file is needed."/>
                 <TextBlock DockPanel.Dock="Top"
                            FontSize="14"
-                           Foreground="#202020"
+                           Foreground="{DynamicResource Theme.Text.Primary}"
                            TextWrapping="Wrap"
                            Margin="0,10,0,1"
                            Text="The configuration file will be created alongside the application:"/>
@@ -47,14 +47,14 @@
                 <TextBlock x:Name="FilePath"
                            DockPanel.Dock="Top"
                            FontSize="12"
-                           Foreground="#268bd2"
+                           Foreground="{DynamicResource Theme.Accent}"
                            TextWrapping="Wrap"
                            d:Text="C:\Program Files\MultiPingMonitor\MultiPingMonitor.xml"/>
             </DockPanel>
         </Grid>
         
         <!-- Buttons -->
-        <Border Grid.Row="1" Background="#f0f0f0" BorderBrush="#dfdfdf" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" Background="{DynamicResource Theme.SurfaceAlt}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
             <DockPanel Margin="10">
                 <!-- Buttons -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
