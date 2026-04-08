@@ -403,11 +403,26 @@ namespace MultiPingMonitor.UI
 
         private void NewInstanceExecute(object sender, ExecutedRoutedEventArgs e)
         {
+            LaunchNewInstance();
+        }
+
+        private void LaunchNewInstance()
+        {
             try
             {
+                var exePath = Environment.ProcessPath
+                    ?? System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+
+                if (string.IsNullOrEmpty(exePath))
+                {
+                    var errorWindow = DialogWindow.ErrorWindow(Strings.Error_ExecutableNotFound);
+                    errorWindow.Owner = this;
+                    errorWindow.ShowDialog();
+                    return;
+                }
+
                 var p = new System.Diagnostics.Process();
-                p.StartInfo.FileName =
-                    System.Reflection.Assembly.GetExecutingAssembly().Location;
+                p.StartInfo.FileName = exePath;
                 p.Start();
             }
 
@@ -831,10 +846,18 @@ namespace MultiPingMonitor.UI
                 System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
                 System.Windows.Forms.ToolStripMenuItem menuOpen = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Open);
                 menuOpen.Click += (s, args) => RestoreFromTray();
+                System.Windows.Forms.ToolStripMenuItem menuNewInstance = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_NewInstance);
+                menuNewInstance.Click += (s, args) => LaunchNewInstance();
+                System.Windows.Forms.ToolStripMenuItem menuTraceroute = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_Traceroute);
+                menuTraceroute.Click += (s, args) => TracerouteExecute(null, null);
+                System.Windows.Forms.ToolStripMenuItem menuFloodHost = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_FloodHost);
+                menuFloodHost.Click += (s, args) => FloodHostExecute(null, null);
                 System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Options);
                 menuOptions.Click += (s, args) => OptionsExecute(null, null);
                 System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_StatusHistory);
                 menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
+                System.Windows.Forms.ToolStripMenuItem menuHelp = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_Help);
+                menuHelp.Click += (s, args) => HelpExecute(null, null);
                 System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Exit);
                 menuExit.Click += (s, args) =>
                 {
@@ -845,9 +868,14 @@ namespace MultiPingMonitor.UI
                 };
 
                 menuStrip.Items.Add(menuOpen);
+                menuStrip.Items.Add(menuNewInstance);
+                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                menuStrip.Items.Add(menuTraceroute);
+                menuStrip.Items.Add(menuFloodHost);
                 menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
                 menuStrip.Items.Add(menuOptions);
                 menuStrip.Items.Add(menuStatusHistory);
+                menuStrip.Items.Add(menuHelp);
                 menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
                 menuStrip.Items.Add(menuExit);
 
