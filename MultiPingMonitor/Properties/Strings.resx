@@ -809,6 +809,9 @@
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit MultiPingMonitor</value>
   </data>
+  <data name="Tray_NewInstance" xml:space="preserve">
+    <value>New MultiPingMonitor instance</value>
+  </data>
   <data name="Tray_Open" xml:space="preserve">
     <value>Open MultiPingMonitor</value>
   </data>

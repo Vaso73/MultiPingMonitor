@@ -699,6 +699,9 @@
   <data name="Tray_Exit" xml:space="preserve">
     <value>Ukončiť MultiPingMonitor</value>
   </data>
+  <data name="Tray_NewInstance" xml:space="preserve">
+    <value>Nová inštancia MultiPingMonitor</value>
+  </data>
   <data name="Tray_Open" xml:space="preserve">
     <value>Otvoriť MultiPingMonitor</value>
   </data>

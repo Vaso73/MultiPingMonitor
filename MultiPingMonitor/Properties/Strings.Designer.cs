@@ -2121,6 +2121,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New MultiPingMonitor instance.
+        /// </summary>
+        public static string Tray_NewInstance {
+            get {
+                return ResourceManager.GetString("Tray_NewInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open MultiPingMonitor.
         /// </summary>
         public static string Tray_Open {
