@@ -1608,6 +1608,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start application in tray.
+        /// </summary>
+        public static string Options_StartInTray {
+            get {
+                return ResourceManager.GetString("Options_StartInTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to minutes.
         /// </summary>
         public static string Options_Minutes {
@@ -2013,6 +2022,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open MultiPingMonitor.
+        /// </summary>
+        public static string Tray_Open {
+            get {
+                return ResourceManager.GetString("Tray_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Tray_Options {
@@ -2126,6 +2144,15 @@ namespace MultiPingMonitor.Properties {
         public static string Tooltip_MinimizeToTray {
             get {
                 return ResourceManager.GetString("Tooltip_MinimizeToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, MultiPingMonitor starts hidden in the system tray instead of showing the main window.
+        /// </summary>
+        public static string Tooltip_StartInTray {
+            get {
+                return ResourceManager.GetString("Tooltip_StartInTray", resourceCulture);
             }
         }
         

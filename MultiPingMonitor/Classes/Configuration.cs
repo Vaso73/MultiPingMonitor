@@ -238,6 +238,7 @@ namespace MultiPingMonitor.Classes
                 Node("IsAlwaysOnTopEnabled", ApplicationOptions.IsAlwaysOnTopEnabled),
                 Node("IsMinimizeToTrayEnabled", ApplicationOptions.IsMinimizeToTrayEnabled),
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
+                Node("StartInTray", ApplicationOptions.StartInTray),
                 Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
                 Node("Theme", ApplicationOptions.Theme),
                 Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
@@ -605,6 +606,10 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("IsExitToTrayEnabled", out optionValue))
             {
                 ApplicationOptions.IsExitToTrayEnabled = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("StartInTray", out optionValue))
+            {
+                ApplicationOptions.StartInTray = bool.Parse(optionValue);
             }
             if (options.TryGetValue("RememberWindowPosition", out optionValue))
             {

@@ -528,6 +528,9 @@
   <data name="Options_MinimizeToTray" xml:space="preserve">
     <value>Minimalizovať do systémovej lišty</value>
   </data>
+  <data name="Options_StartInTray" xml:space="preserve">
+    <value>Po spustení programu spustiť v tray</value>
+  </data>
   <data name="Options_Minutes" xml:space="preserve">
     <value>minút</value>
   </data>
@@ -663,6 +666,9 @@
   <data name="Tray_Exit" xml:space="preserve">
     <value>Ukončiť MultiPingMonitor</value>
   </data>
+  <data name="Tray_Open" xml:space="preserve">
+    <value>Otvoriť MultiPingMonitor</value>
+  </data>
   <data name="Tray_Options" xml:space="preserve">
     <value>Možnosti</value>
   </data>
@@ -713,6 +719,9 @@ Aby bola ikona vždy viditeľná:
 Kliknite pravým tlačidlom na panel úloh systému Windows a vyberte 'Nastavenia panela úloh'.
 V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli úloh'. Nájdite MultiPingMonitor a nastavte na 'Zapnuté'.
 (Kroky sa môžu líšiť)</value>
+  </data>
+  <data name="Tooltip_StartInTray" xml:space="preserve">
+    <value>Po povolení sa MultiPingMonitor spustí skrytý v systémovej lište namiesto zobrazenia hlavného okna. Ikona v lište je vždy viditeľná počas behu aplikácie.</value>
   </data>
   <data name="Tooltip_ExitToTray" xml:space="preserve">
     <value>Pri zatvorení MultiPingMonitor sa aplikácia minimalizuje do systémovej lišty namiesto ukončenia. Kliknite pravým tlačidlom na ikonu lišty pre ukončenie.

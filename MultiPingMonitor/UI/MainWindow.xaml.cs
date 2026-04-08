@@ -22,6 +22,9 @@ namespace MultiPingMonitor.UI
         // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
         private bool _IsShuttingDown = false;
 
+        // Set to true when the main window is hidden to the system tray.
+        private bool _IsHiddenToTray = false;
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -65,6 +68,7 @@ namespace MultiPingMonitor.UI
         {
             InitializeComponent();
             InitializeApplication();
+            InitializeTrayIcon();
             WindowPlacementService.Attach(this, "MainWindow");
         }
 
@@ -133,6 +137,12 @@ namespace MultiPingMonitor.UI
             }
 
             RefreshColumnCount();
+
+            // If configured to start in tray, hide the window immediately after loading.
+            if (ApplicationOptions.StartInTray)
+            {
+                HideToTray();
+            }
         }
 
         private void RefreshGuiState()
@@ -769,73 +779,81 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        private void HideToTray()
+        private void InitializeTrayIcon()
         {
             try
             {
-                if (NotifyIcon == null)
+                // Load icon: prefer embedded WPF resource, fall back to system default.
+                System.Drawing.Icon trayIcon;
+                var sri = Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico"));
+                if (sri != null)
                 {
-                    // Load icon: prefer embedded WPF resource, fall back to system default.
-                    System.Drawing.Icon trayIcon;
-                    var sri = Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico"));
-                    if (sri != null)
-                    {
-                        using (var iconStream = sri.Stream)
-                            trayIcon = new System.Drawing.Icon(iconStream);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Trace.WriteLine("MultiPingMonitor: Could not load tray icon from embedded resource; using fallback.");
-                        trayIcon = System.Drawing.SystemIcons.Application;
-                    }
-
-                    // Build context menu for tray icon.
-                    System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
-                    System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Options);
-                    menuOptions.Click += (s, args) => OptionsExecute(null, null);
-                    System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_StatusHistory);
-                    menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
-                    System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Exit);
-                    menuExit.Click += (s, args) =>
-                    {
-                        // Signal Window_Closing to take the save-and-exit path rather than
-                        // hiding to tray again, then request a clean application shutdown.
-                        _IsShuttingDown = true;
-                        Application.Current.Shutdown();
-                    };
-
-                    menuStrip.Items.Add(menuOptions);
-                    menuStrip.Items.Add(menuStatusHistory);
-                    menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-                    menuStrip.Items.Add(menuExit);
-
-                    // Create tray icon.
-                    NotifyIcon = new System.Windows.Forms.NotifyIcon
-                    {
-                        Icon = trayIcon,
-                        Text = "MultiPingMonitor",
-                        ContextMenuStrip = menuStrip
-                    };
-                    NotifyIcon.MouseUp += NotifyIcon_MouseUp;
+                    using (var iconStream = sri.Stream)
+                        trayIcon = new System.Drawing.Icon(iconStream);
                 }
-                NotifyIcon.Visible = true;
-                Visibility = Visibility.Hidden;
-                WindowState = WindowState.Minimized;
+                else
+                {
+                    System.Diagnostics.Trace.WriteLine("MultiPingMonitor: Could not load tray icon from embedded resource; using fallback.");
+                    trayIcon = System.Drawing.SystemIcons.Application;
+                }
+
+                // Build context menu for tray icon.
+                System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
+                System.Windows.Forms.ToolStripMenuItem menuOpen = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Open);
+                menuOpen.Click += (s, args) => RestoreFromTray();
+                System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Options);
+                menuOptions.Click += (s, args) => OptionsExecute(null, null);
+                System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_StatusHistory);
+                menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
+                System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Exit);
+                menuExit.Click += (s, args) =>
+                {
+                    // Signal Window_Closing to take the save-and-exit path rather than
+                    // hiding to tray again, then request a clean application shutdown.
+                    _IsShuttingDown = true;
+                    Application.Current.Shutdown();
+                };
+
+                menuStrip.Items.Add(menuOpen);
+                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                menuStrip.Items.Add(menuOptions);
+                menuStrip.Items.Add(menuStatusHistory);
+                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                menuStrip.Items.Add(menuExit);
+
+                // Create tray icon. It stays visible for the entire lifetime of the application.
+                NotifyIcon = new System.Windows.Forms.NotifyIcon
+                {
+                    Icon = trayIcon,
+                    Text = "MultiPingMonitor",
+                    ContextMenuStrip = menuStrip,
+                    Visible = true
+                };
+                NotifyIcon.MouseUp += NotifyIcon_MouseUp;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
-                Visibility = Visibility.Visible;
             }
+        }
+
+        private void HideToTray()
+        {
+            if (_IsHiddenToTray)
+                return;
+            _IsHiddenToTray = true;
+            Visibility = Visibility.Hidden;
+            WindowState = WindowState.Minimized;
         }
 
         private void RestoreFromTray()
         {
-            NotifyIcon.Visible = false;
+            _IsHiddenToTray = false;
             WindowState = WindowState.Minimized;
             Visibility = Visibility.Visible;
             Show();
             WindowState = WindowState.Normal;
+            Activate();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -848,9 +866,9 @@ namespace MultiPingMonitor.UI
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // Clear notify icon - handles notify icon cleanup when MultiPingMonitor is minimized to tray
-            // and user clicks a popup alert window to restore the MultiPingMonitor window.
-            if (IsVisible && NotifyIcon != null && NotifyIcon.Visible)
+            // Handles notify icon cleanup when MultiPingMonitor is hidden to tray
+            // and the window is made visible again (e.g. via a popup alert click).
+            if (IsVisible && _IsHiddenToTray)
             {
                 RestoreFromTray();
             }
