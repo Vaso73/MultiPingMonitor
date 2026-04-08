@@ -28,6 +28,13 @@ namespace MultiPingMonitor.Classes
             Fixed
         }
 
+        public enum AppLanguage
+        {
+            System,
+            English,
+            Slovak
+        }
+
         // Ping & probe options.
         public static int PingInterval { get; set; } = Constants.DefaultInterval;
         public static int PingTimeout { get; set; } = Constants.DefaultTimeout;
@@ -87,6 +94,9 @@ namespace MultiPingMonitor.Classes
 
         // Theme.
         public static string Theme { get; set; } = "Auto";
+
+        // Language.
+        public static AppLanguage Language { get; set; } = AppLanguage.System;
 
         // Fonts.
         public static int FontSize_Probe { get; set; } = 11;

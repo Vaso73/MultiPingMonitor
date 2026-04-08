@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -15,21 +16,41 @@ namespace MultiPingMonitor
             // Force software rendering. Otherwise application may have high GPU usage on some video cards.
             RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            // The following code snippet was taken from Stack Overflow answer here:
-            // https://stackoverflow.com/questions/520115/stringformat-localization-issues-in-wpf/520334#520334
+            // Load only the language setting early, before any window is created.
+            Classes.Configuration.LoadLanguageSetting();
 
-            // Ensure the current culture passed into bindings is the OS culture.
-            // By default, WPF uses en-US as the culture, regardless of the system settings.
-            FrameworkElement.LanguageProperty.OverrideMetadata(
-                  typeof(FrameworkElement),
-                  new FrameworkPropertyMetadata(
-                      XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+            // Apply language setting before any window is created.
+            ApplyLanguage(Classes.ApplicationOptions.Language);
+
+            // Now create and show the main window.
+            var mainWindow = new UI.MainWindow();
+            MainWindow = mainWindow;
+            mainWindow.Show();
         }
 
-        // DEBUG: Use this for testing alternate locales.
-        //public App()
-        //{
-        //    MultiPingMonitor.Properties.Strings.Culture = new System.Globalization.CultureInfo("en-GB");
-        //}
+        private static void ApplyLanguage(Classes.ApplicationOptions.AppLanguage language)
+        {
+            CultureInfo culture;
+            switch (language)
+            {
+                case Classes.ApplicationOptions.AppLanguage.English:
+                    culture = new CultureInfo("en");
+                    break;
+                case Classes.ApplicationOptions.AppLanguage.Slovak:
+                    culture = new CultureInfo("sk-SK");
+                    break;
+                default: // System
+                    culture = CultureInfo.CurrentCulture;
+                    break;
+            }
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+            MultiPingMonitor.Properties.Strings.Culture = culture;
+
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
+        }
     }
 }

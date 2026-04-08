@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:MultiPingMonitor.UI"
         xmlns:classes="clr-namespace:MultiPingMonitor.Classes"
-        Title="MultiPingMonitor - Flood Host"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        Title="{x:Static resource:Strings.FloodHost_Title}"
         Height="250"
         Width="400"
         ResizeMode="CanMinimize"
@@ -129,7 +130,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Packets Sent:"
+                <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsSent}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
                            Foreground="#93a1a1"
@@ -145,7 +146,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Packets Received:"
+                <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsReceived}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
                            Foreground="#93a1a1"
@@ -161,7 +162,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Packets Lost:"
+                <TextBlock Grid.Column="0" Text="{x:Static resource:Strings.FloodHost_PacketsLost}"
                            HorizontalAlignment="Right" VerticalAlignment="Center"
                            Margin="0,0,15,0"
                            Foreground="#93a1a1"
@@ -173,7 +174,7 @@
             </Grid>
         </Grid>
 
-        <TextBlock Grid.Row="2" Text="Flood in progress..."
+        <TextBlock Grid.Row="2" Text="{x:Static resource:Strings.FloodHost_InProgress}"
                    Name="tbStatus"
                    Margin="0,7" HorizontalAlignment="Center"
                    Foreground="#657b83"
@@ -213,10 +214,7 @@
                Foreground="#657b83" Background="#002b36"
                Padding="40,0"
                FontSize="14">
-            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">
-                This tool will send a continuous stream of ICMP ping packets to the destination host.
-                It typically will not generate any more than 32 kilobytes per second of network traffic.
-            </TextBlock>
+            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Text="{x:Static resource:Strings.FloodHost_Description}"/>
         </Label>
         
     </Grid>

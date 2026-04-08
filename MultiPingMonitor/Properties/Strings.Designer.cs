@@ -913,6 +913,1761 @@ namespace MultiPingMonitor.Properties {
             get {
                 return ResourceManager.GetString("Tooltip_IsolatedView", resourceCulture);
             }
+        }        
+        /// <summary>
+        ///   Looks up a localized string similar to This tool will send a continuous stream of ICMP ping packets to the destination host..
+        /// </summary>
+        public static string FloodHost_Description {
+            get {
+                return ResourceManager.GetString("FloodHost_Description", resourceCulture);
+            }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flood in progress....
+        /// </summary>
+        public static string FloodHost_InProgress {
+            get {
+                return ResourceManager.GetString("FloodHost_InProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packets Lost:.
+        /// </summary>
+        public static string FloodHost_PacketsLost {
+            get {
+                return ResourceManager.GetString("FloodHost_PacketsLost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packets Received:.
+        /// </summary>
+        public static string FloodHost_PacketsReceived {
+            get {
+                return ResourceManager.GetString("FloodHost_PacketsReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packets Sent:.
+        /// </summary>
+        public static string FloodHost_PacketsSent {
+            get {
+                return ResourceManager.GetString("FloodHost_PacketsSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flood Host.
+        /// </summary>
+        public static string FloodHost_Start {
+            get {
+                return ResourceManager.GetString("FloodHost_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Flood.
+        /// </summary>
+        public static string FloodHost_Stop {
+            get {
+                return ResourceManager.GetString("FloodHost_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor - Flood Host.
+        /// </summary>
+        public static string FloodHost_Title {
+            get {
+                return ResourceManager.GetString("FloodHost_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Basic Usage.
+        /// </summary>
+        public static string Help_Nav_BasicUsage {
+            get {
+                return ResourceManager.GetString("Help_Nav_BasicUsage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Line Usage.
+        /// </summary>
+        public static string Help_Nav_CommandLine {
+            get {
+                return ResourceManager.GetString("Help_Nav_CommandLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra Features.
+        /// </summary>
+        public static string Help_Nav_ExtraFeatures {
+            get {
+                return ResourceManager.GetString("Help_Nav_ExtraFeatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Intro.
+        /// </summary>
+        public static string Help_Nav_Intro {
+            get {
+                return ResourceManager.GetString("Help_Nav_Intro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Help_Nav_Options {
+            get {
+                return ResourceManager.GetString("Help_Nav_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor Help.
+        /// </summary>
+        public static string Help_Title {
+            get {
+                return ResourceManager.GetString("Help_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string Language_English {
+            get {
+                return ResourceManager.GetString("Language_English", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slovak.
+        /// </summary>
+        public static string Language_Slovak {
+            get {
+                return ResourceManager.GetString("Language_Slovak", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System (OS default).
+        /// </summary>
+        public static string Language_System {
+            get {
+                return ResourceManager.GetString("Language_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a hostname.
+        /// </summary>
+        public static string MainWindow_EnterHostname {
+            get {
+                return ResourceManager.GetString("MainWindow_EnterHostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Addresses.
+        /// </summary>
+        public static string Menu_InputAddresses {
+            get {
+                return ResourceManager.GetString("Menu_InputAddresses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor.
+        /// </summary>
+        public static string Menu_NewInstance {
+            get {
+                return ResourceManager.GetString("Menu_NewInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alert threshold:.
+        /// </summary>
+        public static string Options_AlertThreshold {
+            get {
+                return ResourceManager.GetString("Options_AlertThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always on top.
+        /// </summary>
+        public static string Options_AlwaysOnTop {
+            get {
+                return ResourceManager.GetString("Options_AlwaysOnTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Always show.
+        /// </summary>
+        public static string Options_AlwaysShow {
+            get {
+                return ResourceManager.GetString("Options_AlwaysShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio file path.
+        /// </summary>
+        public static string Options_AudioFilePath {
+            get {
+                return ResourceManager.GetString("Options_AudioFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto.
+        /// </summary>
+        public static string Options_Auto {
+            get {
+                return ResourceManager.GetString("Options_Auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-dismiss notifications.
+        /// </summary>
+        public static string Options_AutoDismiss {
+            get {
+                return ResourceManager.GetString("Options_AutoDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string Options_Browse {
+            get {
+                return ResourceManager.GetString("Options_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to bytes.
+        /// </summary>
+        public static string Options_Bytes {
+            get {
+                return ResourceManager.GetString("Options_Bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alias Foreground.
+        /// </summary>
+        public static string Options_Color_AliasForeground {
+            get {
+                return ResourceManager.GetString("Options_Color_AliasForeground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Down.
+        /// </summary>
+        public static string Options_Color_Down {
+            get {
+                return ResourceManager.GetString("Options_Color_Down", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Options_Color_Error {
+            get {
+                return ResourceManager.GetString("Options_Color_Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        public static string Options_Color_Inactive {
+            get {
+                return ResourceManager.GetString("Options_Color_Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indeterminate.
+        /// </summary>
+        public static string Options_Color_Indeterminate {
+            get {
+                return ResourceManager.GetString("Options_Color_Indeterminate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe Background.
+        /// </summary>
+        public static string Options_Color_ProbeBackground {
+            get {
+                return ResourceManager.GetString("Options_Color_ProbeBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe Foreground.
+        /// </summary>
+        public static string Options_Color_ProbeForeground {
+            get {
+                return ResourceManager.GetString("Options_Color_ProbeForeground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up.
+        /// </summary>
+        public static string Options_Color_Up {
+            get {
+                return ResourceManager.GetString("Options_Color_Up", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Column count:.
+        /// </summary>
+        public static string Options_ColumnCount {
+            get {
+                return ResourceManager.GetString("Options_ColumnCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom packet data.
+        /// </summary>
+        public static string Options_CustomPacketData {
+            get {
+                return ResourceManager.GetString("Options_CustomPacketData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detection mode:.
+        /// </summary>
+        public static string Options_DetectionMode {
+            get {
+                return ResourceManager.GetString("Options_DetectionMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        public static string Options_Disabled {
+            get {
+                return ResourceManager.GetString("Options_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don't fragment.
+        /// </summary>
+        public static string Options_DontFragment {
+            get {
+                return ResourceManager.GetString("Options_DontFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dropped pings.
+        /// </summary>
+        public static string Options_DroppedPings {
+            get {
+                return ResourceManager.GetString("Options_DroppedPings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable audio alert: host down.
+        /// </summary>
+        public static string Options_EnableAudioDown {
+            get {
+                return ResourceManager.GetString("Options_EnableAudioDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable audio alert: host up.
+        /// </summary>
+        public static string Options_EnableAudioUp {
+            get {
+                return ResourceManager.GetString("Options_EnableAudioUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable email alerts.
+        /// </summary>
+        public static string Options_EnableEmailAlerts {
+            get {
+                return ResourceManager.GetString("Options_EnableEmailAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable SSL/TLS.
+        /// </summary>
+        public static string Options_EnableSSL {
+            get {
+                return ResourceManager.GetString("Options_EnableSSL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit to tray.
+        /// </summary>
+        public static string Options_ExitToTray {
+            get {
+                return ResourceManager.GetString("Options_ExitToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed.
+        /// </summary>
+        public static string Options_Fixed {
+            get {
+                return ResourceManager.GetString("Options_Fixed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From address.
+        /// </summary>
+        public static string Options_FromAddress {
+            get {
+                return ResourceManager.GetString("Options_FromAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced ICMP Options.
+        /// </summary>
+        public static string Options_Header_AdvancedICMP {
+            get {
+                return ResourceManager.GetString("Options_Header_AdvancedICMP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alias Foreground.
+        /// </summary>
+        public static string Options_Header_AliasForeground {
+            get {
+                return ResourceManager.GetString("Options_Header_AliasForeground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio Alerts.
+        /// </summary>
+        public static string Options_Header_AudioAlerts {
+            get {
+                return ResourceManager.GetString("Options_Header_AudioAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        public static string Options_Header_Colors {
+            get {
+                return ResourceManager.GetString("Options_Header_Colors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display Options.
+        /// </summary>
+        public static string Options_Header_DisplayOptions {
+            get {
+                return ResourceManager.GetString("Options_Header_DisplayOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Addresses.
+        /// </summary>
+        public static string Options_Header_EmailAddresses {
+            get {
+                return ResourceManager.GetString("Options_Header_EmailAddresses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Alerts.
+        /// </summary>
+        public static string Options_Header_EmailAlerts {
+            get {
+                return ResourceManager.GetString("Options_Header_EmailAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font Sizes.
+        /// </summary>
+        public static string Options_Header_FontSizes {
+            get {
+                return ResourceManager.GetString("Options_Header_FontSizes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latency Detection.
+        /// </summary>
+        public static string Options_Header_LatencyDetection {
+            get {
+                return ResourceManager.GetString("Options_Header_LatencyDetection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log Output.
+        /// </summary>
+        public static string Options_Header_LogOutput {
+            get {
+                return ResourceManager.GetString("Options_Header_LogOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popup Alerts.
+        /// </summary>
+        public static string Options_Header_PopupAlerts {
+            get {
+                return ResourceManager.GetString("Options_Header_PopupAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe Background.
+        /// </summary>
+        public static string Options_Header_ProbeBackground {
+            get {
+                return ResourceManager.GetString("Options_Header_ProbeBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe Foreground.
+        /// </summary>
+        public static string Options_Header_ProbeForeground {
+            get {
+                return ResourceManager.GetString("Options_Header_ProbeForeground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe Options.
+        /// </summary>
+        public static string Options_Header_ProbeOptions {
+            get {
+                return ResourceManager.GetString("Options_Header_ProbeOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanner.
+        /// </summary>
+        public static string Options_Header_Scanner {
+            get {
+                return ResourceManager.GetString("Options_Header_Scanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Information.
+        /// </summary>
+        public static string Options_Header_ServerInfo {
+            get {
+                return ResourceManager.GetString("Options_Header_ServerInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statistics Foreground.
+        /// </summary>
+        public static string Options_Header_StatsForeground {
+            get {
+                return ResourceManager.GetString("Options_Header_StatsForeground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Startup.
+        /// </summary>
+        public static string Options_Header_Startup {
+            get {
+                return ResourceManager.GetString("Options_Header_Startup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High latency:.
+        /// </summary>
+        public static string Options_HighLatency {
+            get {
+                return ResourceManager.GetString("Options_HighLatency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hops.
+        /// </summary>
+        public static string Options_Hops {
+            get {
+                return ResourceManager.GetString("Options_Hops", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hours.
+        /// </summary>
+        public static string Options_Hours {
+            get {
+                return ResourceManager.GetString("Options_Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        public static string Options_Language {
+            get {
+                return ResourceManager.GetString("Options_Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Language change takes effect on next start).
+        /// </summary>
+        public static string Options_LanguageRestart {
+            get {
+                return ResourceManager.GetString("Options_LanguageRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Latency triggers:.
+        /// </summary>
+        public static string Options_LatencyTriggers {
+            get {
+                return ResourceManager.GetString("Options_LatencyTriggers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log path (base directory).
+        /// </summary>
+        public static string Options_LogPath {
+            get {
+                return ResourceManager.GetString("Options_LogPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log path.
+        /// </summary>
+        public static string Options_LogPathSimple {
+            get {
+                return ResourceManager.GetString("Options_LogPathSimple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log status changes to text file.
+        /// </summary>
+        public static string Options_LogStatusChanges {
+            get {
+                return ResourceManager.GetString("Options_LogStatusChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimize to tray.
+        /// </summary>
+        public static string Options_MinimizeToTray {
+            get {
+                return ResourceManager.GetString("Options_MinimizeToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        public static string Options_Minutes {
+            get {
+                return ResourceManager.GetString("Options_Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ms.
+        /// </summary>
+        public static string Options_Ms {
+            get {
+                return ResourceManager.GetString("Options_Ms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string Options_Off {
+            get {
+                return ResourceManager.GetString("Options_Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packet data size.
+        /// </summary>
+        public static string Options_PacketDataSize {
+            get {
+                return ResourceManager.GetString("Options_PacketDataSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Options_Password {
+            get {
+                return ResourceManager.GetString("Options_Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping interval:.
+        /// </summary>
+        public static string Options_PingInterval {
+            get {
+                return ResourceManager.GetString("Options_PingInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping timeout:.
+        /// </summary>
+        public static string Options_PingTimeout {
+            get {
+                return ResourceManager.GetString("Options_PingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        public static string Options_Port {
+            get {
+                return ResourceManager.GetString("Options_Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe count:.
+        /// </summary>
+        public static string Options_ProbeCount {
+            get {
+                return ResourceManager.GetString("Options_ProbeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe font size:.
+        /// </summary>
+        public static string Options_ProbeFontSize {
+            get {
+                return ResourceManager.GetString("Options_ProbeFontSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to probes.
+        /// </summary>
+        public static string Options_Probes {
+            get {
+                return ResourceManager.GetString("Options_Probes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recipient address.
+        /// </summary>
+        public static string Options_RecipientAddress {
+            get {
+                return ResourceManager.GetString("Options_RecipientAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remember window position.
+        /// </summary>
+        public static string Options_RememberWindowPosition {
+            get {
+                return ResourceManager.GetString("Options_RememberWindowPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore Defaults.
+        /// </summary>
+        public static string Options_RestoreDefaults {
+            get {
+                return ResourceManager.GetString("Options_RestoreDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanner font size:.
+        /// </summary>
+        public static string Options_ScannerFontSize {
+            get {
+                return ResourceManager.GetString("Options_ScannerFontSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        public static string Options_Seconds {
+            get {
+                return ResourceManager.GetString("Options_Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a favorite:.
+        /// </summary>
+        public static string Options_SelectFavorite {
+            get {
+                return ResourceManager.GetString("Options_SelectFavorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show when minimized.
+        /// </summary>
+        public static string Options_ShowWhenMinimized {
+            get {
+                return ResourceManager.GetString("Options_ShowWhenMinimized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This server requires authentication.
+        /// </summary>
+        public static string Options_SmtpAuth {
+            get {
+                return ResourceManager.GetString("Options_SmtpAuth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP server.
+        /// </summary>
+        public static string Options_SmtpServer {
+            get {
+                return ResourceManager.GetString("Options_SmtpServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blank (default).
+        /// </summary>
+        public static string Options_StartupBlank {
+            get {
+                return ResourceManager.GetString("Options_StartupBlank", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load a favorite.
+        /// </summary>
+        public static string Options_StartupFavorite {
+            get {
+                return ResourceManager.GetString("Options_StartupFavorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List input window.
+        /// </summary>
+        public static string Options_StartupListInput {
+            get {
+                return ResourceManager.GetString("Options_StartupListInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose how MultiPingMonitor should start:.
+        /// </summary>
+        public static string Options_StartupPrompt {
+            get {
+                return ResourceManager.GetString("Options_StartupPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string Options_Tab_Advanced {
+            get {
+                return ResourceManager.GetString("Options_Tab_Advanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Colors.
+        /// </summary>
+        public static string Options_Tab_Colors {
+            get {
+                return ResourceManager.GetString("Options_Tab_Colors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        public static string Options_Tab_Display {
+            get {
+                return ResourceManager.GetString("Options_Tab_Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Options_Tab_Email {
+            get {
+                return ResourceManager.GetString("Options_Tab_Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string Options_Tab_General {
+            get {
+                return ResourceManager.GetString("Options_Tab_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging.
+        /// </summary>
+        public static string Options_Tab_Logging {
+            get {
+                return ResourceManager.GetString("Options_Tab_Logging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string Options_Tab_Notifications {
+            get {
+                return ResourceManager.GetString("Options_Tab_Notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sounds.
+        /// </summary>
+        public static string Options_Tab_Sounds {
+            get {
+                return ResourceManager.GetString("Options_Tab_Sounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string Options_Test {
+            get {
+                return ResourceManager.GetString("Options_Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme:.
+        /// </summary>
+        public static string Options_Theme {
+            get {
+                return ResourceManager.GetString("Options_Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total packet size:.
+        /// </summary>
+        public static string Options_TotalPacketSize {
+            get {
+                return ResourceManager.GetString("Options_TotalPacketSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time to live:.
+        /// </summary>
+        public static string Options_TTL {
+            get {
+                return ResourceManager.GetString("Options_TTL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string Options_Username {
+            get {
+                return ResourceManager.GetString("Options_Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write ping output to plain text files.
+        /// </summary>
+        public static string Options_WritePingOutput {
+            get {
+                return ResourceManager.GetString("Options_WritePingOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Traceroute_Close {
+            get {
+                return ResourceManager.GetString("Traceroute_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traceroute.
+        /// </summary>
+        public static string Traceroute_Header {
+            get {
+                return ResourceManager.GetString("Traceroute_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host:.
+        /// </summary>
+        public static string Traceroute_Host {
+            get {
+                return ResourceManager.GetString("Traceroute_Host", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string Traceroute_Stop {
+            get {
+                return ResourceManager.GetString("Traceroute_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traceroute - MultiPingMonitor.
+        /// </summary>
+        public static string Traceroute_Title {
+            get {
+                return ResourceManager.GetString("Traceroute_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace.
+        /// </summary>
+        public static string Traceroute_Trace {
+            get {
+                return ResourceManager.GetString("Traceroute_Trace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit MultiPingMonitor.
+        /// </summary>
+        public static string Tray_Exit {
+            get {
+                return ResourceManager.GetString("Tray_Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Tray_Options {
+            get {
+                return ResourceManager.GetString("Tray_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status History.
+        /// </summary>
+        public static string Tray_StatusHistory {
+            get {
+                return ResourceManager.GetString("Tray_StatusHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Options_Title {
+            get {
+                return ResourceManager.GetString("Options_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The don't fragment flag instructs routers to discard the packet if it is too big.
+        /// </summary>
+        public static string Tooltip_DontFragment {
+            get {
+                return ResourceManager.GetString("Tooltip_DontFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popup alerts appear in the lower right corner of your screen...
+        /// </summary>
+        public static string Tooltip_PopupAlerts {
+            get {
+                return ResourceManager.GetString("Tooltip_PopupAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically close popup alerts after the specified number of seconds.
+        /// </summary>
+        public static string Tooltip_AutoDismiss {
+            get {
+                return ResourceManager.GetString("Tooltip_AutoDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to send an email alert every time a host changes status.
+        /// </summary>
+        public static string Tooltip_EnableEmailAlerts {
+            get {
+                return ResourceManager.GetString("Tooltip_EnableEmailAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to play a sound when a host goes down.
+        /// </summary>
+        public static string Tooltip_AudioDown {
+            get {
+                return ResourceManager.GetString("Tooltip_AudioDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to play a sound when a host comes up.
+        /// </summary>
+        public static string Tooltip_AudioUp {
+            get {
+                return ResourceManager.GetString("Tooltip_AudioUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If this option is enabled, all ping output is written to a text file.
+        /// </summary>
+        public static string Tooltip_LogOutput {
+            get {
+                return ResourceManager.GetString("Tooltip_LogOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, this option writes all status changes to a text file.
+        /// </summary>
+        public static string Tooltip_LogStatusChanges {
+            get {
+                return ResourceManager.GetString("Tooltip_LogStatusChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep the MultiPingMonitor application on top and always visible over other windows.
+        /// </summary>
+        public static string Tooltip_AlwaysOnTop {
+            get {
+                return ResourceManager.GetString("Tooltip_AlwaysOnTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place an icon in the system tray when MultiPingMonitor is minimized.
+        /// </summary>
+        public static string Tooltip_MinimizeToTray {
+            get {
+                return ResourceManager.GetString("Tooltip_MinimizeToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When closing MultiPingMonitor, the application will minimize to the system tray rather than exit.
+        /// </summary>
+        public static string Tooltip_ExitToTray {
+            get {
+                return ResourceManager.GetString("Tooltip_ExitToTray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save and restore the window position and size between sessions.
+        /// </summary>
+        public static string Tooltip_RememberWindowPosition {
+            get {
+                return ResourceManager.GetString("Tooltip_RememberWindowPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid ping interval.
+        /// </summary>
+        public static string Options_Validation_PingInterval {
+            get {
+                return ResourceManager.GetString("Options_Validation_PingInterval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid ping timeout.
+        /// </summary>
+        public static string Options_Validation_PingTimeout {
+            get {
+                return ResourceManager.GetString("Options_Validation_PingTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid alert threshold.
+        /// </summary>
+        public static string Options_Validation_AlertThreshold {
+            get {
+                return ResourceManager.GetString("Options_Validation_AlertThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid number of seconds for the auto-dismiss interval.
+        /// </summary>
+        public static string Options_Validation_AutoDismiss {
+            get {
+                return ResourceManager.GetString("Options_Validation_AutoDismiss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid time to live (TTL) between 1 and 255.
+        /// </summary>
+        public static string Options_Validation_TTL {
+            get {
+                return ResourceManager.GetString("Options_Validation_TTL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid data size between 0 and 65,500.
+        /// </summary>
+        public static string Options_Validation_PacketSize {
+            get {
+                return ResourceManager.GetString("Options_Validation_PacketSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid SMTP server address.
+        /// </summary>
+        public static string Options_Validation_SmtpServer {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid port number for your SMTP server.
+        /// </summary>
+        public static string Options_Validation_SmtpPort {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid recipient email address.
+        /// </summary>
+        public static string Options_Validation_EmailRecipient {
+            get {
+                return ResourceManager.GetString("Options_Validation_EmailRecipient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid 'from' address.
+        /// </summary>
+        public static string Options_Validation_EmailFrom {
+            get {
+                return ResourceManager.GetString("Options_Validation_EmailFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid username for your mail server.
+        /// </summary>
+        public static string Options_Validation_SmtpUsername {
+            get {
+                return ResourceManager.GetString("Options_Validation_SmtpUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified path does not exist. Please enter a valid path.
+        /// </summary>
+        public static string Options_Validation_AudioPath {
+            get {
+                return ResourceManager.GetString("Options_Validation_AudioPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified path does not exist. Please enter a valid path.
+        /// </summary>
+        public static string Options_Validation_LogPath {
+            get {
+                return ResourceManager.GetString("Options_Validation_LogPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Probe font size must be a number between 6 and 72.
+        /// </summary>
+        public static string Options_Validation_FontSizeProbe {
+            get {
+                return ResourceManager.GetString("Options_Validation_FontSizeProbe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanner font size must be a number between 6 and 72.
+        /// </summary>
+        public static string Options_Validation_FontSizeScanner {
+            get {
+                return ResourceManager.GetString("Options_Validation_FontSizeScanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a valid HTML color code.
+        /// </summary>
+        public static string Options_Validation_HtmlColor {
+            get {
+                return ResourceManager.GetString("Options_Validation_HtmlColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Test.
+        /// </summary>
+        public static string Options_Email_Test_Title {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A test email was sent.
+        /// </summary>
+        public static string Options_Email_Test_Success {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending...
+        /// </summary>
+        public static string Options_Email_Test_Sending {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Sending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test failed: {0}.
+        /// </summary>
+        public static string Options_Email_Test_Failed {
+            get {
+                return ResourceManager.GetString("Options_Email_Test_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a location for the log files.
+        /// </summary>
+        public static string Options_Log_SelectFolder {
+            get {
+                return ResourceManager.GetString("Options_Log_SelectFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an audio file.
+        /// </summary>
+        public static string Options_Audio_SelectFile_Title {
+            get {
+                return ResourceManager.GetString("Options_Audio_SelectFile_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WAV files (*.wav)|*.wav|All files|*.*
+        /// </summary>
+        public static string Options_Audio_SelectFile_Filter {
+            get {
+                return ResourceManager.GetString("Options_Audio_SelectFile_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to play audio file.
+        /// </summary>
+        public static string Options_Audio_PlayError {
+            get {
+                return ResourceManager.GetString("Options_Audio_PlayError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor is a network utility...
+        /// </summary>
+        public static string Help_Intro {
+            get {
+                return ResourceManager.GetString("Help_Intro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Basic Usage.
+        /// </summary>
+        public static string Help_BasicUsage_Header {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application overview.
+        /// </summary>
+        public static string Help_BasicUsage_AppOverview_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AppOverview_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor a host.
+        /// </summary>
+        public static string Help_BasicUsage_MonitorHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_MonitorHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a hostname or IP address into the textbox...
+        /// </summary>
+        public static string Help_BasicUsage_MonitorHost_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_MonitorHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a host monitor.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Prefix {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Host.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Button {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to from the menu bar, or use the keyboard shortcut,.
+        /// </summary>
+        public static string Help_BasicUsage_AddHost_Suffix {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_AddHost_Suffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove a host monitor.
+        /// </summary>
+        public static string Help_BasicUsage_RemoveHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_RemoveHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When you hover your mouse over a host monitor...
+        /// </summary>
+        public static string Help_BasicUsage_RemoveHost_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_RemoveHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string Help_BasicUsage_Columns_Sub {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Columns_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click Columns in the menu bar...
+        /// </summary>
+        public static string Help_BasicUsage_Columns_Text {
+            get {
+                return ResourceManager.GetString("Help_BasicUsage_Columns_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra Features.
+        /// </summary>
+        public static string Help_ExtraFeatures_Header {
+            get {
+                return ResourceManager.GetString("Help_ExtraFeatures_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port Monitor.
+        /// </summary>
+        public static string Help_PortMonitor_Sub {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To monitor a specific TCP port...
+        /// </summary>
+        public static string Help_PortMonitor_Text_Before {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Text_Before", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to , will monitor port 80 on SERVER01.
+        /// </summary>
+        public static string Help_PortMonitor_Text_After {
+            get {
+                return ResourceManager.GetString("Help_PortMonitor_Text_After", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trace Route.
+        /// </summary>
+        public static string Help_TraceRoute_Sub {
+            get {
+                return ResourceManager.GetString("Help_TraceRoute_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trace route utility is used to measure network delays...
+        /// </summary>
+        public static string Help_TraceRoute_Text {
+            get {
+                return ResourceManager.GetString("Help_TraceRoute_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flood Host.
+        /// </summary>
+        public static string Help_FloodHost_Sub {
+            get {
+                return ResourceManager.GetString("Help_FloodHost_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The flood host utility is used to generate a significant amount of ICMP packets.
+        /// </summary>
+        public static string Help_FloodHost_Text {
+            get {
+                return ResourceManager.GetString("Help_FloodHost_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        public static string Help_Options_Header {
+            get {
+                return ResourceManager.GetString("Help_Options_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping interval.
+        /// </summary>
+        public static string Help_Options_PingInterval_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_PingInterval_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The time to wait between sending each packet.
+        /// </summary>
+        public static string Help_Options_PingInterval_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_PingInterval_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping timeout.
+        /// </summary>
+        public static string Help_Options_PingTimeout_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_PingTimeout_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum time to wait for a response, in seconds.
+        /// </summary>
+        public static string Help_Options_PingTimeout_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_PingTimeout_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send email when host goes down or up.
+        /// </summary>
+        public static string Help_Options_Email_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_Email_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send an email each time a host changes status.
+        /// </summary>
+        public static string Help_Options_Email_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_Email_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep window always on top.
+        /// </summary>
+        public static string Help_Options_AlwaysOnTop_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_AlwaysOnTop_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MultiPingMonitor window will remain on top of all other application windows.
+        /// </summary>
+        public static string Help_Options_AlwaysOnTop_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_AlwaysOnTop_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log all output to files.
+        /// </summary>
+        public static string Help_Options_Logging_Sub {
+            get {
+                return ResourceManager.GetString("Help_Options_Logging_Sub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write all ping responses to a text file.
+        /// </summary>
+        public static string Help_Options_Logging_Text {
+            get {
+                return ResourceManager.GetString("Help_Options_Logging_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Line Usage.
+        /// </summary>
+        public static string Help_CommandLine_Header {
+            get {
+                return ResourceManager.GetString("Help_CommandLine_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usage: MultiPingMonitor [-i interval] [-w timeout] [target_host...].
+        /// </summary>
+        public static string Help_CommandLine_Usage {
+            get {
+                return ResourceManager.GetString("Help_CommandLine_Usage", resourceCulture);
+            }
+        }
+
     }
 }

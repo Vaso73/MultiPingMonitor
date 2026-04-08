@@ -297,4 +297,606 @@
   <data name="Tooltip_IsolatedView" xml:space="preserve">
     <value>Otvoriť izolovaný pohľad</value>
   </data>
+  <data name="FloodHost_Description" xml:space="preserve">
+    <value>Tento nástroj bude posielať nepretržitý tok ICMP ping paketov na cieľového hostiteľa. Zvyčajne negeneruje viac ako 32 kilobajtov sieťovej prevádzky za sekundu.</value>
+  </data>
+  <data name="FloodHost_InProgress" xml:space="preserve">
+    <value>Zahltenie prebieha...</value>
+  </data>
+  <data name="FloodHost_PacketsLost" xml:space="preserve">
+    <value>Stratené pakety:</value>
+  </data>
+  <data name="FloodHost_PacketsReceived" xml:space="preserve">
+    <value>Prijaté pakety:</value>
+  </data>
+  <data name="FloodHost_PacketsSent" xml:space="preserve">
+    <value>Odoslané pakety:</value>
+  </data>
+  <data name="FloodHost_Start" xml:space="preserve">
+    <value>Zahltiť hostiteľa</value>
+  </data>
+  <data name="FloodHost_Stop" xml:space="preserve">
+    <value>Zastaviť zahltenie</value>
+  </data>
+  <data name="FloodHost_Title" xml:space="preserve">
+    <value>MultiPingMonitor - Zahltiť hostiteľa</value>
+  </data>
+  <data name="Help_Nav_BasicUsage" xml:space="preserve">
+    <value>Základné použitie</value>
+  </data>
+  <data name="Help_Nav_CommandLine" xml:space="preserve">
+    <value>Použitie príkazového riadka</value>
+  </data>
+  <data name="Help_Nav_ExtraFeatures" xml:space="preserve">
+    <value>Ďalšie funkcie</value>
+  </data>
+  <data name="Help_Nav_Intro" xml:space="preserve">
+    <value>Úvod</value>
+  </data>
+  <data name="Help_Nav_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Help_Title" xml:space="preserve">
+    <value>Pomocník MultiPingMonitor</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>Angličtina</value>
+  </data>
+  <data name="Language_Slovak" xml:space="preserve">
+    <value>Slovenčina</value>
+  </data>
+  <data name="Language_System" xml:space="preserve">
+    <value>Systém (predvolený jazyk OS)</value>
+  </data>
+  <data name="MainWindow_EnterHostname" xml:space="preserve">
+    <value>Zadajte názov hostiteľa</value>
+  </data>
+  <data name="Menu_InputAddresses" xml:space="preserve">
+    <value>Zadať adresy</value>
+  </data>
+  <data name="Menu_NewInstance" xml:space="preserve">
+    <value>MultiPingMonitor</value>
+  </data>
+  <data name="Options_AlertThreshold" xml:space="preserve">
+    <value>Prah upozornenia:</value>
+  </data>
+  <data name="Options_AlwaysOnTop" xml:space="preserve">
+    <value>Vždy navrchu</value>
+  </data>
+  <data name="Options_AlwaysShow" xml:space="preserve">
+    <value>Vždy zobraziť</value>
+  </data>
+  <data name="Options_AudioFilePath" xml:space="preserve">
+    <value>Cesta k zvukovému súboru</value>
+  </data>
+  <data name="Options_Auto" xml:space="preserve">
+    <value>Automaticky</value>
+  </data>
+  <data name="Options_AutoDismiss" xml:space="preserve">
+    <value>Automaticky zavrieť upozornenia</value>
+  </data>
+  <data name="Options_Browse" xml:space="preserve">
+    <value>Prehľadávať...</value>
+  </data>
+  <data name="Options_Bytes" xml:space="preserve">
+    <value>bajtov</value>
+  </data>
+  <data name="Options_Color_AliasForeground" xml:space="preserve">
+    <value>Popredie aliasu</value>
+  </data>
+  <data name="Options_Color_Down" xml:space="preserve">
+    <value>Nedostupný</value>
+  </data>
+  <data name="Options_Color_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="Options_Color_Inactive" xml:space="preserve">
+    <value>Neaktívne</value>
+  </data>
+  <data name="Options_Color_Indeterminate" xml:space="preserve">
+    <value>Neurčitý</value>
+  </data>
+  <data name="Options_Color_ProbeBackground" xml:space="preserve">
+    <value>Pozadie sondy</value>
+  </data>
+  <data name="Options_Color_ProbeForeground" xml:space="preserve">
+    <value>Popredie sondy</value>
+  </data>
+  <data name="Options_Color_Up" xml:space="preserve">
+    <value>Dostupný</value>
+  </data>
+  <data name="Options_ColumnCount" xml:space="preserve">
+    <value>Počet stĺpcov:</value>
+  </data>
+  <data name="Options_CustomPacketData" xml:space="preserve">
+    <value>Vlastné dáta paketu</value>
+  </data>
+  <data name="Options_DetectionMode" xml:space="preserve">
+    <value>Režim detekcie:</value>
+  </data>
+  <data name="Options_Disabled" xml:space="preserve">
+    <value>Zakázané</value>
+  </data>
+  <data name="Options_DontFragment" xml:space="preserve">
+    <value>Nefragmentovať</value>
+  </data>
+  <data name="Options_DroppedPings" xml:space="preserve">
+    <value>zahodených pingov</value>
+  </data>
+  <data name="Options_EnableAudioDown" xml:space="preserve">
+    <value>Povoliť zvukové upozornenie: hostiteľ nedostupný</value>
+  </data>
+  <data name="Options_EnableAudioUp" xml:space="preserve">
+    <value>Povoliť zvukové upozornenie: hostiteľ dostupný</value>
+  </data>
+  <data name="Options_EnableEmailAlerts" xml:space="preserve">
+    <value>Povoliť e-mailové upozornenia</value>
+  </data>
+  <data name="Options_EnableSSL" xml:space="preserve">
+    <value>Povoliť SSL/TLS</value>
+  </data>
+  <data name="Options_ExitToTray" xml:space="preserve">
+    <value>Zatvoriť do systémovej lišty</value>
+  </data>
+  <data name="Options_Fixed" xml:space="preserve">
+    <value>Pevné</value>
+  </data>
+  <data name="Options_FromAddress" xml:space="preserve">
+    <value>Adresa odosielateľa</value>
+  </data>
+  <data name="Options_Header_AdvancedICMP" xml:space="preserve">
+    <value>Rozšírené možnosti ICMP</value>
+  </data>
+  <data name="Options_Header_AliasForeground" xml:space="preserve">
+    <value>Popredie aliasu</value>
+  </data>
+  <data name="Options_Header_AudioAlerts" xml:space="preserve">
+    <value>Zvukové upozornenia</value>
+  </data>
+  <data name="Options_Header_Colors" xml:space="preserve">
+    <value>Farby</value>
+  </data>
+  <data name="Options_Header_DisplayOptions" xml:space="preserve">
+    <value>Možnosti zobrazenia</value>
+  </data>
+  <data name="Options_Header_EmailAddresses" xml:space="preserve">
+    <value>E-mailové adresy</value>
+  </data>
+  <data name="Options_Header_EmailAlerts" xml:space="preserve">
+    <value>E-mailové upozornenia</value>
+  </data>
+  <data name="Options_Header_FontSizes" xml:space="preserve">
+    <value>Veľkosti písma</value>
+  </data>
+  <data name="Options_Header_LatencyDetection" xml:space="preserve">
+    <value>Detekcia latencie</value>
+  </data>
+  <data name="Options_Header_LogOutput" xml:space="preserve">
+    <value>Výstup záznamu</value>
+  </data>
+  <data name="Options_Header_PopupAlerts" xml:space="preserve">
+    <value>Kontextové upozornenia</value>
+  </data>
+  <data name="Options_Header_ProbeBackground" xml:space="preserve">
+    <value>Pozadie sondy</value>
+  </data>
+  <data name="Options_Header_ProbeForeground" xml:space="preserve">
+    <value>Popredie sondy</value>
+  </data>
+  <data name="Options_Header_ProbeOptions" xml:space="preserve">
+    <value>Možnosti sondovania</value>
+  </data>
+  <data name="Options_Header_Scanner" xml:space="preserve">
+    <value>Skener</value>
+  </data>
+  <data name="Options_Header_ServerInfo" xml:space="preserve">
+    <value>Informácie o serveri</value>
+  </data>
+  <data name="Options_Header_StatsForeground" xml:space="preserve">
+    <value>Popredie štatistík</value>
+  </data>
+  <data name="Options_Header_Startup" xml:space="preserve">
+    <value>Spustenie</value>
+  </data>
+  <data name="Options_HighLatency" xml:space="preserve">
+    <value>Vysoká latencia:</value>
+  </data>
+  <data name="Options_Hops" xml:space="preserve">
+    <value>skokov</value>
+  </data>
+  <data name="Options_Hours" xml:space="preserve">
+    <value>hodín</value>
+  </data>
+  <data name="Options_Language" xml:space="preserve">
+    <value>Jazyk:</value>
+  </data>
+  <data name="Options_LanguageRestart" xml:space="preserve">
+    <value>(Zmena jazyka sa prejaví pri ďalšom spustení)</value>
+  </data>
+  <data name="Options_LatencyTriggers" xml:space="preserve">
+    <value>Počet spúšťačov:</value>
+  </data>
+  <data name="Options_LogPath" xml:space="preserve">
+    <value>Cesta k záznamu (základný adresár)</value>
+  </data>
+  <data name="Options_LogPathSimple" xml:space="preserve">
+    <value>Cesta k záznamu</value>
+  </data>
+  <data name="Options_LogStatusChanges" xml:space="preserve">
+    <value>Zaznamenávať zmeny stavu do textového súboru</value>
+  </data>
+  <data name="Options_MinimizeToTray" xml:space="preserve">
+    <value>Minimalizovať do systémovej lišty</value>
+  </data>
+  <data name="Options_Minutes" xml:space="preserve">
+    <value>minút</value>
+  </data>
+  <data name="Options_Ms" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="Options_Off" xml:space="preserve">
+    <value>Vypnuté</value>
+  </data>
+  <data name="Options_PacketDataSize" xml:space="preserve">
+    <value>Veľkosť dát paketu</value>
+  </data>
+  <data name="Options_Password" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="Options_PingInterval" xml:space="preserve">
+    <value>Interval pingovania:</value>
+  </data>
+  <data name="Options_PingTimeout" xml:space="preserve">
+    <value>Časový limit pingovania:</value>
+  </data>
+  <data name="Options_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Options_ProbeCount" xml:space="preserve">
+    <value>Počet sond:</value>
+  </data>
+  <data name="Options_ProbeFontSize" xml:space="preserve">
+    <value>Veľkosť písma sondy:</value>
+  </data>
+  <data name="Options_Probes" xml:space="preserve">
+    <value>sond</value>
+  </data>
+  <data name="Options_RecipientAddress" xml:space="preserve">
+    <value>Adresa príjemcu</value>
+  </data>
+  <data name="Options_RememberWindowPosition" xml:space="preserve">
+    <value>Zapamätať pozíciu okna</value>
+  </data>
+  <data name="Options_RestoreDefaults" xml:space="preserve">
+    <value>Obnoviť predvolené</value>
+  </data>
+  <data name="Options_ScannerFontSize" xml:space="preserve">
+    <value>Veľkosť písma skenera:</value>
+  </data>
+  <data name="Options_Seconds" xml:space="preserve">
+    <value>sekúnd</value>
+  </data>
+  <data name="Options_SelectFavorite" xml:space="preserve">
+    <value>Vybrať obľúbenú sadu:</value>
+  </data>
+  <data name="Options_ShowWhenMinimized" xml:space="preserve">
+    <value>Zobraziť pri minimalizácii</value>
+  </data>
+  <data name="Options_SmtpAuth" xml:space="preserve">
+    <value>Server vyžaduje overenie</value>
+  </data>
+  <data name="Options_SmtpServer" xml:space="preserve">
+    <value>SMTP server</value>
+  </data>
+  <data name="Options_StartupBlank" xml:space="preserve">
+    <value>Prázdne (predvolené)</value>
+  </data>
+  <data name="Options_StartupFavorite" xml:space="preserve">
+    <value>Načítať obľúbenú sadu</value>
+  </data>
+  <data name="Options_StartupListInput" xml:space="preserve">
+    <value>Okno na zadanie zoznamu</value>
+  </data>
+  <data name="Options_StartupPrompt" xml:space="preserve">
+    <value>Zvoľte, ako sa má MultiPingMonitor spustiť:</value>
+  </data>
+  <data name="Options_Tab_Advanced" xml:space="preserve">
+    <value>Rozšírené</value>
+  </data>
+  <data name="Options_Tab_Colors" xml:space="preserve">
+    <value>Farby</value>
+  </data>
+  <data name="Options_Tab_Display" xml:space="preserve">
+    <value>Zobrazenie</value>
+  </data>
+  <data name="Options_Tab_Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Options_Tab_General" xml:space="preserve">
+    <value>Všeobecné</value>
+  </data>
+  <data name="Options_Tab_Logging" xml:space="preserve">
+    <value>Záznamy</value>
+  </data>
+  <data name="Options_Tab_Notifications" xml:space="preserve">
+    <value>Oznámenia</value>
+  </data>
+  <data name="Options_Tab_Sounds" xml:space="preserve">
+    <value>Zvuky</value>
+  </data>
+  <data name="Options_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="Options_Theme" xml:space="preserve">
+    <value>Téma:</value>
+  </data>
+  <data name="Options_TotalPacketSize" xml:space="preserve">
+    <value>Celková veľkosť paketu:</value>
+  </data>
+  <data name="Options_TTL" xml:space="preserve">
+    <value>Čas životnosti:</value>
+  </data>
+  <data name="Options_Username" xml:space="preserve">
+    <value>Používateľské meno</value>
+  </data>
+  <data name="Options_WritePingOutput" xml:space="preserve">
+    <value>Zapisovať výstup pingovania do textových súborov</value>
+  </data>
+  <data name="Traceroute_Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
+  <data name="Traceroute_Header" xml:space="preserve">
+    <value>Traceroute</value>
+  </data>
+  <data name="Traceroute_Host" xml:space="preserve">
+    <value>Hostiteľ:</value>
+  </data>
+  <data name="Traceroute_Stop" xml:space="preserve">
+    <value>Zastaviť</value>
+  </data>
+  <data name="Traceroute_Title" xml:space="preserve">
+    <value>Traceroute - MultiPingMonitor</value>
+  </data>
+  <data name="Traceroute_Trace" xml:space="preserve">
+    <value>Trasovať</value>
+  </data>
+  <data name="Tray_Exit" xml:space="preserve">
+    <value>Ukončiť MultiPingMonitor</value>
+  </data>
+  <data name="Tray_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Tray_StatusHistory" xml:space="preserve">
+    <value>História stavov</value>
+  </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Tooltip_DontFragment" xml:space="preserve">
+    <value>Príznak 'nefragmentovať' dáva pokyn smerovačom zahodiť paket, ak je príliš veľký.
+
+Maximálnu prenosovú jednotku (MTU) môžete zistiť povolením tejto možnosti a úpravou veľkosti dát paketu.</value>
+  </data>
+  <data name="Tooltip_PopupAlerts" xml:space="preserve">
+    <value>Kontextové upozornenia sa zobrazujú v pravom dolnom rohu obrazovky, keď sledovaný hostiteľ zmení stav (nedostupný alebo dostupný).
+
+Môžete vždy zobrazovať kontextové upozornenia, zobrazovať ich len pri minimalizácii alebo ich úplne zakázať.</value>
+  </data>
+  <data name="Tooltip_AutoDismiss" xml:space="preserve">
+    <value>Automaticky zavrieť kontextové upozornenia po zadanom počte sekúnd.</value>
+  </data>
+  <data name="Tooltip_EnableEmailAlerts" xml:space="preserve">
+    <value>Povolením tejto možnosti sa odošle e-mailové upozornenie vždy, keď hostiteľ zmení stav (nedostupný alebo dostupný).</value>
+  </data>
+  <data name="Tooltip_AudioDown" xml:space="preserve">
+    <value>Povolením tejto možnosti sa prehrá zvuk, keď hostiteľ prestane byť dostupný.</value>
+  </data>
+  <data name="Tooltip_AudioUp" xml:space="preserve">
+    <value>Povolením tejto možnosti sa prehrá zvuk, keď hostiteľ opäť začne byť dostupný.</value>
+  </data>
+  <data name="Tooltip_LogOutput" xml:space="preserve">
+    <value>Ak je táto možnosť povolená, celý výstup pingovania sa zapíše do textového súboru.
+Zadáte základný adresár a MultiPingMonitor vytvorí samostatný súbor záznamu pre každého hostiteľa (hostname.txt).</value>
+  </data>
+  <data name="Tooltip_LogStatusChanges" xml:space="preserve">
+    <value>Keď je povolená, táto možnosť zapíše všetky zmeny stavu do textového súboru.
+Zmena stavu nastane, keď pingovaný hostiteľ prestane byť dostupný, alebo keď nedostupný hostiteľ opäť začne odpovedať.
+Textový súbor je uložený vo formáte oddelenom tabulátorom, vhodnom pre import do Excelu alebo databázy.</value>
+  </data>
+  <data name="Tooltip_AlwaysOnTop" xml:space="preserve">
+    <value>Udržuje okno MultiPingMonitor na vrchu a vždy viditeľné nad ostatnými oknami.</value>
+  </data>
+  <data name="Tooltip_MinimizeToTray" xml:space="preserve">
+    <value>Pri minimalizácii MultiPingMonitor sa zobrazí ikona v systémovej lište.
+
+Aby bola ikona vždy viditeľná:
+Kliknite pravým tlačidlom na panel úloh systému Windows a vyberte 'Nastavenia panela úloh'.
+V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli úloh'. Nájdite MultiPingMonitor a nastavte na 'Zapnuté'.
+(Kroky sa môžu líšiť)</value>
+  </data>
+  <data name="Tooltip_ExitToTray" xml:space="preserve">
+    <value>Pri zatvorení MultiPingMonitor sa aplikácia minimalizuje do systémovej lišty namiesto ukončenia. Kliknite pravým tlačidlom na ikonu lišty pre ukončenie.
+
+Aby bola ikona vždy viditeľná:
+Kliknite pravým tlačidlom na panel úloh systému Windows a vyberte 'Nastavenia panela úloh'.
+V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli úloh'. Nájdite MultiPingMonitor a nastavte na 'Zapnuté'.
+(Kroky sa môžu líšiť)</value>
+  </data>
+  <data name="Tooltip_RememberWindowPosition" xml:space="preserve">
+    <value>Uložiť a obnoviť pozíciu a veľkosť okna medzi reláciami.</value>
+  </data>
+  <data name="Options_Validation_PingInterval" xml:space="preserve">
+    <value>Zadajte platný interval pingovania.</value>
+  </data>
+  <data name="Options_Validation_PingTimeout" xml:space="preserve">
+    <value>Zadajte platný časový limit pingovania.</value>
+  </data>
+  <data name="Options_Validation_AlertThreshold" xml:space="preserve">
+    <value>Zadajte platný prah upozornenia.</value>
+  </data>
+  <data name="Options_Validation_AutoDismiss" xml:space="preserve">
+    <value>Zadajte platný počet sekúnd pre automatické zatváranie upozornení.</value>
+  </data>
+  <data name="Options_Validation_TTL" xml:space="preserve">
+    <value>Zadajte platný čas životnosti (TTL) v rozsahu 1 až 255.</value>
+  </data>
+  <data name="Options_Validation_PacketSize" xml:space="preserve">
+    <value>Zadajte platnú veľkosť dát v rozsahu 0 až 65 500.</value>
+  </data>
+  <data name="Options_Validation_SmtpServer" xml:space="preserve">
+    <value>Zadajte platnú adresu SMTP servera.</value>
+  </data>
+  <data name="Options_Validation_SmtpPort" xml:space="preserve">
+    <value>Zadajte platné číslo portu pre váš SMTP server.</value>
+  </data>
+  <data name="Options_Validation_EmailRecipient" xml:space="preserve">
+    <value>Zadajte platnú e-mailovú adresu príjemcu. Na túto adresu budú doručované e-mailové upozornenia z MultiPingMonitor.</value>
+  </data>
+  <data name="Options_Validation_EmailFrom" xml:space="preserve">
+    <value>Zadajte platnú adresu odosielateľa. Táto adresa sa zobrazí ako odosielateľ upozornení.</value>
+  </data>
+  <data name="Options_Validation_SmtpUsername" xml:space="preserve">
+    <value>Zadajte platné používateľské meno pre váš poštový server.</value>
+  </data>
+  <data name="Options_Validation_AudioPath" xml:space="preserve">
+    <value>Zadaná cesta neexistuje. Zadajte platnú cestu.</value>
+  </data>
+  <data name="Options_Validation_LogPath" xml:space="preserve">
+    <value>Zadaná cesta neexistuje. Zadajte platnú cestu.</value>
+  </data>
+  <data name="Options_Validation_FontSizeProbe" xml:space="preserve">
+    <value>Veľkosť písma sondy musí byť číslo v rozsahu 6 až 72.</value>
+  </data>
+  <data name="Options_Validation_FontSizeScanner" xml:space="preserve">
+    <value>Veľkosť písma skenera musí byť číslo v rozsahu 6 až 72.</value>
+  </data>
+  <data name="Options_Validation_HtmlColor" xml:space="preserve">
+    <value>Zadajte platný HTML farebný kód. Podporované formáty sú #RGB, #RRGGBB a #AARRGGBB. Príklad: #3266CF</value>
+  </data>
+  <data name="Options_Email_Test_Title" xml:space="preserve">
+    <value>Test e-mailu</value>
+  </data>
+  <data name="Options_Email_Test_Success" xml:space="preserve">
+    <value>Testovací e-mail bol odoslaný.</value>
+  </data>
+  <data name="Options_Email_Test_Sending" xml:space="preserve">
+    <value>Odosielanie...</value>
+  </data>
+  <data name="Options_Email_Test_Failed" xml:space="preserve">
+    <value>Test zlyhal: {0}</value>
+  </data>
+  <data name="Options_Log_SelectFolder" xml:space="preserve">
+    <value>Vyberte umiestnenie pre súbory záznamu.</value>
+  </data>
+  <data name="Options_Audio_SelectFile_Title" xml:space="preserve">
+    <value>Vyberte zvukový súbor</value>
+  </data>
+  <data name="Options_Audio_SelectFile_Filter" xml:space="preserve">
+    <value>WAV súbory (*.wav)|*.wav|Všetky súbory|*.*</value>
+  </data>
+  <data name="Options_Audio_PlayError" xml:space="preserve">
+    <value>Nie je možné prehrať zvukový súbor.</value>
+  </data>
+  <data name="Help_Intro" xml:space="preserve">
+    <value>MultiPingMonitor je sieťový nástroj, ktorý umožňuje rýchle monitorovanie dostupnosti viacerých hostiteľov. Monitory hostiteľov sa jednoducho pridávajú a odstraňujú a dynamicky sa prispôsobujú veľkosti okna aplikácie. Farebné kódovanie vám umožní jedným pohľadom zistiť stav každého hostiteľa.</value>
+  </data>
+  <data name="Help_BasicUsage_Header" xml:space="preserve">
+    <value>Základné použitie</value>
+  </data>
+  <data name="Help_BasicUsage_AppOverview_Sub" xml:space="preserve">
+    <value>Prehľad aplikácie</value>
+  </data>
+  <data name="Help_BasicUsage_MonitorHost_Sub" xml:space="preserve">
+    <value>Monitorovanie hostiteľa</value>
+  </data>
+  <data name="Help_BasicUsage_MonitorHost_Text" xml:space="preserve">
+    <value>Zadajte názov hostiteľa alebo IP adresu do textového poľa a stlačte Enter alebo kliknite na Ping. MultiPingMonitor bude nepretržite pingovať hostiteľa, kým nekliknete na Stop. Odpovede sa zobrazujú vo výstupnej oblasti nad textovým poľom. Výstupná sekcia sa zobrazí zeleno, keď hostiteľ odpovedá, a červeno, keď neodpovedá. Ak nastane chyba, výstupná oblasť sa zobrazí oranžovo.</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Sub" xml:space="preserve">
+    <value>Pridanie monitora hostiteľa</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Prefix" xml:space="preserve">
+    <value>Kliknite</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Button" xml:space="preserve">
+    <value>Pridať hostiteľa</value>
+  </data>
+  <data name="Help_BasicUsage_AddHost_Suffix" xml:space="preserve">
+    <value>z panela ponuky alebo použite klávesovú skratku,</value>
+  </data>
+  <data name="Help_BasicUsage_RemoveHost_Sub" xml:space="preserve">
+    <value>Odstránenie monitora hostiteľa</value>
+  </data>
+  <data name="Help_BasicUsage_RemoveHost_Text" xml:space="preserve">
+    <value>Keď presuniete myš nad monitor hostiteľa, v pravom hornom rohu sa zobrazí ikona X. Kliknutím na ikonu X odstránite danú inštanciu.</value>
+  </data>
+  <data name="Help_BasicUsage_Columns_Sub" xml:space="preserve">
+    <value>Stĺpce</value>
+  </data>
+  <data name="Help_BasicUsage_Columns_Text" xml:space="preserve">
+    <value>Kliknite na Stĺpce v paneli ponuky a posuňte posuvník na požadovaný počet stĺpcov. Toto nastavuje počet monitorov hostiteľov zobrazených v jednom riadku. Ďalšie riadky sa podľa potreby vytvoria automaticky.</value>
+  </data>
+  <data name="Help_ExtraFeatures_Header" xml:space="preserve">
+    <value>Ďalšie funkcie</value>
+  </data>
+  <data name="Help_PortMonitor_Sub" xml:space="preserve">
+    <value>Monitor portu</value>
+  </data>
+  <data name="Help_PortMonitor_Text_Before" xml:space="preserve">
+    <value>Ak chcete monitorovať konkrétny TCP port, zadajte názov hostiteľa alebo IP adresu, za ňou dvojbodku a požadované číslo portu. MultiPingMonitor sa potom nepretržite pokúša pripojiť na daný port a zobrazuje, či je spojenie úspešné. Príklad -</value>
+  </data>
+  <data name="Help_PortMonitor_Text_After" xml:space="preserve">
+    <value>, bude monitorovať port 80 na SERVER01.</value>
+  </data>
+  <data name="Help_TraceRoute_Sub" xml:space="preserve">
+    <value>Trasovanie trasy</value>
+  </data>
+  <data name="Help_TraceRoute_Text" xml:space="preserve">
+    <value>Nástroj na trasovanie trasy slúži na meranie sieťových oneskorení a určenie trasy k cieľovému hostiteľovi. Nástroj je prístupný z ikony rozbaľovacej ponuky v pravom hornom rohu alebo stlačením Ctrl-T.</value>
+  </data>
+  <data name="Help_FloodHost_Sub" xml:space="preserve">
+    <value>Zahltenie hostiteľa</value>
+  </data>
+  <data name="Help_FloodHost_Text" xml:space="preserve">
+    <value>Nástroj zahltenia hostiteľa slúži na generovanie veľkého množstva ICMP paketov. Na obmedzenie toku nástroj čaká na odpoveď pred odoslaním ďalšieho ICMP paketu. Nástroj je prístupný z ikony rozbaľovacej ponuky v pravom hornom rohu alebo stlačením Ctrl-F.</value>
+  </data>
+  <data name="Help_Options_Header" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Help_Options_PingInterval_Sub" xml:space="preserve">
+    <value>Interval pingovania</value>
+  </data>
+  <data name="Help_Options_PingInterval_Text" xml:space="preserve">
+    <value>Čas čakania medzi odosielaním jednotlivých paketov. Čas môže byť zadaný v sekundách, minútach alebo hodinách.</value>
+  </data>
+  <data name="Help_Options_PingTimeout_Sub" xml:space="preserve">
+    <value>Časový limit pingovania</value>
+  </data>
+  <data name="Help_Options_PingTimeout_Text" xml:space="preserve">
+    <value>Maximálny čas čakania na odpoveď v sekundách.</value>
+  </data>
+  <data name="Help_Options_Email_Sub" xml:space="preserve">
+    <value>Odoslať e-mail pri zmene stavu hostiteľa</value>
+  </data>
+  <data name="Help_Options_Email_Text" xml:space="preserve">
+    <value>Odoslať e-mail vždy, keď hostiteľ zmení stav (z nedostupného na dostupný alebo z dostupného na nedostupný). Musia byť zadané poštový server, adresa príjemcu e-mailu a adresa odosielateľa.</value>
+  </data>
+  <data name="Help_Options_AlwaysOnTop_Sub" xml:space="preserve">
+    <value>Okno vždy navrchu</value>
+  </data>
+  <data name="Help_Options_AlwaysOnTop_Text" xml:space="preserve">
+    <value>Okno MultiPingMonitor zostane na vrchu všetkých ostatných okien aplikácií.</value>
+  </data>
+  <data name="Help_Options_Logging_Sub" xml:space="preserve">
+    <value>Zaznamenávanie výstupu do súborov</value>
+  </data>
+  <data name="Help_Options_Logging_Text" xml:space="preserve">
+    <value>Zapísať všetky odpovede pingovania do textového súboru. Súbor bude pomenovaný &lt;hostname&gt;.txt a bude uložený v zadanom adresári. Ak súbor už existuje, nový výstup sa pripojí k existujúcemu súboru.</value>
+  </data>
+  <data name="Help_CommandLine_Header" xml:space="preserve">
+    <value>Použitie príkazového riadka</value>
+  </data>
+  <data name="Help_CommandLine_Usage" xml:space="preserve">
+    <value>Použitie: MultiPingMonitor [-i interval] [-w timeout] [&lt;cieľový_hostiteľ&gt;...]</value>
+  </data>
 </root>
