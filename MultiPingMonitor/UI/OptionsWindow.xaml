@@ -10,7 +10,7 @@
         MinWidth="640"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
-        Background="#e1e1e1"
+        Background="{DynamicResource Theme.Background}"
         SourceInitialized="Window_SourceInitialized">
 
     <Window.Resources>
@@ -19,12 +19,12 @@
             <Setter Property="FontWeight" Value="Regular"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="#505050"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}"/>
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="OptionSubHeaderTextStyle">
             <Setter Property="Margin" Value="0,0,0,4"/>
-            <Setter Property="Foreground" Value="#268bd2"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
@@ -74,7 +74,7 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Alert threshold -->
                     <StackPanel DockPanel.Dock="Top"
@@ -91,7 +91,7 @@
                     </StackPanel>
 
                     <!-- Latency detection separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Latency detection header -->
                     <TextBlock DockPanel.Dock="Top"
@@ -243,7 +243,7 @@
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Packet size -->
                     <StackPanel DockPanel.Dock="Top"
@@ -289,18 +289,18 @@
 
                     <!-- Total packet size -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,15,0,0">
-                        <TextBlock Foreground="#0e70c0"
+                        <TextBlock Foreground="{DynamicResource Theme.Info}"
                                    Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Danger}"
                                    Name="Bytes"
                                    Margin="6,0,4,0"
                                    Text="64"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Danger}"
                                    Text="{x:Static resource:Strings.Options_Bytes}"/>
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Fragment / Don't fragment -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
@@ -441,7 +441,7 @@
                                       Name="IsSmtpAuthenticationRequired"
                                       Content="{x:Static resource:Strings.Options_SmtpAuth}"
                                       Click="IsSmtpAuthenticationRequired_Click"
-                                      Foreground="#888"
+                                      Foreground="{DynamicResource Theme.Text.Secondary}"
                                       FontSize="13"
                                       Margin="165,8,0,0"/>
                             <StackPanel DockPanel.Dock="Top"
@@ -739,9 +739,9 @@
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_LanguageRestart}"
-                               Foreground="#888" FontSize="12" Margin="122,3,0,0"/>
+                               Foreground="{DynamicResource Theme.Text.Secondary}" FontSize="12" Margin="122,3,0,0"/>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Font Sizes -->
                     <TextBlock DockPanel.Dock="Top"
@@ -787,7 +787,7 @@
                                 <EventSetter Event="PreviewTextInput" Handler="HtmlColor_PreviewTextInput"/>
                             </Style>
                             <Style TargetType="{x:Type Border}">
-                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Width" Value="80"/>
                                 <Setter Property="Margin" Value="15,0,0,0"/>
@@ -964,7 +964,7 @@
 
 
         <!-- Button Section -->
-        <Border Grid.Row="1" BorderBrush="#dfdfdf" Background="#f0f0f0" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" BorderBrush="{DynamicResource Theme.Border}" Background="{DynamicResource Theme.SurfaceAlt}" BorderThickness="0,1,0,0">
             <DockPanel Margin="9" HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
                     <Button Style="{StaticResource ButtonStandardStyle}"
