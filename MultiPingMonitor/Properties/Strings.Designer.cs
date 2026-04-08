@@ -2148,7 +2148,7 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When enabled, MultiPingMonitor starts hidden in the system tray instead of showing the main window.
+        ///   Looks up a localized string similar to When enabled, MultiPingMonitor starts hidden in the system tray instead of showing the main window. The tray icon is always visible while the application is running.
         /// </summary>
         public static string Tooltip_StartInTray {
             get {
