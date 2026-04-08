@@ -4,19 +4,71 @@
         xmlns:classes="clr-namespace:MultiPingMonitor.Classes"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Title="{x:Static resource:Strings.Traceroute_Title}"
         Height="460"
         Width="680"
         MinHeight="300"
         MinWidth="350"
         WindowStartupLocation="Manual"
-        Background="{DynamicResource Theme.Background}">
+        Background="{DynamicResource Theme.Background}"
+        StateChanged="Window_StateChanged">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <classes:BoolToStringConverter x:Key="TracerouteTraceStopConverter"
             FalseValue="{x:Static resource:Strings.Traceroute_Trace}"
             TrueValue="{x:Static resource:Strings.Traceroute_Stop}"/>
     </Window.Resources>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.route}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnMinimizeButtonClick" RenderOptions.EdgeMode="Aliased"
+                    Style="{StaticResource TitleBarButtonStyle}" AutomationProperties.Name="Minimize"
+                    ToolTip="Minimize" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,15 H 28"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+            <Button x:Name="maximizeButton" Grid.Column="3" Click="OnMaximizeRestoreButtonClick"
+                    Style="{StaticResource TitleBarButtonStyle}" AutomationProperties.Name="Maximize"
+                    ToolTip="Maximize" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18.5,10.5 H 27.5 V 19.5 H 18.5 Z"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+            <Button x:Name="restoreButton" Grid.Column="3" Click="OnMaximizeRestoreButtonClick"
+                    Style="{StaticResource TitleBarButtonStyle}" Visibility="Collapsed" AutomationProperties.Name="Restore Down"
+                    ToolTip="Restore Down" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18.5,12.5 H 25.5 V 19.5 H 18.5 Z M 20.5,12.5 V 10.5 H 27.5 V 17.5 H 25.5"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+            <Button Grid.Column="4" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
 
     <DockPanel LastChildFill="True" Margin="15">
         <!-- Header -->
@@ -239,4 +291,6 @@
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
+    </DockPanel>
+    </Border>
 </Window>

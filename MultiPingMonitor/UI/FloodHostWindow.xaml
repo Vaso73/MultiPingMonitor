@@ -7,8 +7,14 @@
         Title="{x:Static resource:Strings.FloodHost_Title}"
         Height="250"
         Width="400"
-        ResizeMode="CanMinimize"
-        Background="#002b36">
+        WindowStyle="None"
+        ResizeMode="NoResize">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="0"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <!-- Value converters -->
@@ -36,6 +42,7 @@
     </Window.Resources>
     <Window.Style>
         <Style TargetType="Window">
+            <Setter Property="Background" Value="#002b36"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
                     <DataTrigger.EnterActions>
@@ -59,6 +66,31 @@
         </Style>
     </Window.Style>
 
+
+    <Border BorderBrush="{DynamicResource WindowBorderBrush}" BorderThickness="1">
+    <DockPanel>
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="#073642">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="/Resources/bomb-16.png" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="#93a1a1"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    Foreground="#93a1a1"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="#586e75" />
 
     <Grid>
         <Grid.RowDefinitions>
@@ -218,4 +250,6 @@
         </Label>
         
     </Grid>
+    </DockPanel>
+    </Border>
 </Window>

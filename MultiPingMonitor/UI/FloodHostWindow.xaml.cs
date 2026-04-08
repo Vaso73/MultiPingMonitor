@@ -109,5 +109,10 @@ namespace MultiPingMonitor.UI
 
             node.ResetEvent.Set();
         }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

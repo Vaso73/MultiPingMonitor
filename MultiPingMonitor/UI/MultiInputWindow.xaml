@@ -6,12 +6,18 @@
         mc:Ignorable="d"
         Title="Input Addresses"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Height="450" MinHeight="250"
         Width="350" MinWidth="280"
-        Background="#f0f0f0"
+        Background="{DynamicResource Theme.Background}"
         WindowStartupLocation="CenterOwner"
-        SourceInitialized="Window_SourceInitialized"
         ShowInTaskbar="False">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="White"/>
@@ -57,6 +63,30 @@
         </Style>
     </Window.Resources>
     
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.input-addresses}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+
     <Grid Margin="9">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -105,4 +135,6 @@
                     IsCancel="True"/>
         </StackPanel>
     </Grid>
+    </DockPanel>
+    </Border>
 </Window>
