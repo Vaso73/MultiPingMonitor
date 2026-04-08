@@ -635,6 +635,9 @@
   <data name="Options_MinimizeToTray" xml:space="preserve">
     <value>Minimize to tray</value>
   </data>
+  <data name="Options_StartInTray" xml:space="preserve">
+    <value>Start application in tray</value>
+  </data>
   <data name="Options_Minutes" xml:space="preserve">
     <value>minutes</value>
   </data>
@@ -773,6 +776,9 @@
   <data name="Tray_Exit" xml:space="preserve">
     <value>Exit MultiPingMonitor</value>
   </data>
+  <data name="Tray_Open" xml:space="preserve">
+    <value>Open MultiPingMonitor</value>
+  </data>
   <data name="Tray_Options" xml:space="preserve">
     <value>Options</value>
   </data>
@@ -823,6 +829,9 @@ To keep the system tray icon always visible:
 Right-click the Windows taskbar and choose 'Taskbar settings'.
 Under 'Notifications area' click 'Select which icons to appear on the taskbar'. Look for MultiPingMonitor and set to 'On'.
 (Steps may vary)</value>
+  </data>
+  <data name="Tooltip_StartInTray" xml:space="preserve">
+    <value>When enabled, MultiPingMonitor starts hidden in the system tray instead of showing the main window. The tray icon is always visible while the application is running.</value>
   </data>
   <data name="Tooltip_ExitToTray" xml:space="preserve">
     <value>When closing MultiPingMonitor, the application will minimize to the system tray rather than exit. Right-click the tray icon to exit.

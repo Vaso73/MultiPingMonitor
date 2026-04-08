@@ -86,6 +86,7 @@ namespace MultiPingMonitor.Classes
         public static bool IsAlwaysOnTopEnabled { get; set; } = false;
         public static bool IsMinimizeToTrayEnabled { get; set; } = false;
         public static bool IsExitToTrayEnabled { get; set; } = false;
+        public static bool StartInTray { get; set; } = false;
 
         // Window placement.
         // When true (default), window positions and sizes are persisted across sessions.

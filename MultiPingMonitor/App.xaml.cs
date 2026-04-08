@@ -22,10 +22,19 @@ namespace MultiPingMonitor
             // Apply language setting before any window is created.
             ApplyLanguage(Classes.ApplicationOptions.Language);
 
-            // Now create and show the main window.
+            // Now create main window.
             var mainWindow = new UI.MainWindow();
             MainWindow = mainWindow;
-            mainWindow.Show();
+            if (Classes.ApplicationOptions.StartInTray)
+            {
+                // Start directly in tray: initialize probes without ever showing the
+                // main window, so there is zero visible flash or taskbar appearance.
+                mainWindow.InitializeForStartInTray();
+            }
+            else
+            {
+                mainWindow.Show();
+            }
         }
 
         private static void ApplyLanguage(Classes.ApplicationOptions.AppLanguage language)

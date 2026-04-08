@@ -710,6 +710,15 @@
                             <TextBlock Text="{x:Static resource:Strings.Tooltip_ExitToTray}" TextWrapping="Wrap"/>
                         </Label>
                     </DockPanel>
+                    <!-- Start in tray -->
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
+                        <CheckBox DockPanel.Dock="Left"
+                                  Name="StartInTray"
+                                  Content="{x:Static resource:Strings.Options_StartInTray}"/>
+                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
+                            <TextBlock Text="{x:Static resource:Strings.Tooltip_StartInTray}" TextWrapping="Wrap"/>
+                        </Label>
+                    </DockPanel>
                     <!-- Remember window position -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
                         <CheckBox DockPanel.Dock="Left"
