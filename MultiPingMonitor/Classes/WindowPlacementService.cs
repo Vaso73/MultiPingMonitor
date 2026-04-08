@@ -187,6 +187,21 @@ namespace MultiPingMonitor.Classes
                 data.SavedMonitorWorkingArea = screen.WorkingArea;
                 data.SavedDpiX = GetDpiX(window);
                 data.SavedDpiY = GetDpiY(window);
+
+                // Clamp the saved bounds to the monitor's working area so the
+                // persisted rect never exceeds it by a few pixels (e.g. due to
+                // DWM shadow geometry on Windows 10/11).
+                var wa = screen.WorkingArea;
+                data.Width = Math.Min(data.Width, wa.Width);
+                data.Height = Math.Min(data.Height, wa.Height);
+                if (data.Left + data.Width > wa.Right)
+                    data.Left = wa.Right - data.Width;
+                if (data.Top + data.Height > wa.Bottom)
+                    data.Top = wa.Bottom - data.Height;
+                if (data.Left < wa.Left)
+                    data.Left = wa.Left;
+                if (data.Top < wa.Top)
+                    data.Top = wa.Top;
             }
 
             data.SavedAt = DateTime.UtcNow;
