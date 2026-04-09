@@ -322,6 +322,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,2,2" Margin="0" CornerRadius="0"
+                            MinWidth="150"
                             Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
                         <Grid Name="gridItemsControl">
                             <Grid.RowDefinitions>
@@ -334,6 +335,7 @@
 
                                 <!-- Ping title bar / button section -->
                                 <Border DockPanel.Dock="Top"
+                                        x:Name="headerBorder"
                                         BorderThickness="0,0,0,1"
                                         BorderBrush="{DynamicResource Theme.Border}"
                                         Background="{DynamicResource Theme.Surface}">
@@ -342,30 +344,31 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                     <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
                                     <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*" MinWidth="60"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Alias section -->
-                                    <Label Name="txtEditAlias"
-                                           Content="{Binding Alias, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
+                                    <TextBlock Name="txtEditAlias"
+                                           Text="{Binding Alias, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
                                            Background="Transparent"
                                            FontSize="13"
-                                           VerticalContentAlignment="Center"
+                                           VerticalAlignment="Center"
                                            Padding="6,5,4,5"
                                            Margin="0"
                                            FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis"
                                            Foreground="{Binding Status, Converter={StaticResource ProbeStatusToAliasBrushConverter}}"
-                                           AllowDrop="True" Drop="Probe_Drop" PreviewMouseMove="ProbeTitle_PreviewMouseMove">
-                                    </Label>
+                                           AllowDrop="True" Drop="Probe_Drop" PreviewMouseMove="ProbeTitle_PreviewMouseMove"/>
 
                                     <!-- Button: Remove probe -->
                                     <Button Grid.Column="3"
@@ -520,7 +523,8 @@
 
                                 <!-- Ping statistics -->
                                 <DockPanel DockPanel.Dock="Bottom"
-                                           Background="Transparent">
+                                           Background="Transparent"
+                                           ClipToBounds="True">
                                     <DockPanel.Style>
                                         <Style TargetType="{x:Type DockPanel}">
                                             <!-- Statistics are show only if: ProbeType = Ping and Statistics.Sent != 0 -->
