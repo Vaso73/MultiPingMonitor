@@ -29,6 +29,12 @@ namespace MultiPingMonitor.UI
         private enum TrayAggregateState { Neutral, Online, Offline }
         private TrayAggregateState _trayState = TrayAggregateState.Neutral;
 
+        // Shadow set of probes whose PropertyChanged is currently subscribed.
+        // Required to cleanly unsubscribe on ObservableCollection Reset (Clear()),
+        // which fires CollectionChanged with OldItems=null.
+        private readonly System.Collections.Generic.HashSet<Probe> _subscribedProbes
+            = new System.Collections.Generic.HashSet<Probe>();
+
         // Set to true when a deliberate application shutdown is initiated from the tray exit
         // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
         private bool _IsShuttingDown = false;
@@ -908,7 +914,10 @@ namespace MultiPingMonitor.UI
                 using (var s = sri.Stream)
                     return new System.Drawing.Icon(s);
             }
-            catch
+            catch (Exception ex) when (ex is System.IO.IOException
+                                    || ex is ArgumentException
+                                    || ex is System.IO.InvalidDataException
+                                    || ex is UriFormatException)
             {
                 System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Could not load tray icon '{packUri}'.");
                 return null;
@@ -924,19 +933,27 @@ namespace MultiPingMonitor.UI
         {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
             {
-                // Collection was cleared; unsubscribe all is handled implicitly since
-                // we re-subscribe on every Add. No lingering subscriptions cause harm
-                // because removed probes are no longer in the collection.
+                // ObservableCollection.Clear() fires Reset with OldItems=null.
+                // Use the shadow set to unsubscribe all previously tracked probes.
+                foreach (var p in _subscribedProbes)
+                    p.PropertyChanged -= Probe_PropertyChanged;
+                _subscribedProbes.Clear();
             }
             if (e.NewItems != null)
             {
                 foreach (Probe p in e.NewItems)
-                    p.PropertyChanged += Probe_PropertyChanged;
+                {
+                    if (_subscribedProbes.Add(p))
+                        p.PropertyChanged += Probe_PropertyChanged;
+                }
             }
             if (e.OldItems != null)
             {
                 foreach (Probe p in e.OldItems)
-                    p.PropertyChanged -= Probe_PropertyChanged;
+                {
+                    if (_subscribedProbes.Remove(p))
+                        p.PropertyChanged -= Probe_PropertyChanged;
+                }
             }
             UpdateTrayIcon();
         }
