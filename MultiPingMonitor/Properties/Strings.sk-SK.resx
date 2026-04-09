@@ -750,6 +750,15 @@
   <data name="Tray_StatusHistory" xml:space="preserve">
     <value>História stavov</value>
   </data>
+  <data name="Tray_Status_AllOnline" xml:space="preserve">
+    <value>MultiPingMonitor – Všetky hosty sú online</value>
+  </data>
+  <data name="Tray_Status_SomeOffline" xml:space="preserve">
+    <value>MultiPingMonitor – Aspoň jeden host je offline</value>
+  </data>
+  <data name="Tray_Status_NoHosts" xml:space="preserve">
+    <value>MultiPingMonitor – Žiadne hosty na monitorovanie</value>
+  </data>
   <data name="Options_Title" xml:space="preserve">
     <value>Možnosti</value>
   </data>

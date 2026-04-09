@@ -17,6 +17,12 @@
   <ItemGroup>
     <None Remove="MultiPingMonitor.ico" />
     <Resource Include="MultiPingMonitor.ico" />
+    <None Remove="Resources\tray-neutral.ico" />
+    <Resource Include="Resources\tray-neutral.ico" />
+    <None Remove="Resources\tray-online.ico" />
+    <Resource Include="Resources\tray-online.ico" />
+    <None Remove="Resources\tray-offline.ico" />
+    <Resource Include="Resources\tray-offline.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Strings.resx">

@@ -2274,6 +2274,33 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor – All hosts online.
+        /// </summary>
+        public static string Tray_Status_AllOnline {
+            get {
+                return ResourceManager.GetString("Tray_Status_AllOnline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor – At least one host offline.
+        /// </summary>
+        public static string Tray_Status_SomeOffline {
+            get {
+                return ResourceManager.GetString("Tray_Status_SomeOffline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiPingMonitor – No hosts to monitor.
+        /// </summary>
+        public static string Tray_Status_NoHosts {
+            get {
+                return ResourceManager.GetString("Tray_Status_NoHosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Options_Title {

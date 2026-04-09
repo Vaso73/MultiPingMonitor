@@ -18,6 +18,17 @@ namespace MultiPingMonitor.UI
         private Dictionary<string, string> _Aliases = new Dictionary<string, string>();
         private System.Windows.Forms.NotifyIcon NotifyIcon;
 
+        // ── Dynamic tray icon ─────────────────────────────────────────────────
+        // Three icons representing aggregate host status: neutral (no hosts),
+        // online (all up), offline (at least one down).
+        private System.Drawing.Icon _trayIconNeutral;
+        private System.Drawing.Icon _trayIconOnline;
+        private System.Drawing.Icon _trayIconOffline;
+
+        // Tracks the last aggregate state to avoid redundant icon/tooltip updates.
+        private enum TrayAggregateState { Neutral, Online, Offline }
+        private TrayAggregateState _trayState = TrayAggregateState.Neutral;
+
         // Set to true when a deliberate application shutdown is initiated from the tray exit
         // menu item, so Window_Closing knows to save placement and config instead of re-hiding.
         private bool _IsShuttingDown = false;
@@ -837,19 +848,14 @@ namespace MultiPingMonitor.UI
         {
             try
             {
-                // Load icon: prefer embedded WPF resource, fall back to system default.
-                System.Drawing.Icon trayIcon;
-                var sri = Application.GetResourceStream(new Uri("pack://application:,,,/MultiPingMonitor.ico"));
-                if (sri != null)
-                {
-                    using (var iconStream = sri.Stream)
-                        trayIcon = new System.Drawing.Icon(iconStream);
-                }
-                else
-                {
-                    System.Diagnostics.Trace.WriteLine("MultiPingMonitor: Could not load tray icon from embedded resource; using fallback.");
-                    trayIcon = System.Drawing.SystemIcons.Application;
-                }
+                // Load the three state-specific tray icons from embedded resources.
+                // Fall back gracefully if any are missing.
+                _trayIconNeutral = LoadTrayIcon("pack://application:,,,/Resources/tray-neutral.ico")
+                                   ?? System.Drawing.SystemIcons.Application;
+                _trayIconOnline  = LoadTrayIcon("pack://application:,,,/Resources/tray-online.ico")
+                                   ?? _trayIconNeutral;
+                _trayIconOffline = LoadTrayIcon("pack://application:,,,/Resources/tray-offline.ico")
+                                   ?? _trayIconNeutral;
 
                 // Build themed WPF context menu for the tray icon.
                 _trayContextMenu = BuildTrayContextMenu();
@@ -872,18 +878,147 @@ namespace MultiPingMonitor.UI
 
                 // Create tray icon. No WinForms ContextMenuStrip – right-click is
                 // handled in NotifyIcon_MouseUp to show the themed WPF menu instead.
+                // Start with neutral icon; UpdateTrayIcon() will refine once probes run.
                 NotifyIcon = new System.Windows.Forms.NotifyIcon
                 {
-                    Icon = trayIcon,
-                    Text = "MultiPingMonitor",
+                    Icon = _trayIconNeutral,
+                    Text = Strings.Tray_Status_NoHosts,
                     Visible = true
                 };
                 NotifyIcon.MouseUp += NotifyIcon_MouseUp;
+
+                // Subscribe to probe collection changes so we can track each probe's status.
+                _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
             }
+        }
+
+        /// <summary>
+        /// Loads a System.Drawing.Icon from an embedded WPF pack URI, returning null on failure.
+        /// </summary>
+        private static System.Drawing.Icon LoadTrayIcon(string packUri)
+        {
+            try
+            {
+                var sri = Application.GetResourceStream(new Uri(packUri));
+                if (sri == null) return null;
+                using (var s = sri.Stream)
+                    return new System.Drawing.Icon(s);
+            }
+            catch
+            {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Could not load tray icon '{packUri}'.");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Called when probes are added to or removed from the collection.
+        /// Subscribes/unsubscribes PropertyChanged on each probe and refreshes the tray icon.
+        /// </summary>
+        private void ProbeCollection_CollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
+            {
+                // Collection was cleared; unsubscribe all is handled implicitly since
+                // we re-subscribe on every Add. No lingering subscriptions cause harm
+                // because removed probes are no longer in the collection.
+            }
+            if (e.NewItems != null)
+            {
+                foreach (Probe p in e.NewItems)
+                    p.PropertyChanged += Probe_PropertyChanged;
+            }
+            if (e.OldItems != null)
+            {
+                foreach (Probe p in e.OldItems)
+                    p.PropertyChanged -= Probe_PropertyChanged;
+            }
+            UpdateTrayIcon();
+        }
+
+        /// <summary>
+        /// Called when any property on a monitored probe changes.
+        /// Refreshes the tray icon when the probe's Status changes.
+        /// </summary>
+        private void Probe_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Probe.Status) || e.PropertyName == nameof(Probe.IsActive))
+                UpdateTrayIcon();
+        }
+
+        /// <summary>
+        /// Evaluates the aggregate status of all probes and updates the tray icon and tooltip text.
+        /// Rules:
+        ///   – Red   : at least one active probe is Down or Error
+        ///   – Green : at least one active probe has a meaningful host and all active ones are Up/LatencyHigh/LatencyNormal
+        ///   – Gray  : otherwise (no active probes with hostnames, or all indeterminate/inactive)
+        /// Safe to call from any thread; all state evaluation and NotifyIcon updates run on the UI thread.
+        /// </summary>
+        private void UpdateTrayIcon()
+        {
+            if (NotifyIcon == null) return;
+
+            // Dispatch fully to the UI thread: both the collection iteration and the
+            // NotifyIcon update must happen on the same thread (UI thread).
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (NotifyIcon == null) return;
+
+                // Determine aggregate state across all probes that are active and have a hostname.
+                bool anyOffline = false;
+                bool anyOnline  = false;
+
+                foreach (var probe in _ProbeCollection)
+                {
+                    if (!probe.IsActive || string.IsNullOrWhiteSpace(probe.Hostname))
+                        continue;
+
+                    switch (probe.Status)
+                    {
+                        case ProbeStatus.Down:
+                        case ProbeStatus.Error:
+                            anyOffline = true;
+                            break;
+                        case ProbeStatus.Up:
+                        case ProbeStatus.LatencyHigh:
+                        case ProbeStatus.LatencyNormal:
+                            anyOnline = true;
+                            break;
+                    }
+                }
+
+                TrayAggregateState newState;
+                if (anyOffline)
+                    newState = TrayAggregateState.Offline;
+                else if (anyOnline)
+                    newState = TrayAggregateState.Online;
+                else
+                    newState = TrayAggregateState.Neutral;
+
+                if (newState == _trayState) return;
+                _trayState = newState;
+
+                switch (newState)
+                {
+                    case TrayAggregateState.Online:
+                        NotifyIcon.Icon = _trayIconOnline;
+                        NotifyIcon.Text = Strings.Tray_Status_AllOnline;
+                        break;
+                    case TrayAggregateState.Offline:
+                        NotifyIcon.Icon = _trayIconOffline;
+                        NotifyIcon.Text = Strings.Tray_Status_SomeOffline;
+                        break;
+                    default:
+                        NotifyIcon.Icon = _trayIconNeutral;
+                        NotifyIcon.Text = Strings.Tray_Status_NoHosts;
+                        break;
+                }
+            }));
         }
 
         /// <summary>

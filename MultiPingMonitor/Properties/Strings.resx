@@ -860,6 +860,15 @@
   <data name="Tray_StatusHistory" xml:space="preserve">
     <value>Status History</value>
   </data>
+  <data name="Tray_Status_AllOnline" xml:space="preserve">
+    <value>MultiPingMonitor – All hosts online</value>
+  </data>
+  <data name="Tray_Status_SomeOffline" xml:space="preserve">
+    <value>MultiPingMonitor – At least one host offline</value>
+  </data>
+  <data name="Tray_Status_NoHosts" xml:space="preserve">
+    <value>MultiPingMonitor – No hosts to monitor</value>
+  </data>
   <data name="Options_Title" xml:space="preserve">
     <value>Options</value>
   </data>
