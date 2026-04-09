@@ -25,7 +25,7 @@
             <Setter Property="FontWeight" Value="Regular"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}"/>
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="OptionSubHeaderTextStyle">
@@ -319,13 +319,13 @@
 
                     <!-- Total packet size -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,15,0,0">
-                        <TextBlock Foreground="#0e70c0"
+                        <TextBlock Foreground="{DynamicResource Theme.Text.Primary}"
                                    Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
                                    Name="Bytes"
                                    Margin="6,0,4,0"
                                    Text="64"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
                                    Text="{x:Static resource:Strings.Options_Bytes}"/>
                     </StackPanel>
 
@@ -471,7 +471,7 @@
                                       Name="IsSmtpAuthenticationRequired"
                                       Content="{x:Static resource:Strings.Options_SmtpAuth}"
                                       Click="IsSmtpAuthenticationRequired_Click"
-                                      Foreground="#888"
+                                      Foreground="{DynamicResource Theme.Text.Secondary}"
                                       FontSize="13"
                                       Margin="165,8,0,0"/>
                             <StackPanel DockPanel.Dock="Top"
@@ -769,7 +769,7 @@
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_LanguageRestart}"
-                               Foreground="#888" FontSize="12" Margin="122,3,0,0"/>
+                               Foreground="{DynamicResource Theme.Text.Secondary}" FontSize="12" Margin="122,3,0,0"/>
 
                     <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
