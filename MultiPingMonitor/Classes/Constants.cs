@@ -29,11 +29,11 @@ namespace MultiPingMonitor.Classes
 
         // Default alias / probe title colors.
         public const string Color_Alias_Foreground_Inactive = "#000000";
-        public const string Color_Alias_Foreground_Up = "#ffff00";
-        public const string Color_Alias_Foreground_Down = "#ffff00";
-        public const string Color_Alias_Foreground_Indeterminate = "#ffffff";
-        public const string Color_Alias_Foreground_Error = "#ffff00";
-        public const string Color_Alias_Foreground_Scanner = "#ffff00";
+        public const string Color_Alias_Foreground_Up = "#ffffff";
+        public const string Color_Alias_Foreground_Down = "#ffffff";
+        public const string Color_Alias_Foreground_Indeterminate = "#111111";
+        public const string Color_Alias_Foreground_Error = "#ffffff";
+        public const string Color_Alias_Foreground_Scanner = "#f0f0f0";
 
         // Default probe options.
         public const string DefaultIcmpData = "https://github.com/R-Smith/MultiPingMonitor";

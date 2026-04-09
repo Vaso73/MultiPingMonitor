@@ -33,6 +33,13 @@ namespace MultiPingMonitor.Classes
 
         public static AppTheme CurrentTheme => _currentTheme;
 
+        /// <summary>
+        /// Fires after every successful call to <see cref="ApplyTheme"/>.
+        /// Allows UI components (e.g. probe panels with converter-driven brushes)
+        /// to refresh their visuals immediately without restarting the application.
+        /// </summary>
+        public static event EventHandler ThemeChanged;
+
         public static void ApplyTheme(AppTheme theme)
         {
             _currentTheme = theme;
@@ -69,6 +76,8 @@ namespace MultiPingMonitor.Classes
             {
                 mergedDicts.Insert(0, newThemeDict);
             }
+
+            ThemeChanged?.Invoke(null, EventArgs.Empty);
         }
 
         private static bool IsThemeDictionary(ResourceDictionary dict)
