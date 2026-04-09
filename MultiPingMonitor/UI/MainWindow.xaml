@@ -398,7 +398,8 @@
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
                                                         <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Danger}"/>
-                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.5"/>
+                                                        <Setter TargetName="controlButton_border" Property="Opacity" Value="0.7"/>
+                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.8"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -498,7 +499,7 @@
                                                         <Setter TargetName="controlButton_image" Property="Opacity" Value="0.5"/>
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.3"/>
+                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.4"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
