@@ -110,7 +110,6 @@ namespace MultiPingMonitor.UI
             LoadAliases();
             Configuration.Load();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
-            ThemeManager.ThemeChanged += OnThemeChanged;
             RefreshGuiState();
 
             // Set items source for main GUI ItemsControl.
@@ -489,10 +488,6 @@ namespace MultiPingMonitor.UI
                 _ProbeCollection[i].Status = _ProbeCollection[i].Status;
             }
         }
-
-        // Called whenever the theme changes (live preview in Options, confirm, or revert)
-        // so that converter-driven probe panel brushes update immediately.
-        private void OnThemeChanged(object sender, EventArgs e) => RefreshProbeColors();
 
         private void RemoveAllProbes()
         {
