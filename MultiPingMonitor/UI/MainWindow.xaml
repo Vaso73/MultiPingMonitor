@@ -345,6 +345,7 @@
                                                 <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                     <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
                                                     <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -409,10 +410,10 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.28"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -457,10 +458,10 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.28"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -509,10 +510,10 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.28"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
