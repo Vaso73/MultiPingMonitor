@@ -31,7 +31,7 @@
     <Style TargetType="{x:Type RadioButton}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource RadioButton.Static.Background}"/>
-        <Setter Property="Foreground" Value="{StaticResource RadioButton.Foreground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}"/>
         <Setter Property="BorderBrush" Value="{StaticResource RadioButton.Static.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontSize" Value="14"/>
