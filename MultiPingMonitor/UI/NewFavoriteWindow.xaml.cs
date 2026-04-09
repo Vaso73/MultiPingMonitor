@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using MultiPingMonitor.Classes;
 using MultiPingMonitor.Properties;
@@ -19,17 +17,6 @@ namespace MultiPingMonitor.UI
         private int ColumnCount;
         private readonly bool IsExisting = false;
         private readonly string OriginalTitle;
-
-        // Hide minimize and maximize buttons.
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        private const int GWL_STYLE = -16;
-
-        private const int WS_MAXIMIZEBOX = 0x10000; //maximize button
-        private const int WS_MINIMIZEBOX = 0x20000; //minimize button
 
         public NewFavoriteWindow(List<string> hostList, int columnCount, bool isEditExisting = false, string title = "")
         {
@@ -47,9 +34,10 @@ namespace MultiPingMonitor.UI
 
             if (isEditExisting)
             {
-                Title = "Edit Favorite";
-                Header.Text = "Edit an existing favorite";
+                Title = Strings.NewFavorite_EditWindowTitle;
+                Header.Text = Strings.NewFavorite_EditHeader;
                 HeaderIcon.Source = (DrawingImage)Application.Current.Resources["icon.edit"];
+                TitleBarIcon.Source = (DrawingImage)Application.Current.Resources["icon.edit"];
             }
 
             // Set initial focus to text box.
@@ -138,20 +126,9 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        private void Window_SourceInitialized(object sender, EventArgs e)
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
-            HideMinimizeAndMaximizeButtons();
-        }
-
-        protected void HideMinimizeAndMaximizeButtons()
-        {
-            IntPtr _windowHandle = new WindowInteropHelper(this).Handle;
-            if (_windowHandle == null)
-            {
-                return;
-            }
-
-            SetWindowLong(_windowHandle, GWL_STYLE, GetWindowLong(_windowHandle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX);
+            Close();
         }
 
         private void MyHosts_Drop(object sender, DragEventArgs e)

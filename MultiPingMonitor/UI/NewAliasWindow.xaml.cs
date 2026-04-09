@@ -47,5 +47,10 @@ namespace MultiPingMonitor.UI
             errorWindow.Owner = this;
             errorWindow.ShowDialog();
         }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

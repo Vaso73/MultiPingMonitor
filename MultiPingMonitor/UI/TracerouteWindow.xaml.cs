@@ -213,5 +213,39 @@ namespace MultiPingMonitor.UI
             _cts?.Dispose();
             _cts = null;
         }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (maximizeButton != null && restoreButton != null)
+            {
+                if (WindowState == WindowState.Maximized)
+                {
+                    maximizeButton.Visibility = Visibility.Collapsed;
+                    restoreButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    maximizeButton.Visibility = Visibility.Visible;
+                    restoreButton.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

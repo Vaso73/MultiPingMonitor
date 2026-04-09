@@ -1,29 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Media;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.UI
 {
     public partial class OptionsWindow : Window
     {
-        // Imports and constants for hiding minimize and maximize buttons.
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-        private const int GWL_STYLE = -16;
-        private const int WS_MAXIMIZEBOX = 0x10000; //maximize button
-        private const int WS_MINIMIZEBOX = 0x20000; //minimize button
-
         // Store original theme so it can be reverted if the user cancels.
         private readonly string _originalTheme;
 
@@ -1023,16 +1012,9 @@ namespace MultiPingMonitor.UI
             ForegroundColor_Alias_Scanner.Text = Constants.Color_Alias_Foreground_Scanner;
         }
 
-        private void Window_SourceInitialized(object sender, EventArgs e)
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
-            // Hide minimize and maximize buttons.
-            IntPtr _windowHandle = new WindowInteropHelper(this).Handle;
-            if (_windowHandle == null)
-            {
-                return;
-            }
-
-            SetWindowLong(_windowHandle, GWL_STYLE, GetWindowLong(_windowHandle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX);
+            Close();
         }
     }
 }

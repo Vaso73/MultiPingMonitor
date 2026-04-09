@@ -4,14 +4,20 @@
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="{x:Static resource:Strings.Options_Title}"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Height="540"
         Width="640"
         MinHeight="500"
         MinWidth="640"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
-        Background="#e1e1e1"
-        SourceInitialized="Window_SourceInitialized">
+        Background="{DynamicResource Theme.Background}">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">
@@ -19,16 +25,40 @@
             <Setter Property="FontWeight" Value="Regular"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="#505050"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}"/>
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" x:Key="OptionSubHeaderTextStyle">
             <Setter Property="Margin" Value="0,0,0,4"/>
-            <Setter Property="Foreground" Value="#268bd2"/>
+            <Setter Property="Foreground" Value="{DynamicResource Theme.Accent}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
     </Window.Resources>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.vmping-logo-simple}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
 
     <Grid Margin="0">
         <Grid.RowDefinitions>
@@ -74,7 +104,7 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Alert threshold -->
                     <StackPanel DockPanel.Dock="Top"
@@ -91,7 +121,7 @@
                     </StackPanel>
 
                     <!-- Latency detection separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Latency detection header -->
                     <TextBlock DockPanel.Dock="Top"
@@ -243,7 +273,7 @@
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Packet size -->
                     <StackPanel DockPanel.Dock="Top"
@@ -289,18 +319,18 @@
 
                     <!-- Total packet size -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,15,0,0">
-                        <TextBlock Foreground="#0e70c0"
+                        <TextBlock Foreground="{DynamicResource Theme.Text.Primary}"
                                    Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
                                    Name="Bytes"
                                    Margin="6,0,4,0"
                                    Text="64"/>
-                        <TextBlock Foreground="#dc322f"
+                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
                                    Text="{x:Static resource:Strings.Options_Bytes}"/>
                     </StackPanel>
 
                     <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
 
                     <!-- Fragment / Don't fragment -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
@@ -441,7 +471,7 @@
                                       Name="IsSmtpAuthenticationRequired"
                                       Content="{x:Static resource:Strings.Options_SmtpAuth}"
                                       Click="IsSmtpAuthenticationRequired_Click"
-                                      Foreground="#888"
+                                      Foreground="{DynamicResource Theme.Text.Secondary}"
                                       FontSize="13"
                                       Margin="165,8,0,0"/>
                             <StackPanel DockPanel.Dock="Top"
@@ -739,9 +769,9 @@
                     </StackPanel>
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_LanguageRestart}"
-                               Foreground="#888" FontSize="12" Margin="122,3,0,0"/>
+                               Foreground="{DynamicResource Theme.Text.Secondary}" FontSize="12" Margin="122,3,0,0"/>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="#ccc" Margin="0,20,0,5"/>
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
 
                     <!-- Font Sizes -->
                     <TextBlock DockPanel.Dock="Top"
@@ -964,7 +994,7 @@
 
 
         <!-- Button Section -->
-        <Border Grid.Row="1" BorderBrush="#dfdfdf" Background="#f0f0f0" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" BorderBrush="{DynamicResource Theme.Border}" Background="{DynamicResource Theme.Surface}" BorderThickness="0,1,0,0">
             <DockPanel Margin="9" HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
                     <Button Style="{StaticResource ButtonStandardStyle}"
@@ -981,4 +1011,6 @@
             </DockPanel>
         </Border>
     </Grid>
+    </DockPanel>
+    </Border>
 </Window>

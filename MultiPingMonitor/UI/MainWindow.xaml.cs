@@ -824,6 +824,15 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        // ── Themed tray context menu ───────────────────────────────────────────
+        // WPF ContextMenu replaces the old WinForms ContextMenuStrip so the tray
+        // menu respects the current application theme. A tiny invisible "host"
+        // window provides the HWND needed by WPF to display the popup near the
+        // tray icon and to receive foreground activation (required for the menu
+        // to close when the user clicks outside).
+        private ContextMenu _trayContextMenu;
+        private Window _trayMenuHost;
+
         private void InitializeTrayIcon()
         {
             try
@@ -842,49 +851,31 @@ namespace MultiPingMonitor.UI
                     trayIcon = System.Drawing.SystemIcons.Application;
                 }
 
-                // Build context menu for tray icon.
-                System.Windows.Forms.ContextMenuStrip menuStrip = new System.Windows.Forms.ContextMenuStrip();
-                System.Windows.Forms.ToolStripMenuItem menuOpen = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Open);
-                menuOpen.Click += (s, args) => RestoreFromTray();
-                System.Windows.Forms.ToolStripMenuItem menuNewInstance = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_NewInstance);
-                menuNewInstance.Click += (s, args) => LaunchNewInstance();
-                System.Windows.Forms.ToolStripMenuItem menuTraceroute = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_Traceroute);
-                menuTraceroute.Click += (s, args) => TracerouteExecute(null, null);
-                System.Windows.Forms.ToolStripMenuItem menuFloodHost = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_FloodHost);
-                menuFloodHost.Click += (s, args) => FloodHostExecute(null, null);
-                System.Windows.Forms.ToolStripMenuItem menuOptions = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Options);
-                menuOptions.Click += (s, args) => OptionsExecute(null, null);
-                System.Windows.Forms.ToolStripMenuItem menuStatusHistory = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_StatusHistory);
-                menuStatusHistory.Click += (s, args) => StatusHistoryExecute(null, null);
-                System.Windows.Forms.ToolStripMenuItem menuHelp = new System.Windows.Forms.ToolStripMenuItem(Strings.Menu_Help);
-                menuHelp.Click += (s, args) => HelpExecute(null, null);
-                System.Windows.Forms.ToolStripMenuItem menuExit = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_Exit);
-                menuExit.Click += (s, args) =>
+                // Build themed WPF context menu for the tray icon.
+                _trayContextMenu = BuildTrayContextMenu();
+
+                // Create a tiny, invisible helper window that owns the ContextMenu.
+                // This ensures the menu gets a valid HWND for positioning and that
+                // Windows gives it foreground focus so it auto-closes on outside click.
+                _trayMenuHost = new Window
                 {
-                    // Signal Window_Closing to take the save-and-exit path rather than
-                    // hiding to tray again, then request a clean application shutdown.
-                    _IsShuttingDown = true;
-                    Application.Current.Shutdown();
+                    Width = 0,
+                    Height = 0,
+                    WindowStyle = WindowStyle.None,
+                    ShowInTaskbar = false,
+                    AllowsTransparency = true,
+                    Background = System.Windows.Media.Brushes.Transparent,
+                    Topmost = true
                 };
+                _trayMenuHost.Show();
+                _trayMenuHost.Hide();
 
-                menuStrip.Items.Add(menuOpen);
-                menuStrip.Items.Add(menuNewInstance);
-                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-                menuStrip.Items.Add(menuTraceroute);
-                menuStrip.Items.Add(menuFloodHost);
-                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-                menuStrip.Items.Add(menuOptions);
-                menuStrip.Items.Add(menuStatusHistory);
-                menuStrip.Items.Add(menuHelp);
-                menuStrip.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-                menuStrip.Items.Add(menuExit);
-
-                // Create tray icon. It stays visible for the entire lifetime of the application.
+                // Create tray icon. No WinForms ContextMenuStrip – right-click is
+                // handled in NotifyIcon_MouseUp to show the themed WPF menu instead.
                 NotifyIcon = new System.Windows.Forms.NotifyIcon
                 {
                     Icon = trayIcon,
                     Text = "MultiPingMonitor",
-                    ContextMenuStrip = menuStrip,
                     Visible = true
                 };
                 NotifyIcon.MouseUp += NotifyIcon_MouseUp;
@@ -893,6 +884,107 @@ namespace MultiPingMonitor.UI
             {
                 System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
             }
+        }
+
+        /// <summary>
+        /// Builds a theme-aware WPF ContextMenu with the same items and actions
+        /// that the old WinForms ContextMenuStrip had.
+        /// </summary>
+        private ContextMenu BuildTrayContextMenu()
+        {
+            var menu = new ContextMenu();
+
+            // Apply theme-aware brushes explicitly. The ContextMenu popup lives in
+            // its own visual tree and does not inherit theme colors from the main
+            // window shell, so we bind directly to Theme.* brush keys via
+            // SetResourceReference (code equivalent of DynamicResource).  When the
+            // user switches theme, the brushes re-resolve automatically.
+            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => RestoreFromTray()));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance()));
+            menu.Items.Add(CreateTraySeparator());
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null)));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null)));
+            menu.Items.Add(CreateTraySeparator());
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null)));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null)));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null)));
+            menu.Items.Add(CreateTraySeparator());
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
+            {
+                _IsShuttingDown = true;
+                Application.Current.Shutdown();
+            }));
+
+            // Subscribe once: hide the host window when the menu closes.
+            menu.Closed += TrayContextMenu_Closed;
+
+            return menu;
+        }
+
+        private static MenuItem CreateTrayMenuItem(string header, RoutedEventHandler clickHandler)
+        {
+            var item = new MenuItem { Header = header };
+            // Ensure text is readable: bind Foreground to theme text brush so it
+            // stays correct in both light and dark themes and across theme switches.
+            item.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            item.Click += clickHandler;
+            return item;
+        }
+
+        private static Separator CreateTraySeparator()
+        {
+            var sep = new Separator();
+            sep.SetResourceReference(Separator.BackgroundProperty, "Theme.Border");
+            sep.Margin = new Thickness(4, 2, 4, 2);
+            return sep;
+        }
+
+        /// <summary>
+        /// Shows the themed WPF tray context menu near the cursor position.
+        /// Uses the hidden helper window to get foreground activation so the
+        /// menu closes correctly when the user clicks elsewhere.
+        /// </summary>
+        private void ShowTrayContextMenu()
+        {
+            if (_trayContextMenu == null || _trayMenuHost == null)
+                return;
+
+            // Get cursor position (physical pixels).
+            var cursorPos = System.Windows.Forms.Cursor.Position;
+
+            // Convert physical screen pixels to WPF device-independent units.
+            var source = PresentationSource.FromVisual(_trayMenuHost)
+                         ?? HwndSource.FromHwnd(new WindowInteropHelper(_trayMenuHost).Handle);
+            double dpiScaleX = 1.0, dpiScaleY = 1.0;
+            if (source?.CompositionTarget != null)
+            {
+                dpiScaleX = source.CompositionTarget.TransformFromDevice.M11;
+                dpiScaleY = source.CompositionTarget.TransformFromDevice.M22;
+            }
+
+            double x = cursorPos.X * dpiScaleX;
+            double y = cursorPos.Y * dpiScaleY;
+
+            // Position the helper window at the cursor so the ContextMenu opens there.
+            _trayMenuHost.Left = x;
+            _trayMenuHost.Top = y;
+            _trayMenuHost.Show();
+            _trayMenuHost.Activate();
+
+            _trayContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            _trayContextMenu.PlacementTarget = _trayMenuHost;
+            _trayContextMenu.IsOpen = true;
+        }
+
+        private void TrayContextMenu_Closed(object sender, RoutedEventArgs e)
+        {
+            _trayMenuHost?.Hide();
         }
 
         private void HideToTray()
@@ -920,6 +1012,21 @@ namespace MultiPingMonitor.UI
             {
                 HideToTray();
             }
+
+            // Toggle maximize / restore title bar buttons.
+            if (maximizeButton != null && restoreButton != null)
+            {
+                if (WindowState == WindowState.Maximized)
+                {
+                    maximizeButton.Visibility = Visibility.Collapsed;
+                    restoreButton.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    maximizeButton.Visibility = Visibility.Visible;
+                    restoreButton.Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -941,10 +1048,8 @@ namespace MultiPingMonitor.UI
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                // Right click. Display context menu.
-                System.Reflection.MethodInfo mi = typeof(System.Windows.Forms.NotifyIcon)
-                    .GetMethod("ShowContextMenu", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                mi.Invoke(NotifyIcon, null);
+                // Right click. Display themed WPF context menu at cursor position.
+                ShowTrayContextMenu();
             }
         }
 
@@ -971,6 +1076,7 @@ namespace MultiPingMonitor.UI
                 WindowPlacementService.SaveWindow(this, "MainWindow");
                 Configuration.Save();
                 NotifyIcon?.Dispose();
+                _trayMenuHost?.Close();
             }
         }
 
@@ -990,6 +1096,25 @@ namespace MultiPingMonitor.UI
             var tb = sender as TextBox;
             (tb.DataContext as Probe).SelStart = tb.SelectionStart;
             (tb.DataContext as Probe).SelLength = tb.SelectionLength;
+        }
+
+        // ── Custom title bar button handlers ─────────────────────────────────
+
+        private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized
+                ? WindowState.Normal
+                : WindowState.Maximized;
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         // ── Edge snap implementation ──────────────────────────────────────────
