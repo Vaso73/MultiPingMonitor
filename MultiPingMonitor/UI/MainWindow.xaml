@@ -335,7 +335,8 @@
 
                                 <!-- Ping title bar / button section -->
                                 <Border DockPanel.Dock="Top"
-                                        x:Name="headerBorder">
+                                        x:Name="headerBorder"
+                                        Cursor="SizeAll">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Background" Value="{DynamicResource Theme.Surface}"/>
@@ -381,6 +382,7 @@
                                             ToolTip="{x:Static resource:Strings.Tooltip_Close}"
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
+                                            Cursor="Arrow"
                                             Click="RemoveProbe_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
@@ -430,6 +432,7 @@
                                             ToolTip="{x:Static resource:Strings.Tooltip_IsolatedView}"
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
+                                            Cursor="Arrow"
                                             Click="IsolatedView_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
@@ -479,6 +482,7 @@
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
                                             IsEnabled="{Binding ElementName=Hostname, Path=Text, Converter={StaticResource StringLengthToBoolConverter}}"
+                                            Cursor="Arrow"
                                             Click="EditAlias_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
