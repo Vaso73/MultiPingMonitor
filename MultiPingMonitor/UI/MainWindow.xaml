@@ -335,12 +335,12 @@
 
                                 <!-- Ping title bar / button section -->
                                 <Border DockPanel.Dock="Top"
-                                        x:Name="headerBorder"
-                                        BorderThickness="0,0,0,1"
-                                        BorderBrush="{DynamicResource Theme.Border}"
-                                        Background="{DynamicResource Theme.Surface}">
+                                        x:Name="headerBorder">
                                     <Border.Style>
                                         <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Surface}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                     <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
@@ -410,7 +410,7 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Opacity" Value="0.28"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                         <Setter Property="Opacity" Value="1"/>
@@ -458,7 +458,7 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Opacity" Value="0.28"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                         <Setter Property="Opacity" Value="1"/>
@@ -510,7 +510,7 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Opacity" Value="0.28"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                         <Setter Property="Opacity" Value="1"/>
