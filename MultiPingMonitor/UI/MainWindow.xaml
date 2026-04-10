@@ -7,7 +7,7 @@
         Title="MultiPingMonitor"
         WindowStartupLocation="Manual"
         WindowStyle="None"
-        UseLayoutRounding="False"
+        UseLayoutRounding="True"
         SnapsToDevicePixels="True"
         Height="400"
         Width="800"
@@ -340,13 +340,12 @@
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Background" Value="{DynamicResource Theme.Surface}"/>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
-                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,2"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
                                                     <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
                                                     <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
-                                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

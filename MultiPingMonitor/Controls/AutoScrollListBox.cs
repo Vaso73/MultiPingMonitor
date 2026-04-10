@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace MultiPingMonitor.Controls
 {
@@ -39,11 +40,28 @@ namespace MultiPingMonitor.Controls
             _autoScrollAdorner = new AutoScrollAdorner(this);
         }
 
-        protected override void OnRender(DrawingContext drawingContext)
+        /// <summary>
+        /// Deferred auto-scroll that runs once after layout is complete.
+        /// Avoids layout-invalidation inside OnRender which caused cascading
+        /// re-measure/re-arrange passes during window resize.
+        /// </summary>
+        private void DeferAutoScroll()
         {
-            if (_adornerLayer != null && _autoScrollAdorner != null && VisualTreeHelper.GetChild(this, 0) is Decorator border)
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new System.Action(() =>
             {
+                if (_adornerLayer == null || _autoScrollAdorner == null)
+                    return;
+
+                if (VisualTreeHelper.GetChildrenCount(this) == 0)
+                    return;
+
+                if (!(VisualTreeHelper.GetChild(this, 0) is Decorator border))
+                    return;
+
                 ScrollViewer scroll = border.Child as ScrollViewer;
+                if (scroll == null)
+                    return;
+
                 if (scroll.ComputedVerticalScrollBarVisibility != Visibility.Visible)
                 {
                     IsAutoScrollEnabled = true;
@@ -52,10 +70,18 @@ namespace MultiPingMonitor.Controls
 
                 if (IsAutoScrollEnabled && !scroll.IsMouseCaptureWithin)
                 {
-                    scroll?.ScrollToEnd();
+                    scroll.ScrollToEnd();
                 }
+            }));
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            if (IsAutoScrollEnabled)
+            {
+                DeferAutoScroll();
             }
-            base.OnRender(drawingContext);
         }
 
         private void Scroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -95,7 +121,7 @@ namespace MultiPingMonitor.Controls
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 // An item was added to the ListBox.
-                if (IsAutoScrollEnabled && VisualTreeHelper.GetChild(this, 0) is Decorator border)
+                if (IsAutoScrollEnabled && VisualTreeHelper.GetChildrenCount(this) > 0 && VisualTreeHelper.GetChild(this, 0) is Decorator border)
                 {
                     // Scroll to the bottom of the ListBox. If user is currently clicking the scrollbar, then do nothing.
                     ScrollViewer scroll = border.Child as ScrollViewer;
