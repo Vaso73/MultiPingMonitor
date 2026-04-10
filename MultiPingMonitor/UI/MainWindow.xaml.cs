@@ -1090,7 +1090,8 @@ namespace MultiPingMonitor.UI
             }
             else if (iconUri != null)
             {
-                var bmp = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconUri, UriKind.Relative));
+                var bmp = new System.Windows.Media.Imaging.BitmapImage(
+                    new Uri("pack://application:,,," + iconUri, UriKind.Absolute));
                 item.Icon = new System.Windows.Controls.Image { Source = bmp, Width = 16, Height = 16 };
             }
 
