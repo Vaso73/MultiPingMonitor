@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MultiPingMonitor.UI;
 
 namespace MultiPingMonitor.Controls
 {
@@ -78,7 +79,9 @@ namespace MultiPingMonitor.Controls
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            if (IsAutoScrollEnabled)
+            // Skip deferred auto-scroll during live window resize to avoid
+            // N dispatcher callbacks per frame that each trigger layout work.
+            if (IsAutoScrollEnabled && !MainWindow.IsLiveResizing)
             {
                 DeferAutoScroll();
             }
@@ -86,6 +89,13 @@ namespace MultiPingMonitor.Controls
 
         private void Scroll_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
+            // Skip adorner management during live resize — the viewport
+            // changes continuously and adorner add/remove triggers additional
+            // layout passes.  State is corrected on the first ScrollChanged
+            // after resize ends.
+            if (MainWindow.IsLiveResizing)
+                return;
+
             const double MinimumAdornerHeight = 11.0;
             ScrollViewer scrollViewer = (ScrollViewer)sender;
             if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight || scrollViewer.ActualHeight < MinimumAdornerHeight)

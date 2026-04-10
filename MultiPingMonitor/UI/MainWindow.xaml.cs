@@ -53,8 +53,10 @@ namespace MultiPingMonitor.UI
         private const int EdgeSnapThresholdPx = 12;
 
         // Win32 messages handled by the WndProc hook.
-        private const int WM_MOVING = 0x0216;
-        private const int WM_SIZING = 0x0214;
+        private const int WM_MOVING         = 0x0216;
+        private const int WM_SIZING         = 0x0214;
+        private const int WM_ENTERSIZEMOVE  = 0x0231;
+        private const int WM_EXITSIZEMOVE   = 0x0232;
 
         // WM_SIZING wParam values that identify which edge / corner is being dragged.
         private const int WMSZ_LEFT        = 1;
@@ -65,6 +67,11 @@ namespace MultiPingMonitor.UI
         private const int WMSZ_BOTTOM      = 6;
         private const int WMSZ_BOTTOMLEFT  = 7;
         private const int WMSZ_BOTTOMRIGHT = 8;
+
+        // True while the user is actively dragging a window edge or title bar.
+        // Checked by AutoScrollListBox to skip non-essential visual work that
+        // causes per-frame layout overhead during live resize.
+        internal static bool IsLiveResizing { get; private set; }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
@@ -1267,6 +1274,19 @@ namespace MultiPingMonitor.UI
 
         private IntPtr EdgeSnapWndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            // Track resize/move modal loop so UI controls can suppress
+            // non-essential visual work during active drag.
+            if (msg == WM_ENTERSIZEMOVE)
+            {
+                IsLiveResizing = true;
+                return IntPtr.Zero;
+            }
+            if (msg == WM_EXITSIZEMOVE)
+            {
+                IsLiveResizing = false;
+                return IntPtr.Zero;
+            }
+
             // Only snap while the window is in Normal (restored) state.
             if (WindowState != WindowState.Normal)
                 return IntPtr.Zero;
