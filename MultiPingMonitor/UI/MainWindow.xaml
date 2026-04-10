@@ -322,6 +322,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,2,2" Margin="0" CornerRadius="0"
+                            MinWidth="150"
                             Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
                         <Grid Name="gridItemsControl">
                             <Grid.RowDefinitions>
@@ -333,80 +334,88 @@
                             <DockPanel AllowDrop="True" Drop="Probe_Drop">
 
                                 <!-- Ping title bar / button section -->
-                                <Grid DockPanel.Dock="Top">
-                                    <Grid.Style>
-                                        <Style TargetType="{x:Type Grid}">
-                                            <Setter Property="Background" Value="#00000000"/>
+                                <Border DockPanel.Dock="Top"
+                                        x:Name="headerBorder"
+                                        Cursor="SizeAll">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Surface}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                    <Setter Property="Background" Value="#88888888"/>
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,2"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Grid.Style>
-
+                                    </Border.Style>
+                                    <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*" MinWidth="60"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Alias section -->
-                                    <Label Name="txtEditAlias"
-                                           Content="{Binding Alias, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
+                                    <TextBlock Name="txtEditAlias"
+                                           Text="{Binding Alias, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
                                            Background="Transparent"
-                                           FontSize="14"
-                                           VerticalContentAlignment="Center"
-                                           Padding="5,0,0,0"
+                                           FontSize="13"
+                                           VerticalAlignment="Center"
+                                           Padding="6,5,4,5"
                                            Margin="0"
                                            FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis"
                                            Foreground="{Binding Status, Converter={StaticResource ProbeStatusToAliasBrushConverter}}"
-                                           AllowDrop="True" Drop="Probe_Drop" PreviewMouseMove="ProbeTitle_PreviewMouseMove">
-                                    </Label>
+                                           AllowDrop="True" Drop="Probe_Drop" PreviewMouseMove="ProbeTitle_PreviewMouseMove"/>
 
                                     <!-- Button: Remove probe -->
                                     <Button Grid.Column="3"
-                                            Padding="6,3"
-                                            Margin="0,0,0,0"
+                                            Padding="6,4"
+                                            Margin="0"
                                             Background="Transparent"
                                             HorizontalAlignment="Right"
                                             IsTabStop="False"
                                             ToolTip="{x:Static resource:Strings.Tooltip_Close}"
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
+                                            Cursor="Arrow"
                                             Click="RemoveProbe_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="1,0,0,1"
+                                                        CornerRadius="2"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.window-close-black}"
                                                            Width="14" Height="14"
-                                                           Opacity="0.9"/>
+                                                           Opacity="0.6"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="Black"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Danger}"/>
                                                         <Setter TargetName="controlButton_image" Property="Opacity" Value="1"/>
                                                         <Setter TargetName="controlButton_image" Property="Source" Value="{StaticResource icon.window-close-white}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="#444"/>
-                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.4"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Danger}"/>
+                                                        <Setter TargetName="controlButton_border" Property="Opacity" Value="0.7"/>
+                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.8"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -415,7 +424,7 @@
 
                                     <!-- Button: Isolated view -->
                                     <Button Grid.Column="2"
-                                            Padding="6,3"
+                                            Padding="6,4"
                                             Margin="0,0,1,0"
                                             Background="Transparent"
                                             HorizontalAlignment="Right"
@@ -423,38 +432,39 @@
                                             ToolTip="{x:Static resource:Strings.Tooltip_IsolatedView}"
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
+                                            Cursor="Arrow"
                                             Click="IsolatedView_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="1"
+                                                        CornerRadius="2"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.window-restore-black}"
                                                            Width="14" Height="14"
-                                                           Opacity="0.9"/>
+                                                           Opacity="0.6"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="Black"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Accent}"/>
                                                         <Setter TargetName="controlButton_image" Property="Opacity" Value="1"/>
                                                         <Setter TargetName="controlButton_image" Property="Source" Value="{StaticResource icon.window-restore-white}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="#444"/>
-                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.4"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.AccentHover}"/>
+                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.5"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -463,7 +473,7 @@
 
                                     <!-- Button: Edit alias -->
                                     <Button Grid.Column="1"
-                                            Padding="6,3"
+                                            Padding="6,4"
                                             Margin="0,0,1,0"
                                             Background="Transparent"
                                             HorizontalAlignment="Right"
@@ -472,28 +482,29 @@
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
                                             IsEnabled="{Binding ElementName=Hostname, Path=Text, Converter={StaticResource StringLengthToBoolConverter}}"
+                                            Cursor="Arrow"
                                             Click="EditAlias_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="1"
+                                                        CornerRadius="2"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.pencil-black}"
                                                            Width="14" Height="14"
-                                                           Opacity="0.9"/>
+                                                           Opacity="0.6"/>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="Black"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Accent}"/>
                                                         <Setter TargetName="controlButton_image" Property="Opacity" Value="1"/>
                                                         <Setter TargetName="controlButton_image" Property="Source" Value="{StaticResource icon.pencil-white}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="controlButton_border" Property="Background" Value="#444"/>
-                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.4"/>
+                                                        <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.AccentHover}"/>
+                                                        <Setter TargetName="controlButton_image" Property="Opacity" Value="0.5"/>
                                                     </Trigger>
                                                     <Trigger Property="IsEnabled" Value="False">
                                                         <Setter TargetName="controlButton_image" Property="Opacity" Value="0.4"/>
@@ -503,20 +514,22 @@
                                         </Button.Template>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Setter Property="Opacity" Value="0.45"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding ElementName=gridItemsControl, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Opacity" Value="1"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                </Grid>
+                                    </Grid>
+                                </Border>
 
                                 <!-- Ping statistics -->
                                 <DockPanel DockPanel.Dock="Bottom"
-                                           Background="Transparent">
+                                           Background="Transparent"
+                                           ClipToBounds="True">
                                     <DockPanel.Style>
                                         <Style TargetType="{x:Type DockPanel}">
                                             <!-- Statistics are show only if: ProbeType = Ping and Statistics.Sent != 0 -->
@@ -537,10 +550,12 @@
                                             <Setter Property="FontFamily" Value="Segoe UI"/>
                                             <Setter Property="FontSize" Value="12"/>
                                             <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Padding" Value="0,2,0,4"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="Foreground" Value="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"/>
                                         </Style>
                                     </DockPanel.Resources>
-                                    <TextBlock Text="Sent: " Opacity="0.8" Padding="6,0,0,3" />
+                                    <TextBlock Text="Sent: " Opacity="0.8" Padding="6,2,0,4" />
                                     <TextBlock Text="{Binding Statistics.Sent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -588,6 +603,7 @@
                                 <c:AutoScrollListBox x:Name="History"
                                                      BorderThickness="0"
                                                      Background="Transparent"
+                                                     Padding="4,2,4,2"
                                                      Foreground="{Binding Status, Converter={StaticResource ProbeStatusToForegroundBrushConverter}}"
                                                      ItemsSource="{Binding History}"
                                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -651,7 +667,7 @@
                                            FontFamily="Marlett"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource Theme.Text.Primary}"
-                                           Padding="4,0,1,0">
+                                           Padding="6,0,2,0">
                                 </TextBlock>
 
                                 <!-- Hostname textbox -->
@@ -663,7 +679,7 @@
                                          BorderBrush="{DynamicResource Theme.Border}"
                                          VerticalContentAlignment="Center"
                                          Background="Transparent"
-                                         Padding="0,0,0,0"
+                                         Padding="2,5,0,5"
                                          Text="{Binding Hostname, UpdateSourceTrigger=PropertyChanged}"
                                          IsEnabled="{Binding IsActive, Converter={StaticResource InverseBooleanConverter}}"
                                          Template="{StaticResource TextBoxControlTemplate}"

@@ -796,11 +796,11 @@ namespace MultiPingMonitor.UI
 
         private void ProbeTitle_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && sender is FrameworkElement fe)
             {
                 var data = new DataObject();
-                data.SetData("Source", (sender as Label).DataContext as Probe);
-                DragDrop.DoDragDrop(sender as DependencyObject, data, DragDropEffects.Move);
+                data.SetData("Source", fe.DataContext as Probe);
+                DragDrop.DoDragDrop(fe, data, DragDropEffects.Move);
                 e.Handled = true;
             }
         }
@@ -814,23 +814,10 @@ namespace MultiPingMonitor.UI
         private void Probe_Drop(object sender, DragEventArgs e)
         {
             var source = e.Data.GetData("Source") as Probe;
-            if (source != null)
+            if (source != null && sender is FrameworkElement fe)
             {
-                int newIndex;
-                if (sender is Label)
-                {
-                    newIndex = _ProbeCollection.IndexOf((sender as Label).DataContext as Probe);
-                    e.Handled = true;
-                }
-                else if (sender is DockPanel)
-                {
-                    newIndex = _ProbeCollection.IndexOf((sender as DockPanel).DataContext as Probe);
-                    e.Handled = true;
-                }
-                else
-                {
-                    return;
-                }
+                int newIndex = _ProbeCollection.IndexOf(fe.DataContext as Probe);
+                e.Handled = true;
 
                 int prevIndex = _ProbeCollection.IndexOf(source);
                 if (newIndex != prevIndex)
