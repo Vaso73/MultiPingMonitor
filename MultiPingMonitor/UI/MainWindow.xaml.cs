@@ -485,7 +485,7 @@ namespace MultiPingMonitor.UI
         {
             for (int i = 0; i < _ProbeCollection.Count; ++i)
             {
-                _ProbeCollection[i].Status = _ProbeCollection[i].Status;
+                _ProbeCollection[i].RefreshVisuals();
             }
         }
 

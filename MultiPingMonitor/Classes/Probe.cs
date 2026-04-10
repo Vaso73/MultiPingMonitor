@@ -143,6 +143,17 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        /// <summary>
+        /// Forces PropertyChanged for visual-binding properties (Status, Type)
+        /// so that value converters re-evaluate with current ApplicationOptions
+        /// (e.g. after the user changes probe colors or font sizes in Options).
+        /// </summary>
+        public void RefreshVisuals()
+        {
+            OnPropertyChanged(nameof(Status));
+            OnPropertyChanged(nameof(Type));
+        }
+
         private bool isActive = false;
         public bool IsActive
         {
