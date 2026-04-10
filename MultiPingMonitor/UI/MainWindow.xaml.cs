@@ -485,7 +485,7 @@ namespace MultiPingMonitor.UI
         {
             for (int i = 0; i < _ProbeCollection.Count; ++i)
             {
-                _ProbeCollection[i].Status = _ProbeCollection[i].Status;
+                _ProbeCollection[i].RefreshVisuals();
             }
         }
 
@@ -1044,21 +1044,27 @@ namespace MultiPingMonitor.UI
             menu.BorderThickness = new Thickness(1);
             menu.Padding = new Thickness(2);
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => RestoreFromTray()));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance()));
+            // Apply the same MenuItemStyle used in MainWindow menu bar so items
+            // get the themed templates, hover brushes, and full background coverage.
+            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            if (menuItemStyle != null)
+                menu.Resources[typeof(MenuItem)] = menuItemStyle;
+
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => RestoreFromTray(), "icon.vmping-logo-simple"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTraySeparator());
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null)));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null)));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null), null, "/Resources/bomb-16.png"));
             menu.Items.Add(CreateTraySeparator());
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null)));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null)));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null)));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null), "icon.options"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null), "icon.status-history"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
             menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
             {
                 _IsShuttingDown = true;
                 Application.Current.Shutdown();
-            }));
+            }, "icon.window-close-red"));
 
             // Subscribe once: hide the host window when the menu closes.
             menu.Closed += TrayContextMenu_Closed;
@@ -1066,13 +1072,37 @@ namespace MultiPingMonitor.UI
             return menu;
         }
 
-        private static MenuItem CreateTrayMenuItem(string header, RoutedEventHandler clickHandler)
+        private static MenuItem CreateTrayMenuItem(string header, RoutedEventHandler clickHandler,
+            string iconResourceKey = null, string iconUri = null)
         {
             var item = new MenuItem { Header = header };
             // Ensure text is readable: bind Foreground to theme text brush so it
             // stays correct in both light and dark themes and across theme switches.
             item.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
             item.Click += clickHandler;
+
+            // Set icon from application DrawingImage resource key or pack URI.
+            if (iconResourceKey != null)
+            {
+                var iconSource = Application.Current.TryFindResource(iconResourceKey) as System.Windows.Media.ImageSource;
+                if (iconSource != null)
+                    item.Icon = new System.Windows.Controls.Image { Source = iconSource, Width = 16, Height = 16 };
+            }
+            else if (iconUri != null)
+            {
+                try
+                {
+                    var bmp = new System.Windows.Media.Imaging.BitmapImage(
+                        new Uri("pack://application:,,," + iconUri, UriKind.Absolute));
+                    item.Icon = new System.Windows.Controls.Image { Source = bmp, Width = 16, Height = 16 };
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(
+                        $"MultiPingMonitor: Could not load tray menu icon '{iconUri}': {ex.Message}");
+                }
+            }
+
             return item;
         }
 
