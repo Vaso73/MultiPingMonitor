@@ -1090,9 +1090,17 @@ namespace MultiPingMonitor.UI
             }
             else if (iconUri != null)
             {
-                var bmp = new System.Windows.Media.Imaging.BitmapImage(
-                    new Uri("pack://application:,,," + iconUri, UriKind.Absolute));
-                item.Icon = new System.Windows.Controls.Image { Source = bmp, Width = 16, Height = 16 };
+                try
+                {
+                    var bmp = new System.Windows.Media.Imaging.BitmapImage(
+                        new Uri("pack://application:,,," + iconUri, UriKind.Absolute));
+                    item.Icon = new System.Windows.Controls.Image { Source = bmp, Width = 16, Height = 16 };
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.WriteLine(
+                        $"MultiPingMonitor: Could not load tray menu icon '{iconUri}': {ex.Message}");
+                }
             }
 
             return item;

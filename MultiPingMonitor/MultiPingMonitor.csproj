@@ -23,6 +23,8 @@
     <Resource Include="Resources\tray-online.ico" />
     <None Remove="Resources\tray-offline.ico" />
     <Resource Include="Resources\tray-offline.ico" />
+    <None Remove="Resources\bomb-16.png" />
+    <Resource Include="Resources\bomb-16.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Strings.resx">
