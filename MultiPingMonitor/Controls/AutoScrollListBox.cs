@@ -47,7 +47,7 @@ namespace MultiPingMonitor.Controls
         /// </summary>
         private void DeferAutoScroll()
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new System.Action(() =>
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, (System.Action)(() =>
             {
                 if (_adornerLayer == null || _autoScrollAdorner == null)
                     return;
