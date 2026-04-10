@@ -15,6 +15,10 @@ namespace MultiPingMonitor.Controls
         private AdornerLayer _adornerLayer;
         private AutoScrollAdorner _autoScrollAdorner;
 
+        // Set when items are added during live resize and ScrollToEnd was
+        // skipped.  Cleared once a deferred scroll runs after resize ends.
+        private bool _scrollPendingAfterResize;
+
         public AutoScrollListBox()
         {
             Loaded += ListBox_Loaded;
@@ -39,6 +43,25 @@ namespace MultiPingMonitor.Controls
 
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
             _autoScrollAdorner = new AutoScrollAdorner(this);
+
+            // Subscribe to resize-end notification so we can do a single
+            // deferred auto-scroll correction after live resize completes.
+            MainWindow.ResizeCompleted -= OnResizeCompleted; // prevent double-sub
+            MainWindow.ResizeCompleted += OnResizeCompleted;
+        }
+
+        /// <summary>
+        /// Called once after the user finishes a live resize/move drag.
+        /// Processes any deferred auto-scroll that was skipped during resize.
+        /// </summary>
+        private void OnResizeCompleted()
+        {
+            if (_scrollPendingAfterResize)
+            {
+                _scrollPendingAfterResize = false;
+                if (IsAutoScrollEnabled)
+                    DeferAutoScroll();
+            }
         }
 
         /// <summary>
@@ -130,6 +153,16 @@ namespace MultiPingMonitor.Controls
 
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
+                // During live resize, skip ScrollToEnd to avoid per-item layout
+                // invalidation.  The pending flag ensures a single deferred scroll
+                // runs once resize ends.
+                if (MainWindow.IsLiveResizing)
+                {
+                    if (IsAutoScrollEnabled)
+                        _scrollPendingAfterResize = true;
+                    return;
+                }
+
                 // An item was added to the ListBox.
                 if (IsAutoScrollEnabled && VisualTreeHelper.GetChildrenCount(this) > 0 && VisualTreeHelper.GetChild(this, 0) is Decorator border)
                 {

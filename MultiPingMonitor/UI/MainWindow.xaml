@@ -606,6 +606,8 @@
                                                      Foreground="{Binding Status, Converter={StaticResource ProbeStatusToForegroundBrushConverter}}"
                                                      ItemsSource="{Binding History}"
                                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                     ScrollViewer.CanContentScroll="False"
+                                                     VirtualizingPanel.VirtualizationMode="Recycling"
                                                      IsTabStop="False"
                                                      IsTextSearchEnabled="False"
                                                      FocusVisualStyle="{x:Null}"

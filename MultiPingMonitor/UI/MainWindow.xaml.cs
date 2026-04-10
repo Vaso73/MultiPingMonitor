@@ -73,6 +73,10 @@ namespace MultiPingMonitor.UI
         // causes per-frame layout overhead during live resize.
         internal static bool IsLiveResizing { get; private set; }
 
+        // Raised once when the user finishes a resize/move drag so that
+        // controls suppressing work during resize can do a single correction.
+        internal static event Action ResizeCompleted;
+
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
@@ -1284,6 +1288,7 @@ namespace MultiPingMonitor.UI
             if (msg == WM_EXITSIZEMOVE)
             {
                 IsLiveResizing = false;
+                ResizeCompleted?.Invoke();
                 return IntPtr.Zero;
             }
 
