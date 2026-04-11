@@ -617,7 +617,7 @@ namespace MultiPingMonitor.UI
             if (IsLogOutputEnabled.IsChecked == true)
             {
                 string expandedLogPath = Classes.PortablePath.ExpandTokens(LogPath.Text);
-                if (!Directory.Exists(expandedLogPath))
+                if (!Classes.PortablePath.EnsureDirectoryExists(expandedLogPath))
                 {
                     ShowError(Properties.Strings.Options_Validation_LogPath, LogOutputTab, LogPath);
                     return false;
@@ -636,9 +636,14 @@ namespace MultiPingMonitor.UI
                 try
                 {
                     string expandedStatusPath = Classes.PortablePath.ExpandTokens(LogStatusChangesPath.Text);
-                    if (Path.GetFileName(expandedStatusPath).IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
-                        !Directory.Exists(Path.GetDirectoryName(expandedStatusPath)) ||
-                        Path.GetFileName(expandedStatusPath).Length < 1)
+                    string fileName = Path.GetFileName(expandedStatusPath);
+                    if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
+                        fileName.Length < 1)
+                    {
+                        throw new Exception();
+                    }
+
+                    if (!Classes.PortablePath.EnsureDirectoryExists(expandedStatusPath))
                     {
                         throw new Exception();
                     }

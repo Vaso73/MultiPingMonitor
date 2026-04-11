@@ -671,6 +671,11 @@
                                     Width="85"
                                     Content="{x:Static resource:Strings.Options_Browse}"
                                     HorizontalAlignment="Left"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
+                                       Foreground="{DynamicResource Theme.Text.Secondary}"
+                                       FontSize="11"
+                                       Margin="0,6,0,0"
+                                       TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
 
@@ -700,6 +705,11 @@
                                     Width="85"
                                     Content="{x:Static resource:Strings.Options_Browse}"
                                     HorizontalAlignment="Left"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
+                                       Foreground="{DynamicResource Theme.Text.Secondary}"
+                                       FontSize="11"
+                                       Margin="0,6,0,0"
+                                       TextWrapping="Wrap"/>
                         </StackPanel>
                     </Grid>
                 </DockPanel>

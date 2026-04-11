@@ -561,6 +561,9 @@
   <data name="Options_LogPath" xml:space="preserve">
     <value>Cesta k záznamu (základný adresár)</value>
   </data>
+  <data name="Options_LogPathHint" xml:space="preserve">
+    <value>Tip: Použite %APPDATA% na odkaz na adresár aplikácie.  Príklad: %APPDATA%\logs</value>
+  </data>
   <data name="Options_LogPathSimple" xml:space="preserve">
     <value>Cesta k záznamu</value>
   </data>

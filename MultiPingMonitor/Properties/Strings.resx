@@ -668,6 +668,9 @@
   <data name="Options_LogPath" xml:space="preserve">
     <value>Log path (base directory)</value>
   </data>
+  <data name="Options_LogPathHint" xml:space="preserve">
+    <value>Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs</value>
+  </data>
   <data name="Options_LogPathSimple" xml:space="preserve">
     <value>Log path</value>
   </data>

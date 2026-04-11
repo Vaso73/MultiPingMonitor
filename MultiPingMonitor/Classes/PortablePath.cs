@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace MultiPingMonitor.Classes
 {
@@ -12,7 +13,7 @@ namespace MultiPingMonitor.Classes
     /// </summary>
     internal static class PortablePath
     {
-        private const string AppDataToken = "%APPDATA%";
+        public const string AppDataToken = "%APPDATA%";
 
         /// <summary>
         /// Replaces every occurrence of <c>%APPDATA%</c> (case-insensitive)
@@ -31,10 +32,39 @@ namespace MultiPingMonitor.Classes
             // AppDomain.CurrentDomain.BaseDirectory always ends with a directory
             // separator; trim it so callers get clean paths when combining.
             string baseDir = AppDomain.CurrentDomain.BaseDirectory.TrimEnd(
-                System.IO.Path.DirectorySeparatorChar,
-                System.IO.Path.AltDirectorySeparatorChar);
+                Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar);
 
             return path.Replace(AppDataToken, baseDir, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Ensures the directory portion of the given <b>expanded</b> path exists.
+        /// If <paramref name="expandedPath"/> looks like a directory (no extension),
+        /// the path itself is created; otherwise, only its parent directory is created.
+        /// Returns <c>true</c> when the directory exists or was successfully created.
+        /// </summary>
+        public static bool EnsureDirectoryExists(string expandedPath)
+        {
+            if (string.IsNullOrEmpty(expandedPath))
+                return false;
+
+            try
+            {
+                // Determine whether the path represents a directory or a file.
+                string dir = string.IsNullOrEmpty(Path.GetExtension(expandedPath))
+                    ? expandedPath
+                    : Path.GetDirectoryName(expandedPath);
+
+                if (!string.IsNullOrEmpty(dir))
+                    Directory.CreateDirectory(dir);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

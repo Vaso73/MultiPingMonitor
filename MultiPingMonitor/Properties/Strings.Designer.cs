@@ -1707,6 +1707,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs.
+        /// </summary>
+        public static string Options_LogPathHint {
+            get {
+                return ResourceManager.GetString("Options_LogPathHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log path.
         /// </summary>
         public static string Options_LogPathSimple {
