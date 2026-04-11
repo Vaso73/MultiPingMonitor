@@ -3182,5 +3182,185 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Compact Sets....
+        /// </summary>
+        public static string Menu_CompactManageSets {
+            get {
+                return ResourceManager.GetString("Menu_CompactManageSets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Compact Sets.
+        /// </summary>
+        public static string CompactSets_Title {
+            get {
+                return ResourceManager.GetString("CompactSets_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Compact target sets.
+        /// </summary>
+        public static string CompactSets_Header {
+            get {
+                return ResourceManager.GetString("CompactSets_Header", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New Set.
+        /// </summary>
+        public static string CompactSets_NewSet {
+            get {
+                return ResourceManager.GetString("CompactSets_NewSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string CompactSets_RenameSet {
+            get {
+                return ResourceManager.GetString("CompactSets_RenameSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string CompactSets_DeleteSet {
+            get {
+                return ResourceManager.GetString("CompactSets_DeleteSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Set Active.
+        /// </summary>
+        public static string CompactSets_SetActive {
+            get {
+                return ResourceManager.GetString("CompactSets_SetActive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add Target.
+        /// </summary>
+        public static string CompactSets_AddTarget {
+            get {
+                return ResourceManager.GetString("CompactSets_AddTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string CompactSets_EditTarget {
+            get {
+                return ResourceManager.GetString("CompactSets_EditTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string CompactSets_RemoveTarget {
+            get {
+                return ResourceManager.GetString("CompactSets_RemoveTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Target:.
+        /// </summary>
+        public static string CompactSets_Target {
+            get {
+                return ResourceManager.GetString("CompactSets_Target", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alias:.
+        /// </summary>
+        public static string CompactSets_Alias {
+            get {
+                return ResourceManager.GetString("CompactSets_Alias", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to (active).
+        /// </summary>
+        public static string CompactSets_Active {
+            get {
+                return ResourceManager.GetString("CompactSets_Active", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New Set.
+        /// </summary>
+        public static string CompactSets_DefaultName {
+            get {
+                return ResourceManager.GetString("CompactSets_DefaultName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter set name:.
+        /// </summary>
+        public static string CompactSets_EnterName {
+            get {
+                return ResourceManager.GetString("CompactSets_EnterName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter target (host/IP):.
+        /// </summary>
+        public static string CompactSets_EnterTarget {
+            get {
+                return ResourceManager.GetString("CompactSets_EnterTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alias (optional):.
+        /// </summary>
+        public static string CompactSets_EnterAlias {
+            get {
+                return ResourceManager.GetString("CompactSets_EnterAlias", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this compact set?.
+        /// </summary>
+        public static string CompactSets_ConfirmDelete {
+            get {
+                return ResourceManager.GetString("CompactSets_ConfirmDelete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Targets.
+        /// </summary>
+        public static string CompactSets_Targets {
+            get {
+                return ResourceManager.GetString("CompactSets_Targets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Compact Sets....
+        /// </summary>
+        public static string Options_CompactManageSets {
+            get {
+                return ResourceManager.GetString("Options_CompactManageSets", resourceCulture);
+            }
+        }
+
     }
 }

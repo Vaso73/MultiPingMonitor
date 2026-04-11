@@ -489,7 +489,8 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// Stops existing compact probes and rebuilds the collection from
-        /// ApplicationOptions.CompactCustomTargets, auto-starting each probe.
+        /// the active compact set, auto-starting each probe.
+        /// Falls back to legacy CompactCustomTargets if no compact set is active.
         /// </summary>
         private void RebuildCompactProbes()
         {
@@ -501,19 +502,42 @@ namespace MultiPingMonitor.UI
             }
             _CompactProbeCollection.Clear();
 
-            // Create new probes for each custom target.
-            foreach (var target in ApplicationOptions.CompactCustomTargets)
+            // Get entries from the active compact set.
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            if (activeSet != null)
             {
-                if (string.IsNullOrWhiteSpace(target))
-                    continue;
+                foreach (var entry in activeSet.Entries)
+                {
+                    if (string.IsNullOrWhiteSpace(entry.Target))
+                        continue;
 
-                var probe = new Probe();
-                probe.Hostname = target.Trim();
-                probe.Alias = _Aliases.ContainsKey(probe.Hostname.ToLower())
-                    ? _Aliases[probe.Hostname.ToLower()]
-                    : null;
-                _CompactProbeCollection.Add(probe);
-                probe.StartStop();
+                    var probe = new Probe();
+                    probe.Hostname = entry.Target.Trim();
+                    // Compact set alias takes priority; fall back to global alias dictionary.
+                    if (!string.IsNullOrWhiteSpace(entry.Alias))
+                        probe.Alias = entry.Alias;
+                    else if (_Aliases.ContainsKey(probe.Hostname.ToLower()))
+                        probe.Alias = _Aliases[probe.Hostname.ToLower()];
+                    _CompactProbeCollection.Add(probe);
+                    probe.StartStop();
+                }
+            }
+            else
+            {
+                // Legacy fallback: use CompactCustomTargets list.
+                foreach (var target in ApplicationOptions.CompactCustomTargets)
+                {
+                    if (string.IsNullOrWhiteSpace(target))
+                        continue;
+
+                    var probe = new Probe();
+                    probe.Hostname = target.Trim();
+                    probe.Alias = _Aliases.ContainsKey(probe.Hostname.ToLower())
+                        ? _Aliases[probe.Hostname.ToLower()]
+                        : null;
+                    _CompactProbeCollection.Add(probe);
+                    probe.StartStop();
+                }
             }
         }
 
@@ -547,7 +571,7 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Opens the Manage Compact Targets window.
+        /// Opens the Manage Compact Targets window (legacy).
         /// If the user edits and confirms, updates the custom targets and live-applies if active.
         /// Called from main menu, compact title bar menu, and Options.
         /// </summary>
@@ -568,6 +592,49 @@ namespace MultiPingMonitor.UI
                 UpdateTrayIcon();
                 Configuration.Save();
             }
+        }
+
+        /// <summary>
+        /// Switches the active compact set by Id.
+        /// Immediately refreshes compact view and tray state if compact custom targets are active.
+        /// </summary>
+        internal void SetActiveCompactSet(string setId)
+        {
+            if (ApplicationOptions.ActiveCompactSetId == setId)
+                return;
+
+            ApplicationOptions.ActiveCompactSetId = setId;
+
+            // If compact mode with custom targets is active, refresh immediately.
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+            {
+                ApplyCompactDataSource();
+                _trayState = TrayAggregateState.Neutral;
+                UpdateTrayIcon();
+            }
+
+            Configuration.Save();
+        }
+
+        /// <summary>
+        /// Opens the Manage Compact Sets window.
+        /// After the user closes it, refreshes menus and compact view if needed.
+        /// </summary>
+        internal void OpenManageCompactSets()
+        {
+            var window = new ManageCompactSetsWindow();
+            window.Owner = this;
+            window.ShowDialog();
+
+            // After management, always refresh: sets may have been added/removed/renamed,
+            // active set may have changed, entries may have been edited.
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+            {
+                ApplyCompactDataSource();
+            }
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+            Configuration.Save();
         }
 
         /// <summary>
@@ -609,10 +676,65 @@ namespace MultiPingMonitor.UI
 
         private void MenuManageCompactTargets_Click(object sender, RoutedEventArgs e)
         {
-            OpenManageCompactTargets();
+            OpenManageCompactSets();
+        }
+
+        /// <summary>
+        /// Rebuilds the dynamic portion of the CompactTargets main-menu submenu
+        /// every time it opens, so compact set list and check states are always current.
+        /// </summary>
+        private void CompactTargetsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            // Remove all items after the two fixed source-mode items.
+            while (CompactTargetsMenu.Items.Count > 2)
+                CompactTargetsMenu.Items.RemoveAt(CompactTargetsMenu.Items.Count - 1);
+
+            // Update check states for the two fixed items.
+            UpdateCompactSourceMenuChecks();
+
+            // Compact set selection items.
+            AppendCompactSetMenuItems(CompactTargetsMenu.Items);
+
+            // Separator + Manage Compact Sets...
+            CompactTargetsMenu.Items.Add(new Separator());
+            var manageItem = new MenuItem
+            {
+                Header = Strings.Menu_CompactManageSets
+            };
+            var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
+            if (editIconSource != null)
+                manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
+            manageItem.Click += (s, args) => OpenManageCompactSets();
+            CompactTargetsMenu.Items.Add(manageItem);
         }
 
         // ── Compact title bar menu button handler ─────────────────────────────
+
+        /// <summary>
+        /// Builds compact set selection menu items and appends them to the given items collection.
+        /// Used by both the compact title bar context menu and the main menu.
+        /// </summary>
+        private void AppendCompactSetMenuItems(ItemCollection items)
+        {
+            var sets = ApplicationOptions.CompactSets;
+            if (sets.Count == 0)
+                return;
+
+            items.Add(new Separator());
+
+            foreach (var set in sets)
+            {
+                var setItem = new MenuItem
+                {
+                    Header = set.Name,
+                    IsCheckable = true,
+                    IsChecked = set.Id == ApplicationOptions.ActiveCompactSetId
+                };
+                var capturedId = set.Id;
+                setItem.Click += (s, args) => SetActiveCompactSet(capturedId);
+                items.Add(setItem);
+            }
+        }
 
         private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
         {
@@ -646,19 +768,23 @@ namespace MultiPingMonitor.UI
             _compactMenuSourceCustom.Click += (s, args) =>
                 SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
 
+            menu.Items.Add(_compactMenuSourceNormal);
+            menu.Items.Add(_compactMenuSourceCustom);
+
+            // Compact set selection items.
+            AppendCompactSetMenuItems(menu.Items);
+
+            menu.Items.Add(new Separator());
+
             var manageItem = new MenuItem
             {
-                Header = Strings.Menu_CompactManageTargets
+                Header = Strings.Menu_CompactManageSets
             };
-            // Add icon consistent with the main menu "Manage compact targets..." item.
             var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
             if (editIconSource != null)
                 manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
-            manageItem.Click += (s, args) => OpenManageCompactTargets();
+            manageItem.Click += (s, args) => OpenManageCompactSets();
 
-            menu.Items.Add(_compactMenuSourceNormal);
-            menu.Items.Add(_compactMenuSourceCustom);
-            menu.Items.Add(new Separator());
             menu.Items.Add(manageItem);
 
             menu.PlacementTarget = sender as Button;
