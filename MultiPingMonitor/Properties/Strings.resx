@@ -527,6 +527,9 @@
   <data name="Options_Browse" xml:space="preserve">
     <value>Browse...</value>
   </data>
+  <data name="Options_InsertAppData" xml:space="preserve">
+    <value>Insert %APPDATA%\</value>
+  </data>
   <data name="Options_Bytes" xml:space="preserve">
     <value>bytes</value>
   </data>

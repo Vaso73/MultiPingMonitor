@@ -877,6 +877,33 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        private void InsertAppDataLogPath_Click(object sender, RoutedEventArgs e)
+        {
+            InsertAppDataToken(LogPath, @"%APPDATA%\logs\");
+        }
+
+        private void InsertAppDataLogStatusChangesPath_Click(object sender, RoutedEventArgs e)
+        {
+            InsertAppDataToken(LogStatusChangesPath, @"%APPDATA%\logs\multipingmonitor-status.txt");
+        }
+
+        private static void InsertAppDataToken(System.Windows.Controls.TextBox textBox, string defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = defaultValue;
+            }
+            else
+            {
+                // Insert the token at the current caret position.
+                int caret = textBox.CaretIndex;
+                string token = Classes.PortablePath.AppDataToken;
+                textBox.Text = textBox.Text.Insert(caret, token);
+                textBox.CaretIndex = caret + token.Length;
+            }
+            textBox.Focus();
+        }
+
         private void AudioDownBrowse_Click(object sender, RoutedEventArgs e)
         {
             AudioFileBrowse(AudioDownFilePath);

@@ -420,6 +420,9 @@
   <data name="Options_Browse" xml:space="preserve">
     <value>Prehľadávať...</value>
   </data>
+  <data name="Options_InsertAppData" xml:space="preserve">
+    <value>Vložiť %APPDATA%\</value>
+  </data>
   <data name="Options_Bytes" xml:space="preserve">
     <value>bajtov</value>
   </data>

@@ -666,11 +666,17 @@
                             <TextBlock Text="{x:Static resource:Strings.Options_LogPath}"/>
                             <TextBox Name="LogPath"
                                      Margin="0,4,0,8"/>
-                            <Button Style="{StaticResource ButtonStandardStyle}"
-                                    Click="BrowseLogPath_Click"
-                                    Width="85"
-                                    Content="{x:Static resource:Strings.Options_Browse}"
-                                    HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                        Click="BrowseLogPath_Click"
+                                        Width="85"
+                                        Content="{x:Static resource:Strings.Options_Browse}"/>
+                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                        Click="InsertAppDataLogPath_Click"
+                                        Margin="10,0,0,0"
+                                        Padding="10,5"
+                                        Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                            </StackPanel>
                             <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
                                        Foreground="{DynamicResource Theme.Text.Secondary}"
                                        FontSize="11"
@@ -700,11 +706,17 @@
                             <TextBlock Text="{x:Static resource:Strings.Options_LogPathSimple}"/>
                             <TextBox Name="LogStatusChangesPath"
                                      Margin="0,4,0,8"/>
-                            <Button Style="{StaticResource ButtonStandardStyle}"
-                                    Click="BrowseLogStatusChangesPath_Click"
-                                    Width="85"
-                                    Content="{x:Static resource:Strings.Options_Browse}"
-                                    HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                        Click="BrowseLogStatusChangesPath_Click"
+                                        Width="85"
+                                        Content="{x:Static resource:Strings.Options_Browse}"/>
+                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                        Click="InsertAppDataLogStatusChangesPath_Click"
+                                        Margin="10,0,0,0"
+                                        Padding="10,5"
+                                        Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                            </StackPanel>
                             <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
                                        Foreground="{DynamicResource Theme.Text.Secondary}"
                                        FontSize="11"

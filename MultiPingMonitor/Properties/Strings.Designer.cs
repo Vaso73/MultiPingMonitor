@@ -1284,6 +1284,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert %APPDATA%\.
+        /// </summary>
+        public static string Options_InsertAppData {
+            get {
+                return ResourceManager.GetString("Options_InsertAppData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to bytes.
         /// </summary>
         public static string Options_Bytes {
