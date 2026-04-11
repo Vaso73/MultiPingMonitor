@@ -400,6 +400,11 @@ namespace MultiPingMonitor.UI
             MainMenu.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
             CompactTitleBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
 
+            // ── Mode-specific minimum window width ──
+            // Compact mode needs a much smaller minimum to allow narrow side-panel usage.
+            // Normal mode retains the original 350 to protect its multi-column layout.
+            MinWidth = compact ? 120 : 350;
+
             // ── Switch ItemTemplate and ItemsPanel ──
             if (compact)
             {
