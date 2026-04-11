@@ -1127,6 +1127,9 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="CompactSets_Targets" xml:space="preserve">
     <value>Ciele</value>
   </data>
+  <data name="CompactSets_Sets" xml:space="preserve">
+    <value>Sady</value>
+  </data>
   <data name="Options_CompactManageSets" xml:space="preserve">
     <value>Spravovať kompaktné sady...</value>
   </data>

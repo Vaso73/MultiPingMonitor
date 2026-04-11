@@ -66,7 +66,7 @@
 
             <!-- Left panel: Sets list -->
             <DockPanel Grid.Column="0">
-                <TextBlock DockPanel.Dock="Top" Text="Sets" FontWeight="SemiBold" Margin="0,0,0,4"
+                <TextBlock DockPanel.Dock="Top" Text="{x:Static resource:Strings.CompactSets_Sets}" FontWeight="SemiBold" Margin="0,0,0,4"
                            Foreground="{DynamicResource Theme.Text.Primary}"/>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
                     <Button x:Name="NewSetButton" Style="{StaticResource ButtonStandardStyle}"

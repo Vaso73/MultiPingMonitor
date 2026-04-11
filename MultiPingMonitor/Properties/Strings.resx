@@ -1237,6 +1237,9 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="CompactSets_Targets" xml:space="preserve">
     <value>Targets</value>
   </data>
+  <data name="CompactSets_Sets" xml:space="preserve">
+    <value>Sets</value>
+  </data>
   <data name="Options_CompactManageSets" xml:space="preserve">
     <value>Manage Compact Sets...</value>
   </data>

@@ -3362,5 +3362,14 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Sets.
+        /// </summary>
+        public static string CompactSets_Sets {
+            get {
+                return ResourceManager.GetString("CompactSets_Sets", resourceCulture);
+            }
+        }
+
     }
 }
