@@ -428,7 +428,7 @@ namespace MultiPingMonitor.Classes
 
     /// <summary>
     /// Converts LastRoundtripTime (long) to a compact display string for Compact View.
-    /// -1 → "—", 0 → "&lt;1ms", positive → "{value}ms".
+    /// -1 produces "—", 0 produces less-than-1ms, positive produces "{value}ms".
     /// </summary>
     public class RoundtripTimeToStringConverter : IValueConverter
     {

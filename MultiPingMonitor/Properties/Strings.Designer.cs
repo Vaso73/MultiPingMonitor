@@ -2076,6 +2076,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display mode:.
+        /// </summary>
+        public static string Options_DisplayMode {
+            get {
+                return ResourceManager.GetString("Options_DisplayMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total packet size:.
         /// </summary>
         public static string Options_TotalPacketSize {

@@ -794,6 +794,9 @@
   <data name="Options_Theme" xml:space="preserve">
     <value>Theme:</value>
   </data>
+  <data name="Options_DisplayMode" xml:space="preserve">
+    <value>Display mode:</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Total packet size:</value>
   </data>

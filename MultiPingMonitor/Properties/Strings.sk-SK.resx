@@ -684,6 +684,9 @@
   <data name="Options_Theme" xml:space="preserve">
     <value>Téma:</value>
   </data>
+  <data name="Options_DisplayMode" xml:space="preserve">
+    <value>Režim zobrazenia:</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Celková veľkosť paketu:</value>
   </data>
