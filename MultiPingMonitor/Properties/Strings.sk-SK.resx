@@ -1112,6 +1112,9 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="CompactSets_DefaultName" xml:space="preserve">
     <value>Nová sada</value>
   </data>
+  <data name="CompactSets_MigratedDefaultName" xml:space="preserve">
+    <value>Predvolená sada</value>
+  </data>
   <data name="CompactSets_EnterName" xml:space="preserve">
     <value>Zadajte názov sady:</value>
   </data>

@@ -1222,6 +1222,9 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="CompactSets_DefaultName" xml:space="preserve">
     <value>New Set</value>
   </data>
+  <data name="CompactSets_MigratedDefaultName" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="CompactSets_EnterName" xml:space="preserve">
     <value>Enter set name:</value>
   </data>

@@ -493,7 +493,7 @@ namespace MultiPingMonitor.Classes
             if (entries.Count == 0)
                 return;
 
-            var defaultSet = new CompactTargetSet(Strings.CompactSets_DefaultName, entries);
+            var defaultSet = new CompactTargetSet(Strings.CompactSets_MigratedDefaultName, entries);
             ApplicationOptions.CompactSets.Add(defaultSet);
             ApplicationOptions.ActiveCompactSetId = defaultSet.Id;
         }

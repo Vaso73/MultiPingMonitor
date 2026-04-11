@@ -3309,6 +3309,15 @@ namespace MultiPingMonitor.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string CompactSets_MigratedDefaultName {
+            get {
+                return ResourceManager.GetString("CompactSets_MigratedDefaultName", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Enter set name:.
         /// </summary>
         public static string CompactSets_EnterName {
