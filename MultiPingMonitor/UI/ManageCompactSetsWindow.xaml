@@ -107,6 +107,7 @@
                             Width="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
                 </StackPanel>
                 <ListBox x:Name="TargetsListBox"
+                         SelectionChanged="TargetsListBox_SelectionChanged"
                          HorizontalAlignment="Stretch"
                          FontFamily="Consolas" FontSize="13"/>
             </DockPanel>

@@ -54,6 +54,11 @@ namespace MultiPingMonitor.UI
             UpdateButtonStates();
         }
 
+        private void TargetsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtonStates();
+        }
+
         private void UpdateButtonStates()
         {
             bool hasSet = SetsListBox.SelectedIndex >= 0;
