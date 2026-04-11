@@ -66,6 +66,55 @@
                 </MultiTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+
+        <!-- Compact View: single-row item template for monitoring overview -->
+        <DataTemplate x:Key="CompactProbeTemplate">
+            <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1"
+                    Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}"
+                    Padding="4,2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Status indicator -->
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Status, Converter={StaticResource ProbeStatusToCompactIndicatorConverter}}"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding Status, Converter={StaticResource ProbeStatusToForegroundBrushConverter}}"
+                               Margin="0,0,4,0"/>
+
+                    <!-- Alias or Hostname label -->
+                    <TextBlock Grid.Column="1"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{Binding Status, Converter={StaticResource ProbeStatusToAliasBrushConverter}}">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource AliasOrHostnameConverter}">
+                                <Binding Path="Alias" UpdateSourceTrigger="PropertyChanged"/>
+                                <Binding Path="Hostname" UpdateSourceTrigger="PropertyChanged"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
+                    <!-- Latency value -->
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding LastRoundtripTime, Converter={StaticResource RoundtripTimeToStringConverter}}"
+                               FontSize="11"
+                               FontFamily="Consolas"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"
+                               Margin="4,0,0,0"
+                               MinWidth="32"
+                               TextAlignment="Right"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </Window.Resources>
 
     <!-- Root Border with window border -->
@@ -146,10 +195,10 @@
         </Grid>
 
         <!-- Separator line between title bar and menu -->
-        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+        <Border x:Name="TitleBarSeparator" DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
 
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top"
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top"
               FontStretch="Normal"
               Background="{DynamicResource Theme.Surface}"
               Padding="4,2">
@@ -235,6 +284,12 @@
                         <Image Source="{StaticResource icon.options}" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <!-- Menu: Switch display mode (Normal ↔ Compact) -->
+                <MenuItem x:Name="ToggleDisplayModeMenu" Click="ToggleDisplayMode_Click">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <!-- Menu: Status history -->
                 <MenuItem Name="StatusHistoryMenu" Header="{x:Static resource:Strings.Menu_StatusHistory}" InputGestureText="F12">
@@ -316,6 +371,34 @@
             </MenuItem>
         </Menu>
 
+
+        <!-- Compact mode: slim drag bar (hidden by default, shown in Compact mode) -->
+        <Grid x:Name="CompactTitleBar" DockPanel.Dock="Top" Height="22" Background="{DynamicResource Theme.Surface}"
+              Visibility="Collapsed" MouseLeftButtonDown="CompactTitleBar_MouseLeftButtonDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="MultiPingMonitor"
+                       FontSize="11"
+                       Foreground="{DynamicResource Theme.Text.Secondary}"
+                       VerticalAlignment="Center"
+                       Margin="4,0,0,0"
+                       TextTrimming="CharacterEllipsis"
+                       Opacity="0.7"/>
+            <Button Grid.Column="1"
+                    Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}"
+                    AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000"
+                    Width="28" Height="22">
+                <Path Width="28" Height="22"
+                      Data="M 9,7 19,17 M 9,17 19,7"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                      StrokeThickness="1" />
+            </Button>
+        </Grid>
 
         <!-- Items Control -->
         <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="0,0,-2,-2">

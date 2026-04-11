@@ -91,6 +91,7 @@ namespace MultiPingMonitor.Classes
             IndeterminateCount = 0;
             HighLatencyCount = 0;
             MinRtt = long.MaxValue;
+            LastRoundtripTime = -1;
             History = new ObservableCollection<string>();
         }
 

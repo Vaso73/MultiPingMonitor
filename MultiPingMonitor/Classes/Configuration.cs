@@ -244,7 +244,9 @@ namespace MultiPingMonitor.Classes
                 Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
                 Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner),
                 new XComment(" Language: [System, English, Slovak] "),
-                Node("Language", ApplicationOptions.Language)
+                Node("Language", ApplicationOptions.Language),
+                new XComment(" DisplayMode: [Normal, Compact] "),
+                Node("DisplayMode", ApplicationOptions.CurrentDisplayMode)
             );
         }
 
@@ -631,6 +633,11 @@ namespace MultiPingMonitor.Classes
             {
                 if (Enum.TryParse<ApplicationOptions.AppLanguage>(optionValue, out var lang))
                     ApplicationOptions.Language = lang;
+            }
+            if (options.TryGetValue("DisplayMode", out optionValue))
+            {
+                if (Enum.TryParse<ApplicationOptions.DisplayMode>(optionValue, out var mode))
+                    ApplicationOptions.CurrentDisplayMode = mode;
             }
         }
 

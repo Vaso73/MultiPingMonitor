@@ -143,6 +143,25 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        private long lastRoundtripTime = -1;
+        /// <summary>
+        /// The most recent ICMP round-trip time in milliseconds.
+        /// -1 means no successful reply has been received yet.
+        /// Used by Compact View to display a short latency value.
+        /// </summary>
+        public long LastRoundtripTime
+        {
+            get => lastRoundtripTime;
+            set
+            {
+                if (value != lastRoundtripTime)
+                {
+                    lastRoundtripTime = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         /// <summary>
         /// Forces PropertyChanged for visual-binding properties (Status, Type)
         /// so that value converters re-evaluate with current ApplicationOptions

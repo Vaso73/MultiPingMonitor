@@ -46,6 +46,12 @@ namespace MultiPingMonitor.UI
         // Prevents double-initialization when the window is first shown after a tray-only startup.
         private bool _startupContentInitialized = false;
 
+        // ── Display mode ──────────────────────────────────────────────────────
+        // Saved references to the normal-mode ItemTemplate and ItemsPanel so they
+        // can be restored when switching back from Compact to Normal.
+        private DataTemplate _normalItemTemplate;
+        private ItemsPanelTemplate _normalItemsPanel;
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -90,7 +96,10 @@ namespace MultiPingMonitor.UI
             InitializeComponent();
             InitializeApplication();
             InitializeTrayIcon();
-            WindowPlacementService.Attach(this, "MainWindow");
+
+            // Attach window placement using a mode-specific key so Normal and Compact
+            // each remember their own position and size independently.
+            WindowPlacementService.Attach(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));
         }
 
         /// <summary>
@@ -111,6 +120,7 @@ namespace MultiPingMonitor.UI
             Configuration.Load();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             RefreshGuiState();
+            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
 
             // Set items source for main GUI ItemsControl.
             ProbeItemsControl.ItemsSource = _ProbeCollection;
@@ -238,6 +248,205 @@ namespace MultiPingMonitor.UI
             ColumnCount.Tag = ColumnCount.Value > _ProbeCollection.Count
                 ? _ProbeCollection.Count
                 : (int)ColumnCount.Value;
+        }
+
+        // ── Display mode ──────────────────────────────────────────────────────
+        // The stored normal-mode WindowChrome settings, used to restore when
+        // switching back from Compact to Normal.
+        private System.Windows.Shell.WindowChrome _normalChrome;
+
+        // The tray menu item that toggles between Normal ↔ Compact.
+        // Kept as a field so its Header can be updated when the mode changes.
+        private MenuItem _trayToggleDisplayMode;
+
+        // The TextBlock used as the tray toggle item's Header so that Bold
+        // renders reliably regardless of the MenuItemStyle template.
+        private TextBlock _trayToggleTextBlock;
+
+        // Default compact window dimensions used when no saved placement exists yet.
+        private const double CompactDefaultWidth = 280;
+        private const double CompactDefaultHeight = 400;
+
+        /// <summary>
+        /// Returns the WindowPlacementService key for the given display mode.
+        /// Normal uses "MainWindow"; Compact uses "MainWindow.Compact".
+        /// </summary>
+        private static string PlacementKeyForMode(ApplicationOptions.DisplayMode mode)
+        {
+            return mode == ApplicationOptions.DisplayMode.Compact
+                ? "MainWindow.Compact"
+                : "MainWindow";
+        }
+
+        /// <summary>
+        /// Switches the display mode, saving current window bounds under the old mode
+        /// and restoring bounds from the new mode. Also updates ApplicationOptions,
+        /// the tray toggle text, and saves config.
+        /// Called from tray menu and can be reused from other entry points.
+        /// </summary>
+        internal void SwitchDisplayMode(ApplicationOptions.DisplayMode targetMode)
+        {
+            if (ApplicationOptions.CurrentDisplayMode == targetMode)
+                return;
+
+            var previousMode = ApplicationOptions.CurrentDisplayMode;
+
+            // Save current bounds under the outgoing mode's key.
+            WindowPlacementService.SaveWindow(this, PlacementKeyForMode(previousMode));
+
+            // Apply new mode.
+            ApplicationOptions.CurrentDisplayMode = targetMode;
+            ApplyDisplayMode(targetMode);
+
+            // Restore saved bounds for the target mode (if any).
+            if (WindowPlacementService.HasPlacement(PlacementKeyForMode(targetMode)))
+            {
+                WindowPlacementService.RestoreWindow(this, PlacementKeyForMode(targetMode));
+            }
+            else
+            {
+                // First switch to this mode: apply reasonable defaults.
+                ApplyDefaultPlacement(targetMode);
+            }
+
+            // Update tray toggle text.
+            UpdateTrayToggleText();
+
+            // Persist immediately.
+            Configuration.Save();
+        }
+
+        /// <summary>
+        /// Applies reasonable default window dimensions when switching to a mode
+        /// that has no saved placement yet. Centers the new bounds on the current
+        /// monitor to avoid a jarring position jump.
+        /// </summary>
+        private void ApplyDefaultPlacement(ApplicationOptions.DisplayMode mode)
+        {
+            if (mode == ApplicationOptions.DisplayMode.Compact)
+            {
+                // Compact: slim, tall panel. Center on the current monitor.
+                var screen = System.Windows.Forms.Screen.FromRectangle(
+                    new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height));
+                var wa = screen.WorkingArea;
+
+                double newW = Math.Min(CompactDefaultWidth, wa.Width);
+                double newH = Math.Min(CompactDefaultHeight, wa.Height);
+                Left = wa.Left + (wa.Width - newW) / 2.0;
+                Top = wa.Top + (wa.Height - newH) / 2.0;
+                Width = newW;
+                Height = newH;
+            }
+            // Normal mode fallback: keep current bounds (they came from the initial
+            // Attach placement or the XAML defaults), which is the least surprising.
+        }
+
+        /// <summary>
+        /// Updates the tray toggle and main-menu toggle texts to reflect the current mode.
+        /// </summary>
+        private void UpdateTrayToggleText()
+        {
+            var text = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                ? Strings.Tray_SwitchToNormal
+                : Strings.Tray_SwitchToCompact;
+
+            if (_trayToggleTextBlock != null)
+                _trayToggleTextBlock.Text = text;
+
+            if (ToggleDisplayModeMenu != null)
+                ToggleDisplayModeMenu.Header = text;
+        }
+
+        /// <summary>
+        /// Centralized method that switches between Normal and Compact display modes.
+        /// Called at startup, after config load, on live Options change, and on cancel rollback.
+        /// </summary>
+        internal void ApplyDisplayMode(ApplicationOptions.DisplayMode mode)
+        {
+            bool compact = mode == ApplicationOptions.DisplayMode.Compact;
+
+            // Save the original templates on first call (before any switch).
+            if (_normalItemTemplate == null)
+                _normalItemTemplate = ProbeItemsControl.ItemTemplate;
+            if (_normalItemsPanel == null)
+                _normalItemsPanel = ProbeItemsControl.ItemsPanel;
+
+            // ── Toggle chrome / border for compact mode ──
+            var currentChrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
+            if (compact)
+            {
+                // Save current chrome for later restoration.
+                if (_normalChrome == null && currentChrome != null)
+                {
+                    _normalChrome = new System.Windows.Shell.WindowChrome
+                    {
+                        CaptionHeight = currentChrome.CaptionHeight,
+                        ResizeBorderThickness = currentChrome.ResizeBorderThickness,
+                        GlassFrameThickness = currentChrome.GlassFrameThickness,
+                        CornerRadius = currentChrome.CornerRadius
+                    };
+                }
+                // Apply compact chrome: small caption for CompactTitleBar drag, keep resize border.
+                var compactChrome = new System.Windows.Shell.WindowChrome
+                {
+                    CaptionHeight = 22,
+                    ResizeBorderThickness = currentChrome?.ResizeBorderThickness ?? SystemParameters.WindowResizeBorderThickness,
+                    GlassFrameThickness = new Thickness(0),
+                    CornerRadius = new CornerRadius(0)
+                };
+                System.Windows.Shell.WindowChrome.SetWindowChrome(this, compactChrome);
+            }
+            else if (_normalChrome != null)
+            {
+                // Restore normal chrome.
+                System.Windows.Shell.WindowChrome.SetWindowChrome(this, _normalChrome);
+            }
+
+            // ── Toggle UI element visibility ──
+            TitleBar.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            TitleBarSeparator.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            MainMenu.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            CompactTitleBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
+
+            // ── Mode-specific minimum window width ──
+            // Compact mode needs a much smaller minimum to allow narrow side-panel usage.
+            // Normal mode retains the original 350 to protect its multi-column layout.
+            MinWidth = compact ? 120 : 350;
+
+            // ── Switch ItemTemplate and ItemsPanel ──
+            if (compact)
+            {
+                ProbeItemsControl.ItemTemplate = (DataTemplate)FindResource("CompactProbeTemplate");
+                // Use a vertical StackPanel for compact layout.
+                var factory = new System.Windows.FrameworkElementFactory(typeof(StackPanel));
+                factory.SetValue(StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Vertical);
+                ProbeItemsControl.ItemsPanel = new ItemsPanelTemplate(factory);
+
+                // Remove grid margins (no multi-column negative offsets needed).
+                ProbeItemsControl.Margin = new Thickness(0);
+                ProbeItemsControl.BorderThickness = new Thickness(0);
+            }
+            else
+            {
+                // Restore the original Normal-mode templates.
+                ProbeItemsControl.ItemTemplate = _normalItemTemplate;
+                ProbeItemsControl.ItemsPanel = _normalItemsPanel;
+
+                // Restore original margins.
+                ProbeItemsControl.Margin = new Thickness(0, 0, -2, -2);
+                ProbeItemsControl.BorderThickness = new Thickness(0, 1, 0, 0);
+            }
+
+            // Update tray toggle text whenever display mode is applied.
+            UpdateTrayToggleText();
+        }
+
+        private void CompactTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
         }
 
         private void InitializeCommandBindings()
@@ -478,7 +687,21 @@ namespace MultiPingMonitor.UI
             {
                 RefreshGuiState();
                 RefreshProbeColors();
+                // Display mode is already applied live via SwitchDisplayMode() during
+                // Options preview, so no additional ApplyDisplayMode() is needed here.
             }
+        }
+
+        /// <summary>
+        /// Main-menu click handler for the display-mode toggle item.
+        /// Uses the same centralized SwitchDisplayMode() as the tray toggle.
+        /// </summary>
+        private void ToggleDisplayMode_Click(object sender, RoutedEventArgs e)
+        {
+            var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                ? ApplicationOptions.DisplayMode.Normal
+                : ApplicationOptions.DisplayMode.Compact;
+            SwitchDisplayMode(target);
         }
 
         private void RefreshProbeColors()
@@ -1053,6 +1276,7 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => ShowMainWindowFromTray(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTraySeparator());
+
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null), null, "/Resources/bomb-16.png"));
             menu.Items.Add(CreateTraySeparator());
@@ -1060,6 +1284,32 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null), "icon.status-history"));
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
             menu.Items.Add(CreateTraySeparator());
+
+            // Display mode quick toggle – placed just above Exit for discoverability.
+            _trayToggleDisplayMode = CreateTrayMenuItem(
+                string.Empty,   // Header set below via TextBlock
+                (s, e) =>
+                {
+                    var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                        ? ApplicationOptions.DisplayMode.Normal
+                        : ApplicationOptions.DisplayMode.Compact;
+                    SwitchDisplayMode(target);
+                },
+                "icon.compact-view");
+            // Use an explicit TextBlock as Header so FontWeight.Bold renders
+            // reliably regardless of how the MenuItemStyle template handles it.
+            _trayToggleTextBlock = new TextBlock
+            {
+                Text = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                    ? Strings.Tray_SwitchToNormal
+                    : Strings.Tray_SwitchToCompact,
+                FontWeight = FontWeights.Bold
+            };
+            _trayToggleTextBlock.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Text.Primary");
+            _trayToggleDisplayMode.Header = _trayToggleTextBlock;
+            menu.Items.Add(_trayToggleDisplayMode);
+            menu.Items.Add(CreateTraySeparator());
+
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
             {
                 _IsShuttingDown = true;
@@ -1267,11 +1517,9 @@ namespace MultiPingMonitor.UI
             else
             {
                 // Capture MainWindow placement before serializing config.
-                // WindowPlacementService.Attach registers its Closing handler after the
-                // XAML-declared Window_Closing, so Configuration.Save would otherwise
-                // run before the placement dict is updated for this window.
+                // Save under the current display mode's key so each mode keeps its own bounds.
                 System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: saving placement and config.");
-                WindowPlacementService.SaveWindow(this, "MainWindow");
+                WindowPlacementService.SaveWindow(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));
                 Configuration.Save();
                 NotifyIcon?.Dispose();
                 _trayMenuHost?.Close();

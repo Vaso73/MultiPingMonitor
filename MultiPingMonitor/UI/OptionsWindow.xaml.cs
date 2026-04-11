@@ -15,6 +15,8 @@ namespace MultiPingMonitor.UI
     {
         // Store original theme so it can be reverted if the user cancels.
         private readonly string _originalTheme;
+        // Store original display mode so it can be reverted if the user cancels.
+        private readonly ApplicationOptions.DisplayMode _originalDisplayMode;
 
         public OptionsWindow()
         {
@@ -23,6 +25,8 @@ namespace MultiPingMonitor.UI
 
             // Remember the current theme so we can revert if the user cancels.
             _originalTheme = ApplicationOptions.Theme;
+            // Remember the current display mode so we can revert if the user cancels.
+            _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
 
             PopulateGeneralOptions();
             PopulateNotificationOptions();
@@ -194,6 +198,11 @@ namespace MultiPingMonitor.UI
             if (ThemeComboBox.SelectedItem == null)
                 ThemeComboBox.SelectedIndex = 0;
 
+            // Display mode.
+            DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Normal);
+            DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
+            DisplayModeComboBox.SelectedIndex = (int)ApplicationOptions.CurrentDisplayMode;
+
             // Populate language ComboBox.
             LanguageComboBox.Items.Add(Properties.Strings.Language_System);
             LanguageComboBox.Items.Add(Properties.Strings.Language_English);
@@ -256,6 +265,12 @@ namespace MultiPingMonitor.UI
             {
                 ApplicationOptions.Theme = _originalTheme;
                 ThemeManager.ApplyTheme(ThemeManager.ParseTheme(_originalTheme));
+
+                // Revert display mode preview.
+                if (ApplicationOptions.CurrentDisplayMode != _originalDisplayMode)
+                {
+                    (Owner as MainWindow)?.SwitchDisplayMode(_originalDisplayMode);
+                }
             }
             base.OnClosing(e);
         }
@@ -709,6 +724,14 @@ namespace MultiPingMonitor.UI
                 ApplicationOptions.Theme = themeName;
                 ThemeManager.ApplyTheme(ThemeManager.ParseTheme(themeName));
             }
+        }
+
+        private void DisplayModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DisplayModeComboBox.SelectedIndex < 0) return;
+            var mode = (ApplicationOptions.DisplayMode)DisplayModeComboBox.SelectedIndex;
+            if (mode == ApplicationOptions.CurrentDisplayMode) return;
+            (Owner as MainWindow)?.SwitchDisplayMode(mode);
         }
 
         private bool SaveLayoutOptions()

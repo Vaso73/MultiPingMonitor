@@ -684,6 +684,15 @@
   <data name="Options_Theme" xml:space="preserve">
     <value>Téma:</value>
   </data>
+  <data name="Options_DisplayMode" xml:space="preserve">
+    <value>Režim zobrazenia:</value>
+  </data>
+  <data name="Options_DisplayMode_Normal" xml:space="preserve">
+    <value>Normálne</value>
+  </data>
+  <data name="Options_DisplayMode_Compact" xml:space="preserve">
+    <value>Kompaktné</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Celková veľkosť paketu:</value>
   </data>
@@ -767,6 +776,12 @@
   </data>
   <data name="Tray_Status_NoHosts" xml:space="preserve">
     <value>MultiPingMonitor – Žiadne hosty na monitorovanie</value>
+  </data>
+  <data name="Tray_SwitchToCompact" xml:space="preserve">
+    <value>Prepnúť na kompaktné zobrazenie</value>
+  </data>
+  <data name="Tray_SwitchToNormal" xml:space="preserve">
+    <value>Prepnúť na normálne zobrazenie</value>
   </data>
   <data name="Options_Title" xml:space="preserve">
     <value>Možnosti</value>
