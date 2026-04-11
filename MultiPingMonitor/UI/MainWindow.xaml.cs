@@ -230,6 +230,9 @@ namespace MultiPingMonitor.UI
                     break;
             }
 
+            // Set compact source menu checks.
+            UpdateCompactSourceMenuChecks();
+
             // Set always on top state.
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             if (Probe.StatusHistoryWindow != null && Probe.StatusHistoryWindow.IsLoaded)
@@ -516,6 +519,137 @@ namespace MultiPingMonitor.UI
             {
                 DragMove();
             }
+        }
+
+        // ── Compact data source – centralized switching ───────────────────────
+
+        /// <summary>
+        /// Centralized method to switch compact data source mode.
+        /// Called from main menu, compact title bar menu, and Options.
+        /// Immediately applies the change, updates UI indicators, and persists config.
+        /// </summary>
+        internal void SetCompactSource(ApplicationOptions.CompactSourceMode mode)
+        {
+            if (ApplicationOptions.CompactSource == mode)
+                return;
+
+            ApplicationOptions.CompactSource = mode;
+            ApplyCompactDataSource();
+            UpdateCompactSourceMenuChecks();
+            Configuration.Save();
+        }
+
+        /// <summary>
+        /// Opens the Manage Compact Targets window.
+        /// If the user edits and confirms, updates the custom targets and live-applies if active.
+        /// Called from main menu, compact title bar menu, and Options.
+        /// </summary>
+        internal void OpenManageCompactTargets()
+        {
+            var window = new ManageCompactTargetsWindow(
+                new System.Collections.Generic.List<string>(ApplicationOptions.CompactCustomTargets));
+            window.Owner = this;
+            if (window.ShowDialog() == true)
+            {
+                ApplicationOptions.CompactCustomTargets = window.Targets;
+                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+                {
+                    ApplyCompactDataSource();
+                }
+                Configuration.Save();
+            }
+        }
+
+        /// <summary>
+        /// Updates IsChecked state on all compact source menu items
+        /// (main menu + compact title bar context menu).
+        /// </summary>
+        internal void UpdateCompactSourceMenuChecks()
+        {
+            bool isNormal = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets;
+
+            // Main menu items.
+            if (MenuCompactSourceNormal != null)
+                MenuCompactSourceNormal.IsChecked = isNormal;
+            if (MenuCompactSourceCustom != null)
+                MenuCompactSourceCustom.IsChecked = !isNormal;
+
+            // Compact title bar context menu items (created dynamically, check if assigned).
+            if (_compactMenuSourceNormal != null)
+                _compactMenuSourceNormal.IsChecked = isNormal;
+            if (_compactMenuSourceCustom != null)
+                _compactMenuSourceCustom.IsChecked = !isNormal;
+        }
+
+        // References to dynamically created compact title bar context menu items.
+        private MenuItem _compactMenuSourceNormal;
+        private MenuItem _compactMenuSourceCustom;
+
+        // ── Main menu compact source handlers ─────────────────────────────────
+
+        private void MenuCompactSourceNormal_Click(object sender, RoutedEventArgs e)
+        {
+            SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+        }
+
+        private void MenuCompactSourceCustom_Click(object sender, RoutedEventArgs e)
+        {
+            SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
+        }
+
+        private void MenuManageCompactTargets_Click(object sender, RoutedEventArgs e)
+        {
+            OpenManageCompactTargets();
+        }
+
+        // ── Compact title bar menu button handler ─────────────────────────────
+
+        private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu();
+
+            // Apply theme-aware brushes (same pattern as tray context menu).
+            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            if (menuItemStyle != null)
+                menu.Resources[typeof(MenuItem)] = menuItemStyle;
+
+            _compactMenuSourceNormal = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_NormalTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets
+            };
+            _compactMenuSourceNormal.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+
+            _compactMenuSourceCustom = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_CustomTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+            };
+            _compactMenuSourceCustom.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
+
+            var manageItem = new MenuItem
+            {
+                Header = Strings.Menu_CompactManageTargets
+            };
+            manageItem.Click += (s, args) => OpenManageCompactTargets();
+
+            menu.Items.Add(_compactMenuSourceNormal);
+            menu.Items.Add(_compactMenuSourceCustom);
+            menu.Items.Add(new Separator());
+            menu.Items.Add(manageItem);
+
+            menu.PlacementTarget = sender as Button;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
         }
 
         private void InitializeCommandBindings()

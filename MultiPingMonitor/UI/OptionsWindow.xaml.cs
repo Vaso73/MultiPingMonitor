@@ -284,7 +284,9 @@ namespace MultiPingMonitor.UI
                 if (ApplicationOptions.CompactSource != _originalCompactSource)
                 {
                     ApplicationOptions.CompactSource = _originalCompactSource;
-                    (Owner as MainWindow)?.ApplyCompactDataSource();
+                    var mainWindow = Owner as MainWindow;
+                    mainWindow?.ApplyCompactDataSource();
+                    mainWindow?.UpdateCompactSourceMenuChecks();
                 }
 
                 // Revert display mode preview.
@@ -738,7 +740,9 @@ namespace MultiPingMonitor.UI
             // Save compact source mode and targets.
             ApplicationOptions.CompactSource = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
             ApplicationOptions.CompactCustomTargets = new System.Collections.Generic.List<string>(_pendingCompactTargets);
-            (Owner as MainWindow)?.ApplyCompactDataSource();
+            var mainWindow = Owner as MainWindow;
+            mainWindow?.ApplyCompactDataSource();
+            mainWindow?.UpdateCompactSourceMenuChecks();
 
             return true;
         }

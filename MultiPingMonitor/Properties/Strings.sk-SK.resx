@@ -162,6 +162,12 @@
   <data name="Menu_Traceroute" xml:space="preserve">
     <value>Traceroute</value>
   </data>
+  <data name="Menu_CompactTargets" xml:space="preserve">
+    <value>Kompaktné ciele</value>
+  </data>
+  <data name="Menu_CompactManageTargets" xml:space="preserve">
+    <value>Spravovať kompaktné ciele...</value>
+  </data>
   <data name="Milliseconds_Symbol" xml:space="preserve">
     <value>ms</value>
   </data>

@@ -511,6 +511,24 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compact.
+        /// </summary>
+        public static string Menu_CompactTargets {
+            get {
+                return ResourceManager.GetString("Menu_CompactTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Compact Targets....
+        /// </summary>
+        public static string Menu_CompactManageTargets {
+            get {
+                return ResourceManager.GetString("Menu_CompactManageTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ms.
         /// </summary>
         public static string Milliseconds_Symbol {
