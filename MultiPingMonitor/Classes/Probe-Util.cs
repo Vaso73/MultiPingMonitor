@@ -174,7 +174,7 @@ namespace MultiPingMonitor.Classes
                 return;
             }
 
-            string logPath = Path.Combine(ApplicationOptions.LogPath, $"{Util.GetSafeFilename(Hostname)}.txt");
+            string logPath = Path.Combine(PortablePath.ExpandTokens(ApplicationOptions.LogPath), $"{Util.GetSafeFilename(Hostname)}.txt");
 
             try
             {
@@ -196,7 +196,7 @@ namespace MultiPingMonitor.Classes
 
             try
             {
-                File.AppendAllText(ApplicationOptions.LogStatusChangesPath,
+                File.AppendAllText(PortablePath.ExpandTokens(ApplicationOptions.LogStatusChangesPath),
                     $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{status.Hostname}\t{status.Alias}\t{status.StatusAsString}");
             }
             catch (Exception ex)
