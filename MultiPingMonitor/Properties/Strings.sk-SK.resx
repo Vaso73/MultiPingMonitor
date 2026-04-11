@@ -1070,4 +1070,70 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Help_Options_TrayBehavior_Text" xml:space="preserve">
     <value>Po zatvorení hlavného okna sa MultiPingMonitor minimalizuje do systémovej lišty a pokračuje v pingovaní na pozadí. Kliknutím pravým tlačidlom na ikonu v tray získate prístup k možnostiam ako Otvoriť, Nová inštancia, História stavov, Nastavenia a Ukončiť.</value>
   </data>
+  <data name="Menu_CompactManageSets" xml:space="preserve">
+    <value>Spravovať kompaktné sady...</value>
+  </data>
+  <data name="CompactSets_Title" xml:space="preserve">
+    <value>Správa kompaktných sád</value>
+  </data>
+  <data name="CompactSets_Header" xml:space="preserve">
+    <value>Kompaktné cieľové sady</value>
+  </data>
+  <data name="CompactSets_NewSet" xml:space="preserve">
+    <value>Nová sada</value>
+  </data>
+  <data name="CompactSets_RenameSet" xml:space="preserve">
+    <value>Premenovať</value>
+  </data>
+  <data name="CompactSets_DeleteSet" xml:space="preserve">
+    <value>Odstrániť</value>
+  </data>
+  <data name="CompactSets_SetActive" xml:space="preserve">
+    <value>Nastaviť ako aktívnu</value>
+  </data>
+  <data name="CompactSets_AddTarget" xml:space="preserve">
+    <value>Pridať cieľ</value>
+  </data>
+  <data name="CompactSets_EditTarget" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="CompactSets_RemoveTarget" xml:space="preserve">
+    <value>Odstrániť</value>
+  </data>
+  <data name="CompactSets_Target" xml:space="preserve">
+    <value>Cieľ:</value>
+  </data>
+  <data name="CompactSets_Alias" xml:space="preserve">
+    <value>Alias:</value>
+  </data>
+  <data name="CompactSets_Active" xml:space="preserve">
+    <value>(aktívna)</value>
+  </data>
+  <data name="CompactSets_DefaultName" xml:space="preserve">
+    <value>Nová sada</value>
+  </data>
+  <data name="CompactSets_MigratedDefaultName" xml:space="preserve">
+    <value>Predvolená sada</value>
+  </data>
+  <data name="CompactSets_EnterName" xml:space="preserve">
+    <value>Zadajte názov sady:</value>
+  </data>
+  <data name="CompactSets_EnterTarget" xml:space="preserve">
+    <value>Zadajte cieľ (host/IP):</value>
+  </data>
+  <data name="CompactSets_EnterAlias" xml:space="preserve">
+    <value>Alias (voliteľné):</value>
+  </data>
+  <data name="CompactSets_ConfirmDelete" xml:space="preserve">
+    <value>Naozaj chcete odstrániť túto kompaktnú sadu?</value>
+  </data>
+  <data name="CompactSets_Targets" xml:space="preserve">
+    <value>Ciele</value>
+  </data>
+  <data name="CompactSets_Sets" xml:space="preserve">
+    <value>Sady</value>
+  </data>
+  <data name="Options_CompactManageSets" xml:space="preserve">
+    <value>Spravovať kompaktné sady...</value>
+  </data>
 </root>

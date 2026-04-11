@@ -803,12 +803,12 @@
                                   VerticalAlignment="Center"
                                   SelectionChanged="CompactSourceComboBox_SelectionChanged"/>
                     </DockPanel>
-                    <!-- Manage compact targets button -->
+                    <!-- Manage compact sets button -->
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,6,0,0">
                         <Button x:Name="ManageCompactTargetsButton"
                                 DockPanel.Dock="Left"
                                 Style="{StaticResource ButtonStandardStyle}"
-                                Content="{x:Static resource:Strings.Options_CompactManageTargets}"
+                                Content="{x:Static resource:Strings.Options_CompactManageSets}"
                                 MinWidth="140"
                                 Click="ManageCompactTargets_Click"/>
                     </DockPanel>

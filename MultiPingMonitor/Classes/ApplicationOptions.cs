@@ -103,6 +103,12 @@ namespace MultiPingMonitor.Classes
         public static CompactSourceMode CompactSource { get; set; } = CompactSourceMode.NormalTargets;
         public static List<string> CompactCustomTargets { get; set; } = new List<string>();
 
+        // ── Compact sets ──────────────────────────────────────────────────────
+        // Multiple named compact target sets, fully independent from Normal favorites.
+        public static List<CompactTargetSet> CompactSets { get; set; } = new List<CompactTargetSet>();
+        // Id of the currently active compact set (null/empty ⇒ none).
+        public static string ActiveCompactSetId { get; set; } = string.Empty;
+
         // Window placement.
         // When true (default), window positions and sizes are persisted across sessions.
         // Ready for future Options UI integration – just bind to this property.
@@ -162,6 +168,16 @@ namespace MultiPingMonitor.Classes
         {
             PingOptions.Ttl = TTL;
             PingOptions.DontFragment = DontFragment;
+        }
+
+        /// <summary>
+        /// Returns the currently active compact set, or null if none is selected or found.
+        /// </summary>
+        public static CompactTargetSet GetActiveCompactSet()
+        {
+            if (string.IsNullOrEmpty(ActiveCompactSetId) || CompactSets.Count == 0)
+                return null;
+            return CompactSets.Find(s => s.Id == ActiveCompactSetId);
         }
 
         public static IEnumerable<Visual> GetChildren(this Visual parent, bool recurse = true)

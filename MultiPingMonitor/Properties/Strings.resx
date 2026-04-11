@@ -1180,4 +1180,70 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Help_Options_TrayBehavior_Text" xml:space="preserve">
     <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access options such as Open, New Instance, Status History, Options, and Exit.</value>
   </data>
+  <data name="Menu_CompactManageSets" xml:space="preserve">
+    <value>Manage Compact Sets...</value>
+  </data>
+  <data name="CompactSets_Title" xml:space="preserve">
+    <value>Manage Compact Sets</value>
+  </data>
+  <data name="CompactSets_Header" xml:space="preserve">
+    <value>Compact target sets</value>
+  </data>
+  <data name="CompactSets_NewSet" xml:space="preserve">
+    <value>New Set</value>
+  </data>
+  <data name="CompactSets_RenameSet" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="CompactSets_DeleteSet" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CompactSets_SetActive" xml:space="preserve">
+    <value>Set Active</value>
+  </data>
+  <data name="CompactSets_AddTarget" xml:space="preserve">
+    <value>Add Target</value>
+  </data>
+  <data name="CompactSets_EditTarget" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="CompactSets_RemoveTarget" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="CompactSets_Target" xml:space="preserve">
+    <value>Target:</value>
+  </data>
+  <data name="CompactSets_Alias" xml:space="preserve">
+    <value>Alias:</value>
+  </data>
+  <data name="CompactSets_Active" xml:space="preserve">
+    <value>(active)</value>
+  </data>
+  <data name="CompactSets_DefaultName" xml:space="preserve">
+    <value>New Set</value>
+  </data>
+  <data name="CompactSets_MigratedDefaultName" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="CompactSets_EnterName" xml:space="preserve">
+    <value>Enter set name:</value>
+  </data>
+  <data name="CompactSets_EnterTarget" xml:space="preserve">
+    <value>Enter target (host/IP):</value>
+  </data>
+  <data name="CompactSets_EnterAlias" xml:space="preserve">
+    <value>Alias (optional):</value>
+  </data>
+  <data name="CompactSets_ConfirmDelete" xml:space="preserve">
+    <value>Are you sure you want to delete this compact set?</value>
+  </data>
+  <data name="CompactSets_Targets" xml:space="preserve">
+    <value>Targets</value>
+  </data>
+  <data name="CompactSets_Sets" xml:space="preserve">
+    <value>Sets</value>
+  </data>
+  <data name="Options_CompactManageSets" xml:space="preserve">
+    <value>Manage Compact Sets...</value>
+  </data>
 </root>

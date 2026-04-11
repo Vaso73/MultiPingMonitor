@@ -291,7 +291,8 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Compact targets submenu -->
-                <MenuItem Header="{x:Static resource:Strings.Menu_CompactTargets}" x:Name="CompactTargetsMenu">
+                <MenuItem Header="{x:Static resource:Strings.Menu_CompactTargets}" x:Name="CompactTargetsMenu"
+                          SubmenuOpened="CompactTargetsMenu_SubmenuOpened">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>
@@ -303,13 +304,7 @@
                               Header="{x:Static resource:Strings.Options_CompactSource_CustomTargets}"
                               IsCheckable="True"
                               Click="MenuCompactSourceCustom_Click"/>
-                    <Separator />
-                    <MenuItem Header="{x:Static resource:Strings.Menu_CompactManageTargets}"
-                              Click="MenuManageCompactTargets_Click">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource icon.edit}" VerticalAlignment="Center" Width="16" Height="16"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <!-- Dynamic compact set items and Manage Sets are added in code-behind -->
                 </MenuItem>
                 <Separator />
                 <!-- Menu: Status history -->

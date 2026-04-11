@@ -19,8 +19,6 @@ namespace MultiPingMonitor.UI
         private readonly ApplicationOptions.DisplayMode _originalDisplayMode;
         // Store original compact source mode so it can be reverted if the user cancels.
         private readonly ApplicationOptions.CompactSourceMode _originalCompactSource;
-        // Pending compact custom targets (saved only on OK).
-        private System.Collections.Generic.List<string> _pendingCompactTargets;
 
         public OptionsWindow()
         {
@@ -33,8 +31,6 @@ namespace MultiPingMonitor.UI
             _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
             // Remember the current compact source mode so we can revert if the user cancels.
             _originalCompactSource = ApplicationOptions.CompactSource;
-            // Work on a copy of compact targets.
-            _pendingCompactTargets = new System.Collections.Generic.List<string>(ApplicationOptions.CompactCustomTargets);
 
             PopulateGeneralOptions();
             PopulateNotificationOptions();
@@ -737,9 +733,8 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.FontSize_Probe = fontSizeProbe;
             ApplicationOptions.FontSize_Scanner = fontSizeScanner;
 
-            // Save compact source mode and targets.
+            // Save compact source mode.
             ApplicationOptions.CompactSource = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
-            ApplicationOptions.CompactCustomTargets = new System.Collections.Generic.List<string>(_pendingCompactTargets);
             var mainWindow = Owner as MainWindow;
             mainWindow?.ApplyCompactDataSource();
             mainWindow?.UpdateCompactSourceMenuChecks();
@@ -778,27 +773,16 @@ namespace MultiPingMonitor.UI
 
         private void ManageCompactTargets_Click(object sender, RoutedEventArgs e)
         {
-            var window = new ManageCompactTargetsWindow(_pendingCompactTargets);
-            window.Owner = this;
-            if (window.ShowDialog() == true)
-            {
-                _pendingCompactTargets = window.Targets;
-
-                // If compact custom targets are active, live-apply the change.
-                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
-                {
-                    ApplicationOptions.CompactCustomTargets = new System.Collections.Generic.List<string>(_pendingCompactTargets);
-                    (Owner as MainWindow)?.ApplyCompactDataSource();
-                }
-            }
+            var mainWindow = Owner as MainWindow;
+            mainWindow?.OpenManageCompactSets();
         }
 
         private void UpdateCompactTargetsButtonVisibility()
         {
+            // Manage Compact Sets button is always enabled since sets are independent.
             if (ManageCompactTargetsButton != null)
             {
-                ManageCompactTargetsButton.IsEnabled =
-                    CompactSourceComboBox.SelectedIndex == (int)ApplicationOptions.CompactSourceMode.CustomTargets;
+                ManageCompactTargetsButton.IsEnabled = true;
             }
         }
 

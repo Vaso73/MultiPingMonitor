@@ -1,0 +1,118 @@
+<Window x:Class="MultiPingMonitor.UI.ManageCompactSetsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        Title="{x:Static resource:Strings.CompactSets_Title}"
+        UseLayoutRounding="True"
+        WindowStyle="None"
+        Height="520" MinHeight="350"
+        Width="680" MinWidth="500"
+        Background="{DynamicResource Theme.Background}"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.compact-view}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+
+    <Grid Margin="9">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel LastChildFill="False">
+            <Image DockPanel.Dock="Left" Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,8,0"/>
+            <TextBlock DockPanel.Dock="Left"
+                       Text="{x:Static resource:Strings.CompactSets_Header}"
+                       Style="{StaticResource OptionHeaderTextStyle}" />
+        </DockPanel>
+
+        <!-- Main content: split between sets list and targets list -->
+        <Grid Grid.Row="1" Margin="0,6,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" MinWidth="180"/>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*" MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left panel: Sets list -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top" Text="{x:Static resource:Strings.CompactSets_Sets}" FontWeight="SemiBold" Margin="0,0,0,4"
+                           Foreground="{DynamicResource Theme.Text.Primary}"/>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+                    <Button x:Name="NewSetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_NewSet}"
+                            MinWidth="60" Click="NewSet_Click"/>
+                    <Button x:Name="RenameSetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_RenameSet}"
+                            MinWidth="60" Margin="4,0,0,0" Click="RenameSet_Click"/>
+                    <Button x:Name="DeleteSetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_DeleteSet}"
+                            MinWidth="60" Margin="4,0,0,0" Click="DeleteSet_Click"/>
+                </StackPanel>
+                <Button x:Name="SetActiveButton" DockPanel.Dock="Bottom" Style="{StaticResource ButtonStandardStyle}"
+                        Content="{x:Static resource:Strings.CompactSets_SetActive}"
+                        HorizontalAlignment="Stretch" Margin="0,4,0,0" Click="SetActive_Click"/>
+                <ListBox x:Name="SetsListBox"
+                         SelectionChanged="SetsListBox_SelectionChanged"
+                         HorizontalAlignment="Stretch"/>
+            </DockPanel>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Background="Transparent" HorizontalAlignment="Stretch" Focusable="False"/>
+
+            <!-- Right panel: Targets for selected set -->
+            <DockPanel Grid.Column="2">
+                <TextBlock x:Name="TargetsHeader" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,4"
+                           Foreground="{DynamicResource Theme.Text.Primary}"
+                           Text="{x:Static resource:Strings.CompactSets_Targets}"/>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
+                    <Button x:Name="AddTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_AddTarget}"
+                            MinWidth="85" Click="AddTarget_Click"/>
+                    <Button x:Name="EditTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_EditTarget}"
+                            MinWidth="60" Margin="4,0,0,0" Click="EditTarget_Click"/>
+                    <Button x:Name="RemoveTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_RemoveTarget}"
+                            MinWidth="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
+                </StackPanel>
+                <ListBox x:Name="TargetsListBox"
+                         SelectionChanged="TargetsListBox_SelectionChanged"
+                         HorizontalAlignment="Stretch"
+                         FontFamily="Consolas" FontSize="13"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+    </DockPanel>
+    </Border>
+</Window>
