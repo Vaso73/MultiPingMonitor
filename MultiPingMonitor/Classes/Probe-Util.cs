@@ -201,7 +201,7 @@ namespace MultiPingMonitor.Classes
                 string expandedPath = PortablePath.ExpandTokens(ApplicationOptions.LogStatusChangesPath);
                 PortablePath.EnsureParentDirectoryExists(expandedPath);
                 File.AppendAllText(expandedPath,
-                    $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{status.Hostname}\t{status.Alias}\t{status.StatusAsString}");
+                    $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{status.Hostname}\t{status.Alias}\t{status.StatusAsString}{Environment.NewLine}");
             }
             catch (Exception ex)
             {
