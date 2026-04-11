@@ -879,12 +879,12 @@ namespace MultiPingMonitor.UI
 
         private void InsertAppDataLogPath_Click(object sender, RoutedEventArgs e)
         {
-            InsertAppDataToken(LogPath, @"%APPDATA%\logs\");
+            InsertAppDataToken(LogPath, @"%APPDATA%\");
         }
 
         private void InsertAppDataLogStatusChangesPath_Click(object sender, RoutedEventArgs e)
         {
-            InsertAppDataToken(LogStatusChangesPath, @"%APPDATA%\logs\multipingmonitor-status.txt");
+            InsertAppDataToken(LogStatusChangesPath, @"%APPDATA%\");
         }
 
         private static void InsertAppDataToken(System.Windows.Controls.TextBox textBox, string defaultValue)
