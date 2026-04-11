@@ -59,7 +59,7 @@
         <!-- Main content: split between sets list and targets list -->
         <Grid Grid.Row="1" Margin="0,6,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" MinWidth="140"/>
+                <ColumnDefinition Width="250" MinWidth="180"/>
                 <ColumnDefinition Width="6"/>
                 <ColumnDefinition Width="*" MinWidth="200"/>
             </Grid.ColumnDefinitions>
@@ -71,13 +71,13 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
                     <Button x:Name="NewSetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_NewSet}"
-                            Width="60" Click="NewSet_Click"/>
+                            MinWidth="60" Click="NewSet_Click"/>
                     <Button x:Name="RenameSetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_RenameSet}"
-                            Width="60" Margin="4,0,0,0" Click="RenameSet_Click"/>
+                            MinWidth="60" Margin="4,0,0,0" Click="RenameSet_Click"/>
                     <Button x:Name="DeleteSetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_DeleteSet}"
-                            Width="60" Margin="4,0,0,0" Click="DeleteSet_Click"/>
+                            MinWidth="60" Margin="4,0,0,0" Click="DeleteSet_Click"/>
                 </StackPanel>
                 <Button x:Name="SetActiveButton" DockPanel.Dock="Bottom" Style="{StaticResource ButtonStandardStyle}"
                         Content="{x:Static resource:Strings.CompactSets_SetActive}"
@@ -98,13 +98,13 @@
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
                     <Button x:Name="AddTargetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_AddTarget}"
-                            Width="85" Click="AddTarget_Click"/>
+                            MinWidth="85" Click="AddTarget_Click"/>
                     <Button x:Name="EditTargetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_EditTarget}"
-                            Width="60" Margin="4,0,0,0" Click="EditTarget_Click"/>
+                            MinWidth="60" Margin="4,0,0,0" Click="EditTarget_Click"/>
                     <Button x:Name="RemoveTargetButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_RemoveTarget}"
-                            Width="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
+                            MinWidth="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
                 </StackPanel>
                 <ListBox x:Name="TargetsListBox"
                          SelectionChanged="TargetsListBox_SelectionChanged"
