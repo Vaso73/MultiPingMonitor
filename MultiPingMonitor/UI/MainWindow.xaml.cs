@@ -323,6 +323,10 @@ namespace MultiPingMonitor.UI
             // Update tray toggle text.
             UpdateTrayToggleText();
 
+            // Force tray aggregate state to re-evaluate from the new active collection.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+
             // Persist immediately.
             Configuration.Save();
         }
@@ -536,6 +540,9 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.CompactSource = mode;
             ApplyCompactDataSource();
             UpdateCompactSourceMenuChecks();
+            // Force tray to re-evaluate from the (possibly new) active collection.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
             Configuration.Save();
         }
 
@@ -556,6 +563,9 @@ namespace MultiPingMonitor.UI
                 {
                     ApplyCompactDataSource();
                 }
+                // Force tray to re-evaluate after target changes.
+                _trayState = TrayAggregateState.Neutral;
+                UpdateTrayIcon();
                 Configuration.Save();
             }
         }
@@ -640,6 +650,10 @@ namespace MultiPingMonitor.UI
             {
                 Header = Strings.Menu_CompactManageTargets
             };
+            // Add icon consistent with the main menu "Manage compact targets..." item.
+            var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
+            if (editIconSource != null)
+                manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
             manageItem.Click += (s, args) => OpenManageCompactTargets();
 
             menu.Items.Add(_compactMenuSourceNormal);
@@ -1308,6 +1322,7 @@ namespace MultiPingMonitor.UI
 
                 // Subscribe to probe collection changes so we can track each probe's status.
                 _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
+                _CompactProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
             }
             catch (Exception ex)
             {
@@ -1382,6 +1397,22 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Returns the probe collection that should be used for tray aggregate state.
+        /// – Normal mode: always _ProbeCollection
+        /// – Compact + NormalTargets: _ProbeCollection (shares the same dataset)
+        /// – Compact + CustomTargets: _CompactProbeCollection
+        /// </summary>
+        private ObservableCollection<Probe> GetActiveTrayProbeCollection()
+        {
+            if (ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+            {
+                return _CompactProbeCollection;
+            }
+            return _ProbeCollection;
+        }
+
+        /// <summary>
         /// Evaluates the aggregate status of all probes and updates the tray icon and tooltip text.
         /// Rules:
         ///   – Red   : at least one active probe is Down or Error
@@ -1403,7 +1434,7 @@ namespace MultiPingMonitor.UI
                 bool anyOffline = false;
                 bool anyOnline  = false;
 
-                foreach (var probe in _ProbeCollection)
+                foreach (var probe in GetActiveTrayProbeCollection())
                 {
                     if (!probe.IsActive || string.IsNullOrWhiteSpace(probe.Hostname))
                         continue;
