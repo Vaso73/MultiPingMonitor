@@ -26,12 +26,18 @@ jobs:
       - name: Publish (win-x64)
         run: dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 
+      - name: Clean publish output
+        shell: pwsh
+        run: |
+          Remove-Item publish\MultiPingMonitor.dll.config -ErrorAction SilentlyContinue
+          Remove-Item publish\MultiPingMonitor.pdb -ErrorAction SilentlyContinue
+
       - name: Zip
         shell: pwsh
-        run: Compress-Archive -Path publish\* -DestinationPath MultiPingMonitor-win-x64.zip -Force
+        run: Compress-Archive -Path publish\* -DestinationPath MultiPingMonitor.zip -Force
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: MultiPingMonitor-win-x64.zip
+          files: MultiPingMonitor.zip
           generate_release_notes: true
