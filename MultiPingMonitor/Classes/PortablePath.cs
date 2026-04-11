@@ -39,23 +39,37 @@ namespace MultiPingMonitor.Classes
         }
 
         /// <summary>
-        /// Ensures the directory portion of the given <b>expanded</b> path exists.
-        /// If <paramref name="expandedPath"/> looks like a directory (no extension),
-        /// the path itself is created; otherwise, only its parent directory is created.
-        /// Returns <c>true</c> when the directory exists or was successfully created.
+        /// Ensures that the given directory exists, creating it (and parents)
+        /// if necessary. Returns <c>true</c> on success.
         /// </summary>
-        public static bool EnsureDirectoryExists(string expandedPath)
+        public static bool EnsureDirectoryExists(string directoryPath)
         {
-            if (string.IsNullOrEmpty(expandedPath))
+            if (string.IsNullOrEmpty(directoryPath))
                 return false;
 
             try
             {
-                // Determine whether the path represents a directory or a file.
-                string dir = string.IsNullOrEmpty(Path.GetExtension(expandedPath))
-                    ? expandedPath
-                    : Path.GetDirectoryName(expandedPath);
+                Directory.CreateDirectory(directoryPath);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
+        /// <summary>
+        /// Ensures that the parent directory of the given <b>file</b> path exists,
+        /// creating it (and parents) if necessary. Returns <c>true</c> on success.
+        /// </summary>
+        public static bool EnsureParentDirectoryExists(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return false;
+
+            try
+            {
+                string dir = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(dir))
                     Directory.CreateDirectory(dir);
 

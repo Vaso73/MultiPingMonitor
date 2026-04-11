@@ -199,7 +199,7 @@ namespace MultiPingMonitor.Classes
             try
             {
                 string expandedPath = PortablePath.ExpandTokens(ApplicationOptions.LogStatusChangesPath);
-                PortablePath.EnsureDirectoryExists(expandedPath);
+                PortablePath.EnsureParentDirectoryExists(expandedPath);
                 File.AppendAllText(expandedPath,
                     $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{status.Hostname}\t{status.Alias}\t{status.StatusAsString}");
             }

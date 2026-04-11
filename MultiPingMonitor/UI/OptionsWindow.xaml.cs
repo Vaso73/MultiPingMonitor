@@ -643,7 +643,7 @@ namespace MultiPingMonitor.UI
                         throw new Exception();
                     }
 
-                    if (!Classes.PortablePath.EnsureDirectoryExists(expandedStatusPath))
+                    if (!Classes.PortablePath.EnsureParentDirectoryExists(expandedStatusPath))
                     {
                         throw new Exception();
                     }
