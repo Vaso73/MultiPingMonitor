@@ -259,6 +259,10 @@ namespace MultiPingMonitor.UI
         // Kept as a field so its Header can be updated when the mode changes.
         private MenuItem _trayToggleDisplayMode;
 
+        // The TextBlock used as the tray toggle item's Header so that Bold
+        // renders reliably regardless of the MenuItemStyle template.
+        private TextBlock _trayToggleTextBlock;
+
         // Default compact window dimensions used when no saved placement exists yet.
         private const double CompactDefaultWidth = 280;
         private const double CompactDefaultHeight = 400;
@@ -338,15 +342,19 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Updates the tray toggle menu item text to reflect the current mode.
+        /// Updates the tray toggle and main-menu toggle texts to reflect the current mode.
         /// </summary>
         private void UpdateTrayToggleText()
         {
-            if (_trayToggleDisplayMode == null) return;
-            _trayToggleDisplayMode.Header =
-                ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                    ? Strings.Tray_SwitchToNormal
-                    : Strings.Tray_SwitchToCompact;
+            var text = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                ? Strings.Tray_SwitchToNormal
+                : Strings.Tray_SwitchToCompact;
+
+            if (_trayToggleTextBlock != null)
+                _trayToggleTextBlock.Text = text;
+
+            if (ToggleDisplayModeMenu != null)
+                ToggleDisplayModeMenu.Header = text;
         }
 
         /// <summary>
@@ -682,6 +690,18 @@ namespace MultiPingMonitor.UI
                 // Display mode is already applied live via SwitchDisplayMode() during
                 // Options preview, so no additional ApplyDisplayMode() is needed here.
             }
+        }
+
+        /// <summary>
+        /// Main-menu click handler for the display-mode toggle item.
+        /// Uses the same centralized SwitchDisplayMode() as the tray toggle.
+        /// </summary>
+        private void ToggleDisplayMode_Click(object sender, RoutedEventArgs e)
+        {
+            var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                ? ApplicationOptions.DisplayMode.Normal
+                : ApplicationOptions.DisplayMode.Compact;
+            SwitchDisplayMode(target);
         }
 
         private void RefreshProbeColors()
@@ -1267,9 +1287,7 @@ namespace MultiPingMonitor.UI
 
             // Display mode quick toggle – placed just above Exit for discoverability.
             _trayToggleDisplayMode = CreateTrayMenuItem(
-                ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                    ? Strings.Tray_SwitchToNormal
-                    : Strings.Tray_SwitchToCompact,
+                string.Empty,   // Header set below via TextBlock
                 (s, e) =>
                 {
                     var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
@@ -1278,8 +1296,19 @@ namespace MultiPingMonitor.UI
                     SwitchDisplayMode(target);
                 },
                 "icon.compact-view");
-            _trayToggleDisplayMode.FontWeight = FontWeights.SemiBold;
+            // Use an explicit TextBlock as Header so FontWeight.Bold renders
+            // reliably regardless of how the MenuItemStyle template handles it.
+            _trayToggleTextBlock = new TextBlock
+            {
+                Text = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                    ? Strings.Tray_SwitchToNormal
+                    : Strings.Tray_SwitchToCompact,
+                FontWeight = FontWeights.Bold
+            };
+            _trayToggleTextBlock.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Text.Primary");
+            _trayToggleDisplayMode.Header = _trayToggleTextBlock;
             menu.Items.Add(_trayToggleDisplayMode);
+            menu.Items.Add(CreateTraySeparator());
 
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
             {
