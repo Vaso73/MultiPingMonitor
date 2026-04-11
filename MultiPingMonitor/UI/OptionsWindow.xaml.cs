@@ -268,10 +268,7 @@ namespace MultiPingMonitor.UI
                 if (ApplicationOptions.CurrentDisplayMode != _originalDisplayMode)
                 {
                     ApplicationOptions.CurrentDisplayMode = _originalDisplayMode;
-                    if (Owner is MainWindow mainWindow)
-                    {
-                        mainWindow.ApplyDisplayMode(_originalDisplayMode);
-                    }
+                    (Owner as MainWindow)?.ApplyDisplayMode(_originalDisplayMode);
                 }
             }
             base.OnClosing(e);
@@ -733,10 +730,7 @@ namespace MultiPingMonitor.UI
             if (DisplayModeComboBox.SelectedIndex < 0) return;
             var mode = (ApplicationOptions.DisplayMode)DisplayModeComboBox.SelectedIndex;
             ApplicationOptions.CurrentDisplayMode = mode;
-            if (Owner is MainWindow mainWindow)
-            {
-                mainWindow.ApplyDisplayMode(mode);
-            }
+            (Owner as MainWindow)?.ApplyDisplayMode(mode);
         }
 
         private bool SaveLayoutOptions()

@@ -472,6 +472,8 @@ namespace MultiPingMonitor.Classes
 
     /// <summary>
     /// Converts ProbeStatus to a compact status indicator character for Compact View.
+    /// Color differentiation comes from background/foreground brush converters;
+    /// the shape provides additional visual distinction.
     /// </summary>
     public class ProbeStatusToCompactIndicatorConverter : IValueConverter
     {
@@ -485,11 +487,11 @@ namespace MultiPingMonitor.Classes
                     case ProbeStatus.LatencyNormal:
                         return "●";
                     case ProbeStatus.Down:
-                        return "●";
+                        return "▼";
                     case ProbeStatus.Error:
                         return "✖";
                     case ProbeStatus.LatencyHigh:
-                        return "●";
+                        return "▲";
                     case ProbeStatus.Indeterminate:
                         return "◐";
                     default:
