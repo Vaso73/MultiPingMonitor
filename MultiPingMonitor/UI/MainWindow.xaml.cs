@@ -622,7 +622,15 @@ namespace MultiPingMonitor.UI
         /// </summary>
         internal void OpenManageCompactSets()
         {
-            var window = new ManageCompactSetsWindow();
+            var window = new ManageCompactSetsWindow(onActiveSetChanged: () =>
+            {
+                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+                {
+                    ApplyCompactDataSource();
+                }
+                _trayState = TrayAggregateState.Neutral;
+                UpdateTrayIcon();
+            });
             window.Owner = this;
             window.ShowDialog();
 

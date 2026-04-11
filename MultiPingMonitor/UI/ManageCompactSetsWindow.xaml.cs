@@ -9,8 +9,11 @@ namespace MultiPingMonitor.UI
 {
     public partial class ManageCompactSetsWindow : Window
     {
-        public ManageCompactSetsWindow()
+        private readonly Action _onActiveSetChanged;
+
+        public ManageCompactSetsWindow(Action onActiveSetChanged = null)
         {
+            _onActiveSetChanged = onActiveSetChanged;
             InitializeComponent();
             WindowPlacementService.Attach(this, "ManageCompactSetsWindow");
             RefreshSetsList();
@@ -137,6 +140,9 @@ namespace MultiPingMonitor.UI
 
             Configuration.Save();
             RefreshSetsList();
+
+            if (wasActive)
+                _onActiveSetChanged?.Invoke();
         }
 
         private void SetActive_Click(object sender, RoutedEventArgs e)
@@ -147,6 +153,7 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.ActiveCompactSetId = set.Id;
             Configuration.Save();
             RefreshSetsList();
+            _onActiveSetChanged?.Invoke();
         }
 
         // ── Target list ───────────────────────────────────────────────────────
@@ -174,6 +181,11 @@ namespace MultiPingMonitor.UI
             UpdateButtonStates();
         }
 
+        private bool IsActiveSet(CompactTargetSet set)
+        {
+            return set != null && set.Id == ApplicationOptions.ActiveCompactSetId;
+        }
+
         // ── Target operations ─────────────────────────────────────────────────
 
         private void AddTarget_Click(object sender, RoutedEventArgs e)
@@ -187,6 +199,9 @@ namespace MultiPingMonitor.UI
             set.Entries.Add(result);
             Configuration.Save();
             RefreshTargetsList();
+
+            if (IsActiveSet(set))
+                _onActiveSetChanged?.Invoke();
         }
 
         private void EditTarget_Click(object sender, RoutedEventArgs e)
@@ -205,6 +220,9 @@ namespace MultiPingMonitor.UI
             Configuration.Save();
             RefreshTargetsList();
             TargetsListBox.SelectedIndex = idx;
+
+            if (IsActiveSet(set))
+                _onActiveSetChanged?.Invoke();
         }
 
         private void RemoveTarget_Click(object sender, RoutedEventArgs e)
@@ -218,6 +236,9 @@ namespace MultiPingMonitor.UI
             set.Entries.RemoveAt(idx);
             Configuration.Save();
             RefreshTargetsList();
+
+            if (IsActiveSet(set))
+                _onActiveSetChanged?.Invoke();
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────
