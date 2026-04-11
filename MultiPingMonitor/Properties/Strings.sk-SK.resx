@@ -693,6 +693,30 @@
   <data name="Options_DisplayMode_Compact" xml:space="preserve">
     <value>Kompaktné</value>
   </data>
+  <data name="Options_CompactDataSource" xml:space="preserve">
+    <value>Zdroj dát pre kompaktný režim:</value>
+  </data>
+  <data name="Options_CompactSource_NormalTargets" xml:space="preserve">
+    <value>Použiť normálne ciele</value>
+  </data>
+  <data name="Options_CompactSource_CustomTargets" xml:space="preserve">
+    <value>Použiť vlastné kompaktné ciele</value>
+  </data>
+  <data name="Options_CompactManageTargets" xml:space="preserve">
+    <value>Spravovať ciele...</value>
+  </data>
+  <data name="CompactTargets_Title" xml:space="preserve">
+    <value>Kompaktné ciele</value>
+  </data>
+  <data name="CompactTargets_Header" xml:space="preserve">
+    <value>Vlastné kompaktné ciele</value>
+  </data>
+  <data name="CompactTargets_Placeholder" xml:space="preserve">
+    <value>Zadajte jedného hostiteľa na riadok (IP, hostname alebo doména)</value>
+  </data>
+  <data name="CompactTargets_Tooltip" xml:space="preserve">
+    <value>Tieto ciele sa používajú výhradne v kompaktnom režime, keď je zvolené „Použiť vlastné kompaktné ciele".</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Celková veľkosť paketu:</value>
   </data>

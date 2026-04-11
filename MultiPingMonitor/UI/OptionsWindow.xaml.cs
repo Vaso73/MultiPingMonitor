@@ -17,6 +17,10 @@ namespace MultiPingMonitor.UI
         private readonly string _originalTheme;
         // Store original display mode so it can be reverted if the user cancels.
         private readonly ApplicationOptions.DisplayMode _originalDisplayMode;
+        // Store original compact source mode so it can be reverted if the user cancels.
+        private readonly ApplicationOptions.CompactSourceMode _originalCompactSource;
+        // Pending compact custom targets (saved only on OK).
+        private System.Collections.Generic.List<string> _pendingCompactTargets;
 
         public OptionsWindow()
         {
@@ -27,6 +31,10 @@ namespace MultiPingMonitor.UI
             _originalTheme = ApplicationOptions.Theme;
             // Remember the current display mode so we can revert if the user cancels.
             _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
+            // Remember the current compact source mode so we can revert if the user cancels.
+            _originalCompactSource = ApplicationOptions.CompactSource;
+            // Work on a copy of compact targets.
+            _pendingCompactTargets = new System.Collections.Generic.List<string>(ApplicationOptions.CompactCustomTargets);
 
             PopulateGeneralOptions();
             PopulateNotificationOptions();
@@ -203,6 +211,12 @@ namespace MultiPingMonitor.UI
             DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
             DisplayModeComboBox.SelectedIndex = (int)ApplicationOptions.CurrentDisplayMode;
 
+            // Compact data source.
+            CompactSourceComboBox.Items.Add(Properties.Strings.Options_CompactSource_NormalTargets);
+            CompactSourceComboBox.Items.Add(Properties.Strings.Options_CompactSource_CustomTargets);
+            CompactSourceComboBox.SelectedIndex = (int)ApplicationOptions.CompactSource;
+            UpdateCompactTargetsButtonVisibility();
+
             // Populate language ComboBox.
             LanguageComboBox.Items.Add(Properties.Strings.Language_System);
             LanguageComboBox.Items.Add(Properties.Strings.Language_English);
@@ -265,6 +279,13 @@ namespace MultiPingMonitor.UI
             {
                 ApplicationOptions.Theme = _originalTheme;
                 ThemeManager.ApplyTheme(ThemeManager.ParseTheme(_originalTheme));
+
+                // Revert compact source mode.
+                if (ApplicationOptions.CompactSource != _originalCompactSource)
+                {
+                    ApplicationOptions.CompactSource = _originalCompactSource;
+                    (Owner as MainWindow)?.ApplyCompactDataSource();
+                }
 
                 // Revert display mode preview.
                 if (ApplicationOptions.CurrentDisplayMode != _originalDisplayMode)
@@ -714,6 +735,11 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.FontSize_Probe = fontSizeProbe;
             ApplicationOptions.FontSize_Scanner = fontSizeScanner;
 
+            // Save compact source mode and targets.
+            ApplicationOptions.CompactSource = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
+            ApplicationOptions.CompactCustomTargets = new System.Collections.Generic.List<string>(_pendingCompactTargets);
+            (Owner as MainWindow)?.ApplyCompactDataSource();
+
             return true;
         }
 
@@ -732,6 +758,44 @@ namespace MultiPingMonitor.UI
             var mode = (ApplicationOptions.DisplayMode)DisplayModeComboBox.SelectedIndex;
             if (mode == ApplicationOptions.CurrentDisplayMode) return;
             (Owner as MainWindow)?.SwitchDisplayMode(mode);
+        }
+
+        private void CompactSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CompactSourceComboBox.SelectedIndex < 0) return;
+            UpdateCompactTargetsButtonVisibility();
+
+            // Live-apply compact source change.
+            var source = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
+            if (source == ApplicationOptions.CompactSource) return;
+            ApplicationOptions.CompactSource = source;
+            (Owner as MainWindow)?.ApplyCompactDataSource();
+        }
+
+        private void ManageCompactTargets_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ManageCompactTargetsWindow(_pendingCompactTargets);
+            window.Owner = this;
+            if (window.ShowDialog() == true)
+            {
+                _pendingCompactTargets = window.Targets;
+
+                // If compact custom targets are active, live-apply the change.
+                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+                {
+                    ApplicationOptions.CompactCustomTargets = new System.Collections.Generic.List<string>(_pendingCompactTargets);
+                    (Owner as MainWindow)?.ApplyCompactDataSource();
+                }
+            }
+        }
+
+        private void UpdateCompactTargetsButtonVisibility()
+        {
+            if (ManageCompactTargetsButton != null)
+            {
+                ManageCompactTargetsButton.IsEnabled =
+                    CompactSourceComboBox.SelectedIndex == (int)ApplicationOptions.CompactSourceMode.CustomTargets;
+            }
         }
 
         private bool SaveLayoutOptions()

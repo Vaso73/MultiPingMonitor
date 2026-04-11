@@ -52,6 +52,11 @@ namespace MultiPingMonitor.UI
         private DataTemplate _normalItemTemplate;
         private ItemsPanelTemplate _normalItemsPanel;
 
+        // ── Compact custom targets ────────────────────────────────────────────
+        // Separate probe collection used when Compact mode is configured to use
+        // custom targets instead of the normal dataset.
+        private readonly ObservableCollection<Probe> _CompactProbeCollection = new ObservableCollection<Probe>();
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -425,6 +430,9 @@ namespace MultiPingMonitor.UI
                 // Remove grid margins (no multi-column negative offsets needed).
                 ProbeItemsControl.Margin = new Thickness(0);
                 ProbeItemsControl.BorderThickness = new Thickness(0);
+
+                // Switch ItemsSource based on compact data source mode.
+                ApplyCompactDataSource();
             }
             else
             {
@@ -435,10 +443,68 @@ namespace MultiPingMonitor.UI
                 // Restore original margins.
                 ProbeItemsControl.Margin = new Thickness(0, 0, -2, -2);
                 ProbeItemsControl.BorderThickness = new Thickness(0, 1, 0, 0);
+
+                // Normal mode always uses the main probe collection.
+                ProbeItemsControl.ItemsSource = _ProbeCollection;
             }
 
             // Update tray toggle text whenever display mode is applied.
             UpdateTrayToggleText();
+        }
+
+        /// <summary>
+        /// Applies the correct ItemsSource for compact mode based on CompactSource setting.
+        /// When set to NormalTargets, compact reuses the main _ProbeCollection.
+        /// When set to CustomTargets, compact uses its own _CompactProbeCollection
+        /// populated from ApplicationOptions.CompactCustomTargets.
+        /// Called from ApplyDisplayMode, OptionsWindow live preview, and OptionsWindow save.
+        /// </summary>
+        internal void ApplyCompactDataSource()
+        {
+            if (ApplicationOptions.CurrentDisplayMode != ApplicationOptions.DisplayMode.Compact)
+                return;
+
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets)
+            {
+                // Use the same collection as Normal mode.
+                ProbeItemsControl.ItemsSource = _ProbeCollection;
+            }
+            else
+            {
+                // Rebuild the compact probe collection from custom targets.
+                RebuildCompactProbes();
+                ProbeItemsControl.ItemsSource = _CompactProbeCollection;
+            }
+        }
+
+        /// <summary>
+        /// Stops existing compact probes and rebuilds the collection from
+        /// ApplicationOptions.CompactCustomTargets, auto-starting each probe.
+        /// </summary>
+        private void RebuildCompactProbes()
+        {
+            // Stop and clear existing compact probes.
+            foreach (var probe in _CompactProbeCollection)
+            {
+                if (probe.IsActive)
+                    probe.StartStop();
+            }
+            _CompactProbeCollection.Clear();
+
+            // Create new probes for each custom target.
+            foreach (var target in ApplicationOptions.CompactCustomTargets)
+            {
+                if (string.IsNullOrWhiteSpace(target))
+                    continue;
+
+                var probe = new Probe();
+                probe.Hostname = target.Trim();
+                probe.Alias = _Aliases.ContainsKey(probe.Hostname.ToLower())
+                    ? _Aliases[probe.Hostname.ToLower()]
+                    : null;
+                _CompactProbeCollection.Add(probe);
+                probe.StartStop();
+            }
         }
 
         private void CompactTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

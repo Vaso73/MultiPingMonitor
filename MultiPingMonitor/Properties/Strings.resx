@@ -803,6 +803,30 @@
   <data name="Options_DisplayMode_Compact" xml:space="preserve">
     <value>Compact</value>
   </data>
+  <data name="Options_CompactDataSource" xml:space="preserve">
+    <value>Compact data source:</value>
+  </data>
+  <data name="Options_CompactSource_NormalTargets" xml:space="preserve">
+    <value>Use normal targets</value>
+  </data>
+  <data name="Options_CompactSource_CustomTargets" xml:space="preserve">
+    <value>Use custom compact targets</value>
+  </data>
+  <data name="Options_CompactManageTargets" xml:space="preserve">
+    <value>Manage Targets...</value>
+  </data>
+  <data name="CompactTargets_Title" xml:space="preserve">
+    <value>Compact Targets</value>
+  </data>
+  <data name="CompactTargets_Header" xml:space="preserve">
+    <value>Custom compact targets</value>
+  </data>
+  <data name="CompactTargets_Placeholder" xml:space="preserve">
+    <value>Enter one host per line (IP, hostname, or domain)</value>
+  </data>
+  <data name="CompactTargets_Tooltip" xml:space="preserve">
+    <value>These targets are used exclusively by Compact mode when "Use custom compact targets" is selected.</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Total packet size:</value>
   </data>

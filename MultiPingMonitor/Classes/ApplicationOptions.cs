@@ -41,6 +41,12 @@ namespace MultiPingMonitor.Classes
             Compact = 1
         }
 
+        public enum CompactSourceMode
+        {
+            NormalTargets = 0,
+            CustomTargets = 1
+        }
+
         // Ping & probe options.
         public static int PingInterval { get; set; } = Constants.DefaultInterval;
         public static int PingTimeout { get; set; } = Constants.DefaultTimeout;
@@ -94,6 +100,8 @@ namespace MultiPingMonitor.Classes
         public static bool IsExitToTrayEnabled { get; set; } = false;
         public static bool StartInTray { get; set; } = false;
         public static DisplayMode CurrentDisplayMode { get; set; } = DisplayMode.Normal;
+        public static CompactSourceMode CompactSource { get; set; } = CompactSourceMode.NormalTargets;
+        public static List<string> CompactCustomTargets { get; set; } = new List<string>();
 
         // Window placement.
         // When true (default), window positions and sizes are persisted across sessions.

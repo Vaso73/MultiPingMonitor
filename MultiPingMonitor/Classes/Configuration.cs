@@ -149,9 +149,11 @@ namespace MultiPingMonitor.Classes
                 root.Descendants("configuration").Remove();
                 root.Descendants("colors").Remove();
                 root.Descendants("windowPlacements").Remove();
+                root.Descendants("compactTargets").Remove();
                 root.Add(GenerateConfigurationNode());
                 root.Add(GenerateColorsNode());
                 root.Add(WindowPlacementService.GeneratePlacementsNode());
+                root.Add(GenerateCompactTargetsNode());
 
                 // Atomic save: write to a temp file first, then replace the real file.
                 // This prevents a truncated/corrupted config if an error occurs mid-write.
@@ -246,8 +248,21 @@ namespace MultiPingMonitor.Classes
                 new XComment(" Language: [System, English, Slovak] "),
                 Node("Language", ApplicationOptions.Language),
                 new XComment(" DisplayMode: [Normal, Compact] "),
-                Node("DisplayMode", ApplicationOptions.CurrentDisplayMode)
+                Node("DisplayMode", ApplicationOptions.CurrentDisplayMode),
+                new XComment(" CompactSourceMode: [NormalTargets, CustomTargets] "),
+                Node("CompactSourceMode", ApplicationOptions.CompactSource)
             );
+        }
+
+        private static XElement GenerateCompactTargetsNode()
+        {
+            var element = new XElement("compactTargets");
+            foreach (var target in ApplicationOptions.CompactCustomTargets)
+            {
+                if (!string.IsNullOrWhiteSpace(target))
+                    element.Add(new XElement("host", target));
+            }
+            return element;
         }
 
         private static XElement GenerateColorsNode()
@@ -323,6 +338,27 @@ namespace MultiPingMonitor.Classes
                 catch
                 {
                     // Ignore placement load errors; windows will use default positions.
+                }
+
+                // Load compact custom targets.
+                try
+                {
+                    var targets = new System.Collections.Generic.List<string>();
+                    var hostNodes = xd.SelectNodes("/vmping/compactTargets/host");
+                    if (hostNodes != null)
+                    {
+                        foreach (XmlNode node in hostNodes)
+                        {
+                            var host = node.InnerText?.Trim();
+                            if (!string.IsNullOrEmpty(host))
+                                targets.Add(host);
+                        }
+                    }
+                    ApplicationOptions.CompactCustomTargets = targets;
+                }
+                catch
+                {
+                    // Ignore compact target load errors; use empty list.
                 }
             }
 
@@ -638,6 +674,11 @@ namespace MultiPingMonitor.Classes
             {
                 if (Enum.TryParse<ApplicationOptions.DisplayMode>(optionValue, out var mode))
                     ApplicationOptions.CurrentDisplayMode = mode;
+            }
+            if (options.TryGetValue("CompactSourceMode", out optionValue))
+            {
+                if (Enum.TryParse<ApplicationOptions.CompactSourceMode>(optionValue, out var csm))
+                    ApplicationOptions.CompactSource = csm;
             }
         }
 
