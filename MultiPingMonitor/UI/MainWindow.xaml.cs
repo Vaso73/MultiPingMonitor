@@ -1257,7 +1257,15 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTraySeparator());
 
-            // Display mode quick toggle.
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null), null, "/Resources/bomb-16.png"));
+            menu.Items.Add(CreateTraySeparator());
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null), "icon.options"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null), "icon.status-history"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
+            menu.Items.Add(CreateTraySeparator());
+
+            // Display mode quick toggle – placed just above Exit for discoverability.
             _trayToggleDisplayMode = CreateTrayMenuItem(
                 ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
                     ? Strings.Tray_SwitchToNormal
@@ -1268,17 +1276,11 @@ namespace MultiPingMonitor.UI
                         ? ApplicationOptions.DisplayMode.Normal
                         : ApplicationOptions.DisplayMode.Compact;
                     SwitchDisplayMode(target);
-                });
+                },
+                "icon.compact-view");
+            _trayToggleDisplayMode.FontWeight = FontWeights.SemiBold;
             menu.Items.Add(_trayToggleDisplayMode);
-            menu.Items.Add(CreateTraySeparator());
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null), null, "/Resources/bomb-16.png"));
-            menu.Items.Add(CreateTraySeparator());
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null), "icon.options"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null), "icon.status-history"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
-            menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
             {
                 _IsShuttingDown = true;

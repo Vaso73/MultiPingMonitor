@@ -391,4 +391,26 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <!-- Icon: compact-view (three stacked horizontal bars representing compact list rows) -->
+    <DrawingImage x:Key="icon.compact-view">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <GeometryDrawing Brush="#424242">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="32,56,448,88" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#424242">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="32,212,448,88" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#424242">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="32,368,448,88" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>
