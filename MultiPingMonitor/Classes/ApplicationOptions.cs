@@ -35,6 +35,12 @@ namespace MultiPingMonitor.Classes
             Slovak
         }
 
+        public enum DisplayMode
+        {
+            Normal = 0,
+            Compact = 1
+        }
+
         // Ping & probe options.
         public static int PingInterval { get; set; } = Constants.DefaultInterval;
         public static int PingTimeout { get; set; } = Constants.DefaultTimeout;
@@ -87,6 +93,7 @@ namespace MultiPingMonitor.Classes
         public static bool IsMinimizeToTrayEnabled { get; set; } = false;
         public static bool IsExitToTrayEnabled { get; set; } = false;
         public static bool StartInTray { get; set; } = false;
+        public static DisplayMode CurrentDisplayMode { get; set; } = DisplayMode.Normal;
 
         // Window placement.
         // When true (default), window positions and sizes are persisted across sessions.

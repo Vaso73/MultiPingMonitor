@@ -425,4 +425,83 @@ namespace MultiPingMonitor.Classes
             return Binding.DoNothing;
         }
     }
+
+    /// <summary>
+    /// Converts LastRoundtripTime (long) to a compact display string for Compact View.
+    /// -1 → "—", 0 → "&lt;1ms", positive → "{value}ms".
+    /// </summary>
+    public class RoundtripTimeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is long rtt)
+            {
+                if (rtt < 0) return "—";
+                if (rtt < 1) return "<1ms";
+                return $"{rtt}ms";
+            }
+            return "—";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
+
+    /// <summary>
+    /// Converts a Probe's Alias and Hostname to a display label for Compact View.
+    /// Returns Alias if non-empty, otherwise Hostname, otherwise "—".
+    /// </summary>
+    public class AliasOrHostnameConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            string alias = values.Length > 0 ? values[0] as string : null;
+            string hostname = values.Length > 1 ? values[1] as string : null;
+            if (!string.IsNullOrWhiteSpace(alias)) return alias;
+            if (!string.IsNullOrWhiteSpace(hostname)) return hostname;
+            return "—";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts ProbeStatus to a compact status indicator character for Compact View.
+    /// </summary>
+    public class ProbeStatusToCompactIndicatorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ProbeStatus status)
+            {
+                switch (status)
+                {
+                    case ProbeStatus.Up:
+                    case ProbeStatus.LatencyNormal:
+                        return "●";
+                    case ProbeStatus.Down:
+                        return "●";
+                    case ProbeStatus.Error:
+                        return "✖";
+                    case ProbeStatus.LatencyHigh:
+                        return "●";
+                    case ProbeStatus.Indeterminate:
+                        return "◐";
+                    default:
+                        return "○";
+                }
+            }
+            return "○";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
 }

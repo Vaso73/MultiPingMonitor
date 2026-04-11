@@ -50,6 +50,7 @@ namespace MultiPingMonitor.Classes
                         {
                             Statistics.Received++;
                             IndeterminateCount = 0;
+                            LastRoundtripTime = reply.RoundtripTime;
 
                             // If this is a new probe, record the initial 'up' state to the status history.
                             if (Status == ProbeStatus.Inactive)

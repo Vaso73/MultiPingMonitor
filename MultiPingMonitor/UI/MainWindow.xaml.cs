@@ -46,6 +46,12 @@ namespace MultiPingMonitor.UI
         // Prevents double-initialization when the window is first shown after a tray-only startup.
         private bool _startupContentInitialized = false;
 
+        // ── Display mode ──────────────────────────────────────────────────────
+        // Saved references to the normal-mode ItemTemplate and ItemsPanel so they
+        // can be restored when switching back from Compact to Normal.
+        private DataTemplate _normalItemTemplate;
+        private ItemsPanelTemplate _normalItemsPanel;
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -111,6 +117,7 @@ namespace MultiPingMonitor.UI
             Configuration.Load();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             RefreshGuiState();
+            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
 
             // Set items source for main GUI ItemsControl.
             ProbeItemsControl.ItemsSource = _ProbeCollection;
@@ -238,6 +245,95 @@ namespace MultiPingMonitor.UI
             ColumnCount.Tag = ColumnCount.Value > _ProbeCollection.Count
                 ? _ProbeCollection.Count
                 : (int)ColumnCount.Value;
+        }
+
+        // ── Display mode ──────────────────────────────────────────────────────
+        // The stored normal-mode WindowChrome settings, used to restore when
+        // switching back from Compact to Normal.
+        private System.Windows.Shell.WindowChrome _normalChrome;
+
+        /// <summary>
+        /// Centralized method that switches between Normal and Compact display modes.
+        /// Called at startup, after config load, on live Options change, and on cancel rollback.
+        /// </summary>
+        internal void ApplyDisplayMode(ApplicationOptions.DisplayMode mode)
+        {
+            bool compact = mode == ApplicationOptions.DisplayMode.Compact;
+
+            // Save the original templates on first call (before any switch).
+            if (_normalItemTemplate == null)
+                _normalItemTemplate = ProbeItemsControl.ItemTemplate;
+            if (_normalItemsPanel == null)
+                _normalItemsPanel = ProbeItemsControl.ItemsPanel;
+
+            // ── Toggle chrome / border for compact mode ──
+            var currentChrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
+            if (compact)
+            {
+                // Save current chrome for later restoration.
+                if (_normalChrome == null && currentChrome != null)
+                {
+                    _normalChrome = new System.Windows.Shell.WindowChrome
+                    {
+                        CaptionHeight = currentChrome.CaptionHeight,
+                        ResizeBorderThickness = currentChrome.ResizeBorderThickness,
+                        GlassFrameThickness = currentChrome.GlassFrameThickness,
+                        CornerRadius = currentChrome.CornerRadius
+                    };
+                }
+                // Apply compact chrome: small caption for CompactTitleBar drag, keep resize border.
+                var compactChrome = new System.Windows.Shell.WindowChrome
+                {
+                    CaptionHeight = 22,
+                    ResizeBorderThickness = currentChrome?.ResizeBorderThickness ?? SystemParameters.WindowResizeBorderThickness,
+                    GlassFrameThickness = new Thickness(0),
+                    CornerRadius = new CornerRadius(0)
+                };
+                System.Windows.Shell.WindowChrome.SetWindowChrome(this, compactChrome);
+            }
+            else if (_normalChrome != null)
+            {
+                // Restore normal chrome.
+                System.Windows.Shell.WindowChrome.SetWindowChrome(this, _normalChrome);
+            }
+
+            // ── Toggle UI element visibility ──
+            TitleBar.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            TitleBarSeparator.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            MainMenu.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            CompactTitleBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
+
+            // ── Switch ItemTemplate and ItemsPanel ──
+            if (compact)
+            {
+                ProbeItemsControl.ItemTemplate = (DataTemplate)FindResource("CompactProbeTemplate");
+                // Use a vertical StackPanel for compact layout.
+                var factory = new System.Windows.FrameworkElementFactory(typeof(StackPanel));
+                factory.SetValue(StackPanel.OrientationProperty, System.Windows.Controls.Orientation.Vertical);
+                ProbeItemsControl.ItemsPanel = new ItemsPanelTemplate(factory);
+
+                // Remove grid margins (no multi-column negative offsets needed).
+                ProbeItemsControl.Margin = new Thickness(0);
+                ProbeItemsControl.BorderThickness = new Thickness(0);
+            }
+            else
+            {
+                // Restore the original Normal-mode templates.
+                ProbeItemsControl.ItemTemplate = _normalItemTemplate;
+                ProbeItemsControl.ItemsPanel = _normalItemsPanel;
+
+                // Restore original margins.
+                ProbeItemsControl.Margin = new Thickness(0, 0, -2, -2);
+                ProbeItemsControl.BorderThickness = new Thickness(0, 1, 0, 0);
+            }
+        }
+
+        private void CompactTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
         }
 
         private void InitializeCommandBindings()
@@ -478,6 +574,7 @@ namespace MultiPingMonitor.UI
             {
                 RefreshGuiState();
                 RefreshProbeColors();
+                ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
             }
         }
 

@@ -23,4 +23,7 @@
     <classes:BooleanToHiddenVisibilityConverter x:Key="BooleanToHiddenVisibilityConverter" />
     <classes:StringToBrushConverter x:Key="StringToBrushConverter" />
     <classes:StringLengthToBoolConverter x:Key="StringLengthToBoolConverter" />
+    <classes:RoundtripTimeToStringConverter x:Key="RoundtripTimeToStringConverter" />
+    <classes:AliasOrHostnameConverter x:Key="AliasOrHostnameConverter" />
+    <classes:ProbeStatusToCompactIndicatorConverter x:Key="ProbeStatusToCompactIndicatorConverter" />
 </ResourceDictionary>
