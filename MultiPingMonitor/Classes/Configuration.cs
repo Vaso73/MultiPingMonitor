@@ -150,10 +150,12 @@ namespace MultiPingMonitor.Classes
                 root.Descendants("colors").Remove();
                 root.Descendants("windowPlacements").Remove();
                 root.Descendants("compactTargets").Remove();
+                root.Descendants("compactSets").Remove();
                 root.Add(GenerateConfigurationNode());
                 root.Add(GenerateColorsNode());
                 root.Add(WindowPlacementService.GeneratePlacementsNode());
                 root.Add(GenerateCompactTargetsNode());
+                root.Add(GenerateCompactSetsNode());
 
                 // Atomic save: write to a temp file first, then replace the real file.
                 // This prevents a truncated/corrupted config if an error occurs mid-write.
@@ -250,18 +252,48 @@ namespace MultiPingMonitor.Classes
                 new XComment(" DisplayMode: [Normal, Compact] "),
                 Node("DisplayMode", ApplicationOptions.CurrentDisplayMode),
                 new XComment(" CompactSourceMode: [NormalTargets, CustomTargets] "),
-                Node("CompactSourceMode", ApplicationOptions.CompactSource)
+                Node("CompactSourceMode", ApplicationOptions.CompactSource),
+                Node("ActiveCompactSetId", ApplicationOptions.ActiveCompactSetId)
             );
         }
 
         private static XElement GenerateCompactTargetsNode()
         {
+            // Legacy node kept for backward compatibility during migration period.
             var element = new XElement("compactTargets");
             foreach (var target in ApplicationOptions.CompactCustomTargets)
             {
                 if (!string.IsNullOrWhiteSpace(target))
                     element.Add(new XElement("host", target));
             }
+            return element;
+        }
+
+        private static XElement GenerateCompactSetsNode()
+        {
+            var element = new XElement("compactSets",
+                new XAttribute("activeSetId", ApplicationOptions.ActiveCompactSetId ?? string.Empty));
+
+            foreach (var set in ApplicationOptions.CompactSets)
+            {
+                var setElement = new XElement("set",
+                    new XAttribute("id", set.Id),
+                    new XAttribute("name", set.Name ?? string.Empty));
+
+                foreach (var entry in set.Entries)
+                {
+                    if (string.IsNullOrWhiteSpace(entry.Target))
+                        continue;
+                    var entryElement = new XElement("entry",
+                        new XAttribute("target", entry.Target));
+                    if (!string.IsNullOrWhiteSpace(entry.Alias))
+                        entryElement.SetAttributeValue("alias", entry.Alias);
+                    setElement.Add(entryElement);
+                }
+
+                element.Add(setElement);
+            }
+
             return element;
         }
 
@@ -340,7 +372,7 @@ namespace MultiPingMonitor.Classes
                     // Ignore placement load errors; windows will use default positions.
                 }
 
-                // Load compact custom targets.
+                // Load compact custom targets (legacy).
                 try
                 {
                     var targets = new System.Collections.Generic.List<string>();
@@ -360,6 +392,13 @@ namespace MultiPingMonitor.Classes
                 {
                     // Ignore compact target load errors; use empty list.
                 }
+
+                // Load compact sets.
+                LoadCompactSets(xd);
+
+                // Migration: if old compact custom targets exist and no compact sets exist yet,
+                // create a default compact set from the old entries.
+                MigrateCompactTargetsToSets();
             }
 
             catch (Exception ex)
@@ -389,6 +428,75 @@ namespace MultiPingMonitor.Classes
                     Util.ShowError($"{Strings.Error_LoadConfig} {ex.Message}");
                 }
             }
+        }
+
+        /// <summary>
+        /// Loads compact sets from the XML configuration.
+        /// </summary>
+        private static void LoadCompactSets(XmlDocument xd)
+        {
+            try
+            {
+                var sets = new List<CompactTargetSet>();
+                var setsNode = xd.SelectSingleNode("/vmping/compactSets");
+                if (setsNode != null)
+                {
+                    ApplicationOptions.ActiveCompactSetId = setsNode.Attributes?["activeSetId"]?.Value ?? string.Empty;
+
+                    foreach (XmlNode setNode in setsNode.SelectNodes("set"))
+                    {
+                        var id = setNode.Attributes?["id"]?.Value;
+                        var name = setNode.Attributes?["name"]?.Value ?? string.Empty;
+                        if (string.IsNullOrEmpty(id))
+                            continue;
+
+                        var set = new CompactTargetSet(name) { Id = id };
+
+                        foreach (XmlNode entryNode in setNode.SelectNodes("entry"))
+                        {
+                            var target = entryNode.Attributes?["target"]?.Value?.Trim();
+                            if (string.IsNullOrEmpty(target))
+                                continue;
+                            var alias = entryNode.Attributes?["alias"]?.Value ?? string.Empty;
+                            set.Entries.Add(new CompactTargetEntry(target, alias));
+                        }
+
+                        sets.Add(set);
+                    }
+                }
+                ApplicationOptions.CompactSets = sets;
+            }
+            catch
+            {
+                // Ignore compact set load errors; use empty list.
+            }
+        }
+
+        /// <summary>
+        /// Migration: if old compact custom targets exist and no compact sets exist yet,
+        /// create one default compact set from the old entries and set it as active.
+        /// Safe and idempotent – only runs when CompactSets is empty and CompactCustomTargets is not.
+        /// </summary>
+        private static void MigrateCompactTargetsToSets()
+        {
+            if (ApplicationOptions.CompactSets.Count > 0)
+                return;
+            if (ApplicationOptions.CompactCustomTargets.Count == 0)
+                return;
+
+            var entries = new List<CompactTargetEntry>();
+            foreach (var target in ApplicationOptions.CompactCustomTargets)
+            {
+                if (!string.IsNullOrWhiteSpace(target))
+                    entries.Add(new CompactTargetEntry(target.Trim()));
+            }
+
+            if (entries.Count == 0)
+                return;
+
+            var defaultSet = new CompactTargetSet("Default", entries);
+            ApplicationOptions.CompactSets.Add(defaultSet);
+            ApplicationOptions.ActiveCompactSetId = defaultSet.Id;
         }
 
         private static void LoadColors(XmlNodeList nodes)
@@ -679,6 +787,10 @@ namespace MultiPingMonitor.Classes
             {
                 if (Enum.TryParse<ApplicationOptions.CompactSourceMode>(optionValue, out var csm))
                     ApplicationOptions.CompactSource = csm;
+            }
+            if (options.TryGetValue("ActiveCompactSetId", out optionValue))
+            {
+                ApplicationOptions.ActiveCompactSetId = optionValue ?? string.Empty;
             }
         }
 
