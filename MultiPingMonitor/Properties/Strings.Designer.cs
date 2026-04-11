@@ -1284,6 +1284,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert %APPDATA%\.
+        /// </summary>
+        public static string Options_InsertAppData {
+            get {
+                return ResourceManager.GetString("Options_InsertAppData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to bytes.
         /// </summary>
         public static string Options_Bytes {
@@ -1707,11 +1716,29 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log path.
+        ///   Looks up a localized string similar to Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs.
+        /// </summary>
+        public static string Options_LogPathHint {
+            get {
+                return ResourceManager.GetString("Options_LogPathHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log file path.
         /// </summary>
         public static string Options_LogPathSimple {
             get {
                 return ResourceManager.GetString("Options_LogPathSimple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs\status.txt  If only a directory is entered, the default filename is appended automatically..
+        /// </summary>
+        public static string Options_LogStatusChangesPathHint {
+            get {
+                return ResourceManager.GetString("Options_LogStatusChangesPathHint", resourceCulture);
             }
         }
         

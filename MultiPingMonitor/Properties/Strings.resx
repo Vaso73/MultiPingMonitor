@@ -527,6 +527,9 @@
   <data name="Options_Browse" xml:space="preserve">
     <value>Browse...</value>
   </data>
+  <data name="Options_InsertAppData" xml:space="preserve">
+    <value>Insert %APPDATA%\</value>
+  </data>
   <data name="Options_Bytes" xml:space="preserve">
     <value>bytes</value>
   </data>
@@ -668,8 +671,14 @@
   <data name="Options_LogPath" xml:space="preserve">
     <value>Log path (base directory)</value>
   </data>
+  <data name="Options_LogPathHint" xml:space="preserve">
+    <value>Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs</value>
+  </data>
   <data name="Options_LogPathSimple" xml:space="preserve">
-    <value>Log path</value>
+    <value>Log file path</value>
+  </data>
+  <data name="Options_LogStatusChangesPathHint" xml:space="preserve">
+    <value>Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs\status.txt  If only a directory is entered, the default filename is appended automatically.</value>
   </data>
   <data name="Options_LogStatusChanges" xml:space="preserve">
     <value>Log status changes to text file</value>

@@ -420,6 +420,9 @@
   <data name="Options_Browse" xml:space="preserve">
     <value>Prehľadávať...</value>
   </data>
+  <data name="Options_InsertAppData" xml:space="preserve">
+    <value>Vložiť %APPDATA%\</value>
+  </data>
   <data name="Options_Bytes" xml:space="preserve">
     <value>bajtov</value>
   </data>
@@ -561,8 +564,14 @@
   <data name="Options_LogPath" xml:space="preserve">
     <value>Cesta k záznamu (základný adresár)</value>
   </data>
+  <data name="Options_LogPathHint" xml:space="preserve">
+    <value>Tip: Použite %APPDATA% na odkaz na adresár aplikácie.  Príklad: %APPDATA%\logs</value>
+  </data>
   <data name="Options_LogPathSimple" xml:space="preserve">
-    <value>Cesta k záznamu</value>
+    <value>Cesta k súboru záznamu</value>
+  </data>
+  <data name="Options_LogStatusChangesPathHint" xml:space="preserve">
+    <value>Tip: Použite %APPDATA% na odkaz na adresár aplikácie.  Príklad: %APPDATA%\logs\status.txt  Ak zadáte len adresár, predvolený názov súboru sa doplní automaticky.</value>
   </data>
   <data name="Options_LogStatusChanges" xml:space="preserve">
     <value>Zaznamenávať zmeny stavu do textového súboru</value>

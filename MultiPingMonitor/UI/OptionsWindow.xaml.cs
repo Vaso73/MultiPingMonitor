@@ -616,7 +616,8 @@ namespace MultiPingMonitor.UI
         {
             if (IsLogOutputEnabled.IsChecked == true)
             {
-                if (!Directory.Exists(LogPath.Text))
+                string expandedLogPath = Classes.PortablePath.ExpandTokens(LogPath.Text);
+                if (!Classes.PortablePath.EnsureDirectoryExists(expandedLogPath))
                 {
                     ShowError(Properties.Strings.Options_Validation_LogPath, LogOutputTab, LogPath);
                     return false;
@@ -634,9 +635,24 @@ namespace MultiPingMonitor.UI
             {
                 try
                 {
-                    if (Path.GetFileName(LogStatusChangesPath.Text).IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
-                        !Directory.Exists(Path.GetDirectoryName(LogStatusChangesPath.Text)) ||
-                        Path.GetFileName(LogStatusChangesPath.Text).Length < 1)
+                    // Auto-append default filename when user entered a directory-only path.
+                    string rawStatusPath = LogStatusChangesPath.Text;
+                    string expandedStatusPath = Classes.PortablePath.ExpandTokens(rawStatusPath);
+                    if (string.IsNullOrEmpty(Path.GetFileName(expandedStatusPath)))
+                    {
+                        rawStatusPath = Path.Combine(rawStatusPath, "multipingmonitor-status.txt");
+                        expandedStatusPath = Classes.PortablePath.ExpandTokens(rawStatusPath);
+                        LogStatusChangesPath.Text = rawStatusPath;
+                    }
+
+                    string fileName = Path.GetFileName(expandedStatusPath);
+                    if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
+                        fileName.Length < 1)
+                    {
+                        throw new Exception();
+                    }
+
+                    if (!Classes.PortablePath.EnsureParentDirectoryExists(expandedStatusPath))
                     {
                         throw new Exception();
                     }
@@ -868,6 +884,33 @@ namespace MultiPingMonitor.UI
                     LogStatusChangesPath.Text = dialog.SelectedPath + "\\multipingmonitor-status.txt";
                 }
             }
+        }
+
+        private void InsertAppDataLogPath_Click(object sender, RoutedEventArgs e)
+        {
+            InsertAppDataToken(LogPath, @"%APPDATA%\");
+        }
+
+        private void InsertAppDataLogStatusChangesPath_Click(object sender, RoutedEventArgs e)
+        {
+            InsertAppDataToken(LogStatusChangesPath, @"%APPDATA%\");
+        }
+
+        private static void InsertAppDataToken(System.Windows.Controls.TextBox textBox, string defaultValue)
+        {
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                textBox.Text = defaultValue;
+            }
+            else
+            {
+                // Insert the token at the current caret position.
+                int caret = textBox.CaretIndex;
+                string token = Classes.PortablePath.AppDataToken;
+                textBox.Text = textBox.Text.Insert(caret, token);
+                textBox.CaretIndex = caret + token.Length;
+            }
+            textBox.Focus();
         }
 
         private void AudioDownBrowse_Click(object sender, RoutedEventArgs e)
