@@ -1050,7 +1050,7 @@ namespace MultiPingMonitor.UI
             if (menuItemStyle != null)
                 menu.Resources[typeof(MenuItem)] = menuItemStyle;
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => RestoreFromTray(), "icon.vmping-logo-simple"));
+            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => ShowMainWindowFromTray(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance(), "icon.vmping-logo-simple"));
             menu.Items.Add(CreateTraySeparator());
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
@@ -1156,30 +1156,59 @@ namespace MultiPingMonitor.UI
             _trayMenuHost?.Hide();
         }
 
-        private void HideToTray()
+        // ── P/Invoke for reliable bring-to-front ────────────────────────────
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        /// <summary>
+        /// Hides the main window to the system tray without shutting down.
+        /// </summary>
+        private void HideMainWindowToTray()
         {
             if (_IsHiddenToTray)
                 return;
             _IsHiddenToTray = true;
+            ShowInTaskbar = false;
             Visibility = Visibility.Hidden;
             WindowState = WindowState.Minimized;
         }
 
-        private void RestoreFromTray()
+        /// <summary>
+        /// Restores the main window from the system tray, ensuring it is visible,
+        /// in Normal state, activated, and brought to the foreground.
+        /// </summary>
+        private void ShowMainWindowFromTray()
         {
             _IsHiddenToTray = false;
-            WindowState = WindowState.Minimized;
-            Visibility = Visibility.Visible;
             Show();
+            Visibility = Visibility.Visible;
             WindowState = WindowState.Normal;
+            ShowInTaskbar = true;
             Activate();
+
+            // Reliable bring-to-front on Windows.
+            var hwnd = new WindowInteropHelper(this).Handle;
+            if (hwnd != IntPtr.Zero)
+                SetForegroundWindow(hwnd);
+        }
+
+        /// <summary>
+        /// Toggles the main window between visible and hidden-to-tray.
+        /// Called on left single click of the tray icon.
+        /// </summary>
+        private void ToggleMainWindowFromTray()
+        {
+            if (_IsHiddenToTray || !IsVisible || WindowState == WindowState.Minimized)
+                ShowMainWindowFromTray();
+            else
+                HideMainWindowToTray();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized && ApplicationOptions.IsMinimizeToTrayEnabled)
             {
-                HideToTray();
+                HideMainWindowToTray();
             }
 
             // Toggle maximize / restore title bar buttons.
@@ -1204,7 +1233,7 @@ namespace MultiPingMonitor.UI
             // and the window is made visible again (e.g. via a popup alert click).
             if (IsVisible && _IsHiddenToTray)
             {
-                RestoreFromTray();
+                ShowMainWindowFromTray();
             }
         }
 
@@ -1212,8 +1241,8 @@ namespace MultiPingMonitor.UI
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                // Left click. Restore application window.
-                RestoreFromTray();
+                // Left single click. Toggle window visibility.
+                ToggleMainWindowFromTray();
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
@@ -1232,7 +1261,7 @@ namespace MultiPingMonitor.UI
             if (ApplicationOptions.IsExitToTrayEnabled && !_IsShuttingDown)
             {
                 System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: hiding to tray (cancel close).");
-                HideToTray();
+                HideMainWindowToTray();
                 e.Cancel = true;
             }
             else
