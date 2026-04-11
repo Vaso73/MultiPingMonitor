@@ -1,4 +1,3 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,11 +8,8 @@ namespace MultiPingMonitor.UI
 {
     public partial class ManageCompactSetsWindow : Window
     {
-        private readonly Action _onActiveSetChanged;
-
-        public ManageCompactSetsWindow(Action onActiveSetChanged = null)
+        public ManageCompactSetsWindow()
         {
-            _onActiveSetChanged = onActiveSetChanged;
             InitializeComponent();
             WindowPlacementService.Attach(this, "ManageCompactSetsWindow");
             RefreshSetsList();
@@ -142,7 +138,7 @@ namespace MultiPingMonitor.UI
             RefreshSetsList();
 
             if (wasActive)
-                _onActiveSetChanged?.Invoke();
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
         }
 
         private void SetActive_Click(object sender, RoutedEventArgs e)
@@ -150,10 +146,10 @@ namespace MultiPingMonitor.UI
             var set = GetSelectedSet();
             if (set == null) return;
 
-            ApplicationOptions.ActiveCompactSetId = set.Id;
-            Configuration.Save();
+            // Delegate to MainWindow.SetActiveCompactSet – the exact same code path
+            // used by the main menu and compact title bar menu active-set switching.
+            (Owner as MainWindow)?.SetActiveCompactSet(set.Id);
             RefreshSetsList();
-            _onActiveSetChanged?.Invoke();
         }
 
         // ── Target list ───────────────────────────────────────────────────────
@@ -201,7 +197,7 @@ namespace MultiPingMonitor.UI
             RefreshTargetsList();
 
             if (IsActiveSet(set))
-                _onActiveSetChanged?.Invoke();
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
         }
 
         private void EditTarget_Click(object sender, RoutedEventArgs e)
@@ -222,7 +218,7 @@ namespace MultiPingMonitor.UI
             TargetsListBox.SelectedIndex = idx;
 
             if (IsActiveSet(set))
-                _onActiveSetChanged?.Invoke();
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
         }
 
         private void RemoveTarget_Click(object sender, RoutedEventArgs e)
@@ -238,7 +234,7 @@ namespace MultiPingMonitor.UI
             RefreshTargetsList();
 
             if (IsActiveSet(set))
-                _onActiveSetChanged?.Invoke();
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────

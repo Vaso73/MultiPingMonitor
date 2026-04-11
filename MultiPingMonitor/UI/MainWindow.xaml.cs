@@ -617,31 +617,34 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Opens the Manage Compact Sets window.
-        /// After the user closes it, refreshes menus and compact view if needed.
+        /// Refreshes the compact view data source and tray state.
+        /// Called when the active compact set's content changes (targets added/removed/edited)
+        /// or when the active set is deleted and a new one is selected.
         /// </summary>
-        internal void OpenManageCompactSets()
+        internal void RefreshActiveCompactSetData()
         {
-            var window = new ManageCompactSetsWindow(onActiveSetChanged: () =>
-            {
-                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
-                {
-                    ApplyCompactDataSource();
-                }
-                _trayState = TrayAggregateState.Neutral;
-                UpdateTrayIcon();
-            });
-            window.Owner = this;
-            window.ShowDialog();
-
-            // After management, always refresh: sets may have been added/removed/renamed,
-            // active set may have changed, entries may have been edited.
             if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
             {
                 ApplyCompactDataSource();
             }
             _trayState = TrayAggregateState.Neutral;
             UpdateTrayIcon();
+        }
+
+        /// <summary>
+        /// Opens the Manage Compact Sets window.
+        /// Live changes are applied immediately via Owner-cast calls back into MainWindow.
+        /// After the user closes it, does a final safety refresh.
+        /// </summary>
+        internal void OpenManageCompactSets()
+        {
+            var window = new ManageCompactSetsWindow();
+            window.Owner = this;
+            window.ShowDialog();
+
+            // Final safety refresh after dialog closes: catches any edge cases
+            // where sets were added/removed/renamed or entries edited.
+            RefreshActiveCompactSetData();
             Configuration.Save();
         }
 
