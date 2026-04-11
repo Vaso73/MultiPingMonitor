@@ -1725,11 +1725,20 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log path.
+        ///   Looks up a localized string similar to Log file path.
         /// </summary>
         public static string Options_LogPathSimple {
             get {
                 return ResourceManager.GetString("Options_LogPathSimple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tip: Use %APPDATA% to refer to the application folder.  Example: %APPDATA%\logs\status.txt  If only a directory is entered, the default filename is appended automatically..
+        /// </summary>
+        public static string Options_LogStatusChangesPathHint {
+            get {
+                return ResourceManager.GetString("Options_LogStatusChangesPathHint", resourceCulture);
             }
         }
         

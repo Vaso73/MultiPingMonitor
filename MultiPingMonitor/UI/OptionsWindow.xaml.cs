@@ -635,7 +635,16 @@ namespace MultiPingMonitor.UI
             {
                 try
                 {
-                    string expandedStatusPath = Classes.PortablePath.ExpandTokens(LogStatusChangesPath.Text);
+                    // Auto-append default filename when user entered a directory-only path.
+                    string rawStatusPath = LogStatusChangesPath.Text;
+                    string expandedStatusPath = Classes.PortablePath.ExpandTokens(rawStatusPath);
+                    if (string.IsNullOrEmpty(Path.GetFileName(expandedStatusPath)))
+                    {
+                        rawStatusPath = Path.Combine(rawStatusPath, "multipingmonitor-status.txt");
+                        expandedStatusPath = Classes.PortablePath.ExpandTokens(rawStatusPath);
+                        LogStatusChangesPath.Text = rawStatusPath;
+                    }
+
                     string fileName = Path.GetFileName(expandedStatusPath);
                     if (fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
                         fileName.Length < 1)
