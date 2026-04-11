@@ -789,6 +789,29 @@
                         <TextBlock Text="{x:Static resource:Strings.Options_DisplayMode}" Width="120"/>
                         <ComboBox x:Name="DisplayModeComboBox" Width="160" SelectionChanged="DisplayModeComboBox_SelectionChanged"/>
                     </StackPanel>
+                    <!-- Compact data source -->
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,10,0,0">
+                        <TextBlock DockPanel.Dock="Left"
+                                   Text="{x:Static resource:Strings.Options_CompactDataSource}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   MinWidth="120" MaxWidth="200"
+                                   Margin="0,0,8,0"/>
+                        <ComboBox DockPanel.Dock="Left"
+                                  x:Name="CompactSourceComboBox"
+                                  Width="250"
+                                  VerticalAlignment="Center"
+                                  SelectionChanged="CompactSourceComboBox_SelectionChanged"/>
+                    </DockPanel>
+                    <!-- Manage compact targets button -->
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,6,0,0">
+                        <Button x:Name="ManageCompactTargetsButton"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource ButtonStandardStyle}"
+                                Content="{x:Static resource:Strings.Options_CompactManageTargets}"
+                                MinWidth="140"
+                                Click="ManageCompactTargets_Click"/>
+                    </DockPanel>
                     <!-- Language selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_Language}" Width="120"/>

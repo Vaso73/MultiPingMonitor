@@ -52,6 +52,11 @@ namespace MultiPingMonitor.UI
         private DataTemplate _normalItemTemplate;
         private ItemsPanelTemplate _normalItemsPanel;
 
+        // ── Compact custom targets ────────────────────────────────────────────
+        // Separate probe collection used when Compact mode is configured to use
+        // custom targets instead of the normal dataset.
+        private readonly ObservableCollection<Probe> _CompactProbeCollection = new ObservableCollection<Probe>();
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -120,10 +125,13 @@ namespace MultiPingMonitor.UI
             Configuration.Load();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             RefreshGuiState();
-            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
 
-            // Set items source for main GUI ItemsControl.
+            // Set items source for main GUI ItemsControl (default to normal collection).
             ProbeItemsControl.ItemsSource = _ProbeCollection;
+
+            // Apply display mode after setting default ItemsSource.
+            // ApplyDisplayMode will override ItemsSource if compact + custom targets.
+            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -222,6 +230,9 @@ namespace MultiPingMonitor.UI
                     break;
             }
 
+            // Set compact source menu checks.
+            UpdateCompactSourceMenuChecks();
+
             // Set always on top state.
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             if (Probe.StatusHistoryWindow != null && Probe.StatusHistoryWindow.IsLoaded)
@@ -311,6 +322,10 @@ namespace MultiPingMonitor.UI
 
             // Update tray toggle text.
             UpdateTrayToggleText();
+
+            // Force tray aggregate state to re-evaluate from the new active collection.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
 
             // Persist immediately.
             Configuration.Save();
@@ -425,6 +440,9 @@ namespace MultiPingMonitor.UI
                 // Remove grid margins (no multi-column negative offsets needed).
                 ProbeItemsControl.Margin = new Thickness(0);
                 ProbeItemsControl.BorderThickness = new Thickness(0);
+
+                // Switch ItemsSource based on compact data source mode.
+                ApplyCompactDataSource();
             }
             else
             {
@@ -435,10 +453,68 @@ namespace MultiPingMonitor.UI
                 // Restore original margins.
                 ProbeItemsControl.Margin = new Thickness(0, 0, -2, -2);
                 ProbeItemsControl.BorderThickness = new Thickness(0, 1, 0, 0);
+
+                // Normal mode always uses the main probe collection.
+                ProbeItemsControl.ItemsSource = _ProbeCollection;
             }
 
             // Update tray toggle text whenever display mode is applied.
             UpdateTrayToggleText();
+        }
+
+        /// <summary>
+        /// Applies the correct ItemsSource for compact mode based on CompactSource setting.
+        /// When set to NormalTargets, compact reuses the main _ProbeCollection.
+        /// When set to CustomTargets, compact uses its own _CompactProbeCollection
+        /// populated from ApplicationOptions.CompactCustomTargets.
+        /// Called from ApplyDisplayMode, OptionsWindow live preview, and OptionsWindow save.
+        /// </summary>
+        internal void ApplyCompactDataSource()
+        {
+            if (ApplicationOptions.CurrentDisplayMode != ApplicationOptions.DisplayMode.Compact)
+                return;
+
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets)
+            {
+                // Use the same collection as Normal mode.
+                ProbeItemsControl.ItemsSource = _ProbeCollection;
+            }
+            else
+            {
+                // Rebuild the compact probe collection from custom targets.
+                RebuildCompactProbes();
+                ProbeItemsControl.ItemsSource = _CompactProbeCollection;
+            }
+        }
+
+        /// <summary>
+        /// Stops existing compact probes and rebuilds the collection from
+        /// ApplicationOptions.CompactCustomTargets, auto-starting each probe.
+        /// </summary>
+        private void RebuildCompactProbes()
+        {
+            // Stop and clear existing compact probes.
+            foreach (var probe in _CompactProbeCollection)
+            {
+                if (probe.IsActive)
+                    probe.StartStop();
+            }
+            _CompactProbeCollection.Clear();
+
+            // Create new probes for each custom target.
+            foreach (var target in ApplicationOptions.CompactCustomTargets)
+            {
+                if (string.IsNullOrWhiteSpace(target))
+                    continue;
+
+                var probe = new Probe();
+                probe.Hostname = target.Trim();
+                probe.Alias = _Aliases.ContainsKey(probe.Hostname.ToLower())
+                    ? _Aliases[probe.Hostname.ToLower()]
+                    : null;
+                _CompactProbeCollection.Add(probe);
+                probe.StartStop();
+            }
         }
 
         private void CompactTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -447,6 +523,147 @@ namespace MultiPingMonitor.UI
             {
                 DragMove();
             }
+        }
+
+        // ── Compact data source – centralized switching ───────────────────────
+
+        /// <summary>
+        /// Centralized method to switch compact data source mode.
+        /// Called from main menu, compact title bar menu, and Options.
+        /// Immediately applies the change, updates UI indicators, and persists config.
+        /// </summary>
+        internal void SetCompactSource(ApplicationOptions.CompactSourceMode mode)
+        {
+            if (ApplicationOptions.CompactSource == mode)
+                return;
+
+            ApplicationOptions.CompactSource = mode;
+            ApplyCompactDataSource();
+            UpdateCompactSourceMenuChecks();
+            // Force tray to re-evaluate from the (possibly new) active collection.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+            Configuration.Save();
+        }
+
+        /// <summary>
+        /// Opens the Manage Compact Targets window.
+        /// If the user edits and confirms, updates the custom targets and live-applies if active.
+        /// Called from main menu, compact title bar menu, and Options.
+        /// </summary>
+        internal void OpenManageCompactTargets()
+        {
+            var window = new ManageCompactTargetsWindow(
+                new System.Collections.Generic.List<string>(ApplicationOptions.CompactCustomTargets));
+            window.Owner = this;
+            if (window.ShowDialog() == true)
+            {
+                ApplicationOptions.CompactCustomTargets = window.Targets;
+                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+                {
+                    ApplyCompactDataSource();
+                }
+                // Force tray to re-evaluate after target changes.
+                _trayState = TrayAggregateState.Neutral;
+                UpdateTrayIcon();
+                Configuration.Save();
+            }
+        }
+
+        /// <summary>
+        /// Updates IsChecked state on all compact source menu items
+        /// (main menu + compact title bar context menu).
+        /// </summary>
+        internal void UpdateCompactSourceMenuChecks()
+        {
+            bool isNormal = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets;
+
+            // Main menu items.
+            if (MenuCompactSourceNormal != null)
+                MenuCompactSourceNormal.IsChecked = isNormal;
+            if (MenuCompactSourceCustom != null)
+                MenuCompactSourceCustom.IsChecked = !isNormal;
+
+            // Compact title bar context menu items (created dynamically, check if assigned).
+            if (_compactMenuSourceNormal != null)
+                _compactMenuSourceNormal.IsChecked = isNormal;
+            if (_compactMenuSourceCustom != null)
+                _compactMenuSourceCustom.IsChecked = !isNormal;
+        }
+
+        // References to dynamically created compact title bar context menu items.
+        private MenuItem _compactMenuSourceNormal;
+        private MenuItem _compactMenuSourceCustom;
+
+        // ── Main menu compact source handlers ─────────────────────────────────
+
+        private void MenuCompactSourceNormal_Click(object sender, RoutedEventArgs e)
+        {
+            SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+        }
+
+        private void MenuCompactSourceCustom_Click(object sender, RoutedEventArgs e)
+        {
+            SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
+        }
+
+        private void MenuManageCompactTargets_Click(object sender, RoutedEventArgs e)
+        {
+            OpenManageCompactTargets();
+        }
+
+        // ── Compact title bar menu button handler ─────────────────────────────
+
+        private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu();
+
+            // Apply theme-aware brushes (same pattern as tray context menu).
+            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            if (menuItemStyle != null)
+                menu.Resources[typeof(MenuItem)] = menuItemStyle;
+
+            _compactMenuSourceNormal = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_NormalTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets
+            };
+            _compactMenuSourceNormal.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+
+            _compactMenuSourceCustom = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_CustomTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+            };
+            _compactMenuSourceCustom.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
+
+            var manageItem = new MenuItem
+            {
+                Header = Strings.Menu_CompactManageTargets
+            };
+            // Add icon consistent with the main menu "Manage compact targets..." item.
+            var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
+            if (editIconSource != null)
+                manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
+            manageItem.Click += (s, args) => OpenManageCompactTargets();
+
+            menu.Items.Add(_compactMenuSourceNormal);
+            menu.Items.Add(_compactMenuSourceCustom);
+            menu.Items.Add(new Separator());
+            menu.Items.Add(manageItem);
+
+            menu.PlacementTarget = sender as Button;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
         }
 
         private void InitializeCommandBindings()
@@ -1105,6 +1322,7 @@ namespace MultiPingMonitor.UI
 
                 // Subscribe to probe collection changes so we can track each probe's status.
                 _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
+                _CompactProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
             }
             catch (Exception ex)
             {
@@ -1179,6 +1397,22 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Returns the probe collection that should be used for tray aggregate state.
+        /// – Normal mode: always _ProbeCollection
+        /// – Compact + NormalTargets: _ProbeCollection (shares the same dataset)
+        /// – Compact + CustomTargets: _CompactProbeCollection
+        /// </summary>
+        private ObservableCollection<Probe> GetActiveTrayProbeCollection()
+        {
+            if (ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+            {
+                return _CompactProbeCollection;
+            }
+            return _ProbeCollection;
+        }
+
+        /// <summary>
         /// Evaluates the aggregate status of all probes and updates the tray icon and tooltip text.
         /// Rules:
         ///   – Red   : at least one active probe is Down or Error
@@ -1200,7 +1434,7 @@ namespace MultiPingMonitor.UI
                 bool anyOffline = false;
                 bool anyOnline  = false;
 
-                foreach (var probe in _ProbeCollection)
+                foreach (var probe in GetActiveTrayProbeCollection())
                 {
                     if (!probe.IsActive || string.IsNullOrWhiteSpace(probe.Hostname))
                         continue;
@@ -1520,6 +1754,14 @@ namespace MultiPingMonitor.UI
                 // Save under the current display mode's key so each mode keeps its own bounds.
                 System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: saving placement and config.");
                 WindowPlacementService.SaveWindow(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));
+
+                // Stop any active compact probes before shutdown.
+                foreach (var probe in _CompactProbeCollection)
+                {
+                    if (probe.IsActive)
+                        probe.StartStop();
+                }
+
                 Configuration.Save();
                 NotifyIcon?.Dispose();
                 _trayMenuHost?.Close();

@@ -511,6 +511,24 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compact.
+        /// </summary>
+        public static string Menu_CompactTargets {
+            get {
+                return ResourceManager.GetString("Menu_CompactTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Compact Targets....
+        /// </summary>
+        public static string Menu_CompactManageTargets {
+            get {
+                return ResourceManager.GetString("Menu_CompactManageTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ms.
         /// </summary>
         public static string Milliseconds_Symbol {
@@ -2099,6 +2117,78 @@ namespace MultiPingMonitor.Properties {
         public static string Options_DisplayMode_Compact {
             get {
                 return ResourceManager.GetString("Options_DisplayMode_Compact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compact data source:.
+        /// </summary>
+        public static string Options_CompactDataSource {
+            get {
+                return ResourceManager.GetString("Options_CompactDataSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use normal targets.
+        /// </summary>
+        public static string Options_CompactSource_NormalTargets {
+            get {
+                return ResourceManager.GetString("Options_CompactSource_NormalTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use custom compact targets.
+        /// </summary>
+        public static string Options_CompactSource_CustomTargets {
+            get {
+                return ResourceManager.GetString("Options_CompactSource_CustomTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Targets....
+        /// </summary>
+        public static string Options_CompactManageTargets {
+            get {
+                return ResourceManager.GetString("Options_CompactManageTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compact Targets.
+        /// </summary>
+        public static string CompactTargets_Title {
+            get {
+                return ResourceManager.GetString("CompactTargets_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom compact targets.
+        /// </summary>
+        public static string CompactTargets_Header {
+            get {
+                return ResourceManager.GetString("CompactTargets_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter one host per line (IP, hostname, or domain).
+        /// </summary>
+        public static string CompactTargets_Placeholder {
+            get {
+                return ResourceManager.GetString("CompactTargets_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These targets are used exclusively by Compact mode....
+        /// </summary>
+        public static string CompactTargets_Tooltip {
+            get {
+                return ResourceManager.GetString("CompactTargets_Tooltip", resourceCulture);
             }
         }
         

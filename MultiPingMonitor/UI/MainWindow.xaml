@@ -290,6 +290,27 @@
                         <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <!-- Menu: Compact targets submenu -->
+                <MenuItem Header="{x:Static resource:Strings.Menu_CompactTargets}" x:Name="CompactTargetsMenu">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
+                    </MenuItem.Icon>
+                    <MenuItem x:Name="MenuCompactSourceNormal"
+                              Header="{x:Static resource:Strings.Options_CompactSource_NormalTargets}"
+                              IsCheckable="True"
+                              Click="MenuCompactSourceNormal_Click"/>
+                    <MenuItem x:Name="MenuCompactSourceCustom"
+                              Header="{x:Static resource:Strings.Options_CompactSource_CustomTargets}"
+                              IsCheckable="True"
+                              Click="MenuCompactSourceCustom_Click"/>
+                    <Separator />
+                    <MenuItem Header="{x:Static resource:Strings.Menu_CompactManageTargets}"
+                              Click="MenuManageCompactTargets_Click">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource icon.edit}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
                 <Separator />
                 <!-- Menu: Status history -->
                 <MenuItem Name="StatusHistoryMenu" Header="{x:Static resource:Strings.Menu_StatusHistory}" InputGestureText="F12">
@@ -378,6 +399,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="MultiPingMonitor"
@@ -387,7 +409,42 @@
                        Margin="4,0,0,0"
                        TextTrimming="CharacterEllipsis"
                        Opacity="0.7"/>
+            <!-- Compact title bar: menu button for quick access to compact data source -->
             <Button Grid.Column="1"
+                    x:Name="CompactMenuButton"
+                    Click="CompactMenuButton_Click"
+                    WindowChrome.IsHitTestVisibleInChrome="True"
+                    ToolTip="{x:Static resource:Strings.Menu_CompactTargets}"
+                    ToolTipService.InitialShowDelay="1000"
+                    Width="22" Height="22"
+                    Background="Transparent" BorderThickness="0" Padding="0"
+                    Cursor="Hand">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+                <Path Data="M 4,6 L 11,6 M 4,10 L 11,10 M 4,14 L 11,14"
+                      Stroke="{DynamicResource Theme.Text.Secondary}"
+                      StrokeThickness="1.2"
+                      Width="15" Height="18"
+                      Stretch="None"
+                      Opacity="0.7"/>
+            </Button>
+            <Button Grid.Column="2"
                     Click="OnCloseButtonClick"
                     Style="{StaticResource TitleBarCloseButtonStyle}"
                     AutomationProperties.Name="Close"
