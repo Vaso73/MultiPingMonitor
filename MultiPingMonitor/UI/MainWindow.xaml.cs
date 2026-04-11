@@ -1180,8 +1180,8 @@ namespace MultiPingMonitor.UI
         private void ShowMainWindowFromTray()
         {
             _IsHiddenToTray = false;
-            Show();
             Visibility = Visibility.Visible;
+            Show();
             WindowState = WindowState.Normal;
             ShowInTaskbar = true;
             Activate();
