@@ -797,6 +797,12 @@
   <data name="Options_DisplayMode" xml:space="preserve">
     <value>Display mode:</value>
   </data>
+  <data name="Options_DisplayMode_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Options_DisplayMode_Compact" xml:space="preserve">
+    <value>Compact</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Total packet size:</value>
   </data>

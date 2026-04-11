@@ -199,6 +199,8 @@ namespace MultiPingMonitor.UI
                 ThemeComboBox.SelectedIndex = 0;
 
             // Display mode.
+            DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Normal);
+            DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
             DisplayModeComboBox.SelectedIndex = (int)ApplicationOptions.CurrentDisplayMode;
 
             // Populate language ComboBox.

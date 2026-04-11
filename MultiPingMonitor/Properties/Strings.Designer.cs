@@ -2085,6 +2085,24 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        public static string Options_DisplayMode_Normal {
+            get {
+                return ResourceManager.GetString("Options_DisplayMode_Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compact.
+        /// </summary>
+        public static string Options_DisplayMode_Compact {
+            get {
+                return ResourceManager.GetString("Options_DisplayMode_Compact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total packet size:.
         /// </summary>
         public static string Options_TotalPacketSize {

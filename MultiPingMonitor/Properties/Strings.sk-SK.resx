@@ -687,6 +687,12 @@
   <data name="Options_DisplayMode" xml:space="preserve">
     <value>Režim zobrazenia:</value>
   </data>
+  <data name="Options_DisplayMode_Normal" xml:space="preserve">
+    <value>Normálne</value>
+  </data>
+  <data name="Options_DisplayMode_Compact" xml:space="preserve">
+    <value>Kompaktné</value>
+  </data>
   <data name="Options_TotalPacketSize" xml:space="preserve">
     <value>Celková veľkosť paketu:</value>
   </data>

@@ -787,10 +787,7 @@
                     <!-- Display mode selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_DisplayMode}" Width="120"/>
-                        <ComboBox x:Name="DisplayModeComboBox" Width="160" SelectionChanged="DisplayModeComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Normal"/>
-                            <ComboBoxItem Content="Compact"/>
-                        </ComboBox>
+                        <ComboBox x:Name="DisplayModeComboBox" Width="160" SelectionChanged="DisplayModeComboBox_SelectionChanged"/>
                     </StackPanel>
                     <!-- Language selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
