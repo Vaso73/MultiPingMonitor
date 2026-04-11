@@ -125,10 +125,13 @@ namespace MultiPingMonitor.UI
             Configuration.Load();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             RefreshGuiState();
-            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
 
-            // Set items source for main GUI ItemsControl.
+            // Set items source for main GUI ItemsControl (default to normal collection).
             ProbeItemsControl.ItemsSource = _ProbeCollection;
+
+            // Apply display mode after setting default ItemsSource.
+            // ApplyDisplayMode will override ItemsSource if compact + custom targets.
+            ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -1586,6 +1589,14 @@ namespace MultiPingMonitor.UI
                 // Save under the current display mode's key so each mode keeps its own bounds.
                 System.Diagnostics.Trace.WriteLine("[MainWindow] Window_Closing: saving placement and config.");
                 WindowPlacementService.SaveWindow(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));
+
+                // Stop any active compact probes before shutdown.
+                foreach (var probe in _CompactProbeCollection)
+                {
+                    if (probe.IsActive)
+                        probe.StartStop();
+                }
+
                 Configuration.Save();
                 NotifyIcon?.Dispose();
                 _trayMenuHost?.Close();
