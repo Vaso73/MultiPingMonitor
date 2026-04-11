@@ -252,8 +252,7 @@ namespace MultiPingMonitor.Classes
                 new XComment(" DisplayMode: [Normal, Compact] "),
                 Node("DisplayMode", ApplicationOptions.CurrentDisplayMode),
                 new XComment(" CompactSourceMode: [NormalTargets, CustomTargets] "),
-                Node("CompactSourceMode", ApplicationOptions.CompactSource),
-                Node("ActiveCompactSetId", ApplicationOptions.ActiveCompactSetId)
+                Node("CompactSourceMode", ApplicationOptions.CompactSource)
             );
         }
 
@@ -787,10 +786,6 @@ namespace MultiPingMonitor.Classes
             {
                 if (Enum.TryParse<ApplicationOptions.CompactSourceMode>(optionValue, out var csm))
                     ApplicationOptions.CompactSource = csm;
-            }
-            if (options.TryGetValue("ActiveCompactSetId", out optionValue))
-            {
-                ApplicationOptions.ActiveCompactSetId = optionValue ?? string.Empty;
             }
         }
 

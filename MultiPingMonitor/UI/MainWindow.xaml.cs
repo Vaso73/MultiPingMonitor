@@ -683,10 +683,12 @@ namespace MultiPingMonitor.UI
         /// Rebuilds the dynamic portion of the CompactTargets main-menu submenu
         /// every time it opens, so compact set list and check states are always current.
         /// </summary>
+        private const int CompactMenuFixedItemCount = 2; // NormalTargets + CustomTargets
+
         private void CompactTargetsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             // Remove all items after the two fixed source-mode items.
-            while (CompactTargetsMenu.Items.Count > 2)
+            while (CompactTargetsMenu.Items.Count > CompactMenuFixedItemCount)
                 CompactTargetsMenu.Items.RemoveAt(CompactTargetsMenu.Items.Count - 1);
 
             // Update check states for the two fixed items.
