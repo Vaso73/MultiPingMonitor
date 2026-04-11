@@ -124,6 +124,23 @@ namespace MultiPingMonitor.Classes
             Save(window, key);
         }
 
+        /// <summary>
+        /// Restore a previously saved placement to a window on demand.
+        /// Used by display mode switching to apply mode-specific bounds.
+        /// </summary>
+        public static void RestoreWindow(Window window, string key)
+        {
+            Restore(window, key);
+        }
+
+        /// <summary>
+        /// Returns true if a saved placement exists for the given key.
+        /// </summary>
+        public static bool HasPlacement(string key)
+        {
+            return _placements.ContainsKey(key);
+        }
+
         // ── Save ──────────────────────────────────────────────────────────────
 
         private static void Save(Window window, string key)

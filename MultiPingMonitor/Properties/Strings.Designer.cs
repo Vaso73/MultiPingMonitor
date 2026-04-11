@@ -2337,6 +2337,24 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Switch to Compact View.
+        /// </summary>
+        public static string Tray_SwitchToCompact {
+            get {
+                return ResourceManager.GetString("Tray_SwitchToCompact", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Normal View.
+        /// </summary>
+        public static string Tray_SwitchToNormal {
+            get {
+                return ResourceManager.GetString("Tray_SwitchToNormal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Options_Title {
