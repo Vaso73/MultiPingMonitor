@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Media;
 using MultiPingMonitor.UI;
 
 namespace MultiPingMonitor.Classes
@@ -25,7 +27,7 @@ namespace MultiPingMonitor.Classes
             var windows = LiveWindowRegistry.GetOpenWindows();
             if (windows.Count == 0) return;
 
-            var wa = GetWorkingArea(activeWindow);
+            var wa = GetWorkingAreaInDips(activeWindow);
 
             // Use a uniform window size: the saved size of the active window or defaults,
             // clamped to not exceed the working area.
@@ -74,34 +76,48 @@ namespace MultiPingMonitor.Classes
             var windows = LiveWindowRegistry.GetOpenWindows();
             if (windows.Count == 0) return;
 
-            var wa = GetWorkingArea(activeWindow);
+            var wa = GetWorkingAreaInDips(activeWindow);
             int count = windows.Count;
 
             // Compute grid dimensions: prefer more columns than rows for landscape monitors.
             int cols = (int)Math.Ceiling(Math.Sqrt(count));
             int rows = (int)Math.Ceiling((double)count / cols);
 
-            double cellW = wa.Width / cols;
-            double cellH = wa.Height / rows;
+            // Uniform cell size — all windows get the same dimensions.
+            double cellW = Math.Floor(wa.Width / cols);
+            double cellH = Math.Floor(wa.Height / rows);
 
             for (int i = 0; i < count; i++)
             {
                 var w = windows[i];
 
+                // Ensure Normal state before setting bounds.
                 if (w.WindowState != WindowState.Normal)
                     w.WindowState = WindowState.Normal;
 
-                int col = i % cols;
                 int row = i / cols;
+                int colInRow = i % cols;
 
-                // For the last row, if it has fewer windows, distribute evenly.
-                int windowsInThisRow = (row < rows - 1) ? cols : (count - row * cols);
-                double rowCellW = wa.Width / windowsInThisRow;
-                int colInRow = i - row * cols;
+                // Compute position.
+                double left = wa.Left + colInRow * cellW;
+                double top = wa.Top + row * cellH;
 
-                w.Left = wa.Left + colInRow * rowCellW;
-                w.Top = wa.Top + row * cellH;
-                w.Width = rowCellW;
+                // For the last row, center the windows if fewer than cols.
+                int windowsInLastRow = count - (rows - 1) * cols;
+                if (row == rows - 1 && windowsInLastRow < cols)
+                {
+                    double totalUsed = windowsInLastRow * cellW;
+                    double offset = (wa.Width - totalUsed) / 2.0;
+                    left = wa.Left + offset + colInRow * cellW;
+                }
+
+                // Clamp bounds to the working area.
+                left = Clamp(left, wa.Left, wa.Right - cellW);
+                top = Clamp(top, wa.Top, wa.Bottom - cellH);
+
+                w.Left = left;
+                w.Top = top;
+                w.Width = cellW;
                 w.Height = cellH;
             }
 
@@ -109,17 +125,38 @@ namespace MultiPingMonitor.Classes
         }
 
         /// <summary>
-        /// Get the working area (in device-independent pixels) of the monitor
-        /// that contains the specified window.
+        /// Get the working area of the monitor that contains the specified window,
+        /// converted from physical pixels (<see cref="Screen.WorkingArea"/>) to
+        /// WPF device-independent pixels (DIPs).
         /// </summary>
-        private static Rect GetWorkingArea(Window window)
+        private static Rect GetWorkingAreaInDips(Window window)
         {
+            // Screen.WorkingArea returns physical pixels.
             var screen = Screen.FromRectangle(
                 new System.Drawing.Rectangle(
                     (int)window.Left, (int)window.Top,
                     (int)window.Width, (int)window.Height));
             var wa = screen.WorkingArea;
-            return new Rect(wa.Left, wa.Top, wa.Width, wa.Height);
+
+            // Obtain the DPI transform to convert physical pixels → DIPs.
+            Matrix transform = GetTransformFromDevice(window);
+            var topLeft = transform.Transform(new Point(wa.Left, wa.Top));
+            var size = transform.Transform(new Vector(wa.Width, wa.Height));
+
+            return new Rect(topLeft.X, topLeft.Y, size.X, size.Y);
+        }
+
+        /// <summary>
+        /// Return the device → DIP transformation matrix for the given window.
+        /// Falls back to identity (1:1) if no presentation source is available.
+        /// </summary>
+        private static Matrix GetTransformFromDevice(Window window)
+        {
+            var source = PresentationSource.FromVisual(window)
+                         ?? HwndSource.FromHwnd(new WindowInteropHelper(window).Handle);
+            if (source?.CompositionTarget != null)
+                return source.CompositionTarget.TransformFromDevice;
+            return Matrix.Identity;
         }
 
         private static double Clamp(double value, double min, double max)
