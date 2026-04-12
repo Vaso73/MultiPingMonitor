@@ -13,6 +13,14 @@ namespace MultiPingMonitor.UI
         public ManageCompactSetsWindow()
         {
             InitializeComponent();
+
+            // If a saved placement exists, switch to Manual so that
+            // WindowStartupLocation="CenterOwner" does not override the
+            // restored position/size.  On first open (no saved placement)
+            // the window will still center on its owner as usual.
+            if (WindowPlacementService.HasPlacement("ManageCompactSetsWindow"))
+                WindowStartupLocation = WindowStartupLocation.Manual;
+
             WindowPlacementService.Attach(this, "ManageCompactSetsWindow");
             RefreshSetsList();
         }
