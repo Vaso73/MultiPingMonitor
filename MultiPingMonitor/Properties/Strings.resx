@@ -1339,4 +1339,16 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_CloseAll" xml:space="preserve">
     <value>Close All</value>
   </data>
+  <data name="LivePing_OpenAllLive" xml:space="preserve">
+    <value>Open All Live Windows</value>
+  </data>
+  <data name="LivePing_OpenAllCascade" xml:space="preserve">
+    <value>Cascade</value>
+  </data>
+  <data name="LivePing_OpenAllTile" xml:space="preserve">
+    <value>Tile</value>
+  </data>
+  <data name="LivePing_CompactSetEmpty" xml:space="preserve">
+    <value>The current compact set has no hosts.</value>
+  </data>
 </root>

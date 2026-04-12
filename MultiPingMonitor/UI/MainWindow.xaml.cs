@@ -797,6 +797,21 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(new Separator());
 
+            // "Open All Live Windows" submenu with Cascade and Tile options.
+            var openAllSub = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllLive
+            };
+            var cascadeItem = new MenuItem { Header = Strings.LivePing_OpenAllCascade };
+            cascadeItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: true);
+            var tileItem = new MenuItem { Header = Strings.LivePing_OpenAllTile };
+            tileItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: false);
+            openAllSub.Items.Add(cascadeItem);
+            openAllSub.Items.Add(tileItem);
+            menu.Items.Add(openAllSub);
+
+            menu.Items.Add(new Separator());
+
             var manageItem = new MenuItem
             {
                 Header = Strings.Menu_CompactManageSets
@@ -1313,6 +1328,58 @@ namespace MultiPingMonitor.UI
             }
 
             e.Handled = true;
+        }
+
+        /// <summary>
+        /// Opens a Live Ping Monitor window for every host in the current compact
+        /// data set, reusing already-open windows, and then arranges them.
+        /// </summary>
+        /// <param name="cascade">true for Cascade layout; false for Tile layout.</param>
+        private void OpenAllLiveWindowsAndArrange(bool cascade)
+        {
+            // Determine the active compact probe collection.
+            var probes = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets
+                ? _ProbeCollection
+                : _CompactProbeCollection;
+
+            if (probes.Count == 0)
+            {
+                System.Windows.MessageBox.Show(
+                    Strings.LivePing_CompactSetEmpty,
+                    "MultiPingMonitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            LivePingMonitorWindow firstWindow = null;
+
+            foreach (var probe in probes)
+            {
+                if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
+                {
+                    // Reuse the existing window.
+                    probe.LivePingMonitorWindow.Activate();
+                }
+                else
+                {
+                    var window = new LivePingMonitorWindow(probe, this);
+                    probe.LivePingMonitorWindow = window;
+                    window.Show();
+                }
+
+                firstWindow ??= probe.LivePingMonitorWindow;
+            }
+
+            // Arrange all open live windows (the arrange service operates on the
+            // full LiveWindowRegistry, which now contains all windows we just opened).
+            if (firstWindow != null)
+            {
+                if (cascade)
+                    WindowArrangeService.Cascade(firstWindow);
+                else
+                    WindowArrangeService.Tile(firstWindow);
+            }
         }
 
         private void EditAlias_Click(object sender, RoutedEventArgs e)

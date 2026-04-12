@@ -3659,5 +3659,41 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Open All Live Windows.
+        /// </summary>
+        public static string LivePing_OpenAllLive {
+            get {
+                return ResourceManager.GetString("LivePing_OpenAllLive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cascade.
+        /// </summary>
+        public static string LivePing_OpenAllCascade {
+            get {
+                return ResourceManager.GetString("LivePing_OpenAllCascade", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tile.
+        /// </summary>
+        public static string LivePing_OpenAllTile {
+            get {
+                return ResourceManager.GetString("LivePing_OpenAllTile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The current compact set has no hosts..
+        /// </summary>
+        public static string LivePing_CompactSetEmpty {
+            get {
+                return ResourceManager.GetString("LivePing_CompactSetEmpty", resourceCulture);
+            }
+        }
+
     }
 }
