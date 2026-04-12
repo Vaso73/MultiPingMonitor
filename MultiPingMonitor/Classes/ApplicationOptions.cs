@@ -122,6 +122,9 @@ namespace MultiPingMonitor.Classes
         // Theme.
         public static string Theme { get; set; } = "Auto";
 
+        // Visual style (Classic / Modern).
+        public static string VisualStyle { get; set; } = "Classic";
+
         // Language.
         public static AppLanguage Language { get; set; } = AppLanguage.System;
 

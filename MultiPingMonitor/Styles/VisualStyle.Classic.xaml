@@ -1,0 +1,36 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        VisualStyle.Classic
+        Preserves the original MultiPingMonitor look. All tokens intentionally
+        mirror the existing hardcoded values so that switching to Classic
+        produces zero visual change from the pre-feature baseline.
+    -->
+
+    <!-- ── Layout tokens ─────────────────────────────────────────────── -->
+    <CornerRadius x:Key="Style.CornerRadius">0</CornerRadius>
+    <CornerRadius x:Key="Style.CornerRadius.Small">0</CornerRadius>
+    <CornerRadius x:Key="Style.CornerRadius.Button">0</CornerRadius>
+    <CornerRadius x:Key="Style.CornerRadius.Menu">0</CornerRadius>
+    <Thickness x:Key="Style.Padding.Button">3</Thickness>
+    <Thickness x:Key="Style.Padding.MenuItem">6,4,6,4</Thickness>
+    <Thickness x:Key="Style.Padding.Header">12,8</Thickness>
+    <Thickness x:Key="Style.BorderThickness">1</Thickness>
+    <Thickness x:Key="Style.BorderThickness.Button">1</Thickness>
+    <Thickness x:Key="Style.Margin.Section">0</Thickness>
+    <System:Double x:Key="Style.FontSize.Normal"
+                   xmlns:System="clr-namespace:System;assembly=mscorlib">12</System:Double>
+    <System:Double x:Key="Style.FontSize.Header"
+                   xmlns:System="clr-namespace:System;assembly=mscorlib">18</System:Double>
+    <System:Double x:Key="Style.FontSize.Menu"
+                   xmlns:System="clr-namespace:System;assembly=mscorlib">12</System:Double>
+
+    <!-- ── Opacity tokens ────────────────────────────────────────────── -->
+    <System:Double x:Key="Style.Opacity.Secondary"
+                   xmlns:System="clr-namespace:System;assembly=mscorlib">1.0</System:Double>
+
+    <!-- ── Window chrome ─────────────────────────────────────────────── -->
+    <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
+
+</ResourceDictionary>

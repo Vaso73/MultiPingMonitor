@@ -690,6 +690,9 @@
   <data name="Options_Theme" xml:space="preserve">
     <value>Téma:</value>
   </data>
+  <data name="Options_VisualStyle" xml:space="preserve">
+    <value>Vizuálny štýl:</value>
+  </data>
   <data name="Options_DisplayMode" xml:space="preserve">
     <value>Režim zobrazenia:</value>
   </data>

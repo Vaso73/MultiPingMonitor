@@ -15,6 +15,8 @@ namespace MultiPingMonitor.UI
     {
         // Store original theme so it can be reverted if the user cancels.
         private readonly string _originalTheme;
+        // Store original visual style so it can be reverted if the user cancels.
+        private readonly string _originalVisualStyle;
         // Store original display mode so it can be reverted if the user cancels.
         private readonly ApplicationOptions.DisplayMode _originalDisplayMode;
         // Store original compact source mode so it can be reverted if the user cancels.
@@ -27,6 +29,8 @@ namespace MultiPingMonitor.UI
 
             // Remember the current theme so we can revert if the user cancels.
             _originalTheme = ApplicationOptions.Theme;
+            // Remember the current visual style so we can revert if the user cancels.
+            _originalVisualStyle = ApplicationOptions.VisualStyle;
             // Remember the current display mode so we can revert if the user cancels.
             _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
             // Remember the current compact source mode so we can revert if the user cancels.
@@ -202,6 +206,15 @@ namespace MultiPingMonitor.UI
             if (ThemeComboBox.SelectedItem == null)
                 ThemeComboBox.SelectedIndex = 0;
 
+            // Populate visual style ComboBox.
+            foreach (VisualStyle vs in Enum.GetValues(typeof(VisualStyle)))
+            {
+                VisualStyleComboBox.Items.Add(VisualStyleManager.GetStyleName(vs));
+            }
+            VisualStyleComboBox.SelectedItem = ApplicationOptions.VisualStyle;
+            if (VisualStyleComboBox.SelectedItem == null)
+                VisualStyleComboBox.SelectedIndex = 0;
+
             // Display mode.
             DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Normal);
             DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
@@ -275,6 +288,10 @@ namespace MultiPingMonitor.UI
             {
                 ApplicationOptions.Theme = _originalTheme;
                 ThemeManager.ApplyTheme(ThemeManager.ParseTheme(_originalTheme));
+
+                // Revert visual style preview.
+                ApplicationOptions.VisualStyle = _originalVisualStyle;
+                VisualStyleManager.ApplyStyle(VisualStyleManager.ParseStyle(_originalVisualStyle));
 
                 // Revert compact source mode.
                 if (ApplicationOptions.CompactSource != _originalCompactSource)
@@ -748,6 +765,15 @@ namespace MultiPingMonitor.UI
             {
                 ApplicationOptions.Theme = themeName;
                 ThemeManager.ApplyTheme(ThemeManager.ParseTheme(themeName));
+            }
+        }
+
+        private void VisualStyleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VisualStyleComboBox.SelectedItem is string styleName)
+            {
+                ApplicationOptions.VisualStyle = styleName;
+                VisualStyleManager.ApplyStyle(VisualStyleManager.ParseStyle(styleName));
             }
         }
 

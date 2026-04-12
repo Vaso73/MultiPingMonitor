@@ -800,6 +800,9 @@
   <data name="Options_Theme" xml:space="preserve">
     <value>Theme:</value>
   </data>
+  <data name="Options_VisualStyle" xml:space="preserve">
+    <value>Visual style:</value>
+  </data>
   <data name="Options_DisplayMode" xml:space="preserve">
     <value>Display mode:</value>
   </data>
