@@ -3380,5 +3380,23 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to ▲ Up.
+        /// </summary>
+        public static string CompactSets_MoveUp {
+            get {
+                return ResourceManager.GetString("CompactSets_MoveUp", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ▼ Down.
+        /// </summary>
+        public static string CompactSets_MoveDown {
+            get {
+                return ResourceManager.GetString("CompactSets_MoveDown", resourceCulture);
+            }
+        }
+
     }
 }

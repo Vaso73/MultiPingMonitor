@@ -61,14 +61,26 @@ namespace MultiPingMonitor.UI
         private void UpdateButtonStates()
         {
             bool hasSet = SetsListBox.SelectedIndex >= 0;
+            int setIdx = SetsListBox.SelectedIndex;
+            int setCount = ApplicationOptions.CompactSets.Count;
+
             RenameSetButton.IsEnabled = hasSet;
             DeleteSetButton.IsEnabled = hasSet;
             SetActiveButton.IsEnabled = hasSet;
             AddTargetButton.IsEnabled = hasSet;
 
+            MoveSetUpButton.IsEnabled = hasSet && setIdx > 0;
+            MoveSetDownButton.IsEnabled = hasSet && setIdx < setCount - 1;
+
             bool hasTarget = TargetsListBox.SelectedIndex >= 0;
             EditTargetButton.IsEnabled = hasTarget;
             RemoveTargetButton.IsEnabled = hasTarget;
+
+            var set = GetSelectedSet();
+            int targetIdx = TargetsListBox.SelectedIndex;
+            int targetCount = set?.Entries.Count ?? 0;
+            MoveTargetUpButton.IsEnabled = hasTarget && targetIdx > 0;
+            MoveTargetDownButton.IsEnabled = hasTarget && targetIdx < targetCount - 1;
         }
 
         // ── Set operations ────────────────────────────────────────────────────
@@ -152,6 +164,36 @@ namespace MultiPingMonitor.UI
             RefreshSetsList();
         }
 
+        private void MoveSetUp_Click(object sender, RoutedEventArgs e)
+        {
+            int idx = SetsListBox.SelectedIndex;
+            if (idx <= 0) return;
+
+            var sets = ApplicationOptions.CompactSets;
+            var temp = sets[idx];
+            sets[idx] = sets[idx - 1];
+            sets[idx - 1] = temp;
+
+            Configuration.Save();
+            RefreshSetsList();
+            SetsListBox.SelectedIndex = idx - 1;
+        }
+
+        private void MoveSetDown_Click(object sender, RoutedEventArgs e)
+        {
+            int idx = SetsListBox.SelectedIndex;
+            var sets = ApplicationOptions.CompactSets;
+            if (idx < 0 || idx >= sets.Count - 1) return;
+
+            var temp = sets[idx];
+            sets[idx] = sets[idx + 1];
+            sets[idx + 1] = temp;
+
+            Configuration.Save();
+            RefreshSetsList();
+            SetsListBox.SelectedIndex = idx + 1;
+        }
+
         // ── Target list ───────────────────────────────────────────────────────
 
         private void RefreshTargetsList()
@@ -232,6 +274,46 @@ namespace MultiPingMonitor.UI
             set.Entries.RemoveAt(idx);
             Configuration.Save();
             RefreshTargetsList();
+
+            if (IsActiveSet(set))
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+        }
+
+        private void MoveTargetUp_Click(object sender, RoutedEventArgs e)
+        {
+            var set = GetSelectedSet();
+            if (set == null) return;
+
+            int idx = TargetsListBox.SelectedIndex;
+            if (idx <= 0) return;
+
+            var temp = set.Entries[idx];
+            set.Entries[idx] = set.Entries[idx - 1];
+            set.Entries[idx - 1] = temp;
+
+            Configuration.Save();
+            RefreshTargetsList();
+            TargetsListBox.SelectedIndex = idx - 1;
+
+            if (IsActiveSet(set))
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+        }
+
+        private void MoveTargetDown_Click(object sender, RoutedEventArgs e)
+        {
+            var set = GetSelectedSet();
+            if (set == null) return;
+
+            int idx = TargetsListBox.SelectedIndex;
+            if (idx < 0 || idx >= set.Entries.Count - 1) return;
+
+            var temp = set.Entries[idx];
+            set.Entries[idx] = set.Entries[idx + 1];
+            set.Entries[idx + 1] = temp;
+
+            Configuration.Save();
+            RefreshTargetsList();
+            TargetsListBox.SelectedIndex = idx + 1;
 
             if (IsActiveSet(set))
                 (Owner as MainWindow)?.RefreshActiveCompactSetData();

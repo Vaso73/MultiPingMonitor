@@ -1243,6 +1243,12 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="CompactSets_Sets" xml:space="preserve">
     <value>Sets</value>
   </data>
+  <data name="CompactSets_MoveUp" xml:space="preserve">
+    <value>▲ Up</value>
+  </data>
+  <data name="CompactSets_MoveDown" xml:space="preserve">
+    <value>▼ Down</value>
+  </data>
   <data name="Options_CompactManageSets" xml:space="preserve">
     <value>Manage Compact Sets...</value>
   </data>
