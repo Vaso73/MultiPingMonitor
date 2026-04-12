@@ -65,6 +65,9 @@ namespace MultiPingMonitor.UI
             // Populate header from current probe state.
             UpdateHeader();
 
+            // Register this window with the central live window registry.
+            LiveWindowRegistry.Register(this);
+
             // Fresh session: do NOT preload old Probe.History lines.
             // Log begins empty; only new lines after open will appear.
 
@@ -654,8 +657,37 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        // ── Arrange menu ──
+
+        private void ArrangeMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = new System.Windows.Controls.ContextMenu();
+
+            var cascadeItem = new System.Windows.Controls.MenuItem
+            {
+                Header = Properties.Strings.LivePing_ArrangeCascade
+            };
+            cascadeItem.Click += (_, __) => WindowArrangeService.Cascade(this);
+
+            var tileItem = new System.Windows.Controls.MenuItem
+            {
+                Header = Properties.Strings.LivePing_ArrangeTile
+            };
+            tileItem.Click += (_, __) => WindowArrangeService.Tile(this);
+
+            menu.Items.Add(cascadeItem);
+            menu.Items.Add(tileItem);
+
+            menu.PlacementTarget = ArrangeMenuButton;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.IsOpen = true;
+        }
+
         private void Window_Closed(object sender, EventArgs e)
         {
+            // Unregister from the live window registry.
+            LiveWindowRegistry.Unregister(this);
+
             // Persist window placement for next open.
             WindowPlacementService.SaveWindow(this, PlacementKey);
 
