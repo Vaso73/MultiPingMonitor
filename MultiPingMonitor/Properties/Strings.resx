@@ -1303,4 +1303,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="CompactSets_CopyNameSuffix" xml:space="preserve">
     <value>Copy</value>
   </data>
+  <data name="CompactSets_ExportError" xml:space="preserve">
+    <value>An error occurred while exporting the compact sets.</value>
+  </data>
 </root>

@@ -197,7 +197,7 @@ namespace MultiPingMonitor.Classes
                     return candidate;
             }
 
-            // Fallback – extremely unlikely.
+            // Fallback – extremely unlikely. Guid.ToString("N") always produces a 32-char hex string.
             return $"{baseName} ({suffix} {Guid.NewGuid().ToString("N").Substring(0, 6)})";
         }
 

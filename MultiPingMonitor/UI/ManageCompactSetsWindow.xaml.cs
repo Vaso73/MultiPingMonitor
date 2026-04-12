@@ -223,7 +223,7 @@ namespace MultiPingMonitor.UI
                     }
                     catch
                     {
-                        ShowError(Strings.CompactSets_ImportInvalidFile);
+                        ShowError(Strings.CompactSets_ExportError);
                     }
                 }
             }
@@ -251,7 +251,7 @@ namespace MultiPingMonitor.UI
                     }
                     catch
                     {
-                        ShowError(Strings.CompactSets_ImportInvalidFile);
+                        ShowError(Strings.CompactSets_ExportError);
                     }
                 }
             }

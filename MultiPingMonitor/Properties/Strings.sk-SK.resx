@@ -1193,4 +1193,7 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="CompactSets_CopyNameSuffix" xml:space="preserve">
     <value>Kópia</value>
   </data>
+  <data name="CompactSets_ExportError" xml:space="preserve">
+    <value>Pri exportovaní kompaktných sád sa vyskytla chyba.</value>
+  </data>
 </root>

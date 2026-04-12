@@ -3551,5 +3551,14 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while exporting the compact sets..
+        /// </summary>
+        public static string CompactSets_ExportError {
+            get {
+                return ResourceManager.GetString("CompactSets_ExportError", resourceCulture);
+            }
+        }
+
     }
 }
