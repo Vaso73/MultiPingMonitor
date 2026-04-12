@@ -444,18 +444,9 @@ namespace MultiPingMonitor.UI
                 ProbeItemsControl.Margin = new Thickness(0);
                 ProbeItemsControl.BorderThickness = new Thickness(0);
 
-                // Enable vertical scrolling so long target lists remain reachable.
-                // Build a ControlTemplate at runtime that wraps ItemsPresenter in a ScrollViewer.
-                // Focusable=false prevents the ScrollViewer from stealing keyboard focus from the window.
-                var scrollFactory = new System.Windows.FrameworkElementFactory(typeof(ScrollViewer));
-                scrollFactory.SetValue(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
-                scrollFactory.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
-                scrollFactory.SetValue(ScrollViewer.FocusableProperty, false);
-                var presenterFactory = new System.Windows.FrameworkElementFactory(typeof(ItemsPresenter));
-                scrollFactory.AppendChild(presenterFactory);
-                var scrollTemplate = new ControlTemplate(typeof(ItemsControl));
-                scrollTemplate.VisualTree = scrollFactory;
-                ProbeItemsControl.Template = scrollTemplate;
+                // Enable vertical scrolling with a slim scrollbar so long target
+                // lists remain reachable.  Template is defined in XAML resources.
+                ProbeItemsControl.Template = (ControlTemplate)FindResource("CompactItemsControlTemplate");
 
                 // Switch ItemsSource based on compact data source mode.
                 ApplyCompactDataSource();
