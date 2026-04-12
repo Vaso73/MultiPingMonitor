@@ -663,22 +663,41 @@ namespace MultiPingMonitor.UI
         {
             var menu = new System.Windows.Controls.ContextMenu();
 
+            // Apply theme-aware brushes (same pattern as tray and compact context menus).
+            menu.SetResourceReference(System.Windows.Controls.Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(System.Windows.Controls.Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            if (menuItemStyle != null)
+                menu.Resources[typeof(System.Windows.Controls.MenuItem)] = menuItemStyle;
+
             var cascadeItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_ArrangeCascade
             };
+            var cascadeIcon = Application.Current.TryFindResource("icon.cascade") as System.Windows.Media.ImageSource;
+            if (cascadeIcon != null)
+                cascadeItem.Icon = new System.Windows.Controls.Image { Source = cascadeIcon, Width = 16, Height = 16 };
             cascadeItem.Click += (_, __) => WindowArrangeService.Cascade(this);
 
             var tileItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_ArrangeTile
             };
+            var tileIcon = Application.Current.TryFindResource("icon.columns-grid") as System.Windows.Media.ImageSource;
+            if (tileIcon != null)
+                tileItem.Icon = new System.Windows.Controls.Image { Source = tileIcon, Width = 16, Height = 16 };
             tileItem.Click += (_, __) => WindowArrangeService.Tile(this);
 
             var closeAllItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_CloseAll
             };
+            var closeIcon = Application.Current.TryFindResource("icon.window-close-red") as System.Windows.Media.ImageSource;
+            if (closeIcon != null)
+                closeAllItem.Icon = new System.Windows.Controls.Image { Source = closeIcon, Width = 16, Height = 16 };
             closeAllItem.Click += (_, __) =>
             {
                 // Work with a snapshot to avoid modifying the collection during enumeration.
@@ -691,7 +710,12 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(cascadeItem);
             menu.Items.Add(tileItem);
-            menu.Items.Add(new System.Windows.Controls.Separator());
+
+            var sep = new System.Windows.Controls.Separator();
+            sep.SetResourceReference(System.Windows.Controls.Separator.BackgroundProperty, "Theme.Border");
+            sep.Margin = new Thickness(4, 2, 4, 2);
+            menu.Items.Add(sep);
+
             menu.Items.Add(closeAllItem);
 
             menu.PlacementTarget = ArrangeMenuButton;

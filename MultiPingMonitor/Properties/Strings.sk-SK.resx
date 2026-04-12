@@ -1229,4 +1229,16 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_CloseAll" xml:space="preserve">
     <value>Zavrieť všetky</value>
   </data>
+  <data name="LivePing_OpenAllLive" xml:space="preserve">
+    <value>Otvoriť všetky live okná</value>
+  </data>
+  <data name="LivePing_OpenAllCascade" xml:space="preserve">
+    <value>Kaskáda</value>
+  </data>
+  <data name="LivePing_OpenAllTile" xml:space="preserve">
+    <value>Dlaždice</value>
+  </data>
+  <data name="LivePing_CompactSetEmpty" xml:space="preserve">
+    <value>Aktuálna compact sada nemá žiadne hosty.</value>
+  </data>
 </root>
