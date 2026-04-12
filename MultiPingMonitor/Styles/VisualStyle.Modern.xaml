@@ -34,10 +34,100 @@
     <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
 
     <!-- ══════════════════════════════════════════════════════════════════
-         MODERN BUTTON STYLE
-         Rounded corners, slightly larger padding, softer hover transition.
+         STYLE ROUTING – Modern versions with rounded corners,
+         softer hover effects, and refined spacing.
          ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="ButtonStyle.Modern" TargetType="{x:Type Button}">
+
+    <!-- ── Modern Title Bar Button ─────────────────────────────────── -->
+    <Style x:Key="Style.TitleBarButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            Background="Transparent"
+                            CornerRadius="4"
+                            BorderThickness="0"
+                            Margin="2,4"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="0"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.SurfaceAlt}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Modern Title Bar Close Button ───────────────────────────── -->
+    <Style x:Key="Style.TitleBarCloseButton" TargetType="Button">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            Background="Transparent"
+                            CornerRadius="4"
+                            BorderThickness="0"
+                            Margin="2,4"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="0"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="#e81123" />
+                            <Setter Property="Foreground" Value="#ffffff" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="#f16f7a" />
+                            <Setter Property="Foreground" Value="#ffffff" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Modern Window Main Panel ────────────────────────────────── -->
+    <Style x:Key="Style.WindowMainPanel" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                <Setter Property="BorderThickness" Value="0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ── Modern Button ───────────────────────────────────────────── -->
+    <Style x:Key="Style.Button" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
@@ -92,126 +182,13 @@
         </Setter>
     </Style>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN STANDARD BUTTON STYLE (secondary / muted)
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="ButtonStandardStyle.Modern" TargetType="{x:Type Button}" BasedOn="{StaticResource ButtonStyle.Modern}">
+    <!-- ── Modern Standard Button (secondary / muted) ──────────────── -->
+    <Style x:Key="Style.ButtonStandard" TargetType="{x:Type Button}" BasedOn="{StaticResource Style.Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
     </Style>
 
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN MENU / CONTEXT MENU POPUP BORDER
-         Rounded popup with subtle shadow appearance.
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="ModernMenuBorderStyle" TargetType="{x:Type Border}">
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2,4" />
-    </Style>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN WINDOW MAIN PANEL STYLE
-         Rounded corners on the outer border when not maximized.
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="WindowMainPanelStyle.Modern" TargetType="{x:Type Border}">
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="0" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
-                <Setter Property="BorderThickness" Value="0" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN TITLE BAR BUTTON STYLE
-         Rounded hover highlight.
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="TitleBarButtonStyle.Modern" TargetType="Button">
-        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-        <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border"
-                            Background="Transparent"
-                            CornerRadius="4"
-                            BorderThickness="0"
-                            Margin="2,4"
-                            SnapsToDevicePixels="true">
-                        <ContentPresenter x:Name="contentPresenter"
-                                          Margin="0"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Focusable="False"
-                                          RecognizesAccessKey="True" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background"
-                                    Value="{DynamicResource Theme.SurfaceAlt}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="border" Property="Background"
-                                    Value="{DynamicResource Theme.Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN TITLE BAR CLOSE BUTTON STYLE
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="TitleBarCloseButtonStyle.Modern" TargetType="Button">
-        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-        <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border"
-                            Background="Transparent"
-                            CornerRadius="4"
-                            BorderThickness="0"
-                            Margin="2,4"
-                            SnapsToDevicePixels="true">
-                        <ContentPresenter x:Name="contentPresenter"
-                                          Margin="0"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Focusable="False"
-                                          RecognizesAccessKey="True" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="#e81123" />
-                            <Setter Property="Foreground" Value="#ffffff" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="#f16f7a" />
-                            <Setter Property="Foreground" Value="#ffffff" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- ══════════════════════════════════════════════════════════════════
-         MODERN LIVE PING MONITOR FOOTER BUTTON STYLE
-         Theme-aware rounded buttons for Stop/Clear/Close actions.
-         ══════════════════════════════════════════════════════════════════ -->
-    <Style x:Key="LivePingFooterButton.Modern" TargetType="{x:Type Button}">
+    <!-- ── Modern Live Ping Footer Button ──────────────────────────── -->
+    <Style x:Key="Style.LivePingFooterButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
@@ -249,6 +226,56 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- ── Modern Live Ping Action Button (header buttons) ─────────── -->
+    <Style x:Key="Style.LivePingActionButton" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            CornerRadius="4"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource Theme.AccentForeground}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.AccentHover}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Modern Menu Popup Border ────────────────────────────────── -->
+    <Style x:Key="Style.MenuPopupBorder" TargetType="{x:Type Border}">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2,4" />
     </Style>
 
 </ResourceDictionary>

@@ -20,7 +20,7 @@
         <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle.Dark}"/>
     </Window.Resources>
 
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -60,7 +60,7 @@
                 <Button Grid.Column="4"
                         Click="OnMinimizeButtonClick"
                         RenderOptions.EdgeMode="Aliased"
-                        Style="{StaticResource TitleBarButtonStyle}"
+                        Style="{DynamicResource Style.TitleBarButton}"
                         AutomationProperties.Name="Minimize"
                         ToolTip="Minimize" ToolTipService.InitialShowDelay="1000">
                     <Path Width="46"
@@ -74,7 +74,7 @@
                 <Button Name="maximizeButton"
                         Grid.Column="5"
                         Click="OnMaximizeRestoreButtonClick"
-                        Style="{StaticResource TitleBarButtonStyle}"
+                        Style="{DynamicResource Style.TitleBarButton}"
                         AutomationProperties.Name="Maximize"
                         ToolTip="Maximize" ToolTipService.InitialShowDelay="1000">
                     <Path Width="46"
@@ -88,7 +88,7 @@
                 <Button Name="restoreButton"
                         Grid.Column="5"
                         Click="OnMaximizeRestoreButtonClick"
-                        Style="{StaticResource TitleBarButtonStyle}"
+                        Style="{DynamicResource Style.TitleBarButton}"
                         AutomationProperties.Name="Restore"
                         ToolTip="Restore Down" ToolTipService.InitialShowDelay="1000">
                     <Path Width="46"
@@ -101,7 +101,7 @@
                 <!-- Close button -->
                 <Button Grid.Column="6"
                         Click="OnCloseButtonClick"
-                        Style="{StaticResource TitleBarCloseButtonStyle}"
+                        Style="{DynamicResource Style.TitleBarCloseButton}"
                         AutomationProperties.Name="Close"
                         ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                     <Path Width="46"
