@@ -5,7 +5,7 @@
         Title="{x:Static resource:Strings.CompactSets_Title}"
         UseLayoutRounding="True"
         WindowStyle="None"
-        Height="520" MinHeight="350"
+        Height="520" MinHeight="400"
         Width="680" MinWidth="500"
         Background="{DynamicResource Theme.Background}"
         WindowStartupLocation="CenterOwner"
@@ -59,7 +59,7 @@
         <!-- Main content: split between sets list and targets list -->
         <Grid Grid.Row="1" Margin="0,6,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" MinWidth="180"/>
+                <ColumnDefinition x:Name="LeftPaneColumn" Width="250" MinWidth="180"/>
                 <ColumnDefinition Width="6"/>
                 <ColumnDefinition Width="*" MinWidth="200"/>
             </Grid.ColumnDefinitions>
@@ -89,6 +89,17 @@
                     <Button x:Name="MoveSetDownButton" Style="{StaticResource ButtonStandardStyle}"
                             Content="{x:Static resource:Strings.CompactSets_MoveDown}"
                             MinWidth="55" Margin="4,0,0,0" Click="MoveSetDown_Click"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
+                    <Button x:Name="ExportSelectedButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_ExportSelected}"
+                            MinWidth="95" Click="ExportSelected_Click"/>
+                    <Button x:Name="ExportAllButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_ExportAll}"
+                            MinWidth="80" Margin="4,0,0,0" Click="ExportAll_Click"/>
+                    <Button Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_Import}"
+                            MinWidth="65" Margin="4,0,0,0" Click="Import_Click"/>
                 </StackPanel>
                 <ListBox x:Name="SetsListBox"
                          SelectionChanged="SetsListBox_SelectionChanged"

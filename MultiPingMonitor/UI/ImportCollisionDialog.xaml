@@ -1,0 +1,70 @@
+<Window x:Class="MultiPingMonitor.UI.ImportCollisionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
+        Title="MultiPingMonitor"
+        UseLayoutRounding="True"
+        WindowStyle="None"
+        Height="Auto" SizeToContent="Height"
+        Width="420" MinWidth="340"
+        Background="{DynamicResource Theme.Background}"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="0"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.compact-view}" />
+            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+
+    <StackPanel Margin="12">
+        <!-- Collision message -->
+        <TextBlock x:Name="MessageText"
+                   Foreground="{DynamicResource Theme.Text.Primary}"
+                   TextWrapping="Wrap" Margin="0,0,0,12" FontSize="13"/>
+
+        <!-- Action buttons -->
+        <UniformGrid Columns="2" Rows="2" Margin="0,0,0,0">
+            <Button Style="{StaticResource ButtonStandardStyle}"
+                    Content="{x:Static resource:Strings.CompactSets_ImportCollision_Replace}"
+                    Margin="0,0,4,4" MinHeight="28" Click="Replace_Click"/>
+            <Button Style="{StaticResource ButtonStandardStyle}"
+                    Content="{x:Static resource:Strings.CompactSets_ImportCollision_Copy}"
+                    Margin="4,0,0,4" MinHeight="28" Click="ImportAsCopy_Click"/>
+            <Button Style="{StaticResource ButtonStandardStyle}"
+                    Content="{x:Static resource:Strings.CompactSets_ImportCollision_Skip}"
+                    Margin="0,4,4,0" MinHeight="28" Click="Skip_Click"/>
+            <Button Style="{StaticResource ButtonStandardStyle}"
+                    Content="{x:Static resource:Strings.CompactSets_ImportCollision_Cancel}"
+                    Margin="4,4,0,0" MinHeight="28" Click="CancelImport_Click"/>
+        </UniformGrid>
+    </StackPanel>
+    </DockPanel>
+    </Border>
+</Window>
