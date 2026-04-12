@@ -251,5 +251,21 @@
         <Setter Property="Padding" Value="2" />
     </Style>
 
+    <!-- ── Content panel: Classic (no extra decoration) ───────────────── -->
+    <Style x:Key="Style.ContentPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <!-- ── Footer panel: Classic ──────────────────────────────────────── -->
+    <Style x:Key="Style.FooterPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="9" />
+    </Style>
+
 </ResourceDictionary>
 

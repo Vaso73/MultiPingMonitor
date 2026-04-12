@@ -69,35 +69,35 @@
                 <TextBlock DockPanel.Dock="Top" Text="{x:Static resource:Strings.CompactSets_Sets}" FontWeight="SemiBold" Margin="0,0,0,4"
                            Foreground="{DynamicResource Theme.Text.Primary}"/>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
-                    <Button x:Name="NewSetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="NewSetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_NewSet}"
                             MinWidth="60" Click="NewSet_Click"/>
-                    <Button x:Name="RenameSetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="RenameSetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_RenameSet}"
                             MinWidth="60" Margin="4,0,0,0" Click="RenameSet_Click"/>
-                    <Button x:Name="DeleteSetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="DeleteSetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_DeleteSet}"
                             MinWidth="60" Margin="4,0,0,0" Click="DeleteSet_Click"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="SetActiveButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="SetActiveButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_SetActive}"
                             MinWidth="100" Click="SetActive_Click"/>
-                    <Button x:Name="MoveSetUpButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="MoveSetUpButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_MoveUp}"
                             MinWidth="55" Margin="4,0,0,0" Click="MoveSetUp_Click"/>
-                    <Button x:Name="MoveSetDownButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="MoveSetDownButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_MoveDown}"
                             MinWidth="55" Margin="4,0,0,0" Click="MoveSetDown_Click"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="ExportSelectedButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="ExportSelectedButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_ExportSelected}"
                             MinWidth="95" Click="ExportSelected_Click"/>
-                    <Button x:Name="ExportAllButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="ExportAllButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_ExportAll}"
                             MinWidth="80" Margin="4,0,0,0" Click="ExportAll_Click"/>
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_Import}"
                             MinWidth="65" Margin="4,0,0,0" Click="Import_Click"/>
                 </StackPanel>
@@ -120,21 +120,21 @@
                            Foreground="{DynamicResource Theme.Text.Primary}"
                            Text="{x:Static resource:Strings.CompactSets_Targets}"/>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
-                    <Button x:Name="AddTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="AddTargetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_AddTarget}"
                             MinWidth="85" Click="AddTarget_Click"/>
-                    <Button x:Name="EditTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="EditTargetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_EditTarget}"
                             MinWidth="60" Margin="4,0,0,0" Click="EditTarget_Click"/>
-                    <Button x:Name="RemoveTargetButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="RemoveTargetButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_RemoveTarget}"
                             MinWidth="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="MoveTargetUpButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="MoveTargetUpButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_MoveUp}"
                             MinWidth="55" Click="MoveTargetUp_Click"/>
-                    <Button x:Name="MoveTargetDownButton" Style="{StaticResource ButtonStandardStyle}"
+                    <Button x:Name="MoveTargetDownButton" Style="{DynamicResource Style.ButtonStandard}"
                             Content="{x:Static resource:Strings.CompactSets_MoveDown}"
                             MinWidth="55" Margin="4,0,0,0" Click="MoveTargetDown_Click"/>
                 </StackPanel>

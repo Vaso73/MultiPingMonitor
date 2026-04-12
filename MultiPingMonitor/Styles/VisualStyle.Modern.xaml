@@ -126,7 +126,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- ── Modern Button ───────────────────────────────────────────── -->
+    <!-- ── Modern Button (primary / dark) ──────────────────────────── -->
     <Style x:Key="Style.Button" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
@@ -141,7 +141,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="border"
-                            CornerRadius="4"
+                            CornerRadius="5"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
@@ -182,9 +182,64 @@
         </Setter>
     </Style>
 
-    <!-- ── Modern Standard Button (secondary / muted) ──────────────── -->
-    <Style x:Key="Style.ButtonStandard" TargetType="{x:Type Button}" BasedOn="{StaticResource Style.Button}">
+    <!-- ── Modern Standard Button (secondary – the most used button) ── -->
+    <Style x:Key="Style.ButtonStandard" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            CornerRadius="5"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource Theme.AccentForeground}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.AccentHover}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.AccentHover}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource Theme.AccentForeground}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.45" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ── Modern Live Ping Footer Button ──────────────────────────── -->
@@ -193,7 +248,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="12,5" />
+        <Setter Property="Padding" Value="14,6" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
@@ -201,7 +256,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="border"
-                            CornerRadius="4"
+                            CornerRadius="5"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
@@ -234,7 +289,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="Padding" Value="10,4" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
@@ -276,6 +331,24 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2,4" />
+    </Style>
+
+    <!-- ── Modern Content Panel (subtle surface card) ─────────────── -->
+    <Style x:Key="Style.ContentPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Margin" Value="0,4" />
+    </Style>
+
+    <!-- ── Modern Footer Panel ────────────────────────────────────── -->
+    <Style x:Key="Style.FooterPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="12,10" />
     </Style>
 
 </ResourceDictionary>

@@ -51,16 +51,16 @@
 
         <!-- Action buttons -->
         <UniformGrid Columns="2" Rows="2" Margin="0,0,0,0">
-            <Button Style="{StaticResource ButtonStandardStyle}"
+            <Button Style="{DynamicResource Style.ButtonStandard}"
                     Content="{x:Static resource:Strings.CompactSets_ImportCollision_Replace}"
                     Margin="0,0,4,4" MinHeight="28" Click="Replace_Click"/>
-            <Button Style="{StaticResource ButtonStandardStyle}"
+            <Button Style="{DynamicResource Style.ButtonStandard}"
                     Content="{x:Static resource:Strings.CompactSets_ImportCollision_Copy}"
                     Margin="4,0,0,4" MinHeight="28" Click="ImportAsCopy_Click"/>
-            <Button Style="{StaticResource ButtonStandardStyle}"
+            <Button Style="{DynamicResource Style.ButtonStandard}"
                     Content="{x:Static resource:Strings.CompactSets_ImportCollision_Skip}"
                     Margin="0,4,4,0" MinHeight="28" Click="Skip_Click"/>
-            <Button Style="{StaticResource ButtonStandardStyle}"
+            <Button Style="{DynamicResource Style.ButtonStandard}"
                     Content="{x:Static resource:Strings.CompactSets_ImportCollision_Cancel}"
                     Margin="4,4,0,0" MinHeight="28" Click="CancelImport_Click"/>
         </UniformGrid>

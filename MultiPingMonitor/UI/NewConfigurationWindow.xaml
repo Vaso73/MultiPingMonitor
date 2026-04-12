@@ -87,16 +87,16 @@
         </Grid>
         
         <!-- Buttons -->
-        <Border Grid.Row="1" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
             <DockPanel Margin="10">
                 <!-- Buttons -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Click="Save_Click"
                             Width="100"
                             IsDefault="True"
                             Content="{x:Static resource:Strings.DialogButton_Save}" />
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Margin="8,0,0,0"
                             Width="100"
                             IsCancel="True"

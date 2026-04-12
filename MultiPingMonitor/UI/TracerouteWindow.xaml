@@ -119,7 +119,7 @@
                     Margin="10,0,0,0"
                     Padding="8,6"
                     MinWidth="100"
-                    Style="{StaticResource ButtonStyle}">
+                    Style="{DynamicResource Style.Button}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Source="{Binding IsActive, Converter={StaticResource BooleanToImageConverter}}"
                            Width="16" Height="16" Margin="0,0,6,0"/>

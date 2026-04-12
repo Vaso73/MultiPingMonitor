@@ -124,17 +124,17 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,9,0,0">
             <Button Click="New_Click"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     Content="_New"/>
             <Button Click="Edit_Click"
                     Margin="15,0"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Favorites, Path=SelectedItems.Count}"
                     Content="_Edit"/>
             <Button Click="Remove_Click"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Favorites, Path=SelectedItems.Count}"
                     Content="_Remove"/>
         </StackPanel>
