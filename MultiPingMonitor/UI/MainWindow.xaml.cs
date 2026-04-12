@@ -1289,6 +1289,32 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        private void CompactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount != 2)
+                return;
+
+            if (ApplicationOptions.CurrentDisplayMode != ApplicationOptions.DisplayMode.Compact)
+                return;
+
+            var probe = (sender as FrameworkElement)?.DataContext as Probe;
+            if (probe == null)
+                return;
+
+            if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
+            {
+                probe.LivePingMonitorWindow.Activate();
+            }
+            else
+            {
+                var window = new LivePingMonitorWindow(probe, this);
+                probe.LivePingMonitorWindow = window;
+                window.Show();
+            }
+
+            e.Handled = true;
+        }
+
         private void EditAlias_Click(object sender, RoutedEventArgs e)
         {
             var probe = (sender as Button).DataContext as Probe;

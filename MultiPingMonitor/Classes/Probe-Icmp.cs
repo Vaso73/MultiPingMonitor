@@ -2,6 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -242,7 +243,7 @@ namespace MultiPingMonitor.Classes
                         sb.Append("Request timed out.");
                         break;
                     default:
-                        sb.Append(pingReply.Status.ToString());
+                        sb.Append(FormatIpStatus(pingReply.Status));
                         break;
                 }
             }
@@ -261,6 +262,37 @@ namespace MultiPingMonitor.Classes
 
             // If enabled, log output.
             WriteToLog(output);
+        }
+
+        /// <summary>
+        /// Regex for splitting PascalCase enum names into spaced words.
+        /// </summary>
+        private static readonly Regex PascalCaseSplitter = new Regex("(?<=[a-z])([A-Z])", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Format an IPStatus value into a human-readable string.
+        /// For well-known enum members the name is converted to a spaced phrase;
+        /// for raw numeric codes (e.g. 11050) the code is mapped to a description.
+        /// </summary>
+        private static string FormatIpStatus(IPStatus status)
+        {
+            int code = (int)status;
+            string name = status.ToString();
+
+            // If the enum member has a friendly name, insert spaces before capitals.
+            // Example: "TtlExpired" → "TTL expired", "DestinationHostUnreachable" → "Destination host unreachable".
+            if (!int.TryParse(name, out _))
+            {
+                // The name is a real enum member, not a bare number.
+                return PascalCaseSplitter.Replace(name, " $1");
+            }
+
+            // Bare numeric code — use the shared map.
+            string codeStr = code.ToString();
+            if (LogEntry.IpStatusCodeMap.TryGetValue(codeStr, out string readable))
+                return $"{readable}  (code {codeStr})";
+
+            return $"Error {code}";
         }
     }
 }
