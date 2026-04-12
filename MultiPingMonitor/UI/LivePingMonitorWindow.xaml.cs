@@ -20,6 +20,11 @@ namespace MultiPingMonitor.UI
         private bool _autoScroll = true;
         private bool _paused;
 
+        // Per-window session counters — start from zero at window open.
+        private uint _sessionSent;
+        private uint _sessionReceived;
+        private uint _sessionLost;
+
         public LivePingMonitorWindow(Probe probe, Window owner)
         {
             InitializeComponent();
@@ -37,11 +42,11 @@ namespace MultiPingMonitor.UI
             // Populate header from current probe state.
             UpdateHeader();
 
-            // Seed log with existing history (tail only to stay within cap).
-            SeedExistingHistory();
+            // Fresh session: do NOT preload old Probe.History lines.
+            // Log begins empty; only new lines after open will appear.
 
-            // Update stats from current probe values.
-            UpdateStatistics();
+            // Display session counters at zero.
+            UpdateSessionStatisticsDisplay();
 
             // Subscribe to probe property changes for live updates.
             _probe.PropertyChanged += Probe_PropertyChanged;
@@ -117,23 +122,7 @@ namespace MultiPingMonitor.UI
             return new LogEntry(text, LogEntryKind.Info);
         }
 
-        // ── History seeding & subscription ──
-
-        private void SeedExistingHistory()
-        {
-            if (_probe.History == null)
-                return;
-
-            // Take last MaxLogLines entries from existing history.
-            int startIndex = Math.Max(0, _probe.History.Count - MaxLogLines);
-            for (int i = startIndex; i < _probe.History.Count; i++)
-            {
-                _logLines.Add(ClassifyLine(_probe.History[i]));
-            }
-
-            // Scroll to bottom after seeding.
-            ScrollToBottom();
-        }
+        // ── History subscription ──
 
         private void History_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -150,7 +139,24 @@ namespace MultiPingMonitor.UI
             {
                 foreach (string item in e.NewItems)
                 {
-                    _logLines.Add(ClassifyLine(item));
+                    var entry = ClassifyLine(item);
+                    _logLines.Add(entry);
+
+                    // Update per-window session counters based on line classification.
+                    // Each new history line represents one probe result.
+                    switch (entry.Kind)
+                    {
+                        case LogEntryKind.Success:
+                            _sessionSent++;
+                            _sessionReceived++;
+                            break;
+                        case LogEntryKind.Failure:
+                            _sessionSent++;
+                            _sessionLost++;
+                            break;
+                        // Warning / Info lines (e.g. raw error codes, "*** Pinging …")
+                        // are not counted as probe results — they are supplementary.
+                    }
                 }
 
                 // Trim oldest lines if over cap.
@@ -158,6 +164,9 @@ namespace MultiPingMonitor.UI
                 {
                     _logLines.RemoveAt(0);
                 }
+
+                // Refresh session counter display.
+                UpdateSessionStatisticsDisplay();
 
                 if (_autoScroll)
                 {
@@ -196,14 +205,6 @@ namespace MultiPingMonitor.UI
                     ResubscribeHistory();
                     break;
             }
-
-            // Update statistics on any property change from the probe
-            // (Statistics.Sent etc. fire through the probe's chain).
-            if (e.PropertyName == nameof(Probe.StatisticsText))
-            {
-                if (!_paused)
-                    UpdateStatistics();
-            }
         }
 
         private void ResubscribeHistory()
@@ -212,13 +213,16 @@ namespace MultiPingMonitor.UI
             UnsubscribeHistory();
             _logLines.Clear();
 
+            // Reset session counters on probe restart.
+            ResetSessionCounters();
+
             if (_probe.History != null)
             {
                 SubscribeHistory(_probe.History);
-                SeedExistingHistory();
+                // Fresh session: do not preload old history lines.
             }
 
-            UpdateStatistics();
+            UpdateSessionStatisticsDisplay();
         }
 
         private void SubscribeHistory(ObservableCollection<string> history)
@@ -333,24 +337,35 @@ namespace MultiPingMonitor.UI
             return resource is Brush brush ? brush : Brushes.Gray;
         }
 
-        private void UpdateStatistics()
+        /// <summary>
+        /// Update the footer statistics display from per-window session counters.
+        /// These counters reflect only activity since this window was opened (or last cleared).
+        /// </summary>
+        private void UpdateSessionStatisticsDisplay()
         {
-            if (_probe?.Statistics == null)
-                return;
+            StatsSent.Text = _sessionSent.ToString();
+            StatsReceived.Text = _sessionReceived.ToString();
+            StatsLost.Text = _sessionLost.ToString();
 
-            StatsSent.Text = _probe.Statistics.Sent.ToString();
-            StatsReceived.Text = _probe.Statistics.Received.ToString();
-            StatsLost.Text = _probe.Statistics.Lost.ToString();
-
-            if (_probe.Statistics.Sent > 0)
+            if (_sessionSent > 0)
             {
-                double lossPercent = 100.0 * _probe.Statistics.Lost / _probe.Statistics.Sent;
+                double lossPercent = 100.0 * _sessionLost / _sessionSent;
                 StatsLossPercent.Text = $"({lossPercent:0.#}% loss)";
             }
             else
             {
                 StatsLossPercent.Text = string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Reset per-window session counters to zero.
+        /// </summary>
+        private void ResetSessionCounters()
+        {
+            _sessionSent = 0;
+            _sessionReceived = 0;
+            _sessionLost = 0;
         }
 
         // ── Auto-scroll ──
@@ -419,9 +434,9 @@ namespace MultiPingMonitor.UI
                 StopResumeButton.Content = Properties.Strings.LivePing_Stop;
                 PausedBanner.Visibility = Visibility.Collapsed;
 
-                // Refresh header and stats to current state on resume.
+                // Refresh header to current state on resume.
+                // Session counters are already up to date (paused lines were not counted).
                 UpdateHeader();
-                UpdateStatistics();
             }
         }
 
@@ -431,6 +446,10 @@ namespace MultiPingMonitor.UI
         {
             _logLines.Clear();
             _autoScroll = true;
+
+            // Clear also resets per-window session counters for a clean fresh state.
+            ResetSessionCounters();
+            UpdateSessionStatisticsDisplay();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
