@@ -16,6 +16,7 @@ namespace MultiPingMonitor.UI
         private readonly ObservableCollection<string> _logLines = new ObservableCollection<string>();
         private ObservableCollection<string> _subscribedHistory;
         private const int MaxLogLines = 500;
+        private const double BottomScrollThreshold = 20;
         private bool _autoScroll = true;
 
         public LivePingMonitorWindow(Probe probe, Window owner)
@@ -290,7 +291,7 @@ namespace MultiPingMonitor.UI
                 var scrollViewer = FindScrollViewer(LogListBox);
                 if (scrollViewer != null)
                 {
-                    _autoScroll = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 20;
+                    _autoScroll = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - BottomScrollThreshold;
                 }
             }), System.Windows.Threading.DispatcherPriority.Background);
         }

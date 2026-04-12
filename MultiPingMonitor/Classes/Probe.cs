@@ -54,6 +54,10 @@ namespace MultiPingMonitor.Classes
         public event PropertyChangedEventHandler PropertyChanged;
 
         public IsolatedPingWindow IsolatedWindow { get; set; }
+        /// <summary>
+        /// Back-reference to the Live Ping Monitor detail window for this probe.
+        /// Used for window deduplication: if already open, activate instead of creating a new one.
+        /// </summary>
         public LivePingMonitorWindow LivePingMonitorWindow { get; set; }
         public int IndeterminateCount { get; set; }
         public int HighLatencyCount { get; set; }
