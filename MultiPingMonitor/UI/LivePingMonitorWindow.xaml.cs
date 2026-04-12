@@ -675,8 +675,24 @@ namespace MultiPingMonitor.UI
             };
             tileItem.Click += (_, __) => WindowArrangeService.Tile(this);
 
+            var closeAllItem = new System.Windows.Controls.MenuItem
+            {
+                Header = Properties.Strings.LivePing_CloseAll
+            };
+            closeAllItem.Click += (_, __) =>
+            {
+                // Work with a snapshot to avoid modifying the collection during enumeration.
+                var snapshot = LiveWindowRegistry.GetOpenWindows();
+                foreach (var w in snapshot)
+                {
+                    w.Close();
+                }
+            };
+
             menu.Items.Add(cascadeItem);
             menu.Items.Add(tileItem);
+            menu.Items.Add(new System.Windows.Controls.Separator());
+            menu.Items.Add(closeAllItem);
 
             menu.PlacementTarget = ArrangeMenuButton;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;

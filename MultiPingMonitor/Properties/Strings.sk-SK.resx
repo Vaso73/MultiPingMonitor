@@ -1226,4 +1226,7 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_ArrangeTile" xml:space="preserve">
     <value>Dlaždice</value>
   </data>
+  <data name="LivePing_CloseAll" xml:space="preserve">
+    <value>Zavrieť všetky</value>
+  </data>
 </root>

@@ -3650,5 +3650,14 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Close All.
+        /// </summary>
+        public static string LivePing_CloseAll {
+            get {
+                return ResourceManager.GetString("LivePing_CloseAll", resourceCulture);
+            }
+        }
+
     }
 }
