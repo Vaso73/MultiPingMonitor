@@ -218,7 +218,7 @@
         </Setter>
     </Style>
 
-    <!-- Live Ping footer buttons: match original inline style -->
+    <!-- Live Ping footer buttons: match original inline style with explicit template -->
     <Style x:Key="Style.LivePingFooterButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
@@ -228,9 +228,34 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            CornerRadius="0"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.SurfaceAlt}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#007acc" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-    <!-- Live Ping header action buttons: match original inline style -->
+    <!-- Live Ping header action buttons: match original inline style with explicit template -->
     <Style x:Key="Style.LivePingActionButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
@@ -240,6 +265,31 @@
         <Setter Property="FontSize" Value="11" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            CornerRadius="0"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.SurfaceAlt}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#007acc" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Menu popup border: no corner radius, standard look -->

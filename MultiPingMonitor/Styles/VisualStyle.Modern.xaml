@@ -5,15 +5,15 @@
         VisualStyle.Modern
         A cleaner, modern dark-dashboard aesthetic with softer corners,
         more generous spacing, and refined typography hierarchy.
-        Still a technical monitoring tool – not flashy, just polished.
+        Designed to be CLEARLY VISUALLY DISTINCT from Classic at first glance.
     -->
 
     <!-- ── Layout tokens ─────────────────────────────────────────────── -->
     <CornerRadius x:Key="Style.CornerRadius">6</CornerRadius>
     <CornerRadius x:Key="Style.CornerRadius.Small">4</CornerRadius>
-    <CornerRadius x:Key="Style.CornerRadius.Button">4</CornerRadius>
+    <CornerRadius x:Key="Style.CornerRadius.Button">5</CornerRadius>
     <CornerRadius x:Key="Style.CornerRadius.Menu">6</CornerRadius>
-    <Thickness x:Key="Style.Padding.Button">8,4</Thickness>
+    <Thickness x:Key="Style.Padding.Button">12,6</Thickness>
     <Thickness x:Key="Style.Padding.MenuItem">8,5,8,5</Thickness>
     <Thickness x:Key="Style.Padding.Header">14,10</Thickness>
     <Thickness x:Key="Style.BorderThickness">1</Thickness>
@@ -35,7 +35,7 @@
 
     <!-- ══════════════════════════════════════════════════════════════════
          STYLE ROUTING – Modern versions with rounded corners,
-         softer hover effects, and refined spacing.
+         accent-tinted borders, softer hover effects, and refined spacing.
          ══════════════════════════════════════════════════════════════════ -->
 
     <!-- ── Modern Title Bar Button ─────────────────────────────────── -->
@@ -116,7 +116,7 @@
 
     <!-- ── Modern Window Main Panel ────────────────────────────────── -->
     <Style x:Key="Style.WindowMainPanel" TargetType="{x:Type Border}">
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="0" />
         <Style.Triggers>
@@ -128,13 +128,13 @@
 
     <!-- ── Modern Button (primary / dark) ──────────────────────────── -->
     <Style x:Key="Style.Button" TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
-        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.AccentForeground}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="Padding" Value="14,6" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -159,22 +159,15 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background"
-                                    Value="{DynamicResource Theme.Accent}" />
+                                    Value="{DynamicResource Theme.AccentHover}" />
                             <Setter TargetName="border" Property="BorderBrush"
-                                    Value="{DynamicResource Theme.Accent}" />
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource Theme.AccentForeground}" />
+                                    Value="{DynamicResource Theme.AccentHover}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background"
-                                    Value="{DynamicResource Theme.AccentHover}" />
-                            <Setter TargetName="border" Property="BorderBrush"
-                                    Value="{DynamicResource Theme.AccentHover}" />
-                            <Setter Property="Foreground"
-                                    Value="{DynamicResource Theme.AccentForeground}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.75" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Opacity" Value="0.45" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.40" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -184,13 +177,13 @@
 
     <!-- ── Modern Standard Button (secondary – the most used button) ── -->
     <Style x:Key="Style.ButtonStandard" TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="Padding" Value="14,6" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -216,6 +209,7 @@
                         <Trigger Property="IsDefaulted" Value="True">
                             <Setter TargetName="border" Property="BorderBrush"
                                     Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="border" Property="BorderThickness" Value="2" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background"
@@ -234,7 +228,7 @@
                                     Value="{DynamicResource Theme.AccentForeground}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Opacity" Value="0.45" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.40" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -246,7 +240,7 @@
     <Style x:Key="Style.LivePingFooterButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="14,6" />
         <Setter Property="FontSize" Value="12" />
@@ -287,7 +281,7 @@
     <Style x:Key="Style.LivePingActionButton" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="10,4" />
         <Setter Property="FontSize" Value="11" />
@@ -328,7 +322,7 @@
     <Style x:Key="Style.MenuPopupBorder" TargetType="{x:Type Border}">
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2,4" />
     </Style>
@@ -338,16 +332,16 @@
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="Padding" Value="14,12" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Margin" Value="0,4" />
+        <Setter Property="Margin" Value="0,6" />
     </Style>
 
     <!-- ── Modern Footer Panel ────────────────────────────────────── -->
     <Style x:Key="Style.FooterPanel" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
-        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderThickness" Value="0,2,0,0" />
         <Setter Property="Padding" Value="12,10" />
     </Style>
 

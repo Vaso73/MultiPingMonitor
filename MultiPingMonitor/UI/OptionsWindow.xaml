@@ -69,6 +69,7 @@
         <TabControl TabStripPlacement="Left" HorizontalContentAlignment="Left">
             <!-- Tab: General -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_General}" Name="GeneralTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_Header_ProbeOptions}"
@@ -247,10 +248,12 @@
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Advanced -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Advanced}" Name="AdvancedTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -342,10 +345,12 @@
                         </Label>
                     </DockPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
             
             <!-- Tab: Popup Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Notifications}" Name="PopupAlertsTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -399,10 +404,12 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Email Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Email}" Name="EmailAlertsTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel Margin="20,0,20,15">
 
@@ -529,10 +536,12 @@
                         </DockPanel>
                     </DockPanel>
                 </ScrollViewer>
+                </Border>
             </TabItem>
 
             <!-- Tab: Audio Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Sounds}" Name="AudioAlertTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
@@ -638,10 +647,12 @@
                         </StackPanel>
                     </Grid>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Logging -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Logging}" Name="LogOutputTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
@@ -725,10 +736,12 @@
                         </StackPanel>
                     </Grid>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Display -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Display}" Name="DisplayTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -854,10 +867,12 @@
                                  MaxLength="2"/>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
             
             <!-- Tab: Layout -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Colors}" Name="LayoutTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel LastChildFill="False"
                                Name="ColorsDockPanel"
@@ -1043,6 +1058,7 @@
                         </Grid>
                     </DockPanel>
                 </ScrollViewer>
+                </Border>
             </TabItem>
 
         </TabControl>

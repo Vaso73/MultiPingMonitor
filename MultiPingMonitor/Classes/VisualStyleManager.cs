@@ -46,11 +46,14 @@ namespace MultiPingMonitor.Classes
             var newStyleDict = new ResourceDictionary { Source = styleUri };
 
             // Find and replace existing visual style dictionary, or insert after the theme dict.
+            // Use Remove+Insert instead of indexer replacement to ensure WPF raises
+            // proper change notifications and all DynamicResource bindings re-evaluate.
             for (int i = 0; i < mergedDicts.Count; i++)
             {
                 if (IsVisualStyleDictionary(mergedDicts[i]))
                 {
-                    mergedDicts[i] = newStyleDict;
+                    mergedDicts.RemoveAt(i);
+                    mergedDicts.Insert(i, newStyleDict);
                     return;
                 }
             }
