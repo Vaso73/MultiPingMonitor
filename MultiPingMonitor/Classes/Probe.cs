@@ -54,6 +54,7 @@ namespace MultiPingMonitor.Classes
         public event PropertyChangedEventHandler PropertyChanged;
 
         public IsolatedPingWindow IsolatedWindow { get; set; }
+        public LivePingMonitorWindow LivePingMonitorWindow { get; set; }
         public int IndeterminateCount { get; set; }
         public int HighLatencyCount { get; set; }
         public long MinRtt { get; set; } = long.MaxValue;

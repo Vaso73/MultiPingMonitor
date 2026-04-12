@@ -71,7 +71,8 @@
         <DataTemplate x:Key="CompactProbeTemplate">
             <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1"
                     Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}"
-                    Padding="4,2">
+                    Padding="4,2"
+                    MouseLeftButtonDown="CompactItem_MouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
