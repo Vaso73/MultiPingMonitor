@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace MultiPingMonitor.Classes
 {
     /// <summary>
@@ -30,5 +32,38 @@ namespace MultiPingMonitor.Classes
         }
 
         public override string ToString() => Text;
+
+        /// <summary>
+        /// Known IPStatus / WinSock numeric codes that .NET may emit as raw ToString() values.
+        /// Maps numeric code string → human-readable description.
+        /// Shared by LivePingMonitorWindow (log classification) and Probe-Icmp (FormatIpStatus).
+        /// </summary>
+        public static readonly Dictionary<string, string> IpStatusCodeMap = new Dictionary<string, string>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            { "11001", "Buffer too small" },
+            { "11002", "Destination net unreachable" },
+            { "11003", "Destination host unreachable" },
+            { "11004", "Destination protocol unreachable" },
+            { "11005", "Destination port unreachable" },
+            { "11006", "No resources" },
+            { "11007", "Bad option" },
+            { "11008", "Hardware error" },
+            { "11009", "Packet too big" },
+            { "11010", "Request timed out" },
+            { "11011", "Bad route" },
+            { "11012", "TTL expired in transit" },
+            { "11013", "TTL expired reassembly" },
+            { "11014", "Parameter problem" },
+            { "11015", "Source quench" },
+            { "11016", "Option too big" },
+            { "11017", "Bad destination" },
+            { "11018", "Destination unreachable" },
+            { "11032", "Time exceeded" },
+            { "11033", "Bad header" },
+            { "11034", "Unrecognized next header" },
+            { "11035", "ICMP error" },
+            { "11036", "Destination scope mismatch" },
+            { "11050", "General failure — network unavailable" },
+        };
     }
 }

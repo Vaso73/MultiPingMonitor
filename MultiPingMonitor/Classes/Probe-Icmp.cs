@@ -2,6 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -264,6 +265,11 @@ namespace MultiPingMonitor.Classes
         }
 
         /// <summary>
+        /// Regex for splitting PascalCase enum names into spaced words.
+        /// </summary>
+        private static readonly Regex PascalCaseSplitter = new Regex("(?<=[a-z])([A-Z])", RegexOptions.Compiled);
+
+        /// <summary>
         /// Format an IPStatus value into a human-readable string.
         /// For well-known enum members the name is converted to a spaced phrase;
         /// for raw numeric codes (e.g. 11050) the code is mapped to a description.
@@ -278,20 +284,15 @@ namespace MultiPingMonitor.Classes
             if (!int.TryParse(name, out _))
             {
                 // The name is a real enum member, not a bare number.
-                return System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1");
+                return PascalCaseSplitter.Replace(name, " $1");
             }
 
-            // Bare numeric code — map known values.
-            switch (code)
-            {
-                case 11050: return "General failure — network unavailable  (code 11050)";
-                case 11002: return "Destination net unreachable  (code 11002)";
-                case 11003: return "Destination host unreachable  (code 11003)";
-                case 11010: return "Request timed out  (code 11010)";
-                case 11012: return "TTL expired in transit  (code 11012)";
-                case 11013: return "TTL expired reassembly  (code 11013)";
-                default:    return $"Error {code}";
-            }
+            // Bare numeric code — use the shared map.
+            string codeStr = code.ToString();
+            if (LogEntry.IpStatusCodeMap.TryGetValue(codeStr, out string readable))
+                return $"{readable}  (code {codeStr})";
+
+            return $"Error {code}";
         }
     }
 }

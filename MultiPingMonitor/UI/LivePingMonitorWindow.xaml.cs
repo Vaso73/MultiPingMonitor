@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,36 +19,6 @@ namespace MultiPingMonitor.UI
         private const double BottomScrollThreshold = 20;
         private bool _autoScroll = true;
         private bool _paused;
-
-        // Known IPStatus numeric codes that .NET may emit as raw ToString() values.
-        // Maps numeric code → human-readable description.
-        private static readonly Dictionary<string, string> IpStatusCodeMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "11001", "Buffer too small" },
-            { "11002", "Destination net unreachable" },
-            { "11003", "Destination host unreachable" },
-            { "11004", "Destination protocol unreachable" },
-            { "11005", "Destination port unreachable" },
-            { "11006", "No resources" },
-            { "11007", "Bad option" },
-            { "11008", "Hardware error" },
-            { "11009", "Packet too big" },
-            { "11010", "Request timed out" },
-            { "11011", "Bad route" },
-            { "11012", "TTL expired in transit" },
-            { "11013", "TTL expired reassembly" },
-            { "11014", "Parameter problem" },
-            { "11015", "Source quench" },
-            { "11016", "Option too big" },
-            { "11017", "Bad destination" },
-            { "11018", "Destination unreachable" },
-            { "11032", "Time exceeded" },
-            { "11033", "Bad header" },
-            { "11034", "Unrecognized next header" },
-            { "11035", "ICMP error" },
-            { "11036", "Destination scope mismatch" },
-            { "11050", "General failure — network unavailable" },
-        };
 
         public LivePingMonitorWindow(Probe probe, Window owner)
         {
@@ -100,13 +68,14 @@ namespace MultiPingMonitor.UI
             if (bracketClose >= 0 && bracketClose + 1 < text.Length)
                 body = text.Substring(bracketClose + 1).TrimStart();
 
-            // Success: "Reply from …" with an ms bracket.
+            // Success: "Reply from …" with an ms bracket (ICMP success).
             if (body.StartsWith("Reply from ", StringComparison.OrdinalIgnoreCase) &&
-                body.Contains("[") && body.Contains("ms]"))
+                body.Contains("ms]"))
                 return new LogEntry(text, LogEntryKind.Success);
 
-            // TCP port open.
-            if (body.Contains("[") && body.Contains("ms]"))
+            // TCP port open: contains "Open" and a latency bracket.
+            if (body.Contains("Open", StringComparison.OrdinalIgnoreCase) &&
+                body.Contains("ms]"))
                 return new LogEntry(text, LogEntryKind.Success);
 
             // Timeout / unreachable / down.
@@ -120,13 +89,12 @@ namespace MultiPingMonitor.UI
                 return new LogEntry(text, LogEntryKind.Failure);
 
             // TCP port closed.
-            if (body.Contains("Closed", StringComparison.OrdinalIgnoreCase) ||
-                body.Contains("closed", StringComparison.OrdinalIgnoreCase))
+            if (body.Contains("Closed", StringComparison.OrdinalIgnoreCase))
                 return new LogEntry(text, LogEntryKind.Failure);
 
             // Raw numeric IPStatus code — rewrite to human-readable text.
             string trimmed = body.Trim();
-            if (IpStatusCodeMap.TryGetValue(trimmed, out string readable))
+            if (LogEntry.IpStatusCodeMap.TryGetValue(trimmed, out string readable))
             {
                 string rewritten = text.Replace(trimmed, $"{readable}  (code {trimmed})");
                 return new LogEntry(rewritten, LogEntryKind.Warning);
