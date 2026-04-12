@@ -325,5 +325,22 @@
         <Setter Property="Padding" Value="9" />
     </Style>
 
+    <!-- ── Compact row: Classic (flat, original look) ─────────────────── -->
+    <Style x:Key="Style.CompactRow" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <!-- ── Compact latency badge: Classic (no decoration) ─────────────── -->
+    <Style x:Key="Style.CompactLatencyBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="4,0,0,0" />
+    </Style>
+
 </ResourceDictionary>
 
