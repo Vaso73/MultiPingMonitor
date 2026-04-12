@@ -563,23 +563,23 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Update the pin icon fill and text foreground based on Always on top state.
-        /// Active: pin icon gets accent/danger color, text gets primary (high-contrast).
-        /// Inactive: both use secondary (calmer).
-        /// Text foreground is set directly on the TextBlock to avoid WPF default
-        /// ToggleButton checked-state chrome overriding readability.
+        /// Update the pin icon fill and border based on Always on top state.
+        /// Active: pin icon turns accent/danger red, border highlights.
+        /// Inactive: pin icon uses secondary color, border returns to default.
+        /// Text foreground is permanently set to Theme.Text.Primary in XAML
+        /// and is never changed here — this avoids any readability issues.
         /// </summary>
         private void UpdatePinIconState()
         {
             if (AlwaysOnTopCheckBox.IsChecked == true)
             {
                 PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Danger");
-                AlwaysOnTopText.SetResourceReference(ForegroundProperty, "Theme.Text.Primary");
+                AlwaysOnTopCheckBox.SetResourceReference(BorderBrushProperty, "Theme.Danger");
             }
             else
             {
                 PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Text.Secondary");
-                AlwaysOnTopText.SetResourceReference(ForegroundProperty, "Theme.Text.Secondary");
+                AlwaysOnTopCheckBox.SetResourceReference(BorderBrushProperty, "Theme.Border");
             }
         }
 
