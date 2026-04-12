@@ -79,9 +79,7 @@
             </Grid>
 
             <!-- Header area -->
-            <Border x:Name="HeaderBorder" DockPanel.Dock="Top" Background="{DynamicResource Theme.Surface}"
-                    Padding="{DynamicResource Style.Padding.Header}"
-                    BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1">
+            <Border x:Name="HeaderBorder" DockPanel.Dock="Top" Style="{DynamicResource Style.HeaderPanel}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
