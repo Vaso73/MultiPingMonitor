@@ -1315,4 +1315,16 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_Paused" xml:space="preserve">
     <value>⏸  Paused</value>
   </data>
+  <data name="LivePing_AlwaysOnTop" xml:space="preserve">
+    <value>Always on top</value>
+  </data>
+  <data name="LivePing_CopyTarget" xml:space="preserve">
+    <value>Copy Target</value>
+  </data>
+  <data name="LivePing_CopyAddress" xml:space="preserve">
+    <value>Copy Address</value>
+  </data>
+  <data name="LivePing_AddressNotAvailable" xml:space="preserve">
+    <value>Address not available</value>
+  </data>
 </root>
