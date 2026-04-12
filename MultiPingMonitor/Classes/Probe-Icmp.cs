@@ -242,7 +242,7 @@ namespace MultiPingMonitor.Classes
                         sb.Append("Request timed out.");
                         break;
                     default:
-                        sb.Append(pingReply.Status.ToString());
+                        sb.Append(FormatIpStatus(pingReply.Status));
                         break;
                 }
             }
@@ -261,6 +261,37 @@ namespace MultiPingMonitor.Classes
 
             // If enabled, log output.
             WriteToLog(output);
+        }
+
+        /// <summary>
+        /// Format an IPStatus value into a human-readable string.
+        /// For well-known enum members the name is converted to a spaced phrase;
+        /// for raw numeric codes (e.g. 11050) the code is mapped to a description.
+        /// </summary>
+        private static string FormatIpStatus(IPStatus status)
+        {
+            int code = (int)status;
+            string name = status.ToString();
+
+            // If the enum member has a friendly name, insert spaces before capitals.
+            // Example: "TtlExpired" → "TTL expired", "DestinationHostUnreachable" → "Destination host unreachable".
+            if (!int.TryParse(name, out _))
+            {
+                // The name is a real enum member, not a bare number.
+                return System.Text.RegularExpressions.Regex.Replace(name, "(?<=[a-z])([A-Z])", " $1");
+            }
+
+            // Bare numeric code — map known values.
+            switch (code)
+            {
+                case 11050: return "General failure — network unavailable  (code 11050)";
+                case 11002: return "Destination net unreachable  (code 11002)";
+                case 11003: return "Destination host unreachable  (code 11003)";
+                case 11010: return "Request timed out  (code 11010)";
+                case 11012: return "TTL expired in transit  (code 11012)";
+                case 11013: return "TTL expired reassembly  (code 11013)";
+                default:    return $"Error {code}";
+            }
         }
     }
 }

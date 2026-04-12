@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,11 +15,42 @@ namespace MultiPingMonitor.UI
     public partial class LivePingMonitorWindow : Window
     {
         private Probe _probe;
-        private readonly ObservableCollection<string> _logLines = new ObservableCollection<string>();
+        private readonly ObservableCollection<LogEntry> _logLines = new ObservableCollection<LogEntry>();
         private ObservableCollection<string> _subscribedHistory;
         private const int MaxLogLines = 500;
         private const double BottomScrollThreshold = 20;
         private bool _autoScroll = true;
+        private bool _paused;
+
+        // Known IPStatus numeric codes that .NET may emit as raw ToString() values.
+        // Maps numeric code → human-readable description.
+        private static readonly Dictionary<string, string> IpStatusCodeMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "11001", "Buffer too small" },
+            { "11002", "Destination net unreachable" },
+            { "11003", "Destination host unreachable" },
+            { "11004", "Destination protocol unreachable" },
+            { "11005", "Destination port unreachable" },
+            { "11006", "No resources" },
+            { "11007", "Bad option" },
+            { "11008", "Hardware error" },
+            { "11009", "Packet too big" },
+            { "11010", "Request timed out" },
+            { "11011", "Bad route" },
+            { "11012", "TTL expired in transit" },
+            { "11013", "TTL expired reassembly" },
+            { "11014", "Parameter problem" },
+            { "11015", "Source quench" },
+            { "11016", "Option too big" },
+            { "11017", "Bad destination" },
+            { "11018", "Destination unreachable" },
+            { "11032", "Time exceeded" },
+            { "11033", "Bad header" },
+            { "11034", "Unrecognized next header" },
+            { "11035", "ICMP error" },
+            { "11036", "Destination scope mismatch" },
+            { "11050", "General failure — network unavailable" },
+        };
 
         public LivePingMonitorWindow(Probe probe, Window owner)
         {
@@ -28,6 +61,10 @@ namespace MultiPingMonitor.UI
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
 
             LogListBox.ItemsSource = _logLines;
+
+            // Set localized button/banner text.
+            StopResumeButton.Content = Properties.Strings.LivePing_Stop;
+            PausedBannerText.Text = Properties.Strings.LivePing_Paused;
 
             // Populate header from current probe state.
             UpdateHeader();
@@ -45,6 +82,75 @@ namespace MultiPingMonitor.UI
             SubscribeHistory(_probe.History);
         }
 
+        // ── Log entry classification ──
+
+        /// <summary>
+        /// Classify a raw history line into a LogEntryKind and optionally
+        /// rewrite raw numeric IPStatus codes into readable text.
+        /// </summary>
+        private static LogEntry ClassifyLine(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return new LogEntry(text, LogEntryKind.Info);
+
+            // Trim the timestamp prefix for pattern matching.
+            // History lines look like: "[10:32:05]  Reply from …" or "[10:32:05]  Request timed out."
+            string body = text;
+            int bracketClose = text.IndexOf(']');
+            if (bracketClose >= 0 && bracketClose + 1 < text.Length)
+                body = text.Substring(bracketClose + 1).TrimStart();
+
+            // Success: "Reply from …" with an ms bracket.
+            if (body.StartsWith("Reply from ", StringComparison.OrdinalIgnoreCase) &&
+                body.Contains("[") && body.Contains("ms]"))
+                return new LogEntry(text, LogEntryKind.Success);
+
+            // TCP port open.
+            if (body.Contains("[") && body.Contains("ms]"))
+                return new LogEntry(text, LogEntryKind.Success);
+
+            // Timeout / unreachable / down.
+            if (body.StartsWith("Request timed out", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Failure);
+            if (body.Contains("unreachable", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Failure);
+            if (body.Contains("Unable to resolve", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Failure);
+            if (body.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Failure);
+
+            // TCP port closed.
+            if (body.Contains("Closed", StringComparison.OrdinalIgnoreCase) ||
+                body.Contains("closed", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Failure);
+
+            // Raw numeric IPStatus code — rewrite to human-readable text.
+            string trimmed = body.Trim();
+            if (IpStatusCodeMap.TryGetValue(trimmed, out string readable))
+            {
+                string rewritten = text.Replace(trimmed, $"{readable}  (code {trimmed})");
+                return new LogEntry(rewritten, LogEntryKind.Warning);
+            }
+
+            // Any other purely numeric body — treat as unknown error code.
+            if (int.TryParse(trimmed, out _))
+            {
+                string rewritten = text.Replace(trimmed, $"Error {trimmed}");
+                return new LogEntry(rewritten, LogEntryKind.Warning);
+            }
+
+            // Informational lines (e.g. "*** Pinging …", stats summary).
+            if (body.StartsWith("***", StringComparison.Ordinal) ||
+                body.StartsWith("Sent ", StringComparison.OrdinalIgnoreCase) ||
+                body.StartsWith("Minimum ", StringComparison.OrdinalIgnoreCase))
+                return new LogEntry(text, LogEntryKind.Info);
+
+            // Default: info / neutral.
+            return new LogEntry(text, LogEntryKind.Info);
+        }
+
+        // ── History seeding & subscription ──
+
         private void SeedExistingHistory()
         {
             if (_probe.History == null)
@@ -54,7 +160,7 @@ namespace MultiPingMonitor.UI
             int startIndex = Math.Max(0, _probe.History.Count - MaxLogLines);
             for (int i = startIndex; i < _probe.History.Count; i++)
             {
-                _logLines.Add(_probe.History[i]);
+                _logLines.Add(ClassifyLine(_probe.History[i]));
             }
 
             // Scroll to bottom after seeding.
@@ -69,11 +175,14 @@ namespace MultiPingMonitor.UI
                 return;
             }
 
+            if (_paused)
+                return;
+
             if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
             {
                 foreach (string item in e.NewItems)
                 {
-                    _logLines.Add(item);
+                    _logLines.Add(ClassifyLine(item));
                 }
 
                 // Trim oldest lines if over cap.
@@ -106,7 +215,8 @@ namespace MultiPingMonitor.UI
             {
                 case nameof(Probe.Status):
                 case nameof(Probe.LastRoundtripTime):
-                    UpdateHeader();
+                    if (!_paused)
+                        UpdateHeader();
                     break;
                 case nameof(Probe.Alias):
                 case nameof(Probe.Hostname):
@@ -123,7 +233,8 @@ namespace MultiPingMonitor.UI
             // (Statistics.Sent etc. fire through the probe's chain).
             if (e.PropertyName == nameof(Probe.StatisticsText))
             {
-                UpdateStatistics();
+                if (!_paused)
+                    UpdateStatistics();
             }
         }
 
@@ -159,6 +270,8 @@ namespace MultiPingMonitor.UI
                 _subscribedHistory = null;
             }
         }
+
+        // ── Header / status / statistics ──
 
         private void UpdateHeader()
         {
@@ -208,32 +321,40 @@ namespace MultiPingMonitor.UI
             {
                 case ProbeStatus.Up:
                 case ProbeStatus.LatencyNormal:
-                    HeaderStatus.Text = "UP";
+                    HeaderStatus.Text = "● UP";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Success");
+                    HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Down:
-                    HeaderStatus.Text = "DOWN";
+                    HeaderStatus.Text = "▼ DOWN";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Danger");
+                    // Emphasize DOWN state with tinted header background.
+                    HeaderBorder.Background = new SolidColorBrush(Color.FromArgb(0x30, 0xF3, 0x8B, 0xA8));
                     break;
                 case ProbeStatus.Error:
-                    HeaderStatus.Text = "ERROR";
+                    HeaderStatus.Text = "✖ ERROR";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Danger");
+                    HeaderBorder.Background = new SolidColorBrush(Color.FromArgb(0x30, 0xF3, 0x8B, 0xA8));
                     break;
                 case ProbeStatus.LatencyHigh:
-                    HeaderStatus.Text = "HIGH LATENCY";
+                    HeaderStatus.Text = "⚠ HIGH LATENCY";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Warning");
+                    HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Indeterminate:
-                    HeaderStatus.Text = "INDETERMINATE";
+                    HeaderStatus.Text = "⚠ INDETERMINATE";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Warning");
+                    HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Inactive:
                     HeaderStatus.Text = "INACTIVE";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Text.Secondary");
+                    HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 default:
                     HeaderStatus.Text = "—";
                     HeaderStatus.Foreground = FindBrushResource("Theme.Text.Secondary");
+                    HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
             }
         }
@@ -263,6 +384,8 @@ namespace MultiPingMonitor.UI
                 StatsLossPercent.Text = string.Empty;
             }
         }
+
+        // ── Auto-scroll ──
 
         private void ScrollToBottom()
         {
@@ -310,6 +433,28 @@ namespace MultiPingMonitor.UI
             }
 
             return null;
+        }
+
+        // ── Stop / Resume ──
+
+        private void StopResumeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _paused = !_paused;
+
+            if (_paused)
+            {
+                StopResumeButton.Content = Properties.Strings.LivePing_Resume;
+                PausedBanner.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                StopResumeButton.Content = Properties.Strings.LivePing_Stop;
+                PausedBanner.Visibility = Visibility.Collapsed;
+
+                // Refresh header and stats to current state on resume.
+                UpdateHeader();
+                UpdateStatistics();
+            }
         }
 
         // ── Button handlers ──

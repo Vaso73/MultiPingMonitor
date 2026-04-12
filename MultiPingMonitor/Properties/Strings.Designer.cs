@@ -3560,5 +3560,32 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string LivePing_Stop {
+            get {
+                return ResourceManager.GetString("LivePing_Stop", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        public static string LivePing_Resume {
+            get {
+                return ResourceManager.GetString("LivePing_Resume", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ⏸  Paused.
+        /// </summary>
+        public static string LivePing_Paused {
+            get {
+                return ResourceManager.GetString("LivePing_Paused", resourceCulture);
+            }
+        }
+
     }
 }
