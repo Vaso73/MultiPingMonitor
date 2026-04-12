@@ -27,7 +27,8 @@ namespace MultiPingMonitor.Classes
 
             var wa = GetWorkingArea(activeWindow);
 
-            // Use a uniform window size: the saved size of the active window or defaults.
+            // Use a uniform window size: the saved size of the active window or defaults,
+            // clamped to not exceed the working area.
             double winW = Math.Min(activeWindow.Width, wa.Width);
             double winH = Math.Min(activeWindow.Height, wa.Height);
 
@@ -43,10 +44,12 @@ namespace MultiPingMonitor.Classes
                 double top = wa.Top + (i * CascadeOffsetY);
 
                 // Wrap around if the window would be too far off-screen.
-                if (left + winW > wa.Right)
-                    left = wa.Left + ((i * CascadeOffsetX) % Math.Max(1, wa.Width - winW));
-                if (top + winH > wa.Bottom)
-                    top = wa.Top + ((i * CascadeOffsetY) % Math.Max(1, wa.Height - winH));
+                double availW = wa.Width - winW;
+                double availH = wa.Height - winH;
+                if (availW > 0 && left + winW > wa.Right)
+                    left = wa.Left + ((i * CascadeOffsetX) % (int)availW);
+                if (availH > 0 && top + winH > wa.Bottom)
+                    top = wa.Top + ((i * CascadeOffsetY) % (int)availH);
 
                 // Final clamp: ensure at least MinVisibleMargin pixels stay visible.
                 left = Clamp(left, wa.Left, wa.Right - MinVisibleMargin);
