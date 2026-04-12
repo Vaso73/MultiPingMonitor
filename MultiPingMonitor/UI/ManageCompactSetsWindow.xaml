@@ -59,7 +59,7 @@
         <!-- Main content: split between sets list and targets list -->
         <Grid Grid.Row="1" Margin="0,6,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" MinWidth="180"/>
+                <ColumnDefinition x:Name="LeftPaneColumn" Width="250" MinWidth="180"/>
                 <ColumnDefinition Width="6"/>
                 <ColumnDefinition Width="*" MinWidth="200"/>
             </Grid.ColumnDefinitions>

@@ -109,6 +109,10 @@ namespace MultiPingMonitor.Classes
         // Id of the currently active compact set (null/empty ⇒ none).
         public static string ActiveCompactSetId { get; set; } = string.Empty;
 
+        // Manage Compact Sets window: persisted left-pane width (pixels).
+        // -1 means "use XAML default" (no saved value yet).
+        public static double ManageCompactSetsSplitterWidth { get; set; } = -1;
+
         // Window placement.
         // When true (default), window positions and sizes are persisted across sessions.
         // Ready for future Options UI integration – just bind to this property.

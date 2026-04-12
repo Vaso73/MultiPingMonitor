@@ -22,7 +22,34 @@ namespace MultiPingMonitor.UI
                 WindowStartupLocation = WindowStartupLocation.Manual;
 
             WindowPlacementService.Attach(this, "ManageCompactSetsWindow");
+
+            // Restore inner splitter position (left pane width).
+            RestoreSplitterWidth();
+
             RefreshSetsList();
+        }
+
+        // ── Inner pane persistence ────────────────────────────────────────────
+
+        private void RestoreSplitterWidth()
+        {
+            double saved = ApplicationOptions.ManageCompactSetsSplitterWidth;
+            if (saved <= 0)
+                return; // No saved value – use XAML default.
+
+            // Clamp to the column's MinWidth.
+            double min = LeftPaneColumn.MinWidth;
+            if (saved < min)
+                saved = min;
+
+            LeftPaneColumn.Width = new GridLength(saved, GridUnitType.Pixel);
+        }
+
+        private void SaveSplitterWidth()
+        {
+            double width = LeftPaneColumn.ActualWidth;
+            if (width > 0)
+                ApplicationOptions.ManageCompactSetsSplitterWidth = width;
         }
 
         // ── Sets list ─────────────────────────────────────────────────────────
@@ -542,6 +569,12 @@ namespace MultiPingMonitor.UI
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            SaveSplitterWidth();
+            base.OnClosing(e);
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
