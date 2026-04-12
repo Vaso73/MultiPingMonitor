@@ -115,6 +115,18 @@
                 </Grid>
             </Border>
         </DataTemplate>
+
+        <!-- Compact View: ItemsControl template with slim scrollable region -->
+        <ControlTemplate x:Key="CompactItemsControlTemplate" TargetType="{x:Type ItemsControl}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          Focusable="False">
+                <ScrollViewer.Resources>
+                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle.Compact}"/>
+                </ScrollViewer.Resources>
+                <ItemsPresenter/>
+            </ScrollViewer>
+        </ControlTemplate>
     </Window.Resources>
 
     <!-- Root Border with window border -->

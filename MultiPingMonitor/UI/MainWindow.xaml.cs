@@ -47,10 +47,11 @@ namespace MultiPingMonitor.UI
         private bool _startupContentInitialized = false;
 
         // ── Display mode ──────────────────────────────────────────────────────
-        // Saved references to the normal-mode ItemTemplate and ItemsPanel so they
-        // can be restored when switching back from Compact to Normal.
+        // Saved references to the normal-mode ItemTemplate, ItemsPanel, and Template
+        // so they can be restored when switching back from Compact to Normal.
         private DataTemplate _normalItemTemplate;
         private ItemsPanelTemplate _normalItemsPanel;
+        private ControlTemplate _normalControlTemplate;
 
         // ── Compact custom targets ────────────────────────────────────────────
         // Separate probe collection used when Compact mode is configured to use
@@ -385,6 +386,8 @@ namespace MultiPingMonitor.UI
                 _normalItemTemplate = ProbeItemsControl.ItemTemplate;
             if (_normalItemsPanel == null)
                 _normalItemsPanel = ProbeItemsControl.ItemsPanel;
+            if (_normalControlTemplate == null)
+                _normalControlTemplate = ProbeItemsControl.Template;
 
             // ── Toggle chrome / border for compact mode ──
             var currentChrome = System.Windows.Shell.WindowChrome.GetWindowChrome(this);
@@ -441,6 +444,10 @@ namespace MultiPingMonitor.UI
                 ProbeItemsControl.Margin = new Thickness(0);
                 ProbeItemsControl.BorderThickness = new Thickness(0);
 
+                // Enable vertical scrolling with a slim scrollbar so long target
+                // lists remain reachable.  Template is defined in XAML resources.
+                ProbeItemsControl.Template = (ControlTemplate)FindResource("CompactItemsControlTemplate");
+
                 // Switch ItemsSource based on compact data source mode.
                 ApplyCompactDataSource();
             }
@@ -449,6 +456,7 @@ namespace MultiPingMonitor.UI
                 // Restore the original Normal-mode templates.
                 ProbeItemsControl.ItemTemplate = _normalItemTemplate;
                 ProbeItemsControl.ItemsPanel = _normalItemsPanel;
+                ProbeItemsControl.Template = _normalControlTemplate;
 
                 // Restore original margins.
                 ProbeItemsControl.Margin = new Thickness(0, 0, -2, -2);
