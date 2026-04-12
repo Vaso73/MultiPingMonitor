@@ -1327,4 +1327,13 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_AddressNotAvailable" xml:space="preserve">
     <value>Address not available</value>
   </data>
+  <data name="LivePing_Arrange" xml:space="preserve">
+    <value>Arrange</value>
+  </data>
+  <data name="LivePing_ArrangeCascade" xml:space="preserve">
+    <value>Cascade</value>
+  </data>
+  <data name="LivePing_ArrangeTile" xml:space="preserve">
+    <value>Tile</value>
+  </data>
 </root>

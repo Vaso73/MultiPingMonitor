@@ -3623,5 +3623,32 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange.
+        /// </summary>
+        public static string LivePing_Arrange {
+            get {
+                return ResourceManager.GetString("LivePing_Arrange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cascade.
+        /// </summary>
+        public static string LivePing_ArrangeCascade {
+            get {
+                return ResourceManager.GetString("LivePing_ArrangeCascade", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tile.
+        /// </summary>
+        public static string LivePing_ArrangeTile {
+            get {
+                return ResourceManager.GetString("LivePing_ArrangeTile", resourceCulture);
+            }
+        }
+
     }
 }
