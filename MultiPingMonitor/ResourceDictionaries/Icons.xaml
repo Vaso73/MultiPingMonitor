@@ -391,6 +391,31 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <!-- Icon: cascade (three overlapping windows offset diagonally) -->
+    <DrawingImage x:Key="icon.cascade">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <!-- Back window (lightest) -->
+                <GeometryDrawing Brush="#7ab3d4">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="160,16,336,288" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- Middle window -->
+                <GeometryDrawing Brush="#3d8bc4">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="80,112,336,288" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <!-- Front window (darkest) -->
+                <GeometryDrawing Brush="#0063b1">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="16" RadiusY="16" Rect="0,208,336,288" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
     <!-- Icon: compact-view (three stacked horizontal bars representing compact list rows) -->
     <DrawingImage x:Key="icon.compact-view">
         <DrawingImage.Drawing>

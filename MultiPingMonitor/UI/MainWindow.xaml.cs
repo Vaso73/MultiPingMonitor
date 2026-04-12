@@ -802,9 +802,18 @@ namespace MultiPingMonitor.UI
             {
                 Header = Strings.LivePing_OpenAllLive
             };
+            var openAllIcon = Application.Current.TryFindResource("icon.window-restore-blue") as System.Windows.Media.ImageSource;
+            if (openAllIcon != null)
+                openAllSub.Icon = new System.Windows.Controls.Image { Source = openAllIcon, Width = 16, Height = 16 };
             var cascadeItem = new MenuItem { Header = Strings.LivePing_OpenAllCascade };
+            var cascadeIcon = Application.Current.TryFindResource("icon.cascade") as System.Windows.Media.ImageSource;
+            if (cascadeIcon != null)
+                cascadeItem.Icon = new System.Windows.Controls.Image { Source = cascadeIcon, Width = 16, Height = 16 };
             cascadeItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: true);
             var tileItem = new MenuItem { Header = Strings.LivePing_OpenAllTile };
+            var tileIcon = Application.Current.TryFindResource("icon.columns-grid") as System.Windows.Media.ImageSource;
+            if (tileIcon != null)
+                tileItem.Icon = new System.Windows.Controls.Image { Source = tileIcon, Width = 16, Height = 16 };
             tileItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: false);
             openAllSub.Items.Add(cascadeItem);
             openAllSub.Items.Add(tileItem);

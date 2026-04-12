@@ -667,18 +667,27 @@ namespace MultiPingMonitor.UI
             {
                 Header = Properties.Strings.LivePing_ArrangeCascade
             };
+            var cascadeIcon = Application.Current.TryFindResource("icon.cascade") as System.Windows.Media.ImageSource;
+            if (cascadeIcon != null)
+                cascadeItem.Icon = new System.Windows.Controls.Image { Source = cascadeIcon, Width = 16, Height = 16 };
             cascadeItem.Click += (_, __) => WindowArrangeService.Cascade(this);
 
             var tileItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_ArrangeTile
             };
+            var tileIcon = Application.Current.TryFindResource("icon.columns-grid") as System.Windows.Media.ImageSource;
+            if (tileIcon != null)
+                tileItem.Icon = new System.Windows.Controls.Image { Source = tileIcon, Width = 16, Height = 16 };
             tileItem.Click += (_, __) => WindowArrangeService.Tile(this);
 
             var closeAllItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_CloseAll
             };
+            var closeIcon = Application.Current.TryFindResource("icon.window-close-red") as System.Windows.Media.ImageSource;
+            if (closeIcon != null)
+                closeAllItem.Icon = new System.Windows.Controls.Image { Source = closeIcon, Width = 16, Height = 16 };
             closeAllItem.Click += (_, __) =>
             {
                 // Work with a snapshot to avoid modifying the collection during enumeration.
