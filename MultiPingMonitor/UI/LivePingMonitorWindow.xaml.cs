@@ -573,12 +573,8 @@ namespace MultiPingMonitor.UI
             }
             else
             {
-                // Fallback: copy hostname if no reply address has been seen yet.
-                string target = _probe?.Hostname;
-                if (!string.IsNullOrWhiteSpace(target))
-                {
-                    try { Clipboard.SetText(target); } catch { }
-                }
+                // No reply address seen yet — show tooltip feedback.
+                CopyAddressButton.ToolTip = Properties.Strings.LivePing_AddressNotAvailable;
             }
         }
 
