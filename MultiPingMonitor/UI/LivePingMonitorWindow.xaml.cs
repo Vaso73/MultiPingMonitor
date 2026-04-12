@@ -663,6 +663,16 @@ namespace MultiPingMonitor.UI
         {
             var menu = new System.Windows.Controls.ContextMenu();
 
+            // Apply theme-aware brushes (same pattern as tray and compact context menus).
+            menu.SetResourceReference(System.Windows.Controls.Control.BackgroundProperty, "Theme.Surface");
+            menu.SetResourceReference(System.Windows.Controls.Control.BorderBrushProperty, "Theme.Border");
+            menu.SetResourceReference(System.Windows.Controls.Control.ForegroundProperty, "Theme.Text.Primary");
+            menu.BorderThickness = new Thickness(1);
+            menu.Padding = new Thickness(2);
+            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            if (menuItemStyle != null)
+                menu.Resources[typeof(System.Windows.Controls.MenuItem)] = menuItemStyle;
+
             var cascadeItem = new System.Windows.Controls.MenuItem
             {
                 Header = Properties.Strings.LivePing_ArrangeCascade
@@ -700,7 +710,12 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(cascadeItem);
             menu.Items.Add(tileItem);
-            menu.Items.Add(new System.Windows.Controls.Separator());
+
+            var sep = new System.Windows.Controls.Separator();
+            sep.SetResourceReference(System.Windows.Controls.Separator.BackgroundProperty, "Theme.Border");
+            sep.Margin = new Thickness(4, 2, 4, 2);
+            menu.Items.Add(sep);
+
             menu.Items.Add(closeAllItem);
 
             menu.PlacementTarget = ArrangeMenuButton;
