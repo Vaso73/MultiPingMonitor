@@ -20,7 +20,7 @@
                       CornerRadius="0" />
     </WindowChrome.WindowChrome>
 
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
         <DockPanel Background="{DynamicResource Theme.Background}">
 
             <!-- Title bar -->
@@ -42,7 +42,7 @@
                            Foreground="{DynamicResource Theme.Text.Secondary}" Margin="4,0,0,0" />
                 <!-- Arrange menu button -->
                 <Button x:Name="ArrangeMenuButton" Grid.Column="2"
-                        Style="{StaticResource TitleBarButtonStyle}"
+                        Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="ArrangeMenuButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True"
                         ToolTip="Arrange">
@@ -53,7 +53,7 @@
                           Data="M0,0 H5 V5 H0 Z M7,0 H12 V5 H7 Z M0,7 H5 V12 H0 Z M7,7 H12 V12 H7 Z" />
                 </Button>
                 <!-- Minimize -->
-                <Button Grid.Column="3" Style="{StaticResource TitleBarButtonStyle}"
+                <Button Grid.Column="3" Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="MinimizeButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
                     <Path Width="10" Height="1" Data="M0,0 H10" Stretch="None"
@@ -61,7 +61,7 @@
                           StrokeThickness="1" />
                 </Button>
                 <!-- Maximize/Restore -->
-                <Button Grid.Column="4" Style="{StaticResource TitleBarButtonStyle}"
+                <Button Grid.Column="4" Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="MaximizeRestoreButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
                     <Path Width="10" Height="10" Data="M0,0 H10 V10 H0 Z" Stretch="None"
@@ -69,7 +69,7 @@
                           StrokeThickness="1" />
                 </Button>
                 <!-- Close -->
-                <Button Grid.Column="5" Style="{StaticResource TitleBarCloseButtonStyle}"
+                <Button Grid.Column="5" Style="{DynamicResource Style.TitleBarCloseButton}"
                         Width="46" Click="CloseButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
                     <Path Width="10" Height="10" Data="M0,0 L10,10 M0,10 L10,0" Stretch="None"
@@ -79,7 +79,8 @@
             </Grid>
 
             <!-- Header area -->
-            <Border x:Name="HeaderBorder" DockPanel.Dock="Top" Background="{DynamicResource Theme.Surface}" Padding="12,8"
+            <Border x:Name="HeaderBorder" DockPanel.Dock="Top" Background="{DynamicResource Theme.Surface}"
+                    Padding="{DynamicResource Style.Padding.Header}"
                     BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -144,11 +145,8 @@
                         </ToggleButton>
                         <!-- Copy Target with clipboard icon -->
                         <Button x:Name="CopyTargetButton" Click="CopyTargetButton_Click"
-                                Padding="6,2" Margin="8,0,0,0" FontSize="11"
-                                Background="{DynamicResource Theme.SurfaceAlt}"
-                                Foreground="{DynamicResource Theme.Text.Secondary}"
-                                BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand">
+                                Style="{DynamicResource Style.LivePingActionButton}"
+                                Margin="8,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <!-- Clipboard/copy icon (two overlapping rectangles) -->
                                 <Path Width="10" Height="11" Stretch="Uniform" VerticalAlignment="Center"
@@ -160,11 +158,8 @@
                         </Button>
                         <!-- Copy Address with network/address icon -->
                         <Button x:Name="CopyAddressButton" Click="CopyAddressButton_Click"
-                                Padding="6,2" Margin="4,0,0,0" FontSize="11"
-                                Background="{DynamicResource Theme.SurfaceAlt}"
-                                Foreground="{DynamicResource Theme.Text.Secondary}"
-                                BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand">
+                                Style="{DynamicResource Style.LivePingActionButton}"
+                                Margin="4,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <!-- Network/IP address icon (monitor with angle brackets) -->
                                 <Path Width="11" Height="10" Stretch="Uniform" VerticalAlignment="Center"
@@ -187,29 +182,19 @@
             </Border>
 
             <!-- Footer: stats and buttons -->
-            <Border DockPanel.Dock="Bottom" Background="{DynamicResource Theme.Surface}" Padding="8,6"
-                    BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
+            <Border DockPanel.Dock="Bottom" Style="{DynamicResource Style.FooterPanel}">
                 <DockPanel>
                     <!-- Buttons on the right -->
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="StopResumeButton" Content="Stop" Click="StopResumeButton_Click"
-                                Padding="10,4" Margin="4,0,0,0" FontSize="12"
-                                Background="{DynamicResource Theme.SurfaceAlt}"
-                                Foreground="{DynamicResource Theme.Text.Primary}"
-                                BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand" />
+                                Style="{DynamicResource Style.LivePingFooterButton}"
+                                Margin="4,0,0,0" />
                         <Button x:Name="ClearButton" Content="Clear" Click="ClearButton_Click"
-                                Padding="10,4" Margin="4,0,0,0" FontSize="12"
-                                Background="{DynamicResource Theme.SurfaceAlt}"
-                                Foreground="{DynamicResource Theme.Text.Primary}"
-                                BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand" />
+                                Style="{DynamicResource Style.LivePingFooterButton}"
+                                Margin="4,0,0,0" />
                         <Button x:Name="CloseFooterButton" Content="Close" Click="CloseButton_Click"
-                                Padding="10,4" Margin="4,0,0,0" FontSize="12"
-                                Background="{DynamicResource Theme.SurfaceAlt}"
-                                Foreground="{DynamicResource Theme.Text.Primary}"
-                                BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand" />
+                                Style="{DynamicResource Style.LivePingFooterButton}"
+                                Margin="4,0,0,0" />
                     </StackPanel>
                     <!-- Statistics on the left -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">

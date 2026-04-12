@@ -2094,6 +2094,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visual style:.
+        /// </summary>
+        public static string Options_VisualStyle {
+            get {
+                return ResourceManager.GetString("Options_VisualStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display mode:.
         /// </summary>
         public static string Options_DisplayMode {

@@ -246,6 +246,8 @@ namespace MultiPingMonitor.Classes
                 Node("StartInTray", ApplicationOptions.StartInTray),
                 Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
                 Node("Theme", ApplicationOptions.Theme),
+                new XComment(" VisualStyle: [Classic, Modern] "),
+                Node("VisualStyle", ApplicationOptions.VisualStyle),
                 Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
                 Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner),
                 new XComment(" Language: [System, English, Slovak] "),
@@ -769,6 +771,10 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("Theme", out optionValue))
             {
                 ApplicationOptions.Theme = optionValue;
+            }
+            if (options.TryGetValue("VisualStyle", out optionValue))
+            {
+                ApplicationOptions.VisualStyle = optionValue;
             }
             if (options.TryGetValue("FontSize_Probe", out optionValue))
             {

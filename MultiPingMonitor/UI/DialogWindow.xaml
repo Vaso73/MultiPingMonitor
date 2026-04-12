@@ -53,21 +53,18 @@
         </Grid>
 
         <!-- Buttons -->
-        <Border Grid.Row="1"
-                Background="#f0f0f0"
-                BorderBrush="#dfdfdf"
-                BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="10">
                 <Button x:Name="OK"
-                        Style="{StaticResource ButtonStandardStyle}"
+                        Style="{DynamicResource Style.ButtonStandard}"
                         Click="OK_Click"
                         Width="100"
                         IsCancel="{Binding Visibility, ElementName=Cancel, Converter={StaticResource InverseHiddenToBoolConverter}}"
                         Content="{x:Static resource:Strings.DialogButton_OK}" />
                 <Button x:Name="Cancel"
-                        Style="{StaticResource ButtonStandardStyle}"
+                        Style="{DynamicResource Style.ButtonStandard}"
                         Margin="8,0,0,0"
                         Width="100"
                         IsCancel="True"

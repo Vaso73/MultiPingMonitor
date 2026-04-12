@@ -21,7 +21,7 @@
                       CornerRadius="0" />
     </WindowChrome.WindowChrome>
 
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
     <DockPanel Background="{DynamicResource Theme.Background}">
 
         <!-- Custom title bar -->
@@ -37,7 +37,7 @@
                        Foreground="{DynamicResource Theme.Text.Primary}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
@@ -87,16 +87,16 @@
         </Grid>
         
         <!-- Buttons -->
-        <Border Grid.Row="1" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
+        <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
             <DockPanel Margin="10">
                 <!-- Buttons -->
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Click="Save_Click"
                             Width="100"
                             IsDefault="True"
                             Content="{x:Static resource:Strings.DialogButton_Save}" />
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Margin="8,0,0,0"
                             Width="100"
                             IsCancel="True"

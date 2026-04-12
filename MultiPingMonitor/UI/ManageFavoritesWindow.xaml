@@ -20,7 +20,7 @@
                       CornerRadius="0" />
     </WindowChrome.WindowChrome>
 
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
     <DockPanel Background="{DynamicResource Theme.Background}">
 
         <!-- Custom title bar -->
@@ -36,7 +36,7 @@
                        Foreground="{DynamicResource Theme.Text.Primary}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
@@ -124,17 +124,17 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,9,0,0">
             <Button Click="New_Click"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     Content="_New"/>
             <Button Click="Edit_Click"
                     Margin="15,0"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Favorites, Path=SelectedItems.Count}"
                     Content="_Edit"/>
             <Button Click="Remove_Click"
                     Width="85"
-                    Style="{StaticResource ButtonStandardStyle}"
+                    Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Favorites, Path=SelectedItems.Count}"
                     Content="_Remove"/>
         </StackPanel>

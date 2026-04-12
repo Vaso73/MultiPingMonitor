@@ -131,7 +131,7 @@
     </Window.Resources>
 
     <!-- Root Border with window border -->
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
     <!-- Root DockPanel -->
     <DockPanel Background="{DynamicResource Theme.Background}">
 
@@ -161,7 +161,7 @@
             <Button Grid.Column="3"
                     Click="OnMinimizeButtonClick"
                     RenderOptions.EdgeMode="Aliased"
-                    Style="{StaticResource TitleBarButtonStyle}"
+                    Style="{DynamicResource Style.TitleBarButton}"
                     AutomationProperties.Name="Minimize"
                     ToolTip="Minimize" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32"
@@ -173,7 +173,7 @@
             <Button x:Name="maximizeButton"
                     Grid.Column="4"
                     Click="OnMaximizeRestoreButtonClick"
-                    Style="{StaticResource TitleBarButtonStyle}"
+                    Style="{DynamicResource Style.TitleBarButton}"
                     AutomationProperties.Name="Maximize"
                     ToolTip="Maximize" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32"
@@ -185,7 +185,7 @@
             <Button x:Name="restoreButton"
                     Grid.Column="4"
                     Click="OnMaximizeRestoreButtonClick"
-                    Style="{StaticResource TitleBarButtonStyle}"
+                    Style="{DynamicResource Style.TitleBarButton}"
                     Visibility="Collapsed"
                     AutomationProperties.Name="Restore Down"
                     ToolTip="Restore Down" ToolTipService.InitialShowDelay="1000">
@@ -197,7 +197,7 @@
             <!-- Close button -->
             <Button Grid.Column="5"
                     Click="OnCloseButtonClick"
-                    Style="{StaticResource TitleBarCloseButtonStyle}"
+                    Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32"
@@ -454,7 +454,7 @@
             </Button>
             <Button Grid.Column="2"
                     Click="OnCloseButtonClick"
-                    Style="{StaticResource TitleBarCloseButtonStyle}"
+                    Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000"
                     Width="28" Height="22">

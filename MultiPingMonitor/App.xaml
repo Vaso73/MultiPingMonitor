@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Theme.Light.xaml"/>
+                <ResourceDictionary Source="Styles/VisualStyle.Classic.xaml"/>
                 <ResourceDictionary Source="ResourceDictionaries/FocusVisualStyle.xaml"/>
                 <ResourceDictionary Source="ResourceDictionaries/Icons.xaml"/>
                 <ResourceDictionary Source="ResourceDictionaries/ValueConverters.xaml"/>

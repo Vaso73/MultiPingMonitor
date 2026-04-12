@@ -36,7 +36,7 @@
         </Style>
     </Window.Resources>
 
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
     <DockPanel Background="{DynamicResource Theme.Background}">
 
         <!-- Custom title bar -->
@@ -52,7 +52,7 @@
                        Foreground="{DynamicResource Theme.Text.Primary}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{StaticResource TitleBarCloseButtonStyle}" AutomationProperties.Name="Close"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
@@ -69,6 +69,7 @@
         <TabControl TabStripPlacement="Left" HorizontalContentAlignment="Left">
             <!-- Tab: General -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_General}" Name="GeneralTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_Header_ProbeOptions}"
@@ -247,10 +248,12 @@
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Advanced -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Advanced}" Name="AdvancedTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -342,10 +345,12 @@
                         </Label>
                     </DockPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
             
             <!-- Tab: Popup Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Notifications}" Name="PopupAlertsTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -399,10 +404,12 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Email Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Email}" Name="EmailAlertsTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel Margin="20,0,20,15">
 
@@ -517,7 +524,7 @@
                             </DockPanel>
 
                             <!-- Test button -->
-                            <Button Style="{StaticResource ButtonStandardStyle}"
+                            <Button Style="{DynamicResource Style.ButtonStandard}"
                                     Name="TestEmailButton"
                                     Visibility="{Binding IsChecked, ElementName=IsEmailAlertsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     DockPanel.Dock="Top"
@@ -529,10 +536,12 @@
                         </DockPanel>
                     </DockPanel>
                 </ScrollViewer>
+                </Border>
             </TabItem>
 
             <!-- Tab: Audio Alerts -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Sounds}" Name="AudioAlertTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
@@ -561,7 +570,7 @@
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <!-- Browse button -->
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="AudioDownBrowse_Click"
                                         Width="85"
                                         Content="{x:Static resource:Strings.Options_Browse}"/>
@@ -576,7 +585,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Grid.Style>
-                                    <Button Style="{StaticResource ButtonStandardStyle}"
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
                                             Click="AudioDownPlay_Click"
                                             Width="85"
                                             Margin="10,0,0,0"
@@ -612,7 +621,7 @@
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <!-- Browse button -->
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="AudioUpBrowse_Click"
                                         Width="85"
                                         Content="{x:Static resource:Strings.Options_Browse}"/>
@@ -627,7 +636,7 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Grid.Style>
-                                    <Button Style="{StaticResource ButtonStandardStyle}"
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
                                             Click="AudioUpPlay_Click"
                                             Width="85"
                                             Margin="10,0,0,0"
@@ -638,10 +647,12 @@
                         </StackPanel>
                     </Grid>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Logging -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Logging}" Name="LogOutputTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0">
 
                     <!-- Header -->
@@ -667,11 +678,11 @@
                             <TextBox Name="LogPath"
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="BrowseLogPath_Click"
                                         Width="85"
                                         Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="InsertAppDataLogPath_Click"
                                         Margin="10,0,0,0"
                                         Padding="10,5"
@@ -707,11 +718,11 @@
                             <TextBox Name="LogStatusChangesPath"
                                      Margin="0,4,0,8"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="BrowseLogStatusChangesPath_Click"
                                         Width="85"
                                         Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <Button Style="{StaticResource ButtonStandardStyle}"
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="InsertAppDataLogStatusChangesPath_Click"
                                         Margin="10,0,0,0"
                                         Padding="10,5"
@@ -725,10 +736,12 @@
                         </StackPanel>
                     </Grid>
                 </DockPanel>
+                </Border>
             </TabItem>
 
             <!-- Tab: Display -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Display}" Name="DisplayTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <DockPanel Margin="20,0" LastChildFill="False">
 
                     <!-- Header -->
@@ -784,6 +797,11 @@
                         <TextBlock Text="{x:Static resource:Strings.Options_Theme}" Width="120"/>
                         <ComboBox x:Name="ThemeComboBox" Width="160" SelectionChanged="ThemeComboBox_SelectionChanged"/>
                     </StackPanel>
+                    <!-- Visual style selection -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="{x:Static resource:Strings.Options_VisualStyle}" Width="120"/>
+                        <ComboBox x:Name="VisualStyleComboBox" Width="160" SelectionChanged="VisualStyleComboBox_SelectionChanged"/>
+                    </StackPanel>
                     <!-- Display mode selection -->
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
                         <TextBlock Text="{x:Static resource:Strings.Options_DisplayMode}" Width="120"/>
@@ -807,7 +825,7 @@
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,6,0,0">
                         <Button x:Name="ManageCompactTargetsButton"
                                 DockPanel.Dock="Left"
-                                Style="{StaticResource ButtonStandardStyle}"
+                                Style="{DynamicResource Style.ButtonStandard}"
                                 Content="{x:Static resource:Strings.Options_CompactManageSets}"
                                 MinWidth="140"
                                 Click="ManageCompactTargets_Click"/>
@@ -849,10 +867,12 @@
                                  MaxLength="2"/>
                     </StackPanel>
                 </DockPanel>
+                </Border>
             </TabItem>
             
             <!-- Tab: Layout -->
             <TabItem Header="{x:Static resource:Strings.Options_Tab_Colors}" Name="LayoutTab">
+                <Border Style="{DynamicResource Style.ContentPanel}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <DockPanel LastChildFill="False"
                                Name="ColorsDockPanel"
@@ -1030,7 +1050,7 @@
 
                         <!-- Restore defaults button -->
                         <Grid DockPanel.Dock="Top" Margin="0,15,0,0">
-                            <Button Style="{StaticResource ButtonStandardStyle}"
+                            <Button Style="{DynamicResource Style.ButtonStandard}"
                                     Click="RestoreDefaultColors_Click"
                                     Padding="15,5"
                                     Content="{x:Static resource:Strings.Options_RestoreDefaults}"
@@ -1038,22 +1058,23 @@
                         </Grid>
                     </DockPanel>
                 </ScrollViewer>
+                </Border>
             </TabItem>
 
         </TabControl>
 
 
         <!-- Button Section -->
-        <Border Grid.Row="1" BorderBrush="{DynamicResource Theme.Border}" Background="{DynamicResource Theme.Surface}" BorderThickness="0,1,0,0">
-            <DockPanel Margin="9" HorizontalAlignment="Right">
+        <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
+            <DockPanel HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             Click="OK_Click"
                             Margin="0,0,9,0"
                             IsDefault="True"
                             Width="85"
                             Content="{x:Static resource:Strings.DialogButton_OK}"/>
-                    <Button Style="{StaticResource ButtonStandardStyle}"
+                    <Button Style="{DynamicResource Style.ButtonStandard}"
                             IsCancel="True"
                             Width="85"
                             Content="{x:Static resource:Strings.DialogButton_Cancel}"/>
