@@ -103,7 +103,12 @@
                 </StackPanel>
                 <ListBox x:Name="SetsListBox"
                          SelectionChanged="SetsListBox_SelectionChanged"
-                         HorizontalAlignment="Stretch"/>
+                         HorizontalAlignment="Stretch"
+                         AllowDrop="True"
+                         PreviewMouseLeftButtonDown="SetsListBox_PreviewMouseLeftButtonDown"
+                         PreviewMouseMove="SetsListBox_PreviewMouseMove"
+                         DragOver="SetsListBox_DragOver"
+                         Drop="SetsListBox_Drop"/>
             </DockPanel>
 
             <!-- Splitter -->
@@ -136,7 +141,12 @@
                 <ListBox x:Name="TargetsListBox"
                          SelectionChanged="TargetsListBox_SelectionChanged"
                          HorizontalAlignment="Stretch"
-                         FontFamily="Consolas" FontSize="13"/>
+                         FontFamily="Consolas" FontSize="13"
+                         AllowDrop="True"
+                         PreviewMouseLeftButtonDown="TargetsListBox_PreviewMouseLeftButtonDown"
+                         PreviewMouseMove="TargetsListBox_PreviewMouseMove"
+                         DragOver="TargetsListBox_DragOver"
+                         Drop="TargetsListBox_Drop"/>
             </DockPanel>
         </Grid>
     </Grid>

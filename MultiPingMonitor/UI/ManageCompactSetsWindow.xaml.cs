@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -564,6 +565,172 @@ namespace MultiPingMonitor.UI
                 return new CompactTargetEntry(target, dialog.Value2);
             }
             return null;
+        }
+
+        // ── Drag-and-drop reorder (sets) ──────────────────────────────────────
+
+        private Point? _setsDragStartPoint;
+
+        private void SetsListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _setsDragStartPoint = e.GetPosition(SetsListBox);
+        }
+
+        private void SetsListBox_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed || _setsDragStartPoint == null)
+                return;
+
+            Point pos = e.GetPosition(SetsListBox);
+            Vector diff = pos - _setsDragStartPoint.Value;
+
+            if (Math.Abs(diff.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(diff.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            int idx = SetsListBox.SelectedIndex;
+            if (idx < 0)
+                return;
+
+            _setsDragStartPoint = null;
+            var data = new DataObject("SetsReorderIndex", idx);
+            DragDrop.DoDragDrop(SetsListBox, data, DragDropEffects.Move);
+        }
+
+        private void SetsListBox_DragOver(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent("SetsReorderIndex"))
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+                return;
+            }
+
+            e.Effects = DragDropEffects.Move;
+            e.Handled = true;
+        }
+
+        private void SetsListBox_Drop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent("SetsReorderIndex"))
+                return;
+
+            int fromIndex = (int)e.Data.GetData("SetsReorderIndex");
+            int toIndex = GetDropIndex(SetsListBox, e);
+
+            if (toIndex < 0 || toIndex == fromIndex)
+                return;
+
+            var sets = ApplicationOptions.CompactSets;
+            if (fromIndex < 0 || fromIndex >= sets.Count || toIndex >= sets.Count)
+                return;
+
+            var item = sets[fromIndex];
+            sets.RemoveAt(fromIndex);
+            sets.Insert(toIndex, item);
+
+            Configuration.Save();
+            RefreshSetsList();
+            SetsListBox.SelectedIndex = toIndex;
+        }
+
+        // ── Drag-and-drop reorder (targets) ────────────────────────────────────
+
+        private Point? _targetsDragStartPoint;
+
+        private void TargetsListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _targetsDragStartPoint = e.GetPosition(TargetsListBox);
+        }
+
+        private void TargetsListBox_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton != MouseButtonState.Pressed || _targetsDragStartPoint == null)
+                return;
+
+            Point pos = e.GetPosition(TargetsListBox);
+            Vector diff = pos - _targetsDragStartPoint.Value;
+
+            if (Math.Abs(diff.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(diff.Y) < SystemParameters.MinimumVerticalDragDistance)
+                return;
+
+            int idx = TargetsListBox.SelectedIndex;
+            if (idx < 0)
+                return;
+
+            _targetsDragStartPoint = null;
+            var data = new DataObject("TargetsReorderIndex", idx);
+            DragDrop.DoDragDrop(TargetsListBox, data, DragDropEffects.Move);
+        }
+
+        private void TargetsListBox_DragOver(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent("TargetsReorderIndex"))
+            {
+                e.Effects = DragDropEffects.None;
+                e.Handled = true;
+                return;
+            }
+
+            e.Effects = DragDropEffects.Move;
+            e.Handled = true;
+        }
+
+        private void TargetsListBox_Drop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent("TargetsReorderIndex"))
+                return;
+
+            var set = GetSelectedSet();
+            if (set == null)
+                return;
+
+            int fromIndex = (int)e.Data.GetData("TargetsReorderIndex");
+            int toIndex = GetDropIndex(TargetsListBox, e);
+
+            if (toIndex < 0 || toIndex == fromIndex)
+                return;
+
+            if (fromIndex < 0 || fromIndex >= set.Entries.Count || toIndex >= set.Entries.Count)
+                return;
+
+            var entry = set.Entries[fromIndex];
+            set.Entries.RemoveAt(fromIndex);
+            set.Entries.Insert(toIndex, entry);
+
+            Configuration.Save();
+            RefreshTargetsList();
+            TargetsListBox.SelectedIndex = toIndex;
+
+            if (IsActiveSet(set))
+                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+        }
+
+        // ── Drag-and-drop helpers ──────────────────────────────────────────────
+
+        /// <summary>
+        /// Determines the drop index in a ListBox based on the drop position.
+        /// Returns the index of the item under the cursor, or the last index
+        /// if dropped below all items.
+        /// </summary>
+        private static int GetDropIndex(ListBox listBox, DragEventArgs e)
+        {
+            for (int i = 0; i < listBox.Items.Count; i++)
+            {
+                var container = listBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
+                if (container == null)
+                    continue;
+
+                Point pos = e.GetPosition(container);
+                double halfHeight = container.ActualHeight / 2;
+
+                if (pos.Y < halfHeight)
+                    return i;
+            }
+
+            // Dropped below all items – return last index.
+            return listBox.Items.Count - 1;
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
