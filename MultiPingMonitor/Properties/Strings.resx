@@ -1336,4 +1336,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_ArrangeTile" xml:space="preserve">
     <value>Tile</value>
   </data>
+  <data name="LivePing_CloseAll" xml:space="preserve">
+    <value>Close All</value>
+  </data>
 </root>
