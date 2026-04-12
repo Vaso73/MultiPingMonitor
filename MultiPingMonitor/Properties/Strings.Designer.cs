@@ -3687,7 +3687,7 @@ namespace MultiPingMonitor.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The current compact set has no hosts..
+        ///   Looks up a localized string similar to The current compact set has no hosts.
         /// </summary>
         public static string LivePing_CompactSetEmpty {
             get {
