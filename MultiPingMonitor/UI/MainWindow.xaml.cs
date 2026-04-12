@@ -445,6 +445,8 @@ namespace MultiPingMonitor.UI
                 ProbeItemsControl.BorderThickness = new Thickness(0);
 
                 // Enable vertical scrolling so long target lists remain reachable.
+                // Build a ControlTemplate at runtime that wraps ItemsPresenter in a ScrollViewer.
+                // Focusable=false prevents the ScrollViewer from stealing keyboard focus from the window.
                 var scrollFactory = new System.Windows.FrameworkElementFactory(typeof(ScrollViewer));
                 scrollFactory.SetValue(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Auto);
                 scrollFactory.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
