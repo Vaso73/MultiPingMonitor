@@ -146,7 +146,7 @@
                         <!-- Copy Target with clipboard icon -->
                         <Button x:Name="CopyTargetButton" Click="CopyTargetButton_Click"
                                 Style="{DynamicResource Style.LivePingActionButton}"
-                                Padding="6,2" Margin="8,0,0,0">
+                                Margin="8,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <!-- Clipboard/copy icon (two overlapping rectangles) -->
                                 <Path Width="10" Height="11" Stretch="Uniform" VerticalAlignment="Center"
@@ -159,7 +159,7 @@
                         <!-- Copy Address with network/address icon -->
                         <Button x:Name="CopyAddressButton" Click="CopyAddressButton_Click"
                                 Style="{DynamicResource Style.LivePingActionButton}"
-                                Padding="6,2" Margin="4,0,0,0">
+                                Margin="4,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <!-- Network/IP address icon (monitor with angle brackets) -->
                                 <Path Width="11" Height="10" Stretch="Uniform" VerticalAlignment="Center"
@@ -189,13 +189,13 @@
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="StopResumeButton" Content="Stop" Click="StopResumeButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
-                                Padding="10,4" Margin="4,0,0,0" />
+                                Margin="4,0,0,0" />
                         <Button x:Name="ClearButton" Content="Clear" Click="ClearButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
-                                Padding="10,4" Margin="4,0,0,0" />
+                                Margin="4,0,0,0" />
                         <Button x:Name="CloseFooterButton" Content="Close" Click="CloseButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
-                                Padding="10,4" Margin="4,0,0,0" />
+                                Margin="4,0,0,0" />
                     </StackPanel>
                     <!-- Statistics on the left -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
