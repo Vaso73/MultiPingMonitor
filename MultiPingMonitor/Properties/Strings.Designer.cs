@@ -3398,5 +3398,158 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Export Selected.
+        /// </summary>
+        public static string CompactSets_ExportSelected {
+            get {
+                return ResourceManager.GetString("CompactSets_ExportSelected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Export All.
+        /// </summary>
+        public static string CompactSets_ExportAll {
+            get {
+                return ResourceManager.GetString("CompactSets_ExportAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string CompactSets_Import {
+            get {
+                return ResourceManager.GetString("CompactSets_Import", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to JSON files|*.json.
+        /// </summary>
+        public static string CompactSets_ExportFileFilter {
+            get {
+                return ResourceManager.GetString("CompactSets_ExportFileFilter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Export Compact Sets.
+        /// </summary>
+        public static string CompactSets_ExportTitle {
+            get {
+                return ResourceManager.GetString("CompactSets_ExportTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import Compact Sets.
+        /// </summary>
+        public static string CompactSets_ImportTitle {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully imported {0} compact set(s)..
+        /// </summary>
+        public static string CompactSets_ImportSuccess {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportSuccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The selected file is not a valid compact sets file..
+        /// </summary>
+        public static string CompactSets_ImportInvalidFile {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportInvalidFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported file format version: {0}.
+        /// </summary>
+        public static string CompactSets_ImportUnsupportedVersion {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportUnsupportedVersion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The file contains no valid compact sets..
+        /// </summary>
+        public static string CompactSets_ImportNoValidSets {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportNoValidSets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A compact set named &quot;{0}&quot; already exists. What would you like to do?.
+        /// </summary>
+        public static string CompactSets_ImportCollisionMessage {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollisionMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name Conflict.
+        /// </summary>
+        public static string CompactSets_ImportCollisionTitle {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollisionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replace.
+        /// </summary>
+        public static string CompactSets_ImportCollision_Replace {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollision_Replace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import as Copy.
+        /// </summary>
+        public static string CompactSets_ImportCollision_Copy {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollision_Copy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string CompactSets_ImportCollision_Skip {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollision_Skip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Import.
+        /// </summary>
+        public static string CompactSets_ImportCollision_Cancel {
+            get {
+                return ResourceManager.GetString("CompactSets_ImportCollision_Cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string CompactSets_CopyNameSuffix {
+            get {
+                return ResourceManager.GetString("CompactSets_CopyNameSuffix", resourceCulture);
+            }
+        }
+
     }
 }

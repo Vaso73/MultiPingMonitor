@@ -90,6 +90,17 @@
                             Content="{x:Static resource:Strings.CompactSets_MoveDown}"
                             MinWidth="55" Margin="4,0,0,0" Click="MoveSetDown_Click"/>
                 </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
+                    <Button x:Name="ExportSelectedButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_ExportSelected}"
+                            MinWidth="95" Click="ExportSelected_Click"/>
+                    <Button x:Name="ExportAllButton" Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_ExportAll}"
+                            MinWidth="80" Margin="4,0,0,0" Click="ExportAll_Click"/>
+                    <Button Style="{StaticResource ButtonStandardStyle}"
+                            Content="{x:Static resource:Strings.CompactSets_Import}"
+                            MinWidth="65" Margin="4,0,0,0" Click="Import_Click"/>
+                </StackPanel>
                 <ListBox x:Name="SetsListBox"
                          SelectionChanged="SetsListBox_SelectionChanged"
                          HorizontalAlignment="Stretch"/>

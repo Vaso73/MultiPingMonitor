@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -68,6 +70,8 @@ namespace MultiPingMonitor.UI
             DeleteSetButton.IsEnabled = hasSet;
             SetActiveButton.IsEnabled = hasSet;
             AddTargetButton.IsEnabled = hasSet;
+            ExportSelectedButton.IsEnabled = hasSet;
+            ExportAllButton.IsEnabled = setCount > 0;
 
             MoveSetUpButton.IsEnabled = hasSet && setIdx > 0;
             MoveSetDownButton.IsEnabled = hasSet && setIdx < setCount - 1;
@@ -192,6 +196,177 @@ namespace MultiPingMonitor.UI
             Configuration.Save();
             RefreshSetsList();
             SetsListBox.SelectedIndex = idx + 1;
+        }
+
+        // ── Import / Export ────────────────────────────────────────────────
+
+        private void ExportSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var set = GetSelectedSet();
+            if (set == null) return;
+
+            using (var dlg = new System.Windows.Forms.SaveFileDialog())
+            {
+                dlg.Title = Strings.CompactSets_ExportTitle;
+                dlg.RestoreDirectory = true;
+                dlg.OverwritePrompt = true;
+                dlg.AddExtension = true;
+                dlg.AutoUpgradeEnabled = true;
+                dlg.Filter = Strings.CompactSets_ExportFileFilter;
+                dlg.FileName = SanitizeFileName(set.Name) + ".json";
+
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK && !string.IsNullOrEmpty(dlg.FileName))
+                {
+                    try
+                    {
+                        CompactSetExportImport.ExportToFile(dlg.FileName, new[] { set });
+                    }
+                    catch
+                    {
+                        ShowError(Strings.CompactSets_ImportInvalidFile);
+                    }
+                }
+            }
+        }
+
+        private void ExportAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (ApplicationOptions.CompactSets.Count == 0) return;
+
+            using (var dlg = new System.Windows.Forms.SaveFileDialog())
+            {
+                dlg.Title = Strings.CompactSets_ExportTitle;
+                dlg.RestoreDirectory = true;
+                dlg.OverwritePrompt = true;
+                dlg.AddExtension = true;
+                dlg.AutoUpgradeEnabled = true;
+                dlg.Filter = Strings.CompactSets_ExportFileFilter;
+                dlg.FileName = "compact-sets.json";
+
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK && !string.IsNullOrEmpty(dlg.FileName))
+                {
+                    try
+                    {
+                        CompactSetExportImport.ExportToFile(dlg.FileName, ApplicationOptions.CompactSets);
+                    }
+                    catch
+                    {
+                        ShowError(Strings.CompactSets_ImportInvalidFile);
+                    }
+                }
+            }
+        }
+
+        private void Import_Click(object sender, RoutedEventArgs e)
+        {
+            string filePath;
+            using (var dlg = new System.Windows.Forms.OpenFileDialog())
+            {
+                dlg.Title = Strings.CompactSets_ImportTitle;
+                dlg.RestoreDirectory = true;
+                dlg.Multiselect = false;
+                dlg.Filter = Strings.CompactSets_ExportFileFilter;
+
+                if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK || string.IsNullOrEmpty(dlg.FileName))
+                    return;
+                filePath = dlg.FileName;
+            }
+
+            var result = CompactSetExportImport.ReadFromFile(filePath);
+            if (!result.Success)
+            {
+                ShowError(result.ErrorMessage);
+                return;
+            }
+
+            int importedCount = 0;
+            bool activeSetAffected = false;
+
+            foreach (var importedSet in result.Sets)
+            {
+                var existing = CompactSetExportImport.FindByName(importedSet.Name);
+                if (existing != null)
+                {
+                    // Show collision dialog.
+                    var collisionDialog = new ImportCollisionDialog(importedSet.Name) { Owner = this };
+                    collisionDialog.ShowDialog();
+
+                    switch (collisionDialog.Choice)
+                    {
+                        case CompactSetExportImport.CollisionChoice.Replace:
+                            if (IsActiveSet(existing))
+                                activeSetAffected = true;
+                            CompactSetExportImport.ReplaceSet(existing, importedSet);
+                            importedCount++;
+                            break;
+
+                        case CompactSetExportImport.CollisionChoice.ImportAsCopy:
+                            importedSet.Name = CompactSetExportImport.GenerateCopyName(importedSet.Name);
+                            CompactSetExportImport.AddAsNew(importedSet);
+                            importedCount++;
+                            break;
+
+                        case CompactSetExportImport.CollisionChoice.Skip:
+                            // Leave existing data unchanged, continue to next set.
+                            break;
+
+                        case CompactSetExportImport.CollisionChoice.CancelAll:
+                            // Stop entire import. Whatever was imported so far stays.
+                            goto ImportDone;
+                    }
+                }
+                else
+                {
+                    CompactSetExportImport.AddAsNew(importedSet);
+                    importedCount++;
+                }
+            }
+
+        ImportDone:
+            if (importedCount > 0)
+            {
+                // If this is the first set(s) and no active set is selected, auto-activate the first.
+                if (string.IsNullOrEmpty(ApplicationOptions.ActiveCompactSetId) && ApplicationOptions.CompactSets.Count > 0)
+                    ApplicationOptions.ActiveCompactSetId = ApplicationOptions.CompactSets[0].Id;
+
+                Configuration.Save();
+                RefreshSetsList();
+
+                // Live refresh if active set was replaced or compact mode is active.
+                if (activeSetAffected)
+                    (Owner as MainWindow)?.RefreshActiveCompactSetData();
+
+                ShowInfo(string.Format(Strings.CompactSets_ImportSuccess, importedCount));
+            }
+            else if (importedCount == 0)
+            {
+                // User may have skipped everything – no changes needed.
+            }
+        }
+
+        private static string SanitizeFileName(string name)
+        {
+            var invalid = System.IO.Path.GetInvalidFileNameChars();
+            return string.Join("_", name.Split(invalid, System.StringSplitOptions.RemoveEmptyEntries)).Trim();
+        }
+
+        private void ShowError(string message)
+        {
+            var dlg = DialogWindow.ErrorWindow(message);
+            dlg.Owner = this;
+            dlg.ShowDialog();
+        }
+
+        private void ShowInfo(string message)
+        {
+            var dlg = new DialogWindow(
+                DialogWindow.DialogIcon.Info,
+                Strings.CompactSets_ImportTitle,
+                message,
+                Strings.DialogButton_OK,
+                false)
+            { Owner = this };
+            dlg.ShowDialog();
         }
 
         // ── Target list ───────────────────────────────────────────────────────

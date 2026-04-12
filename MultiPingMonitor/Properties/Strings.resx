@@ -1252,4 +1252,55 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Options_CompactManageSets" xml:space="preserve">
     <value>Manage Compact Sets...</value>
   </data>
+  <data name="CompactSets_ExportSelected" xml:space="preserve">
+    <value>Export Selected</value>
+  </data>
+  <data name="CompactSets_ExportAll" xml:space="preserve">
+    <value>Export All</value>
+  </data>
+  <data name="CompactSets_Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="CompactSets_ExportFileFilter" xml:space="preserve">
+    <value>JSON files|*.json</value>
+  </data>
+  <data name="CompactSets_ExportTitle" xml:space="preserve">
+    <value>Export Compact Sets</value>
+  </data>
+  <data name="CompactSets_ImportTitle" xml:space="preserve">
+    <value>Import Compact Sets</value>
+  </data>
+  <data name="CompactSets_ImportSuccess" xml:space="preserve">
+    <value>Successfully imported {0} compact set(s).</value>
+  </data>
+  <data name="CompactSets_ImportInvalidFile" xml:space="preserve">
+    <value>The selected file is not a valid compact sets file.</value>
+  </data>
+  <data name="CompactSets_ImportUnsupportedVersion" xml:space="preserve">
+    <value>Unsupported file format version: {0}</value>
+  </data>
+  <data name="CompactSets_ImportNoValidSets" xml:space="preserve">
+    <value>The file contains no valid compact sets.</value>
+  </data>
+  <data name="CompactSets_ImportCollisionMessage" xml:space="preserve">
+    <value>A compact set named "{0}" already exists. What would you like to do?</value>
+  </data>
+  <data name="CompactSets_ImportCollisionTitle" xml:space="preserve">
+    <value>Name Conflict</value>
+  </data>
+  <data name="CompactSets_ImportCollision_Replace" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="CompactSets_ImportCollision_Copy" xml:space="preserve">
+    <value>Import as Copy</value>
+  </data>
+  <data name="CompactSets_ImportCollision_Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="CompactSets_ImportCollision_Cancel" xml:space="preserve">
+    <value>Cancel Import</value>
+  </data>
+  <data name="CompactSets_CopyNameSuffix" xml:space="preserve">
+    <value>Copy</value>
+  </data>
 </root>
