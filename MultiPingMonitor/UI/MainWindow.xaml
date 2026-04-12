@@ -104,8 +104,7 @@
 
                     <!-- Latency value -->
                     <Border Grid.Column="2" Style="{DynamicResource Style.CompactLatencyBadge}">
-                        <TextBlock
-                                   Text="{Binding LastRoundtripTime, Converter={StaticResource RoundtripTimeToStringConverter}}"
+                        <TextBlock Text="{Binding LastRoundtripTime, Converter={StaticResource RoundtripTimeToStringConverter}}"
                                    FontSize="11"
                                    FontFamily="Consolas"
                                    VerticalAlignment="Center"
