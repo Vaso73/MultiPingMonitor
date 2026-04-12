@@ -218,7 +218,11 @@ namespace MultiPingMonitor.UI
                     {
                         string addr = ExtractReplyAddress(item);
                         if (addr != null)
+                        {
                             _lastReplyAddress = addr;
+                            // Clear "not available" tooltip once an address is known.
+                            CopyAddressButton.ToolTip = null;
+                        }
                     }
 
                     // Update per-window session counters based on line classification.
