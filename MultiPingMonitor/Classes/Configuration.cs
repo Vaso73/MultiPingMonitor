@@ -240,6 +240,7 @@ namespace MultiPingMonitor.Classes
                 Node("IsLogStatusChangesEnabled", ApplicationOptions.IsLogStatusChangesEnabled),
                 Node("LogStatusChangesPath", ApplicationOptions.LogStatusChangesPath),
                 Node("IsAlwaysOnTopEnabled", ApplicationOptions.IsAlwaysOnTopEnabled),
+                Node("LivePingMonitorAlwaysOnTop", ApplicationOptions.LivePingMonitorAlwaysOnTop),
                 Node("IsMinimizeToTrayEnabled", ApplicationOptions.IsMinimizeToTrayEnabled),
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
                 Node("StartInTray", ApplicationOptions.StartInTray),
@@ -744,6 +745,10 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("IsAlwaysOnTopEnabled", out optionValue))
             {
                 ApplicationOptions.IsAlwaysOnTopEnabled = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("LivePingMonitorAlwaysOnTop", out optionValue))
+            {
+                ApplicationOptions.LivePingMonitorAlwaysOnTop = bool.Parse(optionValue);
             }
             if (options.TryGetValue("IsMinimizeToTrayEnabled", out optionValue))
             {

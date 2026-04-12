@@ -96,6 +96,7 @@ namespace MultiPingMonitor.Classes
 
         // Display options.
         public static bool IsAlwaysOnTopEnabled { get; set; } = false;
+        public static bool LivePingMonitorAlwaysOnTop { get; set; } = false;
         public static bool IsMinimizeToTrayEnabled { get; set; } = false;
         public static bool IsExitToTrayEnabled { get; set; } = false;
         public static bool StartInTray { get; set; } = false;

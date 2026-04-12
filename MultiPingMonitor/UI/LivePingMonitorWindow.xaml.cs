@@ -25,19 +25,39 @@ namespace MultiPingMonitor.UI
         private uint _sessionReceived;
         private uint _sessionLost;
 
+        // Resolved address extracted from reply lines (best-effort, may be null).
+        private string _lastReplyAddress;
+
+        // Placement key used by WindowPlacementService.
+        private const string PlacementKey = "LivePingMonitor";
+
+        // ── Cascade offset for multi-window opening ───────────────────────
+        private static int _cascadeIndex;
+        private const int CascadeStep = 26;
+        private const int MaxCascadeSlots = 10;
+
         public LivePingMonitorWindow(Probe probe, Window owner)
         {
             InitializeComponent();
 
             Owner = owner;
             _probe = probe;
-            Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
+
+            // Apply persisted Live Ping Monitor always-on-top preference.
+            Topmost = ApplicationOptions.LivePingMonitorAlwaysOnTop;
+            AlwaysOnTopCheckBox.IsChecked = Topmost;
+
+            // Set localized control text.
+            StopResumeButton.Content = Properties.Strings.LivePing_Stop;
+            PausedBannerText.Text = Properties.Strings.LivePing_Paused;
+            AlwaysOnTopCheckBox.Content = Properties.Strings.LivePing_AlwaysOnTop;
+            CopyTargetButton.Content = Properties.Strings.LivePing_CopyTarget;
+            CopyAddressButton.Content = Properties.Strings.LivePing_CopyAddress;
 
             LogListBox.ItemsSource = _logLines;
 
-            // Set localized button/banner text.
-            StopResumeButton.Content = Properties.Strings.LivePing_Stop;
-            PausedBannerText.Text = Properties.Strings.LivePing_Paused;
+            // Restore saved window placement, then apply cascade offset for new windows.
+            RestorePlacementWithCascade();
 
             // Populate header from current probe state.
             UpdateHeader();
@@ -53,6 +73,54 @@ namespace MultiPingMonitor.UI
 
             // Subscribe to history collection changes for new lines.
             SubscribeHistory(_probe.History);
+        }
+
+        // ── Window placement with cascade ─────────────────────────────────
+
+        private void RestorePlacementWithCascade()
+        {
+            // Restore saved size/position if available.
+            if (WindowPlacementService.HasPlacement(PlacementKey))
+            {
+                WindowPlacementService.RestoreWindow(this, PlacementKey);
+            }
+
+            // Apply cascade offset so multiple windows don't stack on top of each other.
+            int slot = _cascadeIndex % MaxCascadeSlots;
+            if (slot > 0)
+            {
+                double offsetX = slot * CascadeStep;
+                double offsetY = slot * CascadeStep;
+
+                // Clamp to the monitor working area.
+                var screen = System.Windows.Forms.Screen.FromRectangle(
+                    new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height));
+                var wa = screen.WorkingArea;
+
+                double newLeft = Left + offsetX;
+                double newTop = Top + offsetY;
+
+                // Ensure window fits within the working area.
+                if (newLeft + Width > wa.Right)
+                    newLeft = wa.Left + (slot * CascadeStep) % Math.Max(1, wa.Width - (int)Width);
+                if (newTop + Height > wa.Bottom)
+                    newTop = wa.Top + (slot * CascadeStep) % Math.Max(1, wa.Height - (int)Height);
+                if (newLeft < wa.Left) newLeft = wa.Left;
+                if (newTop < wa.Top) newTop = wa.Top;
+
+                Left = newLeft;
+                Top = newTop;
+            }
+            _cascadeIndex++;
+        }
+
+        /// <summary>
+        /// Reset the cascade index (e.g. when all Live Ping Monitor windows are closed).
+        /// Called from MainWindow or externally when appropriate.
+        /// </summary>
+        internal static void ResetCascadeIndex()
+        {
+            _cascadeIndex = 0;
         }
 
         // ── Log entry classification ──
@@ -141,6 +209,14 @@ namespace MultiPingMonitor.UI
                 {
                     var entry = ClassifyLine(item);
                     _logLines.Add(entry);
+
+                    // Try to extract the resolved IP address from reply lines.
+                    if (entry.Kind == LogEntryKind.Success)
+                    {
+                        string addr = ExtractReplyAddress(item);
+                        if (addr != null)
+                            _lastReplyAddress = addr;
+                    }
 
                     // Update per-window session counters based on line classification.
                     // Each new history line represents one probe result.
@@ -469,6 +545,69 @@ namespace MultiPingMonitor.UI
                 : WindowState.Maximized;
         }
 
+        // ── Always on top ──
+
+        private void AlwaysOnTopCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            bool isChecked = AlwaysOnTopCheckBox.IsChecked == true;
+            Topmost = isChecked;
+            ApplicationOptions.LivePingMonitorAlwaysOnTop = isChecked;
+        }
+
+        // ── Copy actions ──
+
+        private void CopyTargetButton_Click(object sender, RoutedEventArgs e)
+        {
+            string target = _probe?.Hostname;
+            if (!string.IsNullOrWhiteSpace(target))
+            {
+                try { Clipboard.SetText(target); } catch { }
+            }
+        }
+
+        private void CopyAddressButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(_lastReplyAddress))
+            {
+                try { Clipboard.SetText(_lastReplyAddress); } catch { }
+            }
+            else
+            {
+                // Fallback: copy hostname if no reply address has been seen yet.
+                string target = _probe?.Hostname;
+                if (!string.IsNullOrWhiteSpace(target))
+                {
+                    try { Clipboard.SetText(target); } catch { }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extract the IP address from a "Reply from x.x.x.x" or "Reply from [ipv6]" history line.
+        /// Returns null if the pattern is not found.
+        /// </summary>
+        private static string ExtractReplyAddress(string historyLine)
+        {
+            if (string.IsNullOrEmpty(historyLine))
+                return null;
+
+            // Look for "Reply from <address>" pattern.
+            int idx = historyLine.IndexOf("Reply from ", StringComparison.OrdinalIgnoreCase);
+            if (idx < 0)
+                return null;
+
+            int start = idx + "Reply from ".Length;
+            if (start >= historyLine.Length)
+                return null;
+
+            // The address ends at the first whitespace after "Reply from ".
+            int end = historyLine.IndexOf(' ', start);
+            if (end < 0) end = historyLine.Length;
+
+            string addr = historyLine.Substring(start, end - start).Trim();
+            return addr.Length > 0 ? addr : null;
+        }
+
         private void Window_StateChanged(object sender, EventArgs e)
         {
             // Adjust maximize border thickness.
@@ -492,6 +631,9 @@ namespace MultiPingMonitor.UI
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            // Persist window placement for next open.
+            WindowPlacementService.SaveWindow(this, PlacementKey);
+
             // Unsubscribe from all probe events.
             if (_probe != null)
             {

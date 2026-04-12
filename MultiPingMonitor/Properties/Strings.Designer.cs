@@ -3587,5 +3587,41 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Always on top.
+        /// </summary>
+        public static string LivePing_AlwaysOnTop {
+            get {
+                return ResourceManager.GetString("LivePing_AlwaysOnTop", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Target.
+        /// </summary>
+        public static string LivePing_CopyTarget {
+            get {
+                return ResourceManager.GetString("LivePing_CopyTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Address.
+        /// </summary>
+        public static string LivePing_CopyAddress {
+            get {
+                return ResourceManager.GetString("LivePing_CopyAddress", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Address not available.
+        /// </summary>
+        public static string LivePing_AddressNotAvailable {
+            get {
+                return ResourceManager.GetString("LivePing_AddressNotAvailable", resourceCulture);
+            }
+        }
+
     }
 }
