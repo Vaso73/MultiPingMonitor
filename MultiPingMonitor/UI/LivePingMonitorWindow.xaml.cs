@@ -50,9 +50,12 @@ namespace MultiPingMonitor.UI
             // Set localized control text.
             StopResumeButton.Content = Properties.Strings.LivePing_Stop;
             PausedBannerText.Text = Properties.Strings.LivePing_Paused;
-            AlwaysOnTopCheckBox.Content = Properties.Strings.LivePing_AlwaysOnTop;
-            CopyTargetButton.Content = Properties.Strings.LivePing_CopyTarget;
-            CopyAddressButton.Content = Properties.Strings.LivePing_CopyAddress;
+            AlwaysOnTopText.Text = Properties.Strings.LivePing_AlwaysOnTop;
+            CopyTargetText.Text = Properties.Strings.LivePing_CopyTarget;
+            CopyAddressText.Text = Properties.Strings.LivePing_CopyAddress;
+
+            // Apply initial pin icon color based on always-on-top state.
+            UpdatePinIconState();
 
             LogListBox.ItemsSource = _logLines;
 
@@ -552,6 +555,25 @@ namespace MultiPingMonitor.UI
             bool isChecked = AlwaysOnTopCheckBox.IsChecked == true;
             Topmost = isChecked;
             ApplicationOptions.LivePingMonitorAlwaysOnTop = isChecked;
+            UpdatePinIconState();
+        }
+
+        /// <summary>
+        /// Update the pin icon fill color based on Always on top state.
+        /// Active = accent/danger red, Inactive = secondary text.
+        /// </summary>
+        private void UpdatePinIconState()
+        {
+            if (AlwaysOnTopCheckBox.IsChecked == true)
+            {
+                PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Danger");
+                AlwaysOnTopCheckBox.SetResourceReference(ForegroundProperty, "Theme.Text.Primary");
+            }
+            else
+            {
+                PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Text.Secondary");
+                AlwaysOnTopCheckBox.SetResourceReference(ForegroundProperty, "Theme.Text.Secondary");
+            }
         }
 
         // ── Copy actions ──
