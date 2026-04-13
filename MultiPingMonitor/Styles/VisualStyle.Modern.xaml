@@ -131,7 +131,47 @@
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="0,0,0,2" />
-        <Setter Property="Padding" Value="{DynamicResource Style.Padding.Header}" />
+        <Setter Property="Padding" Value="14,10,14,10" />
+    </Style>
+
+    <!-- ── Modern Live Ping Latency Badge ──────────────────────────── -->
+    <Style x:Key="Style.LivePingLatencyBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Margin" Value="0,2,0,0" />
+    </Style>
+
+    <!-- ── Modern Live Ping Status Block ───────────────────────────── -->
+    <Style x:Key="Style.LivePingStatusBlock" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <!-- ── Modern Live Ping Stat Segment (footer counter card) ─────── -->
+    <Style x:Key="Style.LivePingStatSegment" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+    </Style>
+
+    <!-- ── Modern Live Ping Log Row (left-accent indicator) ────────── -->
+    <Style x:Key="Style.LivePingLogRow" TargetType="{x:Type Border}">
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
+        <Setter Property="CornerRadius" Value="2,0,0,2" />
+        <Setter Property="Padding" Value="8,2,6,2" />
+        <Setter Property="Margin" Value="2,1,2,0" />
+    </Style>
+
+    <!-- ── Modern Live Ping Toolbar Separator ──────────────────────── -->
+    <Style x:Key="Style.LivePingToolbarSeparator" TargetType="{x:Type Border}">
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Margin" Value="8,2" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Accent}" />
     </Style>
 
     <!-- ── Modern Button (primary / dark) ──────────────────────────── -->
@@ -351,7 +391,7 @@
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="0,2,0,0" />
-        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="Padding" Value="10,8" />
     </Style>
 
     <!-- ── Modern Compact Row (card-like host row in Compact mode) ── -->
