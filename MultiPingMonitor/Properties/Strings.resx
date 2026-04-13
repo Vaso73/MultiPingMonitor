@@ -257,16 +257,16 @@
     <value>Favorite Sets</value>
   </data>
   <data name="Menu_FloodHost" xml:space="preserve">
-    <value>Flood Host</value>
+    <value>Flood Host...</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
     <value>Help</value>
   </data>
   <data name="Menu_ManageAliases" xml:space="preserve">
-    <value>Manage Aliases</value>
+    <value>Manage Aliases...</value>
   </data>
   <data name="Menu_ManageFavorites" xml:space="preserve">
-    <value>Manage Favorites</value>
+    <value>Manage Favorites...</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
     <value>Options</value>
@@ -275,13 +275,13 @@
     <value>Popup Alerts</value>
   </data>
   <data name="Menu_SaveToFavorites" xml:space="preserve">
-    <value>Create New Favorite Set</value>
+    <value>Create New Favorite Set...</value>
   </data>
   <data name="Menu_StatusHistory" xml:space="preserve">
     <value>Status History</value>
   </data>
   <data name="Menu_Traceroute" xml:space="preserve">
-    <value>Traceroute</value>
+    <value>Traceroute...</value>
   </data>
   <data name="Menu_CompactTargets" xml:space="preserve">
     <value>Compact</value>
@@ -522,7 +522,7 @@
     <value>Enter a hostname</value>
   </data>
   <data name="Menu_InputAddresses" xml:space="preserve">
-    <value>Input Addresses</value>
+    <value>Input Addresses...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
     <value>MultiPingMonitor</value>
@@ -937,6 +937,9 @@
   </data>
   <data name="Tray_SwitchToNormal" xml:space="preserve">
     <value>Switch to Normal View</value>
+  </data>
+  <data name="Tray_VisualStyle" xml:space="preserve">
+    <value>Visual style</value>
   </data>
   <data name="Options_Title" xml:space="preserve">
     <value>Options</value>
