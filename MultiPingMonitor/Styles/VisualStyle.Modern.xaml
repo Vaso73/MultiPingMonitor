@@ -31,7 +31,7 @@
                    xmlns:System="clr-namespace:System;assembly=mscorlib">0.82</System:Double>
 
     <!-- ── Window chrome ─────────────────────────────────────────────── -->
-    <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
+    <CornerRadius x:Key="Style.Window.CornerRadius">8</CornerRadius>
 
     <!-- ══════════════════════════════════════════════════════════════════
          STYLE ROUTING – Modern versions with rounded corners,
@@ -160,10 +160,12 @@
     <Style x:Key="Style.WindowMainPanel" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Style.Window.CornerRadius}" />
+        <Setter Property="ClipToBounds" Value="True" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                 <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="CornerRadius" Value="0" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

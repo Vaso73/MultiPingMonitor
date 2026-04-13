@@ -17,6 +17,7 @@ namespace MultiPingMonitor.UI
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             pingItem.IsolatedWindow = this;
             DataContext = pingItem;
+            Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
         }
 
         private void History_TextChanged(object sender, TextChangedEventArgs e)

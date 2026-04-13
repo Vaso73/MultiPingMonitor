@@ -44,6 +44,7 @@ namespace MultiPingMonitor.UI
             PopulateAdvancedOptions();
             PopulateDisplayOptions();
             PopulateLayoutOptions();
+            Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
         }
 
         private bool? ShowError(string message, TabItem tabItem, Control control, bool isWarning = false)
