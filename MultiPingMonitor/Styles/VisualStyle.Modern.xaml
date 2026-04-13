@@ -444,5 +444,7 @@
     <Thickness x:Key="Style.ProbeCardAlias.Padding">6,7,4,7</Thickness>
     <Thickness x:Key="Style.ProbeCardGlyph.Padding">8,0,4,0</Thickness>
     <Thickness x:Key="Style.ProbeCardHostname.Padding">4,6,0,6</Thickness>
+    <Thickness x:Key="Style.ProbeCardStatsLabel.Padding">6,3,0,3</Thickness>
+    <Thickness x:Key="Style.ProbeCardStatsLabel.Margin">6,0,0,0</Thickness>
 
 </ResourceDictionary>

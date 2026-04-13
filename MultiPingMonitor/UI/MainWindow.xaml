@@ -670,7 +670,7 @@
                                             <Setter Property="Foreground" Value="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"/>
                                         </Style>
                                     </DockPanel.Resources>
-                                    <TextBlock Text="Sent: " Opacity="0.65" Padding="6,3,0,3" />
+                                    <TextBlock Text="Sent: " Opacity="0.65" Padding="{DynamicResource Style.ProbeCardStatsLabel.Padding}" />
                                     <TextBlock Text="{Binding Statistics.Sent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -684,7 +684,7 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="Received: " Opacity="0.65" Margin="6,0,0,0"/>
+                                    <TextBlock Text="Received: " Opacity="0.65" Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Received, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -698,7 +698,7 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="Lost: " Opacity="0.65" Margin="6,0,0,0"/>
+                                    <TextBlock Text="Lost: " Opacity="0.65" Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Lost, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
