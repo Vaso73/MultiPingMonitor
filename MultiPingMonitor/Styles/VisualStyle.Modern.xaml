@@ -520,6 +520,53 @@
         <Setter Property="Padding" Value="2" />
     </Style>
 
+    <!-- ── Modern Menu Item hover tokens (accent-tinted per-style hover) ── -->
+    <!--
+         SolidColorBrush with DynamicResource Color: WPF resolves the Color DP at
+         runtime through Freezable inheritance context once the brush is applied to a
+         visual-tree element, making these live-track the active theme palette.
+    -->
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Background"   Color="{DynamicResource Theme.Accent.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.BorderBrush"  Color="{DynamicResource Theme.Accent.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Foreground"   Color="{DynamicResource Theme.AccentForeground.Color}"/>
+
+    <!-- ── Modern Header Toggle Button (e.g. Always-on-top in LPMW header) ── -->
+    <Style x:Key="Style.HeaderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background"   Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush"  Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding"      Value="5,2" />
+        <Setter Property="FontSize"     Value="11" />
+        <Setter Property="Cursor"       Value="Hand" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="ToggleBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="ToggleBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- ── Modern Context Menu (rounded popup with accent border) ────── -->
     <Style x:Key="Style.ContextMenu" TargetType="{x:Type ContextMenu}">
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />

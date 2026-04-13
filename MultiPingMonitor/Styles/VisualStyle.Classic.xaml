@@ -337,10 +337,12 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background"
                                     Value="{DynamicResource Theme.SurfaceAlt}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Border}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#007acc" />
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -374,10 +376,12 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="Background"
                                     Value="{DynamicResource Theme.SurfaceAlt}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Border}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="#007acc" />
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -481,6 +485,48 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <!-- ── Classic Menu Item hover tokens (conservative per-style hover) ── -->
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Background"   Color="{DynamicResource Theme.SurfaceAlt.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.BorderBrush"  Color="{DynamicResource Theme.Border.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Foreground"   Color="{DynamicResource Theme.Text.Primary.Color}"/>
+
+    <!-- ── Classic Header Toggle Button (e.g. Always-on-top in LPMW header) ── -->
+    <Style x:Key="Style.HeaderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background"   Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush"  Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding"      Value="5,2" />
+        <Setter Property="FontSize"     Value="11" />
+        <Setter Property="Cursor"       Value="Hand" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="ToggleBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Border}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="ToggleBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ── Classic Context Menu (square popup, standard look) ──────── -->
