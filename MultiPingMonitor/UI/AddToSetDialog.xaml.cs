@@ -27,8 +27,6 @@ namespace MultiPingMonitor.UI
             DataContext = this;
             Owner = owner;
 
-            Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
-
             // Populate compact set combo.
             CompactSetCombo.ItemsSource = _compactSets.Select(s => s.Name).ToList();
             if (_compactSets.Count > 0)
@@ -75,6 +73,11 @@ namespace MultiPingMonitor.UI
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

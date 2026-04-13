@@ -4,6 +4,7 @@
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="{x:Static resource:Strings.LivePing_AddToSet_Title}"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Height="Auto"
         Width="400"
         ResizeMode="NoResize"
@@ -11,6 +12,12 @@
         WindowStartupLocation="CenterOwner"
         SizeToContent="Height"
         ShowInTaskbar="False">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="0"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
         <!-- Themed toggle button for ComboBox — uses DynamicResource tokens so it
@@ -174,7 +181,29 @@
         </Style>
     </Window.Resources>
 
-    <DockPanel>
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
+    <DockPanel Background="{DynamicResource Theme.Background}">
+
+        <!-- Custom title bar -->
+        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
+                   Source="{StaticResource icon.add}" />
+            <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
+                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <Button Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
+                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
+                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+            </Button>
+        </Grid>
+        <Border DockPanel.Dock="Top" Style="{DynamicResource Style.TitleBarSeparator}" />
+
         <!-- Content -->
         <Border DockPanel.Dock="Top" Padding="20,16,20,12">
             <StackPanel>
@@ -240,4 +269,5 @@
             </StackPanel>
         </Border>
     </DockPanel>
+    </Border>
 </Window>
