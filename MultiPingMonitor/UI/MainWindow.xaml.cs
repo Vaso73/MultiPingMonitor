@@ -473,9 +473,10 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// Applies the correct ItemsSource for compact mode based on CompactSource setting.
-        /// When set to NormalTargets, compact reuses the main _ProbeCollection.
+        /// When set to NormalTargets, compact displays the main _ProbeCollection as a
+        /// read-only view of Normal data (no cross-writing occurs).
         /// When set to CustomTargets, compact uses its own _CompactProbeCollection
-        /// populated from ApplicationOptions.CompactCustomTargets.
+        /// populated exclusively from compact sets (fully independent from Normal).
         /// Called from ApplyDisplayMode, OptionsWindow live preview, and OptionsWindow save.
         /// </summary>
         internal void ApplyCompactDataSource()
@@ -499,7 +500,10 @@ namespace MultiPingMonitor.UI
         /// <summary>
         /// Stops existing compact probes and rebuilds the collection from
         /// the active compact set, auto-starting each probe.
-        /// Falls back to legacy CompactCustomTargets if no compact set is active.
+        /// Compact mode uses exclusively its own alias data (from CompactTargetEntry.Alias)
+        /// and never falls back to the global Normal-mode alias dictionary.
+        /// If no compact set is active but legacy CompactCustomTargets exist,
+        /// they are auto-migrated into a new compact set on-the-fly.
         /// </summary>
         private void RebuildCompactProbes()
         {
@@ -513,40 +517,30 @@ namespace MultiPingMonitor.UI
 
             // Get entries from the active compact set.
             var activeSet = ApplicationOptions.GetActiveCompactSet();
-            if (activeSet != null)
-            {
-                foreach (var entry in activeSet.Entries)
-                {
-                    if (string.IsNullOrWhiteSpace(entry.Target))
-                        continue;
 
-                    var probe = new Probe();
-                    probe.Hostname = entry.Target.Trim();
-                    // Compact set alias takes priority; fall back to global alias dictionary.
-                    if (!string.IsNullOrWhiteSpace(entry.Alias))
-                        probe.Alias = entry.Alias;
-                    else if (_Aliases.ContainsKey(probe.Hostname.ToLower()))
-                        probe.Alias = _Aliases[probe.Hostname.ToLower()];
-                    _CompactProbeCollection.Add(probe);
-                    probe.StartStop();
-                }
+            // Auto-migrate legacy CompactCustomTargets if no compact set exists yet.
+            if (activeSet == null && ApplicationOptions.CompactCustomTargets.Count > 0)
+            {
+                Configuration.MigrateCompactTargetsToSets();
+                activeSet = ApplicationOptions.GetActiveCompactSet();
             }
-            else
-            {
-                // Legacy fallback: use CompactCustomTargets list.
-                foreach (var target in ApplicationOptions.CompactCustomTargets)
-                {
-                    if (string.IsNullOrWhiteSpace(target))
-                        continue;
 
-                    var probe = new Probe();
-                    probe.Hostname = target.Trim();
-                    probe.Alias = _Aliases.ContainsKey(probe.Hostname.ToLower())
-                        ? _Aliases[probe.Hostname.ToLower()]
-                        : null;
-                    _CompactProbeCollection.Add(probe);
-                    probe.StartStop();
-                }
+            if (activeSet == null)
+                return;
+
+            foreach (var entry in activeSet.Entries)
+            {
+                if (string.IsNullOrWhiteSpace(entry.Target))
+                    continue;
+
+                var probe = new Probe();
+                probe.Hostname = entry.Target.Trim();
+                // Use only the compact-set-local alias. No fallback to the global
+                // Normal-mode alias dictionary – compact data is fully independent.
+                if (!string.IsNullOrWhiteSpace(entry.Alias))
+                    probe.Alias = entry.Alias;
+                _CompactProbeCollection.Add(probe);
+                probe.StartStop();
             }
         }
 
@@ -580,27 +574,14 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Opens the Manage Compact Targets window (legacy).
-        /// If the user edits and confirms, updates the custom targets and live-applies if active.
-        /// Called from main menu, compact title bar menu, and Options.
+        /// Opens the Manage Compact Sets window.
+        /// Previously opened the legacy ManageCompactTargetsWindow; now redirects
+        /// to the full Compact Sets management since compact data is fully independent.
+        /// Kept for backward compatibility with any external callers.
         /// </summary>
         internal void OpenManageCompactTargets()
         {
-            var window = new ManageCompactTargetsWindow(
-                new System.Collections.Generic.List<string>(ApplicationOptions.CompactCustomTargets));
-            window.Owner = this;
-            if (window.ShowDialog() == true)
-            {
-                ApplicationOptions.CompactCustomTargets = window.Targets;
-                if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
-                {
-                    ApplyCompactDataSource();
-                }
-                // Force tray to re-evaluate after target changes.
-                _trayState = TrayAggregateState.Neutral;
-                UpdateTrayIcon();
-                Configuration.Save();
-            }
+            OpenManageCompactSets();
         }
 
         /// <summary>
@@ -1649,8 +1630,8 @@ namespace MultiPingMonitor.UI
         /// <summary>
         /// Returns the probe collection that should be used for tray aggregate state.
         /// – Normal mode: always _ProbeCollection
-        /// – Compact + NormalTargets: _ProbeCollection (shares the same dataset)
-        /// – Compact + CustomTargets: _CompactProbeCollection
+        /// – Compact + NormalTargets: _ProbeCollection (read-only display of Normal data)
+        /// – Compact + CustomTargets: _CompactProbeCollection (independent compact data)
         /// </summary>
         private ObservableCollection<Probe> GetActiveTrayProbeCollection()
         {
