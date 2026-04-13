@@ -9,9 +9,8 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         ShowInTaskbar="False"
-        Background="#282829"
-        BorderBrush="#636363"
-        BorderThickness="1"
+        Background="Transparent"
+        BorderThickness="0"
         Topmost="True"
         ShowActivated="False"
         MouseLeftButtonUp="Window_MouseLeftButtonUp"
@@ -33,6 +32,12 @@
         </EventTrigger>
     </Window.Triggers>
 
+    <!-- Rounded surface wrapper — uses current theme and visual-style corner radius -->
+    <Border Background="{DynamicResource Theme.Surface}"
+            BorderBrush="{DynamicResource Theme.Accent}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource Style.CornerRadius}"
+            ClipToBounds="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -74,12 +79,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="controlButton_border" Property="Background" Value="#000" />
+                                <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
                                 <Setter TargetName="controlButton_border" Property="Opacity" Value="1" />
                                 <Setter TargetName="controlButton_image" Property="Source" Value="{StaticResource icon.window-restore-white}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="controlButton_border" Property="BorderBrush" Value="White" />
+                                <Setter TargetName="controlButton_border" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -123,12 +128,12 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="controlButton_border" Property="Background" Value="#000" />
+                                <Setter TargetName="controlButton_border" Property="Background" Value="{DynamicResource Theme.Danger}" />
                                 <Setter TargetName="controlButton_border" Property="Opacity" Value="1" />
                                 <Setter TargetName="controlButton_image" Property="Source" Value="{StaticResource icon.window-close-white}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="controlButton_border" Property="BorderBrush" Value="White" />
+                                <Setter TargetName="controlButton_border" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -193,21 +198,22 @@
                                    Padding="5,0,0,0">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_Down}">
-                                            <Setter Property="Foreground" Value="#dc322f" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_Error}">
-                                            <Setter Property="Foreground" Value="#dc322f" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_Up}">
-                                            <Setter Property="Foreground" Value="#859900" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Success}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_LatencyHigh}">
-                                            <Setter Property="Foreground" Value="#ecce51" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Warning}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_LatencyNormal}">
-                                            <Setter Property="Foreground" Value="#61b8ff" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Info}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -217,7 +223,7 @@
                         <TextBlock DockPanel.Dock="Left"
                                    Text="{Binding Timestamp, StringFormat='[{0}]'}"
                                    FontSize="15"
-                                   Foreground="White"
+                                   Foreground="{DynamicResource Theme.Text.Primary}"
                                    VerticalAlignment="Center"
                                    Opacity="0.6"
                                    Padding="6,0,0,0" />
@@ -225,14 +231,14 @@
                         <TextBlock DockPanel.Dock="Left"
                                    Text="{Binding AliasIfExistOrHostname}"
                                    FontSize="17"
-                                   Foreground="White"
+                                   Foreground="{DynamicResource Theme.Text.Primary}"
                                    VerticalAlignment="Center"
                                    Padding="9,0,0,0" />
                         <!-- Arrow symbol -->
                         <TextBlock DockPanel.Dock="Left"
                                    Text="🠖"
                                    FontSize="17"
-                                   Foreground="White"
+                                   Foreground="{DynamicResource Theme.Text.Primary}"
                                    VerticalAlignment="Center"
                                    Opacity="0.6"
                                    Padding="5,0" />
@@ -257,11 +263,12 @@
             <TextBlock Grid.Row="3"
                        Text="MultiPingMonitor"
                        FontSize="13"
-                       Foreground="White"
+                       Foreground="{DynamicResource Theme.Text.Secondary}"
                        Opacity="0.5"
                        Margin="7,0,5,0"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"/>
         </StackPanel>
     </Grid>
+    </Border>
 </Window>

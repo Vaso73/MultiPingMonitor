@@ -207,7 +207,7 @@
         </Grid>
 
         <!-- Separator line between title bar and menu -->
-        <Border x:Name="TitleBarSeparator" DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+        <Border x:Name="TitleBarSeparator" DockPanel.Dock="Top" Style="{DynamicResource Style.TitleBarSeparator}" />
 
         <!-- Menu bar -->
         <Menu x:Name="MainMenu" DockPanel.Dock="Top"
@@ -447,10 +447,10 @@
         </Grid>
 
         <!-- Items Control -->
-        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="0,0,-2,-2">
+        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="{DynamicResource Style.ProbeCardGrid.Margin}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,2,2" Margin="0" CornerRadius="0"
+                    <Border Style="{DynamicResource Style.ProbeCard}"
                             MinWidth="150"
                             Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
                         <Grid Name="gridItemsControl">
@@ -465,6 +465,7 @@
                                 <!-- Ping title bar / button section -->
                                 <Border DockPanel.Dock="Top"
                                         x:Name="headerBorder"
+                                        CornerRadius="{DynamicResource Style.ProbeCardHeader.CornerRadius}"
                                         Cursor="SizeAll">
                                     <Border.Style>
                                         <Style TargetType="Border">
@@ -494,7 +495,7 @@
                                            Background="Transparent"
                                            FontSize="13"
                                            VerticalAlignment="Center"
-                                           Padding="6,5,4,5"
+                                           Padding="{DynamicResource Style.ProbeCardAlias.Padding}"
                                            Margin="0"
                                            FontWeight="SemiBold"
                                            TextTrimming="CharacterEllipsis"
@@ -518,7 +519,7 @@
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="2"
+                                                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.window-close-black}"
@@ -568,7 +569,7 @@
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="2"
+                                                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.window-restore-black}"
@@ -618,7 +619,7 @@
                                                 <Border Name="controlButton_border"
                                                         BorderThickness="0"
                                                         BorderBrush="Transparent"
-                                                        CornerRadius="2"
+                                                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
                                                         Padding="{TemplateBinding Padding}"
                                                         Background="{TemplateBinding Background}">
                                                     <Image Name="controlButton_image" Source="{StaticResource icon.pencil-black}"
@@ -657,34 +658,20 @@
 
                                 <!-- Ping statistics -->
                                 <DockPanel DockPanel.Dock="Bottom"
-                                           Background="Transparent"
-                                           ClipToBounds="True">
-                                    <DockPanel.Style>
-                                        <Style TargetType="{x:Type DockPanel}">
-                                            <!-- Statistics are show only if: ProbeType = Ping and Statistics.Sent != 0 -->
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Type}" Value="Ping">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=Statistics.Sent}" Value="0">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DockPanel.Style>
+                                           ClipToBounds="True"
+                                           Style="{DynamicResource Style.ProbeCardStats}">
                                     <DockPanel.Resources>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="DockPanel.Dock" Value="Left"/>
                                             <Setter Property="FontFamily" Value="Segoe UI"/>
-                                            <Setter Property="FontSize" Value="12"/>
-                                            <Setter Property="FontWeight" Value="Bold"/>
-                                            <Setter Property="Padding" Value="0,2,0,4"/>
+                                            <Setter Property="FontSize" Value="11"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="Padding" Value="{DynamicResource Style.ProbeCardStatsLabel.Padding}"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="Foreground" Value="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"/>
                                         </Style>
                                     </DockPanel.Resources>
-                                    <TextBlock Text="Sent: " Opacity="0.8" Padding="6,2,0,4" />
+                                    <TextBlock Text="Sent: " Opacity="0.65" />
                                     <TextBlock Text="{Binding Statistics.Sent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -698,7 +685,8 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="  Received: " Opacity="0.8"/>
+                                    <TextBlock Text="Received: " Opacity="0.65"
+                                               Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Received, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -712,7 +700,8 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="  Lost: " Opacity="0.8"/>
+                                    <TextBlock Text="Lost: " Opacity="0.65"
+                                               Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Lost, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -787,7 +776,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Border to set background color and top border for this section -->
-                                <Border Grid.ColumnSpan="3" Background="{DynamicResource Theme.Surface}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}"/>
+                                <Border Grid.ColumnSpan="3" Style="{DynamicResource Style.ProbeCardFooter}"/>
 
                                 <!-- Status glyph -->
                                 <TextBlock Grid.Column="0"
@@ -796,7 +785,7 @@
                                            FontFamily="Marlett"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource Theme.Text.Primary}"
-                                           Padding="6,0,2,0">
+                                           Padding="{DynamicResource Style.ProbeCardGlyph.Padding}">
                                 </TextBlock>
 
                                 <!-- Hostname textbox -->
@@ -808,7 +797,7 @@
                                          BorderBrush="{DynamicResource Theme.Border}"
                                          VerticalContentAlignment="Center"
                                          Background="Transparent"
-                                         Padding="2,5,0,5"
+                                         Padding="{DynamicResource Style.ProbeCardHostname.Padding}"
                                          Text="{Binding Hostname, UpdateSourceTrigger=PropertyChanged}"
                                          IsEnabled="{Binding IsActive, Converter={StaticResource InverseBooleanConverter}}"
                                          Template="{StaticResource TextBoxControlTemplate}"
@@ -827,7 +816,7 @@
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border Name="pingButton_border" BorderThickness="1" BorderBrush="{DynamicResource Theme.Accent}"
-                                                    CornerRadius="4"
+                                                    CornerRadius="{DynamicResource Style.CornerRadius.Button}"
                                                     Background="{TemplateBinding Background}">
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0">
                                                     <Image Source="{Binding IsActive, Converter={StaticResource BooleanToImageConverter}}" Width="16" Height="16"

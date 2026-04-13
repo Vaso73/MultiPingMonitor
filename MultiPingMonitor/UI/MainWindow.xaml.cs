@@ -743,12 +743,9 @@ namespace MultiPingMonitor.UI
         {
             var menu = new ContextMenu();
 
-            // Apply theme-aware brushes (same pattern as tray context menu).
-            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
-            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            // Apply the visual-style-aware Style (same pattern as tray context menu).
+            menu.SetResourceReference(FrameworkElement.StyleProperty, "Style.ContextMenu");
             menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
-            menu.BorderThickness = new Thickness(1);
-            menu.Padding = new Thickness(2);
             var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
             if (menuItemStyle != null)
                 menu.Resources[typeof(MenuItem)] = menuItemStyle;
@@ -1721,16 +1718,12 @@ namespace MultiPingMonitor.UI
         {
             var menu = new ContextMenu();
 
-            // Apply theme-aware brushes explicitly. The ContextMenu popup lives in
-            // its own visual tree and does not inherit theme colors from the main
-            // window shell, so we bind directly to Theme.* brush keys via
-            // SetResourceReference (code equivalent of DynamicResource).  When the
-            // user switches theme, the brushes re-resolve automatically.
-            menu.SetResourceReference(Control.BackgroundProperty, "Theme.Surface");
-            menu.SetResourceReference(Control.BorderBrushProperty, "Theme.Border");
+            // Apply the visual-style-aware Style so the popup gets the correct
+            // shape (rounded in Modern, square in Classic) and border colour.
+            // The Style also provides Background/Border, so we only need to set
+            // Foreground separately (not covered by Style.ContextMenu).
+            menu.SetResourceReference(FrameworkElement.StyleProperty, "Style.ContextMenu");
             menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
-            menu.BorderThickness = new Thickness(1);
-            menu.Padding = new Thickness(2);
 
             // Apply the same MenuItemStyle used in MainWindow menu bar so items
             // get the themed templates, hover brushes, and full background coverage.

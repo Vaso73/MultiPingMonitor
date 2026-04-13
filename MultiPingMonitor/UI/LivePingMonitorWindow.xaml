@@ -125,11 +125,20 @@
                                             Background="{TemplateBinding Background}"
                                             BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
                                             Padding="{TemplateBinding Padding}"
                                             SnapsToDevicePixels="True">
                                         <ContentPresenter HorizontalAlignment="Center"
                                                           VerticalAlignment="Center" />
                                     </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                                    Value="{DynamicResource Theme.Accent}" />
+                                            <Setter TargetName="ToggleBorder" Property="BorderThickness"
+                                                    Value="2" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </ToggleButton.Template>
                             <StackPanel Orientation="Horizontal">
