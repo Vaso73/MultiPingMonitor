@@ -237,6 +237,7 @@ namespace MultiPingMonitor.UI
 
             // Set always on top state.
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
+            SyncPinButtonStates();
             if (Probe.StatusHistoryWindow != null && Probe.StatusHistoryWindow.IsLoaded)
             {
                 Probe.StatusHistoryWindow.Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
@@ -275,6 +276,10 @@ namespace MultiPingMonitor.UI
         // The TextBlock used as the tray toggle item's Header so that Bold
         // renders reliably regardless of the MenuItemStyle template.
         private TextBlock _trayToggleTextBlock;
+
+        // Tray menu items for quick Classic/Modern visual-style switch.
+        private MenuItem _trayStyleClassic;
+        private MenuItem _trayStyleModern;
 
         // Default compact window dimensions used when no saved placement exists yet.
         private const double CompactDefaultWidth = 280;
@@ -469,6 +474,41 @@ namespace MultiPingMonitor.UI
 
             // Update tray toggle text whenever display mode is applied.
             UpdateTrayToggleText();
+        }
+
+        // ── Pin / Always-on-top buttons ───────────────────────────────────────
+
+        /// <summary>
+        /// Handles click on either pin button (Normal or Compact mode).
+        /// Toggles this window's Topmost property without changing ApplicationOptions.
+        /// </summary>
+        private void PinButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Determine new state from the ToggleButton that was clicked.
+            bool pinned = (sender == NormalPinButton)
+                ? NormalPinButton.IsChecked == true
+                : CompactPinButton.IsChecked == true;
+
+            Topmost = pinned;
+            SyncPinButtonStates();
+        }
+
+        /// <summary>
+        /// Synchronizes both pin buttons' checked state and icon color to match
+        /// the current window Topmost value. Called from RefreshGuiState and PinButton_Click.
+        /// </summary>
+        private void SyncPinButtonStates()
+        {
+            bool pinned = Topmost;
+
+            // Sync ToggleButton checked states.
+            NormalPinButton.IsChecked = pinned;
+            CompactPinButton.IsChecked = pinned;
+
+            // Update icon fill: accent-colored when pinned, secondary when not.
+            string fillKey = pinned ? "Theme.Accent" : "Theme.Text.Secondary";
+            NormalPinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, fillKey);
+            CompactPinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, fillKey);
         }
 
         /// <summary>
@@ -1743,6 +1783,37 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
             menu.Items.Add(CreateTraySeparator());
 
+            // Visual style quick switch: Classic / Modern
+            var styleSubmenu = CreateTrayMenuItem("Visual style", null, null);
+            styleSubmenu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+
+            _trayStyleClassic = new MenuItem { Header = "Classic", IsCheckable = true };
+            _trayStyleClassic.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            _trayStyleClassic.Click += (s, e) =>
+            {
+                VisualStyleManager.ApplyStyle(VisualStyle.Classic);
+                ApplicationOptions.VisualStyle = VisualStyleManager.GetStyleName(VisualStyle.Classic);
+                Configuration.Save();
+                UpdateTrayStyleChecks();
+            };
+
+            _trayStyleModern = new MenuItem { Header = "Modern", IsCheckable = true };
+            _trayStyleModern.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            _trayStyleModern.Click += (s, e) =>
+            {
+                VisualStyleManager.ApplyStyle(VisualStyle.Modern);
+                ApplicationOptions.VisualStyle = VisualStyleManager.GetStyleName(VisualStyle.Modern);
+                Configuration.Save();
+                UpdateTrayStyleChecks();
+            };
+
+            styleSubmenu.Items.Add(_trayStyleClassic);
+            styleSubmenu.Items.Add(_trayStyleModern);
+            menu.Items.Add(styleSubmenu);
+            UpdateTrayStyleChecks();
+
+            menu.Items.Add(CreateTraySeparator());
+
             // Display mode quick toggle – placed just above Exit for discoverability.
             _trayToggleDisplayMode = CreateTrayMenuItem(
                 string.Empty,   // Header set below via TextBlock
@@ -1820,6 +1891,20 @@ namespace MultiPingMonitor.UI
             sep.SetResourceReference(Separator.BackgroundProperty, "Theme.Border");
             sep.Margin = new Thickness(4, 2, 4, 2);
             return sep;
+        }
+
+        /// <summary>
+        /// Updates the checked state of the Classic/Modern tray style menu items
+        /// to reflect the currently active visual style.
+        /// </summary>
+        private void UpdateTrayStyleChecks()
+        {
+            if (_trayStyleClassic == null || _trayStyleModern == null)
+                return;
+
+            bool isClassic = VisualStyleManager.CurrentStyle == VisualStyle.Classic;
+            _trayStyleClassic.IsChecked = isClassic;
+            _trayStyleModern.IsChecked = !isClassic;
         }
 
         /// <summary>

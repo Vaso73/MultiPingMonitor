@@ -7,11 +7,11 @@
         Width="450"
         MinHeight="200"
         MinWidth="300"
-        Background="White"
+        Background="{DynamicResource Theme.Background}"
         Closed="Window_Closed">
 
     <!-- Items Control -->
-    <Border BorderBrush="#111" BorderThickness="0,1,0,0" Margin="0,0,0,0" CornerRadius="0"
+    <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0" Margin="0,0,0,0" CornerRadius="0"
             Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
         <Grid>
             <Grid.RowDefinitions>
@@ -128,12 +128,13 @@
             <!-- Hostname section -->
             <Label Grid.Row="0"
                    FontWeight="SemiBold"
-                   Foreground="#eee"
+                   Foreground="{DynamicResource Theme.Text.Primary}"
                    FontSize="20"
                    Height="30"
                    VerticalContentAlignment="Center"
                    HorizontalContentAlignment="Center"
-                   Background="#80000000"
+                   Background="{DynamicResource Theme.Surface}"
+                   Opacity="0.9"
                    Padding="0"
                    Content="{Binding Hostname}" />
         </Grid>

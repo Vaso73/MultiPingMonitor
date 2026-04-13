@@ -156,6 +156,22 @@
                        FontSize="13"
                        Foreground="{DynamicResource Theme.Text.Primary}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+            <!-- Pin / always-on-top toggle (Normal mode) -->
+            <ToggleButton Grid.Column="2"
+                          x:Name="NormalPinButton"
+                          Click="PinButton_Click"
+                          Style="{DynamicResource Style.TitleBarButton}"
+                          WindowChrome.IsHitTestVisibleInChrome="True"
+                          ToolTip="{x:Static resource:Strings.Options_AlwaysOnTop}"
+                          ToolTipService.InitialShowDelay="800"
+                          Width="32" MinHeight="32"
+                          Cursor="Hand">
+                <Path x:Name="NormalPinIcon"
+                      Width="10" Height="12" Stretch="Uniform"
+                      Fill="{DynamicResource Theme.Text.Secondary}"
+                      VerticalAlignment="Center"
+                      Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
+            </ToggleButton>
             <!-- Minimize button -->
             <Button Grid.Column="3"
                     Click="OnMinimizeButtonClick"
@@ -407,6 +423,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="MultiPingMonitor"
@@ -416,8 +433,24 @@
                        Margin="6,0,0,0"
                        TextTrimming="CharacterEllipsis"
                        Opacity="0.7"/>
+            <!-- Compact title bar: pin / always-on-top toggle -->
+            <ToggleButton Grid.Column="1"
+                          x:Name="CompactPinButton"
+                          Click="PinButton_Click"
+                          Style="{DynamicResource Style.TitleBarButton}"
+                          WindowChrome.IsHitTestVisibleInChrome="True"
+                          ToolTip="{x:Static resource:Strings.Options_AlwaysOnTop}"
+                          ToolTipService.InitialShowDelay="800"
+                          Width="26" MinHeight="26"
+                          Cursor="Hand">
+                <Path x:Name="CompactPinIcon"
+                      Width="9" Height="11" Stretch="Uniform"
+                      Fill="{DynamicResource Theme.Text.Secondary}"
+                      VerticalAlignment="Center"
+                      Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
+            </ToggleButton>
             <!-- Compact title bar: menu button for quick access to compact data source -->
-            <Button Grid.Column="1"
+            <Button Grid.Column="2"
                     x:Name="CompactMenuButton"
                     Click="CompactMenuButton_Click"
                     Style="{DynamicResource Style.TitleBarButton}"
@@ -432,7 +465,7 @@
                       Width="15" Height="18"
                       Stretch="None"/>
             </Button>
-            <Button Grid.Column="2"
+            <Button Grid.Column="3"
                     Click="OnCloseButtonClick"
                     Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"
