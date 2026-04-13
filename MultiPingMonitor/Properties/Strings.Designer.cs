@@ -141,6 +141,18 @@ namespace MultiPingMonitor.Properties {
             }
         }
         
+        public static string DialogButton_Yes {
+            get {
+                return ResourceManager.GetString("DialogButton_Yes", resourceCulture);
+            }
+        }
+        
+        public static string DialogButton_No {
+            get {
+                return ResourceManager.GetString("DialogButton_No", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Confirm Delete.
         /// </summary>
@@ -150,12 +162,24 @@ namespace MultiPingMonitor.Properties {
             }
         }
         
+        public static string DialogTitle_Confirm {
+            get {
+                return ResourceManager.GetString("DialogTitle_Confirm", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string DialogTitle_Error {
             get {
                 return ResourceManager.GetString("DialogTitle_Error", resourceCulture);
+            }
+        }
+        
+        public static string DialogTitle_Information {
+            get {
+                return ResourceManager.GetString("DialogTitle_Information", resourceCulture);
             }
         }
         

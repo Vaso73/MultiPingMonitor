@@ -680,12 +680,7 @@ namespace MultiPingMonitor.UI
 
             if (string.IsNullOrWhiteSpace(rawTarget))
             {
-                MessageBox.Show(
-                    this,
-                    Properties.Strings.LivePing_TargetEmpty,
-                    "MultiPingMonitor",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                DialogWindow.InfoWindow(Properties.Strings.LivePing_TargetEmpty, this).ShowDialog();
                 ManualTargetBox.Focus();
                 return;
             }
@@ -693,13 +688,7 @@ namespace MultiPingMonitor.UI
             // If a probe is already running, confirm change of target.
             if (_probe != null && _probe.IsActive)
             {
-                var result = MessageBox.Show(
-                    this,
-                    Properties.Strings.LivePing_ChangeTargetConfirm,
-                    "MultiPingMonitor",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-                if (result != MessageBoxResult.Yes)
+                if (DialogWindow.ConfirmWindow(Properties.Strings.LivePing_ChangeTargetConfirm, this).ShowDialog() != true)
                     return;
 
                 // Stop the running probe.
@@ -783,12 +772,7 @@ namespace MultiPingMonitor.UI
                 p => string.Equals(p.Hostname, target, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
             {
-                MessageBox.Show(
-                    this,
-                    Properties.Strings.LivePing_AddToSet_DuplicateNormal,
-                    "MultiPingMonitor",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                DialogWindow.InfoWindow(Properties.Strings.LivePing_AddToSet_DuplicateNormal, this).ShowDialog();
                 return;
             }
 
@@ -798,12 +782,7 @@ namespace MultiPingMonitor.UI
                 newProbe.Alias = alias;
             mainWindow.NormalProbeCollection.Add(newProbe);
 
-            MessageBox.Show(
-                this,
-                Properties.Strings.LivePing_AddToSet_AddedNormal,
-                "MultiPingMonitor",
-                MessageBoxButton.OK,
-                MessageBoxImage.None);
+            DialogWindow.InfoWindow(Properties.Strings.LivePing_AddToSet_AddedNormal, this).ShowDialog();
         }
 
         /// <summary>
@@ -821,12 +800,7 @@ namespace MultiPingMonitor.UI
                 e => string.Equals(e.Target, target, StringComparison.OrdinalIgnoreCase));
             if (duplicate)
             {
-                MessageBox.Show(
-                    this,
-                    Properties.Strings.LivePing_AddToSet_DuplicateCompact,
-                    "MultiPingMonitor",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                DialogWindow.InfoWindow(Properties.Strings.LivePing_AddToSet_DuplicateCompact, this).ShowDialog();
                 return;
             }
 
@@ -841,12 +815,7 @@ namespace MultiPingMonitor.UI
                 mainWindow?.ApplyCompactDataSource();
             }
 
-            MessageBox.Show(
-                this,
-                Properties.Strings.LivePing_AddToSet_AddedCompact,
-                "MultiPingMonitor",
-                MessageBoxButton.OK,
-                MessageBoxImage.None);
+            DialogWindow.InfoWindow(Properties.Strings.LivePing_AddToSet_AddedCompact, this).ShowDialog();
         }
 
 

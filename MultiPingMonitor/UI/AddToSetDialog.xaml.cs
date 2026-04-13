@@ -51,12 +51,7 @@ namespace MultiPingMonitor.UI
             {
                 if (_compactSets.Count == 0)
                 {
-                    MessageBox.Show(
-                        this,
-                        Properties.Strings.LivePing_AddToSet_NoSets,
-                        "MultiPingMonitor",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    DialogWindow.InfoWindow(Properties.Strings.LivePing_AddToSet_NoSets, this).ShowDialog();
                     return;
                 }
 

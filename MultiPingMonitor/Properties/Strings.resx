@@ -144,11 +144,23 @@
   <data name="DialogButton_Save" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="DialogButton_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="DialogButton_No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="DialogTitle_ConfirmDelete" xml:space="preserve">
     <value>Confirm Delete</value>
   </data>
+  <data name="DialogTitle_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
   <data name="DialogTitle_Error" xml:space="preserve">
     <value>Error</value>
+  </data>
+  <data name="DialogTitle_Information" xml:space="preserve">
+    <value>Information</value>
   </data>
   <data name="DialogTitle_Warning" xml:space="preserve">
     <value>Warning</value>
