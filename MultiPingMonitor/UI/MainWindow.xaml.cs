@@ -1768,20 +1768,23 @@ namespace MultiPingMonitor.UI
                 ApplyTrayMenuTheme();
             };
 
-            menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray)));
-            menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance)));
+            menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
+            menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null))));
-            menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null))));
+            menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
+            menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null))));
-            menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null))));
-            menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null))));
+            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       TrayIcon.Options));
+            menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
+            menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             // ── Visual style submenu ──────────────────────────────────────────
-            var styleParent = new System.Windows.Forms.ToolStripMenuItem("Visual style");
+            var styleParent = new System.Windows.Forms.ToolStripMenuItem("Visual style")
+            {
+                Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle)
+            };
 
             _trayNativeStyleClassic = new System.Windows.Forms.ToolStripMenuItem("Classic")
             {
@@ -1831,7 +1834,8 @@ namespace MultiPingMonitor.UI
                         ? ApplicationOptions.DisplayMode.Normal
                         : ApplicationOptions.DisplayMode.Compact;
                     SwitchDisplayMode(target);
-                }));
+                }),
+                TrayIcon.ToggleDisplay);
             _trayNativeToggleItem.Font = new System.Drawing.Font(
                 _trayNativeToggleItem.Font, System.Drawing.FontStyle.Bold);
             menu.Items.Add(_trayNativeToggleItem);
@@ -1841,7 +1845,7 @@ namespace MultiPingMonitor.UI
             {
                 _IsShuttingDown = true;
                 Application.Current.Shutdown();
-            })));
+            }), TrayIcon.Exit));
 
             // Apply dark theme immediately so the first open already looks correct.
             ApplyTrayMenuTheme();
@@ -1850,11 +1854,14 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Convenience factory: creates a ToolStripMenuItem with the given text and click action.
+        /// Convenience factory: creates a ToolStripMenuItem with the given text, click action,
+        /// and an optional GDI+ icon drawn to match the current theme text color.
         /// </summary>
-        private static System.Windows.Forms.ToolStripMenuItem MakeItem(string text, Action onClick)
+        private static System.Windows.Forms.ToolStripMenuItem MakeItem(string text, Action onClick, int iconKind = -1)
         {
             var item = new System.Windows.Forms.ToolStripMenuItem(text);
+            if (iconKind >= 0)
+                item.Image = MakeTrayMenuBitmap(iconKind);
             item.Click += (s, e) => onClick();
             return item;
         }
@@ -2199,10 +2206,161 @@ namespace MultiPingMonitor.UI
         //
         // TrayMenuColorTable reads WPF theme colors live on every property access
         // so the menu always matches whichever theme/palette is currently active.
-        // TrayMenuRenderer wraps it in a ToolStripProfessionalRenderer and also
-        // forces the correct text color via OnRenderItemText.
-        // Both classes are intentionally private and nested here so they stay
-        // tightly coupled to the tray menu and do not pollute the wider namespace.
+        // TrayMenuRenderer wraps it and controls text color per item state:
+        //   - Normal/Classic: Theme.Text.Primary (light on dark surface)
+        //   - Selected+Modern: Theme.AccentForeground (dark on accent bg for contrast)
+        // MakeTrayMenuBitmap draws simple GDI+ icons in the current text color.
+
+        /// <summary>
+        /// Icon kind identifiers used by MakeTrayMenuBitmap.
+        /// </summary>
+        private static class TrayIcon
+        {
+            public const int Open         = 0;
+            public const int NewInstance  = 1;
+            public const int Traceroute   = 2;
+            public const int FloodHost    = 3;
+            public const int Options      = 4;
+            public const int StatusHistory= 5;
+            public const int Help         = 6;
+            public const int VisualStyle  = 7;
+            public const int ToggleDisplay= 8;
+            public const int Exit         = 9;
+        }
+
+        /// <summary>
+        /// Creates a 16×16 GDI+ bitmap icon for the tray menu, drawn in the
+        /// current theme text color so it is always readable on the dark background.
+        /// </summary>
+        private static System.Drawing.Bitmap MakeTrayMenuBitmap(int kind)
+        {
+            var bmp = new System.Drawing.Bitmap(16, 16,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            System.Drawing.Color ic = GetThemeDrawingColor("Theme.Text.Primary",
+                System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4));
+            System.Drawing.Color ac = GetThemeDrawingColor("Theme.Accent",
+                System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA));
+
+            using var g = System.Drawing.Graphics.FromImage(bmp);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.Clear(System.Drawing.Color.Transparent);
+
+            using var pen = new System.Drawing.Pen(ic, 1.2f);
+            using var brush = new System.Drawing.SolidBrush(ic);
+            using var accentBrush = new System.Drawing.SolidBrush(ac);
+
+            switch (kind)
+            {
+                case TrayIcon.Open:
+                    // Window outline + outward arrow
+                    g.DrawRectangle(pen, 1f, 3f, 8f, 8f);
+                    g.DrawLine(pen, 10f, 5f, 14f, 5f);
+                    g.DrawLine(pen, 11f, 3f, 14f, 5f);
+                    g.DrawLine(pen, 11f, 7f, 14f, 5f);
+                    break;
+
+                case TrayIcon.NewInstance:
+                    // Two overlapping window outlines
+                    g.DrawRectangle(pen, 5f, 1f, 8f, 7f);
+                    g.FillRectangle(new System.Drawing.SolidBrush(
+                        GetThemeDrawingColor("Theme.Surface", System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E))),
+                        1f, 5f, 9f, 8f);
+                    g.DrawRectangle(pen, 1f, 5f, 8f, 7f);
+                    break;
+
+                case TrayIcon.Traceroute:
+                    // Dashed path with arrowhead
+                    using (var dash = new System.Drawing.Pen(ic, 1.2f)
+                        { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
+                    {
+                        g.DrawLine(dash, 1f, 8f, 10f, 8f);
+                    }
+                    g.DrawLine(pen, 8f, 5f, 13f, 8f);
+                    g.DrawLine(pen, 8f, 11f, 13f, 8f);
+                    break;
+
+                case TrayIcon.FloodHost:
+                    // Lightning bolt (filled polygon)
+                    g.FillPolygon(brush, new System.Drawing.PointF[]
+                    {
+                        new(9f,1f), new(5f,8f), new(8f,8f),
+                        new(7f,14f), new(11f,7f), new(8f,7f)
+                    });
+                    break;
+
+                case TrayIcon.Options:
+                    // Gear: circle + 4 teeth at cardinal directions
+                    g.DrawEllipse(pen, 4f, 4f, 7f, 7f);
+                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 4f);
+                    g.DrawLine(pen, 7.5f, 11f, 7.5f, 14f);
+                    g.DrawLine(pen, 1f, 7.5f, 4f, 7.5f);
+                    g.DrawLine(pen, 11f, 7.5f, 14f, 7.5f);
+                    break;
+
+                case TrayIcon.StatusHistory:
+                    // Clock face
+                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
+                    g.DrawLine(pen, 7.5f, 5f, 7.5f, 8f);
+                    g.DrawLine(pen, 7.5f, 8f, 10f, 8f);
+                    break;
+
+                case TrayIcon.Help:
+                    // Circle + "?" glyph
+                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
+                    using (var f = new System.Drawing.Font("Segoe UI", 7f,
+                        System.Drawing.FontStyle.Bold,
+                        System.Drawing.GraphicsUnit.Point))
+                    {
+                        g.DrawString("?", f, brush, 4.5f, 3f);
+                    }
+                    break;
+
+                case TrayIcon.VisualStyle:
+                    // Classic vs Modern: two small squares, second in accent color
+                    g.FillRectangle(brush, 1f, 3f, 6f, 9f);
+                    g.FillRectangle(accentBrush, 9f, 3f, 6f, 9f);
+                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 14f);
+                    break;
+
+                case TrayIcon.ToggleDisplay:
+                    // Two-headed horizontal arrow (swap)
+                    g.DrawLine(pen, 2f, 8f, 13f, 8f);
+                    g.DrawLine(pen, 5f, 5f, 2f, 8f);
+                    g.DrawLine(pen, 5f, 11f, 2f, 8f);
+                    g.DrawLine(pen, 10f, 5f, 13f, 8f);
+                    g.DrawLine(pen, 10f, 11f, 13f, 8f);
+                    break;
+
+                case TrayIcon.Exit:
+                    // Door outline + outward arrow
+                    g.DrawRectangle(pen, 1f, 2f, 6f, 11f);
+                    g.DrawLine(pen, 8f, 8f, 14f, 8f);
+                    g.DrawLine(pen, 11f, 5f, 14f, 8f);
+                    g.DrawLine(pen, 11f, 11f, 14f, 8f);
+                    break;
+            }
+
+            return bmp;
+        }
+
+        /// <summary>
+        /// Reads a WPF SolidColorBrush theme resource and converts it to a GDI+ Color.
+        /// Falls back to <paramref name="fallback"/> if the resource is unavailable.
+        /// </summary>
+        private static System.Drawing.Color GetThemeDrawingColor(string key, System.Drawing.Color fallback)
+        {
+            try
+            {
+                if (Application.Current?.TryFindResource(key) is System.Windows.Media.SolidColorBrush b)
+                {
+                    var c = b.Color;
+                    return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+            }
+            catch { }
+            return fallback;
+        }
 
         /// <summary>
         /// ProfessionalColorTable that reads all colors from the WPF application theme
@@ -2233,12 +2391,16 @@ namespace MultiPingMonitor.UI
             private static System.Drawing.Color AccentHover => Get("Theme.AccentHover", System.Drawing.Color.FromArgb(0x74, 0xC7, 0xEC));
 
             private static bool IsModern    => VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+            // Modern: accent highlight; Classic: subtle surface-alt highlight
             private static System.Drawing.Color HighlightBg => IsModern ? Accent      : SurfaceAlt;
             private static System.Drawing.Color PressedBg   => IsModern ? AccentHover : Border;
+            // Classic image margin gets the same surface-alt so icons don't float on a
+            // different shade; Modern keeps SurfaceAlt for a subtle gutter contrast
+            private static System.Drawing.Color ImageMargin => SurfaceAlt;
 
             // ── ProfessionalColorTable overrides ──────────────────────────────
             public override System.Drawing.Color ToolStripDropDownBackground   => Surface;
-            public override System.Drawing.Color MenuBorder                    => Border;
+            public override System.Drawing.Color MenuBorder                    => IsModern ? Accent : Border;
             public override System.Drawing.Color MenuItemBorder                => IsModern ? Accent : Border;
             public override System.Drawing.Color MenuItemSelected              => HighlightBg;
             public override System.Drawing.Color MenuItemSelectedGradientBegin => HighlightBg;
@@ -2246,9 +2408,9 @@ namespace MultiPingMonitor.UI
             public override System.Drawing.Color MenuItemPressedGradientBegin  => PressedBg;
             public override System.Drawing.Color MenuItemPressedGradientMiddle => PressedBg;
             public override System.Drawing.Color MenuItemPressedGradientEnd    => PressedBg;
-            public override System.Drawing.Color ImageMarginGradientBegin      => SurfaceAlt;
-            public override System.Drawing.Color ImageMarginGradientMiddle     => SurfaceAlt;
-            public override System.Drawing.Color ImageMarginGradientEnd        => SurfaceAlt;
+            public override System.Drawing.Color ImageMarginGradientBegin      => ImageMargin;
+            public override System.Drawing.Color ImageMarginGradientMiddle     => ImageMargin;
+            public override System.Drawing.Color ImageMarginGradientEnd        => ImageMargin;
             public override System.Drawing.Color SeparatorLight                => Surface;
             public override System.Drawing.Color SeparatorDark                 => Border;
             public override System.Drawing.Color CheckBackground               => HighlightBg;
@@ -2266,38 +2428,53 @@ namespace MultiPingMonitor.UI
             public override System.Drawing.Color ToolStripGradientBegin        => Surface;
             public override System.Drawing.Color ToolStripGradientMiddle       => Surface;
             public override System.Drawing.Color ToolStripGradientEnd          => Surface;
-            public override System.Drawing.Color ToolStripBorder               => Border;
+            public override System.Drawing.Color ToolStripBorder               => IsModern ? Accent : Border;
             public override System.Drawing.Color GripLight                     => Surface;
             public override System.Drawing.Color GripDark                      => Border;
         }
 
         /// <summary>
         /// ToolStripProfessionalRenderer backed by TrayMenuColorTable.
-        /// Also overrides OnRenderItemText to force the theme's primary text color
-        /// so text remains readable regardless of selection/hover state.
+        /// Controls text and arrow colors per item state to ensure readable contrast:
+        ///   Classic normal/hover: Theme.Text.Primary (light on dark surface/SurfaceAlt)
+        ///   Modern  normal:       Theme.Text.Primary
+        ///   Modern  hover/pressed:Theme.AccentForeground (dark on accent for WCAG contrast)
         /// </summary>
         private sealed class TrayMenuRenderer : System.Windows.Forms.ToolStripProfessionalRenderer
         {
             public TrayMenuRenderer() : base(new TrayMenuColorTable()) { }
 
-            private static System.Drawing.Color GetTextColor()
+            /// <summary>
+            /// Returns the appropriate text/arrow color for an item, choosing between
+            /// the primary text color and AccentForeground depending on state + style.
+            /// </summary>
+            private static System.Drawing.Color ItemForeColor(System.Windows.Forms.ToolStripItem item)
             {
-                try
+                bool active = item.Selected || item.Pressed;
+                bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+                if (active && modern)
                 {
-                    if (Application.Current?.TryFindResource("Theme.Text.Primary") is System.Windows.Media.SolidColorBrush b)
-                    {
-                        var c = b.Color;
-                        return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
-                    }
+                    // Accent background in Modern — use the dedicated AccentForeground
+                    // (dark) so the text/arrow has correct contrast against the light accent.
+                    return GetThemeDrawingColor("Theme.AccentForeground",
+                        System.Drawing.Color.FromArgb(0x1E, 0x1E, 0x2E));
                 }
-                catch { }
-                return System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4); // Dark theme default
+                return GetThemeDrawingColor("Theme.Text.Primary",
+                    System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4));
             }
 
-            protected override void OnRenderItemText(System.Windows.Forms.ToolStripItemTextRenderEventArgs e)
+            protected override void OnRenderItemText(
+                System.Windows.Forms.ToolStripItemTextRenderEventArgs e)
             {
-                e.TextColor = GetTextColor();
+                e.TextColor = ItemForeColor(e.Item);
                 base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderArrow(
+                System.Windows.Forms.ToolStripArrowRenderEventArgs e)
+            {
+                e.ArrowColor = ItemForeColor(e.Item);
+                base.OnRenderArrow(e);
             }
         }
     }

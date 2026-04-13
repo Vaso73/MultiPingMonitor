@@ -40,5 +40,11 @@ namespace MultiPingMonitor.UI
             (DataContext as Probe).IsolatedWindow = null;
             DataContext = null;
         }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+            => WindowState = WindowState.Minimized;
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+            => Close();
     }
 }

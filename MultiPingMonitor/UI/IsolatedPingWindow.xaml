@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Hostname, StringFormat='{}{0} - MultiPingMonitor'}"
         UseLayoutRounding="True"
+        WindowStyle="None"
         Height="500"
         Width="450"
         MinHeight="200"
@@ -10,35 +11,75 @@
         Background="{DynamicResource Theme.Background}"
         Closed="Window_Closed">
 
-    <!-- Items Control -->
-    <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0" Margin="0,0,0,0" CornerRadius="0"
-            Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0" />
+    </WindowChrome.WindowChrome>
 
-            <!-- Ping output section -->
-            <DockPanel Grid.Row="1">
-                
-                <!-- Ping statistics -->
-                <DockPanel DockPanel.Dock="Bottom"
-                           Background="Transparent">
-                    <DockPanel.Style>
-                        <Style TargetType="{x:Type DockPanel}">
-                            <!-- Statistics are show only if: ProbeType = Ping and Statistics.Sent != 0 -->
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=Type}" Value="Ping">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=Statistics.Sent}" Value="0">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DockPanel.Style>
+    <Border Style="{DynamicResource Style.WindowMainPanel}">
+        <DockPanel Background="{DynamicResource Theme.Background}">
+
+            <!-- Title bar -->
+            <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!-- Window icon -->
+                <Image Grid.Column="0" Source="/MultiPingMonitor.ico" Width="16" Height="16" Margin="8,0,4,0"
+                       RenderOptions.BitmapScalingMode="HighQuality" />
+                <!-- Title text (hostname) -->
+                <TextBlock Grid.Column="1" Text="{Binding Hostname}"
+                           VerticalAlignment="Center" FontSize="12"
+                           Foreground="{DynamicResource Theme.Text.Secondary}" Margin="4,0,0,0"
+                           TextTrimming="CharacterEllipsis" />
+                <!-- Minimize -->
+                <Button Grid.Column="2" Style="{DynamicResource Style.TitleBarButton}"
+                        Width="46" Click="MinimizeButton_Click"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Path Width="10" Height="1" Data="M0,0 H10" Stretch="None"
+                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          StrokeThickness="1" />
+                </Button>
+                <!-- Close -->
+                <Button Grid.Column="3" Style="{DynamicResource Style.TitleBarCloseButton}"
+                        Width="46" Click="CloseButton_Click"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Path Width="10" Height="10" Data="M0,0 L10,10 M0,10 L10,0" Stretch="None"
+                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                          StrokeThickness="1" />
+                </Button>
+            </Grid>
+
+            <!-- Hostname header -->
+            <Border DockPanel.Dock="Top" Style="{DynamicResource Style.HeaderPanel}">
+                <TextBlock Text="{Binding Hostname}"
+                           FontSize="16" FontWeight="SemiBold"
+                           Foreground="{DynamicResource Theme.Text.Primary}"
+                           TextTrimming="CharacterEllipsis" />
+            </Border>
+
+            <!-- Stats footer (Ping only, hidden when Sent == 0) -->
+            <Border DockPanel.Dock="Bottom">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Type}" Value="Ping">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=Statistics.Sent}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Border Style="{DynamicResource Style.FooterPanel}">
+                <DockPanel>
                     <DockPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="DockPanel.Dock" Value="Left"/>
@@ -91,8 +132,12 @@
                         </TextBlock.Triggers>
                     </TextBlock>
                 </DockPanel>
+                </Border>
+            </Border>
 
-                <!-- Ping history -->
+            <!-- Ping history (status-tinted background) -->
+            <Border Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}"
+                    BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,1,0,0">
                 <TextBox x:Name="History"
                          IsReadOnly="True"
                          IsTabStop="False"
@@ -122,21 +167,8 @@
                         </Style>
                     </TextBox.Resources>
                 </TextBox>
-            </DockPanel>
+            </Border>
 
-            
-            <!-- Hostname section -->
-            <Label Grid.Row="0"
-                   FontWeight="SemiBold"
-                   Foreground="{DynamicResource Theme.Text.Primary}"
-                   FontSize="20"
-                   Height="30"
-                   VerticalContentAlignment="Center"
-                   HorizontalContentAlignment="Center"
-                   Background="{DynamicResource Theme.Surface}"
-                   Opacity="0.9"
-                   Padding="0"
-                   Content="{Binding Hostname}" />
-        </Grid>
+        </DockPanel>
     </Border>
 </Window>
