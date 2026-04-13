@@ -89,29 +89,30 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
+                    <!-- Left: display name + target -->
                     <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-                        <!-- Display name: alias or hostname -->
-                        <TextBlock x:Name="HeaderDisplayName" FontSize="18" FontWeight="SemiBold"
+                        <TextBlock x:Name="HeaderDisplayName" FontSize="16" FontWeight="SemiBold"
                                    Foreground="{DynamicResource Theme.Text.Primary}" TextTrimming="CharacterEllipsis" />
-                        <!-- Secondary: hostname/IP if alias is shown -->
-                        <TextBlock x:Name="HeaderTarget" FontSize="12"
+                        <TextBlock x:Name="HeaderTarget" FontSize="11"
                                    Foreground="{DynamicResource Theme.Text.Secondary}" TextTrimming="CharacterEllipsis"
-                                   Margin="0,2,0,0" />
+                                   Margin="0,1,0,0" Opacity="{DynamicResource Style.Opacity.Secondary}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="8,0,0,0">
-                        <!-- Status indicator — enlarged for DOWN emphasis -->
-                        <TextBlock x:Name="HeaderStatus" FontSize="18" FontWeight="Bold"
-                                   HorizontalAlignment="Right" />
-                        <!-- Latest latency -->
-                        <TextBlock x:Name="HeaderLatency" FontSize="12" FontFamily="Consolas"
-                                   HorizontalAlignment="Right"
-                                   Foreground="{DynamicResource Theme.Text.Secondary}" Margin="0,2,0,0" />
-                    </StackPanel>
-                    <!-- Toolbar row: Always on top + Copy actions -->
+                    <!-- Right: status + latency badge -->
+                    <Border Grid.Row="0" Grid.Column="1" Style="{DynamicResource Style.LivePingStatusBlock}"
+                            VerticalAlignment="Center" Margin="10,0,0,0">
+                        <StackPanel HorizontalAlignment="Right">
+                            <TextBlock x:Name="HeaderStatus" FontSize="13" FontWeight="Bold"
+                                       HorizontalAlignment="Right" />
+                            <Border Style="{DynamicResource Style.LivePingLatencyBadge}"
+                                    HorizontalAlignment="Right">
+                                <TextBlock x:Name="HeaderLatency" FontSize="13" FontFamily="Consolas"
+                                           FontWeight="SemiBold" HorizontalAlignment="Center"
+                                           Foreground="{DynamicResource Theme.Text.Primary}" />
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <!-- Toolbar row: Always on top + separator + Copy actions -->
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,6,0,0">
-                        <!-- Always on top toggle with pin icon.
-                             Uses a minimal ControlTemplate so WPF default checked/hover
-                             visual states never override the text foreground. -->
                         <ToggleButton x:Name="AlwaysOnTopCheckBox" VerticalAlignment="Center"
                                       Padding="5,2" FontSize="11"
                                       Background="{DynamicResource Theme.SurfaceAlt}"
@@ -132,7 +133,6 @@
                                 </ControlTemplate>
                             </ToggleButton.Template>
                             <StackPanel Orientation="Horizontal">
-                                <!-- Pushpin icon -->
                                 <Path x:Name="PinIcon" Width="10" Height="12" Stretch="Uniform"
                                       Fill="{DynamicResource Theme.Text.Secondary}" VerticalAlignment="Center"
                                       Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
@@ -141,12 +141,11 @@
                                            Foreground="{DynamicResource Theme.Text.Primary}" />
                             </StackPanel>
                         </ToggleButton>
-                        <!-- Copy Target with clipboard icon -->
+                        <Border Style="{DynamicResource Style.LivePingToolbarSeparator}" />
                         <Button x:Name="CopyTargetButton" Click="CopyTargetButton_Click"
                                 Style="{DynamicResource Style.LivePingActionButton}"
-                                Margin="8,0,0,0">
+                                Margin="0">
                             <StackPanel Orientation="Horizontal">
-                                <!-- Clipboard/copy icon (two overlapping rectangles) -->
                                 <Path Width="10" Height="11" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M4,0 L4,1 1,1 1,11 9,11 9,4 10,4 10,12 0,12 0,0 Z M3,0 L3,8 11,8 11,0 Z M4,1 L10,1 10,7 4,7 Z" />
@@ -154,12 +153,10 @@
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
-                        <!-- Copy Address with network/address icon -->
                         <Button x:Name="CopyAddressButton" Click="CopyAddressButton_Click"
                                 Style="{DynamicResource Style.LivePingActionButton}"
                                 Margin="4,0,0,0">
                             <StackPanel Orientation="Horizontal">
-                                <!-- Network/IP address icon (monitor with angle brackets) -->
                                 <Path Width="11" Height="10" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M0,0 L12,0 12,9 7,9 7,11 9,11 9,12 3,12 3,11 5,11 5,9 0,9 Z M1,1 L1,8 11,8 11,1 Z M4,3 L2,5 4,7 5,6 3.5,5 5,4 Z M8,3 L7,4 8.5,5 7,6 8,7 10,5 Z" />
@@ -194,19 +191,38 @@
                                 Style="{DynamicResource Style.LivePingFooterButton}"
                                 Margin="4,0,0,0" />
                     </StackPanel>
-                    <!-- Statistics on the left -->
+                    <!-- Statistics: segmented metric blocks -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Sent: " FontSize="12" Foreground="{DynamicResource Theme.Text.Secondary}" />
-                        <TextBlock x:Name="StatsSent" FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Theme.Info}" Margin="0,0,10,0" />
-                        <TextBlock Text="Received: " FontSize="12" Foreground="{DynamicResource Theme.Text.Secondary}" />
-                        <TextBlock x:Name="StatsReceived" FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Theme.Success}" Margin="0,0,10,0" />
-                        <TextBlock Text="Lost: " FontSize="12" Foreground="{DynamicResource Theme.Text.Secondary}" />
-                        <TextBlock x:Name="StatsLost" FontSize="12" FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Theme.Danger}" Margin="0,0,10,0" />
-                        <TextBlock x:Name="StatsLossPercent" FontSize="12"
-                                   Foreground="{DynamicResource Theme.Text.Secondary}" />
+                        <Border Style="{DynamicResource Style.LivePingStatSegment}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Sent" FontSize="11"
+                                           Foreground="{DynamicResource Theme.Text.Secondary}"
+                                           VerticalAlignment="Center" Margin="0,0,5,0" />
+                                <TextBlock x:Name="StatsSent" FontSize="12" FontWeight="Bold"
+                                           Foreground="{DynamicResource Theme.Info}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{DynamicResource Style.LivePingStatSegment}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Recv" FontSize="11"
+                                           Foreground="{DynamicResource Theme.Text.Secondary}"
+                                           VerticalAlignment="Center" Margin="0,0,5,0" />
+                                <TextBlock x:Name="StatsReceived" FontSize="12" FontWeight="Bold"
+                                           Foreground="{DynamicResource Theme.Success}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{DynamicResource Style.LivePingStatSegment}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Lost" FontSize="11"
+                                           Foreground="{DynamicResource Theme.Text.Secondary}"
+                                           VerticalAlignment="Center" Margin="0,0,5,0" />
+                                <TextBlock x:Name="StatsLost" FontSize="12" FontWeight="Bold"
+                                           Foreground="{DynamicResource Theme.Danger}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock x:Name="StatsLossPercent" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Theme.Text.Secondary}"
+                                   VerticalAlignment="Center" />
                     </StackPanel>
                 </DockPanel>
             </Border>
@@ -223,7 +239,8 @@
                      ScrollViewer.VerticalScrollBarVisibility="Auto"
                      SelectionMode="Extended"
                      IsTabStop="False"
-                     Margin="0">
+                     Margin="0"
+                     Padding="0,2">
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle.Dark}"/>
                 </ListBox.Resources>
@@ -234,7 +251,7 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Padding" Value="6,1" />
+                        <Setter Property="Padding" Value="0" />
                         <Setter Property="Margin" Value="0" />
                         <Setter Property="BorderThickness" Value="0" />
                         <Setter Property="Background" Value="Transparent" />
@@ -242,32 +259,36 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                    <Border Background="{TemplateBinding Background}"
-                                            Padding="{TemplateBinding Padding}">
+                                    <Border x:Name="RowBorder"
+                                            Style="{DynamicResource Style.LivePingLogRow}"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="Transparent">
                                         <ContentPresenter />
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
                                         </Trigger>
+                                        <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Success}">
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Success}" />
+                                            <Setter TargetName="RowBorder" Property="BorderBrush" Value="{DynamicResource Theme.Success}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Failure}">
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}" />
+                                            <Setter TargetName="RowBorder" Property="BorderBrush" Value="{DynamicResource Theme.Danger}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Warning}">
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Warning}" />
+                                            <Setter TargetName="RowBorder" Property="BorderBrush" Value="{DynamicResource Theme.Warning}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Info}">
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
+                                            <Setter TargetName="RowBorder" Property="BorderBrush" Value="Transparent" />
+                                        </DataTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Success}">
-                                <Setter Property="Foreground" Value="{DynamicResource Theme.Success}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Failure}">
-                                <Setter Property="Foreground" Value="{DynamicResource Theme.Danger}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Warning}">
-                                <Setter Property="Foreground" Value="{DynamicResource Theme.Warning}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Kind}" Value="{x:Static classes:LogEntryKind.Info}">
-                                <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
-                            </DataTrigger>
-                        </Style.Triggers>
                     </Style>
                 </ListBox.ItemContainerStyle>
             </ListBox>
