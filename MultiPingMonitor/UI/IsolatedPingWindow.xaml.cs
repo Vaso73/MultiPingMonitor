@@ -17,6 +17,17 @@ namespace MultiPingMonitor.UI
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             pingItem.IsolatedWindow = this;
             DataContext = pingItem;
+
+            // Initialize the always-on-top toggle to match the window's current state.
+            AlwaysOnTopCheckBox.IsChecked = Topmost;
+
+            // Set localized text.
+            AlwaysOnTopText.Text = Properties.Strings.LivePing_AlwaysOnTop;
+            CopyTargetText.Text  = Properties.Strings.LivePing_CopyTarget;
+
+            // Apply initial pin icon color.
+            UpdatePinIconState();
+
             Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
         }
 
@@ -47,5 +58,40 @@ namespace MultiPingMonitor.UI
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
             => Close();
+
+        // ── Header toolbar actions ────────────────────────────────────────
+
+        private void AlwaysOnTopCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            Topmost = AlwaysOnTopCheckBox.IsChecked == true;
+            UpdatePinIconState();
+        }
+
+        /// <summary>
+        /// Updates the pin icon fill based on the always-on-top state.
+        /// Active: pin icon uses Danger color. Inactive: secondary color.
+        /// </summary>
+        private void UpdatePinIconState()
+        {
+            if (AlwaysOnTopCheckBox.IsChecked == true)
+            {
+                PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Danger");
+                AlwaysOnTopCheckBox.SetResourceReference(BorderBrushProperty, "Theme.Danger");
+            }
+            else
+            {
+                PinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Text.Secondary");
+                AlwaysOnTopCheckBox.SetResourceReference(BorderBrushProperty, "Theme.Border");
+            }
+        }
+
+        private void CopyTargetButton_Click(object sender, RoutedEventArgs e)
+        {
+            string target = (DataContext as Probe)?.Hostname;
+            if (!string.IsNullOrWhiteSpace(target))
+            {
+                try { Clipboard.SetText(target); } catch { }
+            }
+        }
     }
 }
