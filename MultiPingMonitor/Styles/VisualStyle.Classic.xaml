@@ -381,5 +381,39 @@
         <Setter Property="Margin" Value="4,0,0,0" />
     </Style>
 
+    <!-- ── Classic Probe Card (Normal mode outer card grid dividers) ─── -->
+    <Style x:Key="Style.ProbeCard" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,0,2,2" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <!-- ── Classic Probe Card Statistics Band ─────────────────────────── -->
+    <Style x:Key="Style.ProbeCardStats" TargetType="{x:Type DockPanel}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Type}" Value="Ping">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Statistics.Sent}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ── Classic Probe Card Footer (hostname + ping button row) ──────── -->
+    <Style x:Key="Style.ProbeCardFooter" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+    </Style>
+
+    <!-- ── Classic Probe Card spacing tokens (original tight spacing) ──── -->
+    <Thickness x:Key="Style.ProbeCardAlias.Padding">6,5,4,5</Thickness>
+    <Thickness x:Key="Style.ProbeCardGlyph.Padding">6,0,2,0</Thickness>
+    <Thickness x:Key="Style.ProbeCardHostname.Padding">2,5,0,5</Thickness>
+
 </ResourceDictionary>
 
