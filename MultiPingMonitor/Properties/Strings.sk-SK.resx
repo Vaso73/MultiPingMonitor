@@ -136,16 +136,16 @@
     <value>Obľúbené sady</value>
   </data>
   <data name="Menu_FloodHost" xml:space="preserve">
-    <value>Zahltiť hostiteľa</value>
+    <value>Zahltiť hostiteľa...</value>
   </data>
   <data name="Menu_Help" xml:space="preserve">
     <value>Pomocník</value>
   </data>
   <data name="Menu_ManageAliases" xml:space="preserve">
-    <value>Spravovať aliasy</value>
+    <value>Spravovať aliasy...</value>
   </data>
   <data name="Menu_ManageFavorites" xml:space="preserve">
-    <value>Spravovať obľúbené</value>
+    <value>Spravovať obľúbené...</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
     <value>Možnosti</value>
@@ -154,13 +154,13 @@
     <value>Kontextové upozornenia</value>
   </data>
   <data name="Menu_SaveToFavorites" xml:space="preserve">
-    <value>Vytvoriť novú obľúbenú sadu</value>
+    <value>Vytvoriť novú obľúbenú sadu...</value>
   </data>
   <data name="Menu_StatusHistory" xml:space="preserve">
     <value>História stavov</value>
   </data>
   <data name="Menu_Traceroute" xml:space="preserve">
-    <value>Traceroute</value>
+    <value>Traceroute...</value>
   </data>
   <data name="Menu_CompactTargets" xml:space="preserve">
     <value>Kompaktné ciele</value>
@@ -400,7 +400,7 @@
     <value>Zadajte názov hostiteľa</value>
   </data>
   <data name="Menu_InputAddresses" xml:space="preserve">
-    <value>Zadať adresy</value>
+    <value>Zadať adresy...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
     <value>MultiPingMonitor</value>
@@ -815,6 +815,9 @@
   </data>
   <data name="Tray_SwitchToNormal" xml:space="preserve">
     <value>Prepnúť na normálne zobrazenie</value>
+  </data>
+  <data name="Tray_VisualStyle" xml:space="preserve">
+    <value>Vizuálny štýl</value>
   </data>
   <data name="Options_Title" xml:space="preserve">
     <value>Možnosti</value>

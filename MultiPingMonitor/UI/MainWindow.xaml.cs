@@ -1835,7 +1835,7 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             // ── Visual style submenu ──────────────────────────────────────────
-            var styleParent = new System.Windows.Forms.ToolStripMenuItem("Visual style")
+            var styleParent = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_VisualStyle)
             {
                 Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle),
                 Tag   = TrayIcon.VisualStyle

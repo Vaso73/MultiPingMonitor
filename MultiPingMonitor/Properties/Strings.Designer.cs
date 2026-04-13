@@ -2496,6 +2496,15 @@ namespace MultiPingMonitor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Visual style.
+        /// </summary>
+        public static string Tray_VisualStyle {
+            get {
+                return ResourceManager.GetString("Tray_VisualStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Options.
         /// </summary>
         public static string Options_Title {
