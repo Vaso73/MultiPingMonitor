@@ -1783,7 +1783,8 @@ namespace MultiPingMonitor.UI
             // ── Visual style submenu ──────────────────────────────────────────
             var styleParent = new System.Windows.Forms.ToolStripMenuItem("Visual style")
             {
-                Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle)
+                Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle),
+                Tag   = TrayIcon.VisualStyle
             };
 
             _trayNativeStyleClassic = new System.Windows.Forms.ToolStripMenuItem("Classic")
@@ -1856,12 +1857,16 @@ namespace MultiPingMonitor.UI
         /// <summary>
         /// Convenience factory: creates a ToolStripMenuItem with the given text, click action,
         /// and an optional GDI+ icon drawn to match the current theme text color.
+        /// The icon kind is stored in Tag so it can be regenerated when the theme changes.
         /// </summary>
         private static System.Windows.Forms.ToolStripMenuItem MakeItem(string text, Action onClick, int iconKind = -1)
         {
             var item = new System.Windows.Forms.ToolStripMenuItem(text);
             if (iconKind >= 0)
+            {
                 item.Image = MakeTrayMenuBitmap(iconKind);
+                item.Tag   = iconKind;
+            }
             item.Click += (s, e) => onClick();
             return item;
         }
@@ -1907,6 +1912,19 @@ namespace MultiPingMonitor.UI
                 _trayNativeMenu.ForeColor = foreColor;
                 SetTrayItemColors(_trayNativeMenu.Items, foreColor);
             }
+
+            // Regenerate icons in the current theme/palette colors so they always
+            // match the active theme regardless of when the menu was first built.
+            RefreshTrayItemIcons(_trayNativeMenu.Items);
+
+            // Align item vertical padding with the active WPF menu style:
+            // Modern uses 6 px top/bottom (matches Style.Padding.MenuItem = 10,6,10,6).
+            // Classic uses 4 px top/bottom (matches Style.Padding.MenuItem = 6,4,6,4).
+            bool isModern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+            var itemPadding = isModern
+                ? new System.Windows.Forms.Padding(4, 6, 6, 6)
+                : new System.Windows.Forms.Padding(4, 4, 4, 4);
+            SetTrayItemPadding(_trayNativeMenu.Items, itemPadding);
         }
 
         /// <summary>
@@ -1922,6 +1940,41 @@ namespace MultiPingMonitor.UI
                 item.ForeColor = foreColor;
                 if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
                     SetTrayItemColors(mi.DropDownItems, foreColor);
+            }
+        }
+
+        /// <summary>
+        /// Recursively regenerates the bitmap icon for every item whose Tag holds
+        /// an icon-kind integer, so icons always reflect the current theme colors.
+        /// </summary>
+        private static void RefreshTrayItemIcons(
+            System.Windows.Forms.ToolStripItemCollection items)
+        {
+            foreach (System.Windows.Forms.ToolStripItem item in items)
+            {
+                if (item.Tag is int kind)
+                    item.Image = MakeTrayMenuBitmap(kind);
+                if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
+                    RefreshTrayItemIcons(mi.DropDownItems);
+            }
+        }
+
+        /// <summary>
+        /// Recursively sets Padding on all ToolStripMenuItems so item height
+        /// matches the active WPF menu style (Modern vs Classic vertical rhythm).
+        /// </summary>
+        private static void SetTrayItemPadding(
+            System.Windows.Forms.ToolStripItemCollection items,
+            System.Windows.Forms.Padding padding)
+        {
+            foreach (System.Windows.Forms.ToolStripItem item in items)
+            {
+                if (item is System.Windows.Forms.ToolStripMenuItem menuItem)
+                {
+                    menuItem.Padding = padding;
+                    if (menuItem.DropDownItems.Count > 0)
+                        SetTrayItemPadding(menuItem.DropDownItems, padding);
+                }
             }
         }
 
@@ -2246,7 +2299,7 @@ namespace MultiPingMonitor.UI
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.Clear(System.Drawing.Color.Transparent);
 
-            using var pen = new System.Drawing.Pen(ic, 1.2f);
+            using var pen = new System.Drawing.Pen(ic, 1.5f);
             using var brush = new System.Drawing.SolidBrush(ic);
             using var accentBrush = new System.Drawing.SolidBrush(ac);
 
@@ -2394,9 +2447,10 @@ namespace MultiPingMonitor.UI
             // Modern: accent highlight; Classic: subtle surface-alt highlight
             private static System.Drawing.Color HighlightBg => IsModern ? Accent      : SurfaceAlt;
             private static System.Drawing.Color PressedBg   => IsModern ? AccentHover : Border;
-            // Classic image margin gets the same surface-alt so icons don't float on a
-            // different shade; Modern keeps SurfaceAlt for a subtle gutter contrast
-            private static System.Drawing.Color ImageMargin => SurfaceAlt;
+            // Classic image margin: subtle SurfaceAlt gutter matches WPF Classic icon column.
+            // Modern image margin: same Surface as background — no visible gutter, matching
+            // WPF Modern menu items whose icon area has no separate background tint.
+            private static System.Drawing.Color ImageMargin => IsModern ? Surface : SurfaceAlt;
 
             // ── ProfessionalColorTable overrides ──────────────────────────────
             public override System.Drawing.Color ToolStripDropDownBackground   => Surface;
@@ -2435,10 +2489,11 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// ToolStripProfessionalRenderer backed by TrayMenuColorTable.
-        /// Controls text and arrow colors per item state to ensure readable contrast:
-        ///   Classic normal/hover: Theme.Text.Primary (light on dark surface/SurfaceAlt)
+        /// Controls text, arrow, background, separator, and check-mark rendering per
+        /// item state to ensure the menu feels like the same family as the WPF menus:
+        ///   Classic normal/hover: Theme.Text.Primary on SurfaceAlt flat highlight
         ///   Modern  normal:       Theme.Text.Primary
-        ///   Modern  hover/pressed:Theme.AccentForeground (dark on accent for WCAG contrast)
+        ///   Modern  hover/pressed:Theme.AccentForeground on rounded Accent highlight
         /// </summary>
         private sealed class TrayMenuRenderer : System.Windows.Forms.ToolStripProfessionalRenderer
         {
@@ -2475,6 +2530,140 @@ namespace MultiPingMonitor.UI
             {
                 e.ArrowColor = ItemForeColor(e.Item);
                 base.OnRenderArrow(e);
+            }
+
+            /// <summary>
+            /// Draws the image margin (icon gutter). Modern: invisible (same Surface as
+            /// the menu background) to match WPF Modern menus. Classic: subtle SurfaceAlt
+            /// tint matching the WPF Classic icon column feel.
+            /// </summary>
+            protected override void OnRenderImageMargin(
+                System.Windows.Forms.ToolStripRenderEventArgs e)
+            {
+                bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+                var color = modern
+                    ? GetThemeDrawingColor("Theme.Surface",
+                        System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E))
+                    : GetThemeDrawingColor("Theme.SurfaceAlt",
+                        System.Drawing.Color.FromArgb(0x36, 0x36, 0x50));
+                using var bg = new System.Drawing.SolidBrush(color);
+                e.Graphics.FillRectangle(bg, e.AffectedBounds);
+            }
+
+            /// <summary>
+            /// Draws the hover/pressed background. Modern: filled rounded rectangle with
+            /// Accent color — matches WPF Modern menu item hover. Classic: flat SurfaceAlt
+            /// rectangle — matches WPF Classic menu item hover.
+            /// </summary>
+            protected override void OnRenderMenuItemBackground(
+                System.Windows.Forms.ToolStripItemRenderEventArgs e)
+            {
+                // Always fill the full row with the surface color first.
+                using var bgBrush = new System.Drawing.SolidBrush(
+                    GetThemeDrawingColor("Theme.Surface",
+                        System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E)));
+                e.Graphics.FillRectangle(bgBrush, 0, 0, e.Item.Width, e.Item.Height);
+
+                if (!e.Item.Selected && !e.Item.Pressed) return;
+
+                bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+                var hlColor = modern
+                    ? GetThemeDrawingColor("Theme.Accent",
+                        System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA))
+                    : GetThemeDrawingColor("Theme.SurfaceAlt",
+                        System.Drawing.Color.FromArgb(0x36, 0x36, 0x50));
+
+                const int inset = 2;
+                var rect = new System.Drawing.RectangleF(
+                    inset, 1f, e.Item.Width - inset * 2, e.Item.Height - 2f);
+
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using var hlBrush = new System.Drawing.SolidBrush(hlColor);
+                if (modern)
+                    FillRoundedRect(e.Graphics, hlBrush, rect, 4f);
+                else
+                    e.Graphics.FillRectangle(hlBrush, rect.X, rect.Y, rect.Width, rect.Height);
+            }
+
+            /// <summary>
+            /// Draws a separator line that aligns with the WPF menu separator feel.
+            /// Modern: faint accent-tinted full-width line. Classic: Border-colored
+            /// line inset past the icon gutter.
+            /// </summary>
+            protected override void OnRenderSeparator(
+                System.Windows.Forms.ToolStripSeparatorRenderEventArgs e)
+            {
+                bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+
+                using var bg = new System.Drawing.SolidBrush(
+                    GetThemeDrawingColor("Theme.Surface",
+                        System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E)));
+                e.Graphics.FillRectangle(bg, 0, 0, e.Item.Width, e.Item.Height);
+
+                var lineBase = modern
+                    ? GetThemeDrawingColor("Theme.Accent",
+                        System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA))
+                    : GetThemeDrawingColor("Theme.Border",
+                        System.Drawing.Color.FromArgb(0x44, 0x44, 0x5A));
+                var lineColor = System.Drawing.Color.FromArgb(modern ? 70 : 160, lineBase);
+
+                // Modern: full-width inset; Classic: inset past the 30 px icon gutter.
+                int x1 = modern ? 4 : 30;
+                int y  = e.Item.Height / 2;
+                int x2 = e.Item.Width - 4;
+
+                using var pen = new System.Drawing.Pen(lineColor, 1f);
+                e.Graphics.DrawLine(pen, x1, y, x2, y);
+            }
+
+            /// <summary>
+            /// Draws the checkmark for checked menu items (Classic/Modern style toggle).
+            /// Renders a clean tick glyph matching the WPF Checkmark geometry feel.
+            /// </summary>
+            protected override void OnRenderItemCheck(
+                System.Windows.Forms.ToolStripItemImageRenderEventArgs e)
+            {
+                var g = e.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                var color = ItemForeColor(e.Item);
+                var r = e.ImageRectangle;
+                float cx = r.X + r.Width  / 2f;
+                float cy = r.Y + r.Height / 2f;
+
+                using var pen = new System.Drawing.Pen(color, 1.5f)
+                {
+                    LineJoin    = System.Drawing.Drawing2D.LineJoin.Round,
+                    StartCap    = System.Drawing.Drawing2D.LineCap.Round,
+                    EndCap      = System.Drawing.Drawing2D.LineCap.Round
+                };
+                // Tick: short down-right stroke then longer up-right stroke.
+                g.DrawLine(pen, cx - 4f, cy,        cx - 1f, cy + 3.5f);
+                g.DrawLine(pen, cx - 1f, cy + 3.5f, cx + 4f, cy - 3f);
+            }
+
+            /// <summary>
+            /// Fills a rectangle with rounded corners using the given brush.
+            /// Falls back to a plain rectangle when radius is zero or negative.
+            /// </summary>
+            private static void FillRoundedRect(
+                System.Drawing.Graphics g,
+                System.Drawing.Brush brush,
+                System.Drawing.RectangleF rect,
+                float radius)
+            {
+                if (radius <= 0f)
+                {
+                    g.FillRectangle(brush, rect);
+                    return;
+                }
+                float d = radius * 2f;
+                using var path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddArc(rect.X,          rect.Y,          d, d, 180, 90);
+                path.AddArc(rect.Right - d,  rect.Y,          d, d, 270, 90);
+                path.AddArc(rect.Right - d,  rect.Bottom - d, d, d,   0, 90);
+                path.AddArc(rect.X,          rect.Bottom - d, d, d,  90, 90);
+                path.CloseFigure();
+                g.FillPath(brush, path);
             }
         }
     }
