@@ -480,8 +480,9 @@ namespace MultiPingMonitor.Classes
         /// create one default compact set from the old entries and set it as active.
         /// Safe and idempotent – only runs when CompactSets is empty and CompactCustomTargets is not.
         /// Clears the legacy list after migration so it is never used again.
+        /// Called at config load time and as a runtime safety net from RebuildCompactProbes().
         /// </summary>
-        private static void MigrateCompactTargetsToSets()
+        internal static void MigrateCompactTargetsToSets()
         {
             if (ApplicationOptions.CompactSets.Count > 0)
                 return;

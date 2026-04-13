@@ -521,7 +521,7 @@ namespace MultiPingMonitor.UI
             // Auto-migrate legacy CompactCustomTargets if no compact set exists yet.
             if (activeSet == null && ApplicationOptions.CompactCustomTargets.Count > 0)
             {
-                AutoMigrateLegacyCompactTargets();
+                Configuration.MigrateCompactTargetsToSets();
                 activeSet = ApplicationOptions.GetActiveCompactSet();
             }
 
@@ -542,33 +542,6 @@ namespace MultiPingMonitor.UI
                 _CompactProbeCollection.Add(probe);
                 probe.StartStop();
             }
-        }
-
-        /// <summary>
-        /// One-time runtime migration: converts legacy CompactCustomTargets (flat list)
-        /// into a proper CompactTargetSet and clears the legacy list.
-        /// Called only when no compact sets exist and legacy data is present.
-        /// </summary>
-        private void AutoMigrateLegacyCompactTargets()
-        {
-            var entries = new System.Collections.Generic.List<CompactTargetEntry>();
-            foreach (var target in ApplicationOptions.CompactCustomTargets)
-            {
-                if (!string.IsNullOrWhiteSpace(target))
-                    entries.Add(new CompactTargetEntry(target.Trim()));
-            }
-
-            if (entries.Count == 0)
-                return;
-
-            var migratedSet = new CompactTargetSet(Strings.CompactSets_MigratedDefaultName, entries);
-            ApplicationOptions.CompactSets.Add(migratedSet);
-            ApplicationOptions.ActiveCompactSetId = migratedSet.Id;
-
-            // Clear legacy data so this migration is idempotent.
-            ApplicationOptions.CompactCustomTargets.Clear();
-
-            Configuration.Save();
         }
 
         private void CompactTitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
