@@ -1759,9 +1759,14 @@ namespace MultiPingMonitor.UI
         {
             var menu = new System.Windows.Forms.ContextMenuStrip();
 
-            // Sync Classic/Modern check marks every time the menu is about to open,
-            // so they always reflect the current runtime state.
-            menu.Opening += (s, e) => UpdateTrayStyleChecks();
+            // Sync Classic/Modern check marks and re-apply the theme renderer
+            // every time the menu is about to open so both the style and the
+            // current theme palette are always reflected correctly.
+            menu.Opening += (s, e) =>
+            {
+                UpdateTrayStyleChecks();
+                ApplyTrayMenuTheme();
+            };
 
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray)));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance)));
@@ -1838,6 +1843,9 @@ namespace MultiPingMonitor.UI
                 Application.Current.Shutdown();
             })));
 
+            // Apply dark theme immediately so the first open already looks correct.
+            ApplyTrayMenuTheme();
+
             return menu;
         }
 
@@ -1863,6 +1871,51 @@ namespace MultiPingMonitor.UI
             bool isClassic = VisualStyleManager.CurrentStyle == VisualStyle.Classic;
             _trayNativeStyleClassic.Checked = isClassic;
             _trayNativeStyleModern.Checked  = !isClassic;
+        }
+
+        /// <summary>
+        /// Applies the current app theme and visual style to the native tray
+        /// ContextMenuStrip by installing a custom renderer that reads colors live
+        /// from the WPF application resources. Called at construction and on every
+        /// Opening event so theme/style switches are immediately visible.
+        /// </summary>
+        private void ApplyTrayMenuTheme()
+        {
+            if (_trayNativeMenu == null)
+                return;
+
+            _trayNativeMenu.Renderer = new TrayMenuRenderer();
+
+            // Set BackColor/ForeColor on the strip itself as a fallback for any
+            // non-renderer codepath (e.g., the system drawing the window border).
+            if (Application.Current?.TryFindResource("Theme.Surface") is System.Windows.Media.SolidColorBrush surfaceBrush)
+            {
+                var c = surfaceBrush.Color;
+                _trayNativeMenu.BackColor = System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+            }
+            if (Application.Current?.TryFindResource("Theme.Text.Primary") is System.Windows.Media.SolidColorBrush textBrush)
+            {
+                var c = textBrush.Color;
+                var foreColor = System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                _trayNativeMenu.ForeColor = foreColor;
+                SetTrayItemColors(_trayNativeMenu.Items, foreColor);
+            }
+        }
+
+        /// <summary>
+        /// Recursively sets ForeColor on all ToolStripItems so WinForms has the
+        /// right text color regardless of which rendering path is used.
+        /// </summary>
+        private static void SetTrayItemColors(
+            System.Windows.Forms.ToolStripItemCollection items,
+            System.Drawing.Color foreColor)
+        {
+            foreach (System.Windows.Forms.ToolStripItem item in items)
+            {
+                item.ForeColor = foreColor;
+                if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
+                    SetTrayItemColors(mi.DropDownItems, foreColor);
+            }
         }
 
         // ── P/Invoke for reliable bring-to-front ────────────────────────────
@@ -2140,6 +2193,112 @@ namespace MultiPingMonitor.UI
                 rect.Top    = wa.Top;
             if (snapBottom && Math.Abs(rect.Bottom - wa.Bottom) <= EdgeSnapThresholdPx)
                 rect.Bottom = wa.Bottom;
+        }
+
+        // ── Native tray menu dark theming ─────────────────────────────────────────
+        //
+        // TrayMenuColorTable reads WPF theme colors live on every property access
+        // so the menu always matches whichever theme/palette is currently active.
+        // TrayMenuRenderer wraps it in a ToolStripProfessionalRenderer and also
+        // forces the correct text color via OnRenderItemText.
+        // Both classes are intentionally private and nested here so they stay
+        // tightly coupled to the tray menu and do not pollute the wider namespace.
+
+        /// <summary>
+        /// ProfessionalColorTable that reads all colors from the WPF application theme
+        /// resources at access time so any palette or visual-style switch is immediately
+        /// reflected without needing to recreate the renderer.
+        /// </summary>
+        private sealed class TrayMenuColorTable : System.Windows.Forms.ProfessionalColorTable
+        {
+            // ── Color helpers ─────────────────────────────────────────────────
+            private static System.Drawing.Color Get(string key, System.Drawing.Color fallback)
+            {
+                try
+                {
+                    if (Application.Current?.TryFindResource(key) is System.Windows.Media.SolidColorBrush b)
+                    {
+                        var c = b.Color;
+                        return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    }
+                }
+                catch { }
+                return fallback;
+            }
+
+            private static System.Drawing.Color Surface     => Get("Theme.Surface",     System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E));
+            private static System.Drawing.Color SurfaceAlt  => Get("Theme.SurfaceAlt",  System.Drawing.Color.FromArgb(0x36, 0x36, 0x50));
+            private static System.Drawing.Color Border      => Get("Theme.Border",      System.Drawing.Color.FromArgb(0x44, 0x44, 0x5A));
+            private static System.Drawing.Color Accent      => Get("Theme.Accent",      System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA));
+            private static System.Drawing.Color AccentHover => Get("Theme.AccentHover", System.Drawing.Color.FromArgb(0x74, 0xC7, 0xEC));
+
+            private static bool IsModern    => VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+            private static System.Drawing.Color HighlightBg => IsModern ? Accent      : SurfaceAlt;
+            private static System.Drawing.Color PressedBg   => IsModern ? AccentHover : Border;
+
+            // ── ProfessionalColorTable overrides ──────────────────────────────
+            public override System.Drawing.Color ToolStripDropDownBackground   => Surface;
+            public override System.Drawing.Color MenuBorder                    => Border;
+            public override System.Drawing.Color MenuItemBorder                => IsModern ? Accent : Border;
+            public override System.Drawing.Color MenuItemSelected              => HighlightBg;
+            public override System.Drawing.Color MenuItemSelectedGradientBegin => HighlightBg;
+            public override System.Drawing.Color MenuItemSelectedGradientEnd   => HighlightBg;
+            public override System.Drawing.Color MenuItemPressedGradientBegin  => PressedBg;
+            public override System.Drawing.Color MenuItemPressedGradientMiddle => PressedBg;
+            public override System.Drawing.Color MenuItemPressedGradientEnd    => PressedBg;
+            public override System.Drawing.Color ImageMarginGradientBegin      => SurfaceAlt;
+            public override System.Drawing.Color ImageMarginGradientMiddle     => SurfaceAlt;
+            public override System.Drawing.Color ImageMarginGradientEnd        => SurfaceAlt;
+            public override System.Drawing.Color SeparatorLight                => Surface;
+            public override System.Drawing.Color SeparatorDark                 => Border;
+            public override System.Drawing.Color CheckBackground               => HighlightBg;
+            public override System.Drawing.Color CheckSelectedBackground       => PressedBg;
+            public override System.Drawing.Color CheckPressedBackground        => PressedBg;
+            public override System.Drawing.Color ButtonCheckedGradientBegin    => HighlightBg;
+            public override System.Drawing.Color ButtonCheckedGradientMiddle   => HighlightBg;
+            public override System.Drawing.Color ButtonCheckedGradientEnd      => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientBegin   => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientMiddle  => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientEnd     => HighlightBg;
+            public override System.Drawing.Color ButtonPressedGradientBegin    => PressedBg;
+            public override System.Drawing.Color ButtonPressedGradientMiddle   => PressedBg;
+            public override System.Drawing.Color ButtonPressedGradientEnd      => PressedBg;
+            public override System.Drawing.Color ToolStripGradientBegin        => Surface;
+            public override System.Drawing.Color ToolStripGradientMiddle       => Surface;
+            public override System.Drawing.Color ToolStripGradientEnd          => Surface;
+            public override System.Drawing.Color ToolStripBorder               => Border;
+            public override System.Drawing.Color GripLight                     => Surface;
+            public override System.Drawing.Color GripDark                      => Border;
+        }
+
+        /// <summary>
+        /// ToolStripProfessionalRenderer backed by TrayMenuColorTable.
+        /// Also overrides OnRenderItemText to force the theme's primary text color
+        /// so text remains readable regardless of selection/hover state.
+        /// </summary>
+        private sealed class TrayMenuRenderer : System.Windows.Forms.ToolStripProfessionalRenderer
+        {
+            public TrayMenuRenderer() : base(new TrayMenuColorTable()) { }
+
+            private static System.Drawing.Color GetTextColor()
+            {
+                try
+                {
+                    if (Application.Current?.TryFindResource("Theme.Text.Primary") is System.Windows.Media.SolidColorBrush b)
+                    {
+                        var c = b.Color;
+                        return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    }
+                }
+                catch { }
+                return System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4); // Dark theme default
+            }
+
+            protected override void OnRenderItemText(System.Windows.Forms.ToolStripItemTextRenderEventArgs e)
+            {
+                e.TextColor = GetTextColor();
+                base.OnRenderItemText(e);
+            }
         }
     }
 }
