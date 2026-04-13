@@ -36,6 +36,15 @@
     <!-- ── Window chrome ─────────────────────────────────────────────── -->
     <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
 
+    <!-- ── Shared titlebar title style (all custom-chrome windows) ─── -->
+    <Style x:Key="Style.TitleBar.Title" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
     <!-- ══════════════════════════════════════════════════════════════════
          STYLE ROUTING – Classic versions replicate the original styles
          from WindowChrome.xaml/ButtonStyle.xaml so this dictionary is
