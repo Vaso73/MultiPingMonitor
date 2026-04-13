@@ -400,8 +400,12 @@ namespace MultiPingMonitor.Classes
                 LoadCompactSets(xd);
 
                 // Migration: if old compact custom targets exist and no compact sets exist yet,
-                // create a default compact set from the old entries.
-                MigrateCompactTargetsToSets();
+                // create a default compact set from the old entries and persist immediately.
+                if (ApplicationOptions.CompactSets.Count == 0 && ApplicationOptions.CompactCustomTargets.Count > 0)
+                {
+                    MigrateCompactTargetsToSets();
+                    Save();
+                }
             }
 
             catch (Exception ex)
