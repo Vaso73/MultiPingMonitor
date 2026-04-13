@@ -681,6 +681,7 @@ namespace MultiPingMonitor.UI
             if (string.IsNullOrWhiteSpace(rawTarget))
             {
                 MessageBox.Show(
+                    this,
                     Properties.Strings.LivePing_TargetEmpty,
                     "MultiPingMonitor",
                     MessageBoxButton.OK,
@@ -693,6 +694,7 @@ namespace MultiPingMonitor.UI
             if (_probe != null && _probe.IsActive)
             {
                 var result = MessageBox.Show(
+                    this,
                     Properties.Strings.LivePing_ChangeTargetConfirm,
                     "MultiPingMonitor",
                     MessageBoxButton.YesNo,
@@ -782,6 +784,7 @@ namespace MultiPingMonitor.UI
             if (duplicate)
             {
                 MessageBox.Show(
+                    this,
                     Properties.Strings.LivePing_AddToSet_DuplicateNormal,
                     "MultiPingMonitor",
                     MessageBoxButton.OK,
@@ -796,6 +799,7 @@ namespace MultiPingMonitor.UI
             mainWindow.NormalProbeCollection.Add(newProbe);
 
             MessageBox.Show(
+                this,
                 Properties.Strings.LivePing_AddToSet_AddedNormal,
                 "MultiPingMonitor",
                 MessageBoxButton.OK,
@@ -818,6 +822,7 @@ namespace MultiPingMonitor.UI
             if (duplicate)
             {
                 MessageBox.Show(
+                    this,
                     Properties.Strings.LivePing_AddToSet_DuplicateCompact,
                     "MultiPingMonitor",
                     MessageBoxButton.OK,
@@ -837,6 +842,7 @@ namespace MultiPingMonitor.UI
             }
 
             MessageBox.Show(
+                this,
                 Properties.Strings.LivePing_AddToSet_AddedCompact,
                 "MultiPingMonitor",
                 MessageBoxButton.OK,

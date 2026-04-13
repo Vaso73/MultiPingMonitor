@@ -16,7 +16,7 @@ namespace MultiPingMonitor.UI
         private readonly string _target;
         private readonly List<CompactTargetSet> _compactSets;
 
-        public string TargetDisplayText => $"{Properties.Strings.LivePing_EnterTarget}: {_target}";
+        public string TargetDisplayText => $"Target:  {_target}";
 
         public AddToSetDialog(string target, Window owner)
         {
@@ -54,6 +54,7 @@ namespace MultiPingMonitor.UI
                 if (_compactSets.Count == 0)
                 {
                     MessageBox.Show(
+                        this,
                         Properties.Strings.LivePing_AddToSet_NoSets,
                         "MultiPingMonitor",
                         MessageBoxButton.OK,

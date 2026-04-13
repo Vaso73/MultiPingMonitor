@@ -91,7 +91,7 @@
                     </Grid.ColumnDefinitions>
                     <!-- Manual mode: target input row (row 0 when in manual mode) -->
                     <Grid x:Name="ManualInputRow" Grid.Row="0" Grid.ColumnSpan="2"
-                          Visibility="Collapsed" Margin="0,0,0,6">
+                          Visibility="Collapsed" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -99,7 +99,7 @@
                         <TextBox x:Name="ManualTargetBox"
                                  Grid.Column="0"
                                  FontSize="13"
-                                 Height="28" Padding="6,3"
+                                 MinHeight="32" Padding="8,5"
                                  VerticalContentAlignment="Center"
                                  Background="{DynamicResource Theme.Surface}"
                                  Foreground="{DynamicResource Theme.Text.Primary}"
@@ -109,13 +109,13 @@
                         <Button x:Name="StartPingButton"
                                 Grid.Column="1"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
-                                Height="28" Margin="6,0,0,0"
+                                MinHeight="32" Margin="8,0,0,0"
                                 Click="StartPingButton_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Path Width="8" Height="10" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                       Data="M0,0 L10,5 0,10 Z" />
-                                <TextBlock x:Name="StartPingText" Text="Start" Margin="5,0,0,0"
+                                <TextBlock x:Name="StartPingText" Text="Start" Margin="6,0,0,0"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>

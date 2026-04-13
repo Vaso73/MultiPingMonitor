@@ -856,6 +856,19 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(manageItem);
 
+            menu.Items.Add(new Separator());
+
+            var newLivePingItem = new MenuItem
+            {
+                Header = Strings.Menu_NewLivePing
+            };
+            var newLivePingIconSource = Application.Current.TryFindResource("icon.window-restore-blue") as System.Windows.Media.ImageSource;
+            if (newLivePingIconSource != null)
+                newLivePingItem.Icon = new System.Windows.Controls.Image { Source = newLivePingIconSource, Width = 16, Height = 16 };
+            newLivePingItem.Click += (s, args) => NewLivePingMenu_Click(null, null);
+
+            menu.Items.Add(newLivePingItem);
+
             menu.PlacementTarget = sender as Button;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             menu.IsOpen = true;
@@ -1813,6 +1826,7 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
             menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
+            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), TrayIcon.NewLivePing));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       TrayIcon.Options));
             menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
@@ -2420,6 +2434,7 @@ namespace MultiPingMonitor.UI
             public const int VisualStyle  = 7;
             public const int ToggleDisplay= 8;
             public const int Exit         = 9;
+            public const int NewLivePing  = 10;
         }
 
         /// <summary>
@@ -2536,6 +2551,16 @@ namespace MultiPingMonitor.UI
                     g.DrawLine(pen, 10f, 10f, 18f, 10f);
                     g.DrawLine(pen, 14f, 6f,  18f, 10f);
                     g.DrawLine(pen, 14f, 14f, 18f, 10f);
+                    break;
+
+                case TrayIcon.NewLivePing:
+                    // Window outline + play-triangle inside (live ping concept)
+                    g.DrawRectangle(pen, 1f, 3f, 14f, 13f);
+                    g.DrawLine(pen, 1f, 7f, 15f, 7f);
+                    g.FillPolygon(accentBrush, new System.Drawing.PointF[]
+                    {
+                        new(5f, 10f), new(12f, 13f), new(5f, 16f)
+                    });
                     break;
             }
 
