@@ -1602,18 +1602,22 @@ namespace MultiPingMonitor.UI
 
             // ── Step 4: Create invisible helper window that hosts the ContextMenu ─
             // Gives the menu a valid HWND for positioning and auto-close on blur.
+            // NOTE: AllowsTransparency=true is intentionally NOT used here because the
+            // app runs in RenderMode.SoftwareOnly (App.xaml.cs), and that combination
+            // can throw when creating the layered-window rendering surface, which would
+            // silently kill both _trayContextMenu and _trayMenuHost.
+            // A 1×1 pixel window with Opacity=0 is visually identical but always works.
             if (_trayContextMenu != null)
             {
                 try
                 {
                     _trayMenuHost = new Window
                     {
-                        Width = 0,
-                        Height = 0,
+                        Width = 1,
+                        Height = 1,
                         WindowStyle = WindowStyle.None,
                         ShowInTaskbar = false,
-                        AllowsTransparency = true,
-                        Background = System.Windows.Media.Brushes.Transparent,
+                        Opacity = 0,
                         Topmost = true
                     };
                     _trayMenuHost.Show();
@@ -1797,7 +1801,8 @@ namespace MultiPingMonitor.UI
 
             // Apply the same MenuItemStyle used in MainWindow menu bar so items
             // get the themed templates, hover brushes, and full background coverage.
-            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
+            // Use TryFindResource (returns null instead of throwing) to stay fault-tolerant.
+            var menuItemStyle = Application.Current.TryFindResource("MenuItemStyle") as Style;
             if (menuItemStyle != null)
                 menu.Resources[typeof(MenuItem)] = menuItemStyle;
 
