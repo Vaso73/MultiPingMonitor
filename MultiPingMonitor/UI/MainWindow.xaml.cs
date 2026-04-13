@@ -18,6 +18,12 @@ namespace MultiPingMonitor.UI
         private Dictionary<string, string> _Aliases = new Dictionary<string, string>();
         private System.Windows.Forms.NotifyIcon NotifyIcon;
 
+        /// <summary>
+        /// Exposes the Normal mode probe collection for Add-to-Set operations
+        /// from manual live ping windows (same-assembly access).
+        /// </summary>
+        internal ObservableCollection<Probe> NormalProbeCollection => _ProbeCollection;
+
         // ── Dynamic tray icon ─────────────────────────────────────────────────
         // Three icons representing aggregate host status: neutral (no hosts),
         // online (all up), offline (at least one down).
@@ -1407,6 +1413,17 @@ namespace MultiPingMonitor.UI
                 else
                     WindowArrangeService.Tile(firstWindow);
             }
+        }
+
+        /// <summary>
+        /// Opens a new empty Live Ping Monitor window in manual/direct mode.
+        /// The user enters a target and starts ping manually in that window.
+        /// Multiple manual windows can be opened independently.
+        /// </summary>
+        private void NewLivePingMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new LivePingMonitorWindow(this);
+            window.Show();
         }
 
         private void EditAlias_Click(object sender, RoutedEventArgs e)

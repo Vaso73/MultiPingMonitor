@@ -396,6 +396,13 @@
                         <Image Source="/Resources/bomb-16.png" VerticalAlignment="Center" Width="16" Height="16"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <!-- Menu: New Live Ping (manual/direct) -->
+                <MenuItem Header="{x:Static resource:Strings.Menu_NewLivePing}" x:Name="NewLivePingMenu"
+                          Click="NewLivePingMenu_Click">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource icon.window-restore-blue}" VerticalAlignment="Center" Width="16" Height="16"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!-- Menu: New instance -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_NewInstance}" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
                     <MenuItem.Icon>

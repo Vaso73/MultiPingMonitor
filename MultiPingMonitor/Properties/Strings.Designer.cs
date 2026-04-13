@@ -3704,5 +3704,149 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to New Live Ping...
+        /// </summary>
+        public static string Menu_NewLivePing {
+            get {
+                return ResourceManager.GetString("Menu_NewLivePing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter target (host / IP / domain).
+        /// </summary>
+        public static string LivePing_EnterTarget {
+            get {
+                return ResourceManager.GetString("LivePing_EnterTarget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string LivePing_StartPing {
+            get {
+                return ResourceManager.GetString("LivePing_StartPing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add to Set...
+        /// </summary>
+        public static string LivePing_AddToSet {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add Target to Set.
+        /// </summary>
+        public static string LivePing_AddToSet_Title {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Destination:
+        /// </summary>
+        public static string LivePing_AddToSet_DestType {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_DestType", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Normal (main probe list).
+        /// </summary>
+        public static string LivePing_AddToSet_Normal {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_Normal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Compact set:
+        /// </summary>
+        public static string LivePing_AddToSet_Compact {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_Compact", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alias (optional):
+        /// </summary>
+        public static string LivePing_AddToSet_Alias {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_Alias", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No compact sets exist. Create a compact set first.
+        /// </summary>
+        public static string LivePing_AddToSet_NoSets {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_NoSets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This target already exists in the Normal probe list.
+        /// </summary>
+        public static string LivePing_AddToSet_DuplicateNormal {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_DuplicateNormal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This target already exists in the selected compact set.
+        /// </summary>
+        public static string LivePing_AddToSet_DuplicateCompact {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_DuplicateCompact", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Target added to the Normal probe list.
+        /// </summary>
+        public static string LivePing_AddToSet_AddedNormal {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_AddedNormal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Target added to the compact set.
+        /// </summary>
+        public static string LivePing_AddToSet_AddedCompact {
+            get {
+                return ResourceManager.GetString("LivePing_AddToSet_AddedCompact", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a target (host, IP, or domain).
+        /// </summary>
+        public static string LivePing_TargetEmpty {
+            get {
+                return ResourceManager.GetString("LivePing_TargetEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Monitoring is active. Stop monitoring and change the target?
+        /// </summary>
+        public static string LivePing_ChangeTargetConfirm {
+            get {
+                return ResourceManager.GetString("LivePing_ChangeTargetConfirm", resourceCulture);
+            }
+        }
+
     }
 }

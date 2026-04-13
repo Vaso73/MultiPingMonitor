@@ -1244,4 +1244,52 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_CompactSetEmpty" xml:space="preserve">
     <value>Aktuálna compact sada nemá žiadne hosty.</value>
   </data>
+  <data name="Menu_NewLivePing" xml:space="preserve">
+    <value>Nový live ping...</value>
+  </data>
+  <data name="LivePing_EnterTarget" xml:space="preserve">
+    <value>Zadajte cieľ (host / IP / doména)</value>
+  </data>
+  <data name="LivePing_StartPing" xml:space="preserve">
+    <value>Spustiť</value>
+  </data>
+  <data name="LivePing_AddToSet" xml:space="preserve">
+    <value>Pridať do sady...</value>
+  </data>
+  <data name="LivePing_AddToSet_Title" xml:space="preserve">
+    <value>Pridať cieľ do sady</value>
+  </data>
+  <data name="LivePing_AddToSet_DestType" xml:space="preserve">
+    <value>Cieľ:</value>
+  </data>
+  <data name="LivePing_AddToSet_Normal" xml:space="preserve">
+    <value>Normal (hlavný zoznam)</value>
+  </data>
+  <data name="LivePing_AddToSet_Compact" xml:space="preserve">
+    <value>Compact sada:</value>
+  </data>
+  <data name="LivePing_AddToSet_Alias" xml:space="preserve">
+    <value>Alias (nepovinný):</value>
+  </data>
+  <data name="LivePing_AddToSet_NoSets" xml:space="preserve">
+    <value>Žiadne compact sady neexistujú. Najprv vytvorte compact sadu.</value>
+  </data>
+  <data name="LivePing_AddToSet_DuplicateNormal" xml:space="preserve">
+    <value>Tento cieľ už v zozname Normal existuje.</value>
+  </data>
+  <data name="LivePing_AddToSet_DuplicateCompact" xml:space="preserve">
+    <value>Tento cieľ v tejto compact sade už existuje.</value>
+  </data>
+  <data name="LivePing_AddToSet_AddedNormal" xml:space="preserve">
+    <value>Cieľ bol pridaný do Normal zoznamu.</value>
+  </data>
+  <data name="LivePing_AddToSet_AddedCompact" xml:space="preserve">
+    <value>Cieľ bol pridaný do compact sady.</value>
+  </data>
+  <data name="LivePing_TargetEmpty" xml:space="preserve">
+    <value>Prosím zadajte cieľ (host, IP alebo doména).</value>
+  </data>
+  <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
+    <value>Monitorovanie prebieha. Zastaviť a zmeniť cieľ?</value>
+  </data>
 </root>

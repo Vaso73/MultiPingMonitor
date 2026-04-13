@@ -37,7 +37,7 @@
                 <Image Grid.Column="0" Source="{StaticResource icon.vmping-logo-simple}" Width="16" Height="16" Margin="8,0,4,0"
                        RenderOptions.BitmapScalingMode="HighQuality" />
                 <!-- Title text -->
-                <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
+                <TextBlock x:Name="TitleText" Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
                            Text="Live Ping Monitor" />
                 <!-- Arrange menu button -->
                 <Button x:Name="ArrangeMenuButton" Grid.Column="2"
@@ -83,13 +83,45 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <!-- Left: display name + target -->
-                    <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                    <!-- Manual mode: target input row (row 0 when in manual mode) -->
+                    <Grid x:Name="ManualInputRow" Grid.Row="0" Grid.ColumnSpan="2"
+                          Visibility="Collapsed" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="ManualTargetBox"
+                                 Grid.Column="0"
+                                 FontSize="13"
+                                 Height="28" Padding="6,3"
+                                 VerticalContentAlignment="Center"
+                                 Background="{DynamicResource Theme.Surface}"
+                                 Foreground="{DynamicResource Theme.Text.Primary}"
+                                 BorderBrush="{DynamicResource Theme.Border}"
+                                 CaretBrush="{DynamicResource Theme.Text.Primary}"
+                                 KeyDown="ManualTargetBox_KeyDown"/>
+                        <Button x:Name="StartPingButton"
+                                Grid.Column="1"
+                                Style="{DynamicResource Style.LivePingFooterButton}"
+                                Height="28" Margin="6,0,0,0"
+                                Click="StartPingButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Width="8" Height="10" Stretch="Uniform" VerticalAlignment="Center"
+                                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                      Data="M0,0 L10,5 0,10 Z" />
+                                <TextBlock x:Name="StartPingText" Text="Start" Margin="5,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <!-- Left: display name + target (shifted to row 1 in manual mode, row 0 in bound mode) -->
+                    <StackPanel x:Name="HeaderInfoPanel" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
                         <TextBlock x:Name="HeaderDisplayName" FontSize="16" FontWeight="SemiBold"
                                    Foreground="{DynamicResource Theme.Text.Primary}" TextTrimming="CharacterEllipsis" />
                         <TextBlock x:Name="HeaderTarget" FontSize="11"
@@ -97,7 +129,7 @@
                                    Margin="0,1,0,0" Opacity="{DynamicResource Style.Opacity.Secondary}" />
                     </StackPanel>
                     <!-- Right: status + latency badge -->
-                    <Border Grid.Row="0" Grid.Column="1" Style="{DynamicResource Style.LivePingStatusBlock}"
+                    <Border Grid.Row="1" Grid.Column="1" Style="{DynamicResource Style.LivePingStatusBlock}"
                             VerticalAlignment="Center" Margin="10,0,0,0">
                         <StackPanel HorizontalAlignment="Right">
                             <TextBlock x:Name="HeaderStatus" FontSize="13" FontWeight="Bold"
@@ -110,8 +142,8 @@
                             </Border>
                         </StackPanel>
                     </Border>
-                    <!-- Toolbar row: Always on top + separator + Copy actions -->
-                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,6,0,0">
+                    <!-- Toolbar row: Always on top + separator + Copy actions + Add to Set -->
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,6,0,0">
                         <ToggleButton x:Name="AlwaysOnTopCheckBox"
                                       Style="{DynamicResource Style.HeaderToggleButton}"
                                       VerticalAlignment="Center"
@@ -146,6 +178,20 @@
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M0,0 L12,0 12,9 7,9 7,11 9,11 9,12 3,12 3,11 5,11 5,9 0,9 Z M1,1 L1,8 11,8 11,1 Z M4,3 L2,5 4,7 5,6 3.5,5 5,4 Z M8,3 L7,4 8.5,5 7,6 8,7 10,5 Z" />
                                 <TextBlock x:Name="CopyAddressText" Text="Copy Address" Margin="4,0,0,0"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <!-- Add to Set button: visible only in manual mode when target is set -->
+                        <Border x:Name="AddToSetSeparator" Style="{DynamicResource Style.LivePingToolbarSeparator}"
+                                Visibility="Collapsed"/>
+                        <Button x:Name="AddToSetButton" Click="AddToSetButton_Click"
+                                Style="{DynamicResource Style.LivePingActionButton}"
+                                Margin="0" Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"
+                                      Fill="{DynamicResource Theme.Text.Secondary}"
+                                      Data="M5,0 L5,4 9,4 9,6 5,6 5,10 3,10 3,6 0,6 0,4 3,4 3,0 Z" />
+                                <TextBlock x:Name="AddToSetText" Text="Add to Set..." Margin="4,0,0,0"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>

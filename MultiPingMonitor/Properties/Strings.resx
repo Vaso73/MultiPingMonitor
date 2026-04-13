@@ -1354,4 +1354,52 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_CompactSetEmpty" xml:space="preserve">
     <value>The current compact set has no hosts.</value>
   </data>
+  <data name="Menu_NewLivePing" xml:space="preserve">
+    <value>New Live Ping...</value>
+  </data>
+  <data name="LivePing_EnterTarget" xml:space="preserve">
+    <value>Enter target (host / IP / domain)</value>
+  </data>
+  <data name="LivePing_StartPing" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="LivePing_AddToSet" xml:space="preserve">
+    <value>Add to Set...</value>
+  </data>
+  <data name="LivePing_AddToSet_Title" xml:space="preserve">
+    <value>Add Target to Set</value>
+  </data>
+  <data name="LivePing_AddToSet_DestType" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="LivePing_AddToSet_Normal" xml:space="preserve">
+    <value>Normal (main probe list)</value>
+  </data>
+  <data name="LivePing_AddToSet_Compact" xml:space="preserve">
+    <value>Compact set:</value>
+  </data>
+  <data name="LivePing_AddToSet_Alias" xml:space="preserve">
+    <value>Alias (optional):</value>
+  </data>
+  <data name="LivePing_AddToSet_NoSets" xml:space="preserve">
+    <value>No compact sets exist. Create a compact set first.</value>
+  </data>
+  <data name="LivePing_AddToSet_DuplicateNormal" xml:space="preserve">
+    <value>This target already exists in the Normal probe list.</value>
+  </data>
+  <data name="LivePing_AddToSet_DuplicateCompact" xml:space="preserve">
+    <value>This target already exists in the selected compact set.</value>
+  </data>
+  <data name="LivePing_AddToSet_AddedNormal" xml:space="preserve">
+    <value>Target added to the Normal probe list.</value>
+  </data>
+  <data name="LivePing_AddToSet_AddedCompact" xml:space="preserve">
+    <value>Target added to the compact set.</value>
+  </data>
+  <data name="LivePing_TargetEmpty" xml:space="preserve">
+    <value>Please enter a target (host, IP, or domain).</value>
+  </data>
+  <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
+    <value>Monitoring is active. Stop monitoring and change the target?</value>
+  </data>
 </root>

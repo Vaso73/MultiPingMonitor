@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -36,13 +37,67 @@ namespace MultiPingMonitor.UI
         private const int CascadeStep = 26;
         private const int MaxCascadeSlots = 10;
 
+        // ── Manual/direct mode ────────────────────────────────────────────
+        // When true, the window is in manual mode: no bound probe at open,
+        // user enters target and starts ping manually.
+        private readonly bool _isManualMode;
+
+        /// <summary>
+        /// Bound mode constructor: opens the window bound to an existing probe.
+        /// </summary>
         public LivePingMonitorWindow(Probe probe, Window owner)
         {
             InitializeComponent();
 
             Owner = owner;
             _probe = probe;
+            _isManualMode = false;
 
+            ApplyCommonInit();
+
+            // Populate header from current probe state.
+            UpdateHeader();
+
+            // Subscribe to probe property changes for live updates.
+            _probe.PropertyChanged += Probe_PropertyChanged;
+
+            // Subscribe to history collection changes for new lines.
+            SubscribeHistory(_probe.History);
+        }
+
+        /// <summary>
+        /// Manual mode constructor: opens an empty window.
+        /// User enters a target and starts ping manually.
+        /// </summary>
+        public LivePingMonitorWindow(Window owner)
+        {
+            InitializeComponent();
+
+            Owner = owner;
+            _isManualMode = true;
+
+            // Show manual input row.
+            ManualInputRow.Visibility = Visibility.Visible;
+            ManualTargetBox.Text = string.Empty;
+
+            ApplyCommonInit();
+
+            // Initial header for empty manual mode.
+            HeaderDisplayName.Text = Properties.Strings.LivePing_EnterTarget;
+            HeaderTarget.Visibility = Visibility.Collapsed;
+            HeaderStatus.Text = string.Empty;
+            HeaderLatency.Text = "—";
+            Title = "Live Ping Monitor";
+
+            StartPingText.Text = Properties.Strings.LivePing_StartPing;
+            AddToSetText.Text = Properties.Strings.LivePing_AddToSet;
+
+            // Focus target input on load.
+            Loaded += (_, _) => ManualTargetBox.Focus();
+        }
+
+        private void ApplyCommonInit()
+        {
             // Apply persisted Live Ping Monitor always-on-top preference.
             Topmost = ApplicationOptions.LivePingMonitorAlwaysOnTop;
             AlwaysOnTopCheckBox.IsChecked = Topmost;
@@ -63,23 +118,11 @@ namespace MultiPingMonitor.UI
             // Restore saved window placement, then apply cascade offset for new windows.
             RestorePlacementWithCascade();
 
-            // Populate header from current probe state.
-            UpdateHeader();
-
             // Register this window with the central live window registry.
             LiveWindowRegistry.Register(this);
 
-            // Fresh session: do NOT preload old Probe.History lines.
-            // Log begins empty; only new lines after open will appear.
-
             // Display session counters at zero.
             UpdateSessionStatisticsDisplay();
-
-            // Subscribe to probe property changes for live updates.
-            _probe.PropertyChanged += Probe_PropertyChanged;
-
-            // Subscribe to history collection changes for new lines.
-            SubscribeHistory(_probe.History);
         }
 
         // ── Window placement with cascade ─────────────────────────────────
@@ -611,6 +654,196 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        // ── Manual mode: target input ──
+
+        private void ManualTargetBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                StartManualPing();
+                e.Handled = true;
+            }
+        }
+
+        private void StartPingButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartManualPing();
+        }
+
+        /// <summary>
+        /// Validates the manual target input, stops any running probe,
+        /// resets session state, creates a new probe, and starts pinging.
+        /// </summary>
+        private void StartManualPing()
+        {
+            string rawTarget = ManualTargetBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(rawTarget))
+            {
+                MessageBox.Show(
+                    Properties.Strings.LivePing_TargetEmpty,
+                    "MultiPingMonitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                ManualTargetBox.Focus();
+                return;
+            }
+
+            // If a probe is already running, confirm change of target.
+            if (_probe != null && _probe.IsActive)
+            {
+                var result = MessageBox.Show(
+                    Properties.Strings.LivePing_ChangeTargetConfirm,
+                    "MultiPingMonitor",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                // Stop the running probe.
+                _probe.StartStop();
+            }
+
+            // Clean up previous manual probe (don't touch Probe.LivePingMonitorWindow
+            // because manual probes are not in the normal probe collection).
+            if (_probe != null)
+            {
+                _probe.PropertyChanged -= Probe_PropertyChanged;
+                UnsubscribeHistory();
+                _probe = null;
+            }
+
+            // Reset session state for the new target.
+            _logLines.Clear();
+            _autoScroll = true;
+            _lastReplyAddress = null;
+            CopyAddressButton.ToolTip = null;
+            ResetSessionCounters();
+            UpdateSessionStatisticsDisplay();
+            if (_paused)
+            {
+                _paused = false;
+                StopResumeButton.Content = Properties.Strings.LivePing_Stop;
+                PausedBanner.Visibility = Visibility.Collapsed;
+            }
+
+            // Create new probe for the entered target.
+            _probe = new Probe { Hostname = rawTarget };
+            _probe.PropertyChanged += Probe_PropertyChanged;
+            SubscribeHistory(_probe.History);
+
+            // Update header immediately.
+            UpdateHeader();
+
+            // Show Add to Set button now that we have a target.
+            AddToSetButton.Visibility = Visibility.Visible;
+            AddToSetSeparator.Visibility = Visibility.Visible;
+
+            // Start pinging.
+            _probe.StartStop();
+        }
+
+        // ── Manual mode: Add to Set ──
+
+        private void AddToSetButton_Click(object sender, RoutedEventArgs e)
+        {
+            string target = _probe?.Hostname;
+            if (string.IsNullOrWhiteSpace(target))
+                return;
+
+            var dialog = new AddToSetDialog(target, this);
+            if (dialog.ShowDialog() != true)
+                return;
+
+            if (dialog.SelectedDestination == AddToSetDialog.DestinationType.Normal)
+            {
+                AddTargetToNormalCollection(target, dialog.Alias);
+            }
+            else
+            {
+                AddTargetToCompactSet(target, dialog.Alias, dialog.SelectedCompactSet);
+            }
+        }
+
+        /// <summary>
+        /// Adds a target as a new probe to the Normal mode probe collection.
+        /// Checks for duplicates (case-insensitive hostname match).
+        /// Immediately triggers a live update (no restart needed).
+        /// </summary>
+        private void AddTargetToNormalCollection(string target, string alias)
+        {
+            var mainWindow = Application.Current.MainWindow as MainWindow;
+            if (mainWindow == null)
+                return;
+
+            // Check for duplicate in normal probe collection.
+            bool duplicate = mainWindow.NormalProbeCollection.Any(
+                p => string.Equals(p.Hostname, target, StringComparison.OrdinalIgnoreCase));
+            if (duplicate)
+            {
+                MessageBox.Show(
+                    Properties.Strings.LivePing_AddToSet_DuplicateNormal,
+                    "MultiPingMonitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            // Add new probe.
+            var newProbe = new Probe { Hostname = target };
+            if (!string.IsNullOrWhiteSpace(alias))
+                newProbe.Alias = alias;
+            mainWindow.NormalProbeCollection.Add(newProbe);
+
+            MessageBox.Show(
+                Properties.Strings.LivePing_AddToSet_AddedNormal,
+                "MultiPingMonitor",
+                MessageBoxButton.OK,
+                MessageBoxImage.None);
+        }
+
+        /// <summary>
+        /// Adds a target to the specified compact set.
+        /// Checks for duplicates. Saves config and triggers a live UI rebuild
+        /// via MainWindow.ApplyCompactDataSource() — no restart needed.
+        /// </summary>
+        private void AddTargetToCompactSet(string target, string alias, CompactTargetSet set)
+        {
+            if (set == null)
+                return;
+
+            // Check for duplicate.
+            bool duplicate = set.Entries.Any(
+                e => string.Equals(e.Target, target, StringComparison.OrdinalIgnoreCase));
+            if (duplicate)
+            {
+                MessageBox.Show(
+                    Properties.Strings.LivePing_AddToSet_DuplicateCompact,
+                    "MultiPingMonitor",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            set.Entries.Add(new CompactTargetEntry(target, alias ?? string.Empty));
+            Configuration.Save();
+
+            // Rebuild compact probes live if we're in compact mode with custom targets.
+            if (ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact &&
+                ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
+            {
+                var mainWindow = Application.Current.MainWindow as MainWindow;
+                mainWindow?.ApplyCompactDataSource();
+            }
+
+            MessageBox.Show(
+                Properties.Strings.LivePing_AddToSet_AddedCompact,
+                "MultiPingMonitor",
+                MessageBoxButton.OK,
+                MessageBoxImage.None);
+        }
+
+
         /// <summary>
         /// Extract the IP address from a "Reply from x.x.x.x" or "Reply from [ipv6]" history line.
         /// Returns null if the pattern is not found.
@@ -738,8 +971,18 @@ namespace MultiPingMonitor.UI
                 _probe.PropertyChanged -= Probe_PropertyChanged;
                 UnsubscribeHistory();
 
-                // Clear the back-reference.
-                _probe.LivePingMonitorWindow = null;
+                if (_isManualMode)
+                {
+                    // Stop the manually created probe so it doesn't run orphaned.
+                    if (_probe.IsActive)
+                        _probe.StartStop();
+                }
+                else
+                {
+                    // Clear the back-reference for bound-mode probes.
+                    _probe.LivePingMonitorWindow = null;
+                }
+
                 _probe = null;
             }
 
