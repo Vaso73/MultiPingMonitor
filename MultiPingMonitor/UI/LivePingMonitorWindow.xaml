@@ -261,8 +261,7 @@
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                     <Border x:Name="RowBorder"
                                             Style="{DynamicResource Style.LivePingLogRow}"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="Transparent">
+                                            Background="{TemplateBinding Background}">
                                         <ContentPresenter />
                                     </Border>
                                     <ControlTemplate.Triggers>
