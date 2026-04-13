@@ -1547,39 +1547,28 @@ namespace MultiPingMonitor.UI
 
         private void InitializeTrayIcon()
         {
+            // ── Step 1: Load icons (with system-icon fallback so this never fails) ──
             try
             {
-                // Load the three state-specific tray icons from embedded resources.
-                // Fall back gracefully if any are missing.
                 _trayIconNeutral = LoadTrayIcon("pack://application:,,,/Resources/tray-neutral.ico")
                                    ?? System.Drawing.SystemIcons.Application;
                 _trayIconOnline  = LoadTrayIcon("pack://application:,,,/Resources/tray-online.ico")
                                    ?? _trayIconNeutral;
                 _trayIconOffline = LoadTrayIcon("pack://application:,,,/Resources/tray-offline.ico")
                                    ?? _trayIconNeutral;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Could not load tray icons: {ex}");
+                _trayIconNeutral  = System.Drawing.SystemIcons.Application;
+                _trayIconOnline   = _trayIconNeutral;
+                _trayIconOffline  = _trayIconNeutral;
+            }
 
-                // Build themed WPF context menu for the tray icon.
-                _trayContextMenu = BuildTrayContextMenu();
-
-                // Create a tiny, invisible helper window that owns the ContextMenu.
-                // This ensures the menu gets a valid HWND for positioning and that
-                // Windows gives it foreground focus so it auto-closes on outside click.
-                _trayMenuHost = new Window
-                {
-                    Width = 0,
-                    Height = 0,
-                    WindowStyle = WindowStyle.None,
-                    ShowInTaskbar = false,
-                    AllowsTransparency = true,
-                    Background = System.Windows.Media.Brushes.Transparent,
-                    Topmost = true
-                };
-                _trayMenuHost.Show();
-                _trayMenuHost.Hide();
-
-                // Create tray icon. No WinForms ContextMenuStrip – right-click is
-                // handled in NotifyIcon_MouseUp to show the themed WPF menu instead.
-                // Start with neutral icon; UpdateTrayIcon() will refine once probes run.
+            // ── Step 2: Create NotifyIcon FIRST so it always appears, even if the
+            //           themed menu fails to build in a subsequent step. ──────────
+            try
+            {
                 NotifyIcon = new System.Windows.Forms.NotifyIcon
                 {
                     Icon = _trayIconNeutral,
@@ -1588,13 +1577,54 @@ namespace MultiPingMonitor.UI
                 };
                 NotifyIcon.MouseUp += NotifyIcon_MouseUp;
 
-                // Subscribe to probe collection changes so we can track each probe's status.
+                // Subscribe to probe collection changes to track per-probe status.
                 _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
                 _CompactProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to create NotifyIcon: {ex}");
+                return; // Nothing more can be done without the NotifyIcon itself.
+            }
+
+            // ── Step 3: Build themed WPF context menu (non-fatal on failure) ─────
+            // If this throws, right-click will simply do nothing, but the tray icon
+            // and left-click toggle will still work.
+            try
+            {
+                _trayContextMenu = BuildTrayContextMenu();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to build tray context menu: {ex}");
+                _trayContextMenu = null;
+            }
+
+            // ── Step 4: Create invisible helper window that hosts the ContextMenu ─
+            // Gives the menu a valid HWND for positioning and auto-close on blur.
+            if (_trayContextMenu != null)
+            {
+                try
+                {
+                    _trayMenuHost = new Window
+                    {
+                        Width = 0,
+                        Height = 0,
+                        WindowStyle = WindowStyle.None,
+                        ShowInTaskbar = false,
+                        AllowsTransparency = true,
+                        Background = System.Windows.Media.Brushes.Transparent,
+                        Topmost = true
+                    };
+                    _trayMenuHost.Show();
+                    _trayMenuHost.Hide();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to create tray menu host window: {ex}");
+                    _trayContextMenu = null;
+                    _trayMenuHost    = null;
+                }
             }
         }
 
