@@ -1782,6 +1782,14 @@ namespace MultiPingMonitor.UI
                 ApplyTrayMenuTheme();
             };
 
+            // Apply genuine rounded-corner shape on Modern: clip the popup window
+            // Region to a GraphicsPath with rounded corners so the corners are
+            // physically transparent (not just painted differently inside a
+            // rectangular window).  Must use Opened (not Opening) so Width/Height
+            // are final; Resize re-applies when the menu re-flows (e.g. DPI change).
+            menu.Opened += (s, e) => ApplyTrayPopupRegion(menu);
+            menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
+
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -1835,6 +1843,10 @@ namespace MultiPingMonitor.UI
             styleParent.DropDownItems.Add(_trayNativeStyleModern);
             menu.Items.Add(styleParent);
             UpdateTrayStyleChecks();
+
+            // Apply the same rounded-Region treatment to the Visual style submenu popup.
+            styleParent.DropDown.Opened += (s, e) => ApplyTrayPopupRegion(styleParent.DropDown);
+            styleParent.DropDown.Resize += (s, e) => ApplyTrayPopupRegion(styleParent.DropDown);
 
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
@@ -1897,6 +1909,57 @@ namespace MultiPingMonitor.UI
             bool isClassic = VisualStyleManager.CurrentStyle == VisualStyle.Classic;
             _trayNativeStyleClassic.Checked = isClassic;
             _trayNativeStyleModern.Checked  = !isClassic;
+        }
+
+        /// <summary>
+        /// Clips the tray popup window to a rounded-corner shape by setting a
+        /// Region derived from a GraphicsPath.  This makes the popup corners
+        /// physically transparent rather than just painted differently inside a
+        /// rectangular window — matching the WPF Modern popup corner feel.
+        ///
+        /// Modern:  radius = 8, matching WPF Style.ContextMenu CornerRadius = 8.
+        /// Classic: Region is cleared (null) — rectangular, conservative shape.
+        ///
+        /// Must be called after the popup is fully sized (Opened / Resize events)
+        /// so Width/Height are valid.  Any previously set Region is disposed to
+        /// avoid GDI handle leaks.
+        /// </summary>
+        private static void ApplyTrayPopupRegion(System.Windows.Forms.ToolStrip strip)
+        {
+            bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+            int r = modern ? 8 : 0;
+
+            // Capture existing Region before overwriting so we can dispose it.
+            var old = strip.Region;
+
+            if (r <= 0)
+            {
+                strip.Region = null;
+                old?.Dispose();
+                return;
+            }
+
+            int d = r * 2;
+            int w = strip.Width;
+            int h = strip.Height;
+
+            // Guard against degenerate dimensions that can occur during early resize events.
+            if (w < d || h < d)
+            {
+                strip.Region = null;
+                old?.Dispose();
+                return;
+            }
+
+            using var path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddArc(0,     0,     d, d, 180, 90);
+            path.AddArc(w - d, 0,     d, d, 270, 90);
+            path.AddArc(w - d, h - d, d, d,   0, 90);
+            path.AddArc(0,     h - d, d, d,  90, 90);
+            path.CloseFigure();
+
+            strip.Region = new System.Drawing.Region(path);
+            old?.Dispose();
         }
 
         /// <summary>
@@ -2601,10 +2664,10 @@ namespace MultiPingMonitor.UI
 
             /// <summary>
             /// Draws the outer popup border.
-            /// Modern: 1 px inset rounded rectangle with Accent color (r = 4) to simulate
-            ///   the WPF Modern rounded popup border. The tiny corner triangles between the
-            ///   actual rectangular window edge and the rounded border read as surface color,
-            ///   giving a convincing rounded-corner appearance against dark backgrounds.
+            /// Modern: 1 px inset rounded rectangle with Accent color (r = 8) matching the
+            ///   WPF Modern popup CornerRadius = 8.  The popup window is also clipped to the
+            ///   same shape via ApplyTrayPopupRegion so the corners are physically transparent —
+            ///   not just drawn differently inside a rectangular window.
             /// Classic: 1 px straight border in Theme.Border — matches WPF Classic popup.
             /// </summary>
             protected override void OnRenderToolStripBorder(
@@ -2623,13 +2686,11 @@ namespace MultiPingMonitor.UI
 
                 if (modern)
                 {
-                    // Inset by 0.5 so the 1 px line sits exactly on the inner edge.
-                    // Corner radius matches WPF Style.ContextMenu corner radius (8 → 4 for
-                    // the native version, which visually reads similarly due to the smaller
-                    // overall window compared to WPF popup chrome).
+                    // Inset by 0.5 so the 1 px line sits exactly on the inner edge of the
+                    // clipped Region.  Radius 8 matches WPF Style.ContextMenu CornerRadius = 8.
                     var rect = new System.Drawing.RectangleF(
                         0.5f, 0.5f, e.ToolStrip.Width - 1f, e.ToolStrip.Height - 1f);
-                    DrawRoundedRect(g, pen, rect, 4f);
+                    DrawRoundedRect(g, pen, rect, 8f);
                 }
                 else
                 {
