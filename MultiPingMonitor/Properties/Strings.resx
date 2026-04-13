@@ -816,10 +816,10 @@
     <value>Compact data source:</value>
   </data>
   <data name="Options_CompactSource_NormalTargets" xml:space="preserve">
-    <value>Use normal targets</value>
+    <value>Display normal targets (read-only view)</value>
   </data>
   <data name="Options_CompactSource_CustomTargets" xml:space="preserve">
-    <value>Use custom compact targets</value>
+    <value>Use own compact targets</value>
   </data>
   <data name="Options_CompactManageTargets" xml:space="preserve">
     <value>Manage Targets...</value>

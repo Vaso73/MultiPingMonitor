@@ -706,7 +706,7 @@
     <value>Zdroj dát pre kompaktný režim:</value>
   </data>
   <data name="Options_CompactSource_NormalTargets" xml:space="preserve">
-    <value>Použiť normálne ciele</value>
+    <value>Zobraziť normálne ciele (len na čítanie)</value>
   </data>
   <data name="Options_CompactSource_CustomTargets" xml:space="preserve">
     <value>Použiť vlastné kompaktné ciele</value>

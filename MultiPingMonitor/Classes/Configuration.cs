@@ -479,6 +479,7 @@ namespace MultiPingMonitor.Classes
         /// Migration: if old compact custom targets exist and no compact sets exist yet,
         /// create one default compact set from the old entries and set it as active.
         /// Safe and idempotent – only runs when CompactSets is empty and CompactCustomTargets is not.
+        /// Clears the legacy list after migration so it is never used again.
         /// </summary>
         private static void MigrateCompactTargetsToSets()
         {
@@ -500,6 +501,9 @@ namespace MultiPingMonitor.Classes
             var defaultSet = new CompactTargetSet(Strings.CompactSets_MigratedDefaultName, entries);
             ApplicationOptions.CompactSets.Add(defaultSet);
             ApplicationOptions.ActiveCompactSetId = defaultSet.Id;
+
+            // Clear legacy data so the migration is never triggered again.
+            ApplicationOptions.CompactCustomTargets.Clear();
         }
 
         private static void LoadColors(XmlNodeList nodes)
