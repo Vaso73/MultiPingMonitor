@@ -1763,6 +1763,12 @@ namespace MultiPingMonitor.UI
             menu.Font = new System.Drawing.Font("Segoe UI", 9f,
                 System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
 
+            // Icon gutter / item height parity: 20×20 scaling makes the icon column
+            // and row height match WPF menu dimensions more closely.
+            // WinForms default ImageScalingSize(16,16) produces ~22px rows; (20,20)
+            // drives rows to ~26-28px — matching WPF Modern ~27px and Classic ~24px.
+            menu.ImageScalingSize = new System.Drawing.Size(20, 20);
+
             // Unify check/icon column: WPF menus have no separate check margin column.
             // Checked items show their mark in the image slot (handled by OnRenderItemCheck).
             menu.ShowCheckMargin = false;
@@ -1908,8 +1914,12 @@ namespace MultiPingMonitor.UI
 
             // Font parity: keep the strip font at Segoe UI 9pt so it always matches
             // the WPF menu font even if the system default font differs.
-            _trayNativeMenu.Font = new System.Drawing.Font("Segoe UI", 9f,
+            var menuFont = new System.Drawing.Font("Segoe UI", 9f,
                 System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            _trayNativeMenu.Font = menuFont;
+
+            // Icon gutter / item height: re-assert 20×20 so any system reset is overridden.
+            _trayNativeMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
 
             // Set BackColor/ForeColor on the strip itself as a fallback for any
             // non-renderer codepath (e.g., the system drawing the window border).
@@ -1930,20 +1940,25 @@ namespace MultiPingMonitor.UI
             // match the active theme regardless of when the menu was first built.
             RefreshTrayItemIcons(_trayNativeMenu.Items);
 
-            // Align item vertical padding with the active WPF menu style.
-            // WPF Style.Padding.MenuItem Thickness values: Modern=(10,6,10,6), Classic=(6,4,6,4).
-            // WinForms Padding(left, top, right, bottom): left=4 pads icon gutter; top/bottom
-            // mirror the WPF vertical values (6 or 4 px); right=6 adds trailing text margin.
+            // Item padding calibration.
+            // With ImageScalingSize(20,20), WinForms auto-sizes items to ~26px (20px icon +
+            // internal margin). WPF Modern menu rows are ~27px; Classic ~24px.
+            // Vertical padding values are kept SMALL so the image size drives height, not
+            // the padding. Previous values (6/4px) made items ~34px — taller than WPF.
+            // Modern: top/bottom 2px adds minimal breathing room without overshooting.
+            // Classic: top/bottom 1px keeps the tighter WPF Classic rhythm.
             bool isModern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
             var itemPadding = isModern
-                ? new System.Windows.Forms.Padding(4, 6, 6, 6)   // top/bottom 6 px matches WPF Modern top/bottom (6,6)
-                : new System.Windows.Forms.Padding(4, 4, 4, 4);  // top/bottom 4 px matches WPF Classic top/bottom (4,4)
+                ? new System.Windows.Forms.Padding(4, 2, 6, 2)  // Modern: image height drives row to ~27px
+                : new System.Windows.Forms.Padding(4, 1, 4, 1); // Classic: image height drives row to ~24px
             SetTrayItemPadding(_trayNativeMenu.Items, itemPadding);
 
-            // Symmetric item margins (1 px top and bottom) ensure text is optically
-            // centered in each row. The WinForms default of Padding(0,1,0,2) is
-            // asymmetric and makes items sit slightly too high.
-            SetTrayItemMargins(_trayNativeMenu.Items, new System.Windows.Forms.Padding(0, 1, 0, 1));
+            // Propagate font, ImageScalingSize, and ShowCheckMargin=false to all
+            // sub-dropdowns (e.g., "Visual style"). WinForms ToolStripDropDownMenu
+            // instances inherit the renderer from the parent but NOT ShowCheckMargin,
+            // Font, or ImageScalingSize — so the sub-menu would show an extra check
+            // column and smaller icon gutter without explicit propagation.
+            SetTrayDropDownProps(_trayNativeMenu.Items, menuFont, isModern);
         }
 
         /// <summary>
@@ -1998,19 +2013,29 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Recursively sets Margin on all ToolStripMenuItems to ensure symmetric
-        /// vertical spacing. WinForms default Padding(0,1,0,2) is asymmetric and
-        /// causes items to sit optically too high; symmetric (0,1,0,1) centers them.
+        /// Recursively propagates font, ImageScalingSize, and ShowCheckMargin to all
+        /// sub-ToolStripDropDownMenu instances (e.g., the "Visual style" submenu).
+        /// WinForms inherits the renderer from the parent ContextMenuStrip but does NOT
+        /// inherit Font, ImageScalingSize, or ShowCheckMargin — so without explicit
+        /// propagation the submenu shows an extra check column and smaller icon gutter.
         /// </summary>
-        private static void SetTrayItemMargins(
+        private static void SetTrayDropDownProps(
             System.Windows.Forms.ToolStripItemCollection items,
-            System.Windows.Forms.Padding margin)
+            System.Drawing.Font font,
+            bool isModern)
         {
             foreach (System.Windows.Forms.ToolStripItem item in items)
             {
-                item.Margin = margin;
                 if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
-                    SetTrayItemMargins(mi.DropDownItems, margin);
+                {
+                    mi.DropDown.Font            = font;
+                    mi.DropDown.ImageScalingSize = new System.Drawing.Size(20, 20);
+                    // Remove the separate WinForms check column so the sub-menu column
+                    // layout is identical to the root menu (check shown in image slot).
+                    if (mi.DropDown is System.Windows.Forms.ToolStripDropDownMenu ddm)
+                        ddm.ShowCheckMargin = false;
+                    SetTrayDropDownProps(mi.DropDownItems, font, isModern);
+                }
             }
         }
 
@@ -2318,12 +2343,15 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Creates a 16×16 GDI+ bitmap icon for the tray menu, drawn in the
+        /// Creates a 20×20 GDI+ bitmap icon for the tray menu, drawn in the
         /// current theme text color so it is always readable on the dark background.
+        /// 20×20 matches ImageScalingSize(20,20) exactly (no scaling artefacts) and
+        /// produces an icon column that visually matches WPF menu icon area dimensions.
+        /// Geometry is scaled ×1.25 from the original 16×16 designs.
         /// </summary>
         private static System.Drawing.Bitmap MakeTrayMenuBitmap(int kind)
         {
-            var bmp = new System.Drawing.Bitmap(16, 16,
+            var bmp = new System.Drawing.Bitmap(20, 20,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             System.Drawing.Color ic = GetThemeDrawingColor("Theme.Text.Primary",
@@ -2335,98 +2363,99 @@ namespace MultiPingMonitor.UI
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.Clear(System.Drawing.Color.Transparent);
 
-            using var pen = new System.Drawing.Pen(ic, 1.5f);
+            // Pen weight scaled from 1.5px (16px canvas) to 1.9px (20px canvas).
+            using var pen = new System.Drawing.Pen(ic, 1.9f);
             using var brush = new System.Drawing.SolidBrush(ic);
             using var accentBrush = new System.Drawing.SolidBrush(ac);
 
             switch (kind)
             {
                 case TrayIcon.Open:
-                    // Window outline + outward arrow
-                    g.DrawRectangle(pen, 1f, 3f, 8f, 8f);
-                    g.DrawLine(pen, 10f, 5f, 14f, 5f);
-                    g.DrawLine(pen, 11f, 3f, 14f, 5f);
-                    g.DrawLine(pen, 11f, 7f, 14f, 5f);
+                    // Window outline + outward arrow (coords × 1.25 from 16 px original)
+                    g.DrawRectangle(pen, 1f, 4f, 10f, 10f);
+                    g.DrawLine(pen, 12f, 9f, 18f, 9f);
+                    g.DrawLine(pen, 14f, 4f, 18f, 9f);
+                    g.DrawLine(pen, 14f, 14f, 18f, 9f);
                     break;
 
                 case TrayIcon.NewInstance:
-                    // Two overlapping window outlines
-                    g.DrawRectangle(pen, 5f, 1f, 8f, 7f);
+                    // Two overlapping window outlines (coords × 1.25)
+                    g.DrawRectangle(pen, 6f, 1f, 10f, 9f);
                     g.FillRectangle(new System.Drawing.SolidBrush(
                         GetThemeDrawingColor("Theme.Surface", System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E))),
-                        1f, 5f, 9f, 8f);
-                    g.DrawRectangle(pen, 1f, 5f, 8f, 7f);
+                        1f, 6f, 11f, 10f);
+                    g.DrawRectangle(pen, 1f, 6f, 10f, 9f);
                     break;
 
                 case TrayIcon.Traceroute:
-                    // Dashed path with arrowhead
-                    using (var dash = new System.Drawing.Pen(ic, 1.2f)
+                    // Dashed path with arrowhead (coords × 1.25)
+                    using (var dash = new System.Drawing.Pen(ic, 1.5f)
                         { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
                     {
-                        g.DrawLine(dash, 1f, 8f, 10f, 8f);
+                        g.DrawLine(dash, 1f, 10f, 13f, 10f);
                     }
-                    g.DrawLine(pen, 8f, 5f, 13f, 8f);
-                    g.DrawLine(pen, 8f, 11f, 13f, 8f);
+                    g.DrawLine(pen, 10f, 6f, 17f, 10f);
+                    g.DrawLine(pen, 10f, 14f, 17f, 10f);
                     break;
 
                 case TrayIcon.FloodHost:
-                    // Lightning bolt (filled polygon)
+                    // Lightning bolt (filled polygon, coords × 1.25)
                     g.FillPolygon(brush, new System.Drawing.PointF[]
                     {
-                        new(9f,1f), new(5f,8f), new(8f,8f),
-                        new(7f,14f), new(11f,7f), new(8f,7f)
+                        new(11f,1f), new(6f,10f), new(10f,10f),
+                        new(9f,18f), new(14f,9f), new(10f,9f)
                     });
                     break;
 
                 case TrayIcon.Options:
-                    // Gear: circle + 4 teeth at cardinal directions
-                    g.DrawEllipse(pen, 4f, 4f, 7f, 7f);
-                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 4f);
-                    g.DrawLine(pen, 7.5f, 11f, 7.5f, 14f);
-                    g.DrawLine(pen, 1f, 7.5f, 4f, 7.5f);
-                    g.DrawLine(pen, 11f, 7.5f, 14f, 7.5f);
+                    // Gear: circle + 4 teeth at cardinal directions (coords × 1.25)
+                    g.DrawEllipse(pen, 5f, 5f, 9f, 9f);
+                    g.DrawLine(pen, 9.5f, 1f,  9.5f, 5f);
+                    g.DrawLine(pen, 9.5f, 14f, 9.5f, 18f);
+                    g.DrawLine(pen, 1f,  9.5f, 5f,   9.5f);
+                    g.DrawLine(pen, 14f, 9.5f, 18f,  9.5f);
                     break;
 
                 case TrayIcon.StatusHistory:
-                    // Clock face
-                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
-                    g.DrawLine(pen, 7.5f, 5f, 7.5f, 8f);
-                    g.DrawLine(pen, 7.5f, 8f, 10f, 8f);
+                    // Clock face (coords × 1.25)
+                    g.DrawEllipse(pen, 2f, 2f, 15f, 15f);
+                    g.DrawLine(pen, 9.5f, 6f, 9.5f, 10f);
+                    g.DrawLine(pen, 9.5f, 10f, 13f, 10f);
                     break;
 
                 case TrayIcon.Help:
-                    // Circle + "?" glyph
-                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
-                    using (var f = new System.Drawing.Font("Segoe UI", 7f,
+                    // Circle + "?" glyph (coords × 1.25)
+                    g.DrawEllipse(pen, 2f, 2f, 15f, 15f);
+                    using (var f = new System.Drawing.Font("Segoe UI", 8f,
                         System.Drawing.FontStyle.Bold,
                         System.Drawing.GraphicsUnit.Point))
                     {
-                        g.DrawString("?", f, brush, 4.5f, 3f);
+                        g.DrawString("?", f, brush, 5f, 3.5f);
                     }
                     break;
 
                 case TrayIcon.VisualStyle:
-                    // Classic vs Modern: two small squares, second in accent color
-                    g.FillRectangle(brush, 1f, 3f, 6f, 9f);
-                    g.FillRectangle(accentBrush, 9f, 3f, 6f, 9f);
-                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 14f);
+                    // Classic vs Modern: two small squares, second in accent color (coords × 1.25)
+                    g.FillRectangle(brush,       1f,  4f, 7f, 11f);
+                    g.FillRectangle(accentBrush, 11f, 4f, 7f, 11f);
+                    g.DrawLine(pen, 9.5f, 1f, 9.5f, 18f);
                     break;
 
                 case TrayIcon.ToggleDisplay:
-                    // Two-headed horizontal arrow (swap)
-                    g.DrawLine(pen, 2f, 8f, 13f, 8f);
-                    g.DrawLine(pen, 5f, 5f, 2f, 8f);
-                    g.DrawLine(pen, 5f, 11f, 2f, 8f);
-                    g.DrawLine(pen, 10f, 5f, 13f, 8f);
-                    g.DrawLine(pen, 10f, 11f, 13f, 8f);
+                    // Two-headed horizontal arrow (swap, coords × 1.25)
+                    g.DrawLine(pen, 2f, 10f, 17f, 10f);
+                    g.DrawLine(pen, 6f, 6f,  2f,  10f);
+                    g.DrawLine(pen, 6f, 14f, 2f,  10f);
+                    g.DrawLine(pen, 13f, 6f,  17f, 10f);
+                    g.DrawLine(pen, 13f, 14f, 17f, 10f);
                     break;
 
                 case TrayIcon.Exit:
-                    // Door outline + outward arrow
-                    g.DrawRectangle(pen, 1f, 2f, 6f, 11f);
-                    g.DrawLine(pen, 8f, 8f, 14f, 8f);
-                    g.DrawLine(pen, 11f, 5f, 14f, 8f);
-                    g.DrawLine(pen, 11f, 11f, 14f, 8f);
+                    // Door outline + outward arrow (coords × 1.25)
+                    g.DrawRectangle(pen, 1f, 2f, 8f, 14f);
+                    g.DrawLine(pen, 10f, 10f, 18f, 10f);
+                    g.DrawLine(pen, 14f, 6f,  18f, 10f);
+                    g.DrawLine(pen, 14f, 14f, 18f, 10f);
                     break;
             }
 
@@ -2744,11 +2773,12 @@ namespace MultiPingMonitor.UI
                         System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA))
                     : GetThemeDrawingColor("Theme.Border",
                         System.Drawing.Color.FromArgb(0x44, 0x44, 0x5A));
-                // Modern: alpha 70/255 ≈ 27 % opacity — faint accent tint matches
+                // Modern: alpha 120/255 ≈ 47 % opacity — visible accent tint matches
                 //   WPF Modern separator which uses a thin accent-colored line.
-                // Classic: alpha 160/255 ≈ 63 % opacity — more opaque Border color
-                //   to stay visible against the SurfaceAlt gutter without being harsh.
-                var lineColor = System.Drawing.Color.FromArgb(modern ? 70 : 160, lineBase);
+                //   Previous value (70) was too faint to distinguish from the background.
+                // Classic: alpha 180/255 ≈ 71 % opacity — opaque enough to clearly
+                //   separate sections against the SurfaceAlt gutter.
+                var lineColor = System.Drawing.Color.FromArgb(modern ? 120 : 180, lineBase);
 
                 // Classic: start line after the ~30 px icon-gutter column so the
                 // separator aligns with the text column, matching WPF Classic menu layout
