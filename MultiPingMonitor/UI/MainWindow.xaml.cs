@@ -1820,13 +1820,14 @@ namespace MultiPingMonitor.UI
             menu.Opened += (s, e) => ApplyTrayPopupRegion(menu);
             menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
 
+            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), TrayIcon.NewLivePing));
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
             menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
-            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), TrayIcon.NewLivePing));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       TrayIcon.Options));
             menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
