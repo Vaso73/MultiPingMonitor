@@ -11,10 +11,11 @@ namespace MultiPingMonitor.UI
             Warning,
             Error,
             Info,
+            Question,
             None
         }
 
-        public DialogWindow(DialogIcon icon, string title, string body, string confirmationText, bool isCancelButtonVisible)
+        public DialogWindow(DialogIcon icon, string title, string body, string confirmationText, bool isCancelButtonVisible, string cancelText = null)
         {
             InitializeComponent();
 
@@ -22,6 +23,8 @@ namespace MultiPingMonitor.UI
             MessageBody.Text = body;
             OK.Content = confirmationText;
             Cancel.Visibility = isCancelButtonVisible ? Visibility.Visible : Visibility.Collapsed;
+            if (cancelText != null)
+                Cancel.Content = cancelText;
             SetIcon(icon);
         }
 
@@ -45,6 +48,9 @@ namespace MultiPingMonitor.UI
                     break;
                 case DialogIcon.Info:
                     resourceKey = "icon.info-circle";
+                    break;
+                case DialogIcon.Question:
+                    resourceKey = "icon.question-circle";
                     break;
             }
 
@@ -86,9 +92,41 @@ namespace MultiPingMonitor.UI
                 isCancelButtonVisible: true);
         }
 
+        public static DialogWindow InfoWindow(string message, Window owner = null)
+        {
+            var dialog = new DialogWindow(
+                icon: DialogIcon.Info,
+                title: Strings.DialogTitle_Information,
+                body: message,
+                confirmationText: Strings.DialogButton_OK,
+                isCancelButtonVisible: false);
+            if (owner != null)
+                dialog.Owner = owner;
+            return dialog;
+        }
+
+        public static DialogWindow ConfirmWindow(string message, Window owner = null)
+        {
+            var dialog = new DialogWindow(
+                icon: DialogIcon.Question,
+                title: Strings.DialogTitle_Confirm,
+                body: message,
+                confirmationText: Strings.DialogButton_Yes,
+                isCancelButtonVisible: true,
+                cancelText: Strings.DialogButton_No);
+            if (owner != null)
+                dialog.Owner = owner;
+            return dialog;
+        }
+
         private void OK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+        }
+
+        private void OnCloseButtonClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

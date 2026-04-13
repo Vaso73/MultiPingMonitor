@@ -18,6 +18,12 @@ namespace MultiPingMonitor.UI
         private Dictionary<string, string> _Aliases = new Dictionary<string, string>();
         private System.Windows.Forms.NotifyIcon NotifyIcon;
 
+        /// <summary>
+        /// Exposes the Normal mode probe collection for Add-to-Set operations
+        /// from manual live ping windows (same-assembly access).
+        /// </summary>
+        internal ObservableCollection<Probe> NormalProbeCollection => _ProbeCollection;
+
         // ── Dynamic tray icon ─────────────────────────────────────────────────
         // Three icons representing aggregate host status: neutral (no hosts),
         // online (all up), offline (at least one down).
@@ -850,6 +856,19 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(manageItem);
 
+            menu.Items.Add(new Separator());
+
+            var newLivePingItem = new MenuItem
+            {
+                Header = Strings.Menu_NewLivePing
+            };
+            var newLivePingIconSource = Application.Current.TryFindResource("icon.window-restore-blue") as System.Windows.Media.ImageSource;
+            if (newLivePingIconSource != null)
+                newLivePingItem.Icon = new System.Windows.Controls.Image { Source = newLivePingIconSource, Width = 16, Height = 16 };
+            newLivePingItem.Click += (s, args) => NewLivePingMenu_Click(null, null);
+
+            menu.Items.Add(newLivePingItem);
+
             menu.PlacementTarget = sender as Button;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             menu.IsOpen = true;
@@ -1409,6 +1428,17 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        /// <summary>
+        /// Opens a new empty Live Ping Monitor window in manual/direct mode.
+        /// The user enters a target and starts ping manually in that window.
+        /// Multiple manual windows can be opened independently.
+        /// </summary>
+        private void NewLivePingMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new LivePingMonitorWindow(this);
+            window.Show();
+        }
+
         private void EditAlias_Click(object sender, RoutedEventArgs e)
         {
             var probe = (sender as Button).DataContext as Probe;
@@ -1790,6 +1820,8 @@ namespace MultiPingMonitor.UI
             menu.Opened += (s, e) => ApplyTrayPopupRegion(menu);
             menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
 
+            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), TrayIcon.NewLivePing));
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -2403,6 +2435,7 @@ namespace MultiPingMonitor.UI
             public const int VisualStyle  = 7;
             public const int ToggleDisplay= 8;
             public const int Exit         = 9;
+            public const int NewLivePing  = 10;
         }
 
         /// <summary>
@@ -2519,6 +2552,16 @@ namespace MultiPingMonitor.UI
                     g.DrawLine(pen, 10f, 10f, 18f, 10f);
                     g.DrawLine(pen, 14f, 6f,  18f, 10f);
                     g.DrawLine(pen, 14f, 14f, 18f, 10f);
+                    break;
+
+                case TrayIcon.NewLivePing:
+                    // Window outline + play-triangle inside (live ping concept)
+                    g.DrawRectangle(pen, 1f, 3f, 14f, 13f);
+                    g.DrawLine(pen, 1f, 7f, 15f, 7f);
+                    g.FillPolygon(accentBrush, new System.Drawing.PointF[]
+                    {
+                        new(5f, 10f), new(12f, 13f), new(5f, 16f)
+                    });
                     break;
             }
 
