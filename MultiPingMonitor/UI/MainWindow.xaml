@@ -207,7 +207,7 @@
         </Grid>
 
         <!-- Separator line between title bar and menu -->
-        <Border x:Name="TitleBarSeparator" DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+        <Border x:Name="TitleBarSeparator" DockPanel.Dock="Top" Style="{DynamicResource Style.TitleBarSeparator}" />
 
         <!-- Menu bar -->
         <Menu x:Name="MainMenu" DockPanel.Dock="Top"
@@ -447,7 +447,7 @@
         </Grid>
 
         <!-- Items Control -->
-        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="0,0,-2,-2">
+        <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="{DynamicResource Style.ProbeCardGrid.Margin}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Border Style="{DynamicResource Style.ProbeCard}"
@@ -465,6 +465,7 @@
                                 <!-- Ping title bar / button section -->
                                 <Border DockPanel.Dock="Top"
                                         x:Name="headerBorder"
+                                        CornerRadius="{DynamicResource Style.ProbeCardHeader.CornerRadius}"
                                         Cursor="SizeAll">
                                     <Border.Style>
                                         <Style TargetType="Border">

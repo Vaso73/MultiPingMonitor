@@ -44,7 +44,7 @@
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
             </Button>
         </Grid>
-        <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" />
+        <Border DockPanel.Dock="Top" Style="{DynamicResource Style.TitleBarSeparator}" />
 
     <Grid>
         <Grid.RowDefinitions>
