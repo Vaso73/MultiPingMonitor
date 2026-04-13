@@ -237,6 +237,7 @@ namespace MultiPingMonitor.UI
 
             // Set always on top state.
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
+            SyncPinButtonStates();
             if (Probe.StatusHistoryWindow != null && Probe.StatusHistoryWindow.IsLoaded)
             {
                 Probe.StatusHistoryWindow.Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
@@ -268,13 +269,16 @@ namespace MultiPingMonitor.UI
         // switching back from Compact to Normal.
         private System.Windows.Shell.WindowChrome _normalChrome;
 
-        // The tray menu item that toggles between Normal ↔ Compact.
-        // Kept as a field so its Header can be updated when the mode changes.
-        private MenuItem _trayToggleDisplayMode;
+        // The native WinForms tray context menu.
+        private System.Windows.Forms.ContextMenuStrip _trayNativeMenu;
 
-        // The TextBlock used as the tray toggle item's Header so that Bold
-        // renders reliably regardless of the MenuItemStyle template.
-        private TextBlock _trayToggleTextBlock;
+        // The native tray menu item that toggles between Normal ↔ Compact.
+        // Kept as a field so its Text can be updated when the mode changes.
+        private System.Windows.Forms.ToolStripMenuItem _trayNativeToggleItem;
+
+        // Native tray menu items for quick Classic/Modern visual-style switch.
+        private System.Windows.Forms.ToolStripMenuItem _trayNativeStyleClassic;
+        private System.Windows.Forms.ToolStripMenuItem _trayNativeStyleModern;
 
         // Default compact window dimensions used when no saved placement exists yet.
         private const double CompactDefaultWidth = 280;
@@ -367,8 +371,8 @@ namespace MultiPingMonitor.UI
                 ? Strings.Tray_SwitchToNormal
                 : Strings.Tray_SwitchToCompact;
 
-            if (_trayToggleTextBlock != null)
-                _trayToggleTextBlock.Text = text;
+            if (_trayNativeToggleItem != null)
+                _trayNativeToggleItem.Text = text;
 
             if (ToggleDisplayModeMenu != null)
                 ToggleDisplayModeMenu.Header = text;
@@ -469,6 +473,41 @@ namespace MultiPingMonitor.UI
 
             // Update tray toggle text whenever display mode is applied.
             UpdateTrayToggleText();
+        }
+
+        // ── Pin / Always-on-top buttons ───────────────────────────────────────
+
+        /// <summary>
+        /// Handles click on either pin button (Normal or Compact mode).
+        /// Toggles this window's Topmost property without changing ApplicationOptions.
+        /// </summary>
+        private void PinButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Determine new state from the ToggleButton that was clicked.
+            bool pinned = (sender == NormalPinButton)
+                ? NormalPinButton.IsChecked == true
+                : CompactPinButton.IsChecked == true;
+
+            Topmost = pinned;
+            SyncPinButtonStates();
+        }
+
+        /// <summary>
+        /// Synchronizes both pin buttons' checked state and icon color to match
+        /// the current window Topmost value. Called from RefreshGuiState and PinButton_Click.
+        /// </summary>
+        private void SyncPinButtonStates()
+        {
+            bool pinned = Topmost;
+
+            // Sync ToggleButton checked states.
+            NormalPinButton.IsChecked = pinned;
+            CompactPinButton.IsChecked = pinned;
+
+            // Update icon fill: accent-colored when pinned, secondary when not.
+            string fillKey = pinned ? "Theme.Accent" : "Theme.Text.Secondary";
+            NormalPinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, fillKey);
+            CompactPinIcon.SetResourceReference(System.Windows.Shapes.Path.FillProperty, fillKey);
         }
 
         /// <summary>
@@ -1496,50 +1535,36 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        // ── Themed tray context menu ───────────────────────────────────────────
-        // WPF ContextMenu replaces the old WinForms ContextMenuStrip so the tray
-        // menu respects the current application theme. A tiny invisible "host"
-        // window provides the HWND needed by WPF to display the popup near the
-        // tray icon and to receive foreground activation (required for the menu
-        // to close when the user clicks outside).
-        private ContextMenu _trayContextMenu;
-        private Window _trayMenuHost;
+        // ── Native WinForms tray context menu ─────────────────────────────────
+        // A ContextMenuStrip attached directly to the NotifyIcon.
+        // WinForms handles right-click display, focus capture, and auto-dismiss
+        // natively, making this far more reliable than WPF popup hosting.
+        // See BuildNativeTrayMenu() for construction and event wiring.
 
         private void InitializeTrayIcon()
         {
+            // ── Step 1: Load icons (with system-icon fallback so this never fails) ──
             try
             {
-                // Load the three state-specific tray icons from embedded resources.
-                // Fall back gracefully if any are missing.
                 _trayIconNeutral = LoadTrayIcon("pack://application:,,,/Resources/tray-neutral.ico")
                                    ?? System.Drawing.SystemIcons.Application;
                 _trayIconOnline  = LoadTrayIcon("pack://application:,,,/Resources/tray-online.ico")
                                    ?? _trayIconNeutral;
                 _trayIconOffline = LoadTrayIcon("pack://application:,,,/Resources/tray-offline.ico")
                                    ?? _trayIconNeutral;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Could not load tray icons: {ex}");
+                _trayIconNeutral  = System.Drawing.SystemIcons.Application;
+                _trayIconOnline   = _trayIconNeutral;
+                _trayIconOffline  = _trayIconNeutral;
+            }
 
-                // Build themed WPF context menu for the tray icon.
-                _trayContextMenu = BuildTrayContextMenu();
-
-                // Create a tiny, invisible helper window that owns the ContextMenu.
-                // This ensures the menu gets a valid HWND for positioning and that
-                // Windows gives it foreground focus so it auto-closes on outside click.
-                _trayMenuHost = new Window
-                {
-                    Width = 0,
-                    Height = 0,
-                    WindowStyle = WindowStyle.None,
-                    ShowInTaskbar = false,
-                    AllowsTransparency = true,
-                    Background = System.Windows.Media.Brushes.Transparent,
-                    Topmost = true
-                };
-                _trayMenuHost.Show();
-                _trayMenuHost.Hide();
-
-                // Create tray icon. No WinForms ContextMenuStrip – right-click is
-                // handled in NotifyIcon_MouseUp to show the themed WPF menu instead.
-                // Start with neutral icon; UpdateTrayIcon() will refine once probes run.
+            // ── Step 2: Create NotifyIcon FIRST so it always appears, even if the
+            //           themed menu fails to build in a subsequent step. ──────────
+            try
+            {
                 NotifyIcon = new System.Windows.Forms.NotifyIcon
                 {
                     Icon = _trayIconNeutral,
@@ -1548,13 +1573,28 @@ namespace MultiPingMonitor.UI
                 };
                 NotifyIcon.MouseUp += NotifyIcon_MouseUp;
 
-                // Subscribe to probe collection changes so we can track each probe's status.
+                // Subscribe to probe collection changes to track per-probe status.
                 _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
                 _CompactProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to initialize tray icon: {ex}");
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to create NotifyIcon: {ex}");
+                return; // Nothing more can be done without the NotifyIcon itself.
+            }
+
+            // ── Step 3: Build native WinForms ContextMenuStrip and attach to NotifyIcon ─
+            // Building the native menu is simple and never throws for normal reasons, but
+            // guard anyway so a failure here does not kill the tray icon itself.
+            try
+            {
+                _trayNativeMenu = BuildNativeTrayMenu();
+                NotifyIcon.ContextMenuStrip = _trayNativeMenu;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine($"MultiPingMonitor: Failed to build native tray menu: {ex}");
+                _trayNativeMenu = null;
             }
         }
 
@@ -1711,157 +1751,178 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Builds a theme-aware WPF ContextMenu with the same items and actions
-        /// that the old WinForms ContextMenuStrip had.
+        /// Builds the native WinForms ContextMenuStrip for the tray icon.
+        /// Attaching it to NotifyIcon.ContextMenuStrip means WinForms handles
+        /// right-click display, focus capture, and auto-dismiss natively.
         /// </summary>
-        private ContextMenu BuildTrayContextMenu()
+        private System.Windows.Forms.ContextMenuStrip BuildNativeTrayMenu()
         {
-            var menu = new ContextMenu();
+            var menu = new System.Windows.Forms.ContextMenuStrip();
 
-            // Apply the visual-style-aware Style so the popup gets the correct
-            // shape (rounded in Modern, square in Classic) and border colour.
-            // The Style also provides Background/Border, so we only need to set
-            // Foreground separately (not covered by Style.ContextMenu).
-            menu.SetResourceReference(FrameworkElement.StyleProperty, "Style.ContextMenu");
-            menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
+            // Sync Classic/Modern check marks and re-apply the theme renderer
+            // every time the menu is about to open so both the style and the
+            // current theme palette are always reflected correctly.
+            menu.Opening += (s, e) =>
+            {
+                UpdateTrayStyleChecks();
+                ApplyTrayMenuTheme();
+            };
 
-            // Apply the same MenuItemStyle used in MainWindow menu bar so items
-            // get the themed templates, hover brushes, and full background coverage.
-            var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
-            if (menuItemStyle != null)
-                menu.Resources[typeof(MenuItem)] = menuItemStyle;
+            menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
+            menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Open, (s, e) => ShowMainWindowFromTray(), "icon.vmping-logo-simple"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_NewInstance, (s, e) => LaunchNewInstance(), "icon.vmping-logo-simple"));
-            menu.Items.Add(CreateTraySeparator());
+            menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
+            menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       TrayIcon.Options));
+            menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
+            menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Traceroute, (s, e) => TracerouteExecute(null, null), "icon.route"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_FloodHost, (s, e) => FloodHostExecute(null, null), null, "/Resources/bomb-16.png"));
-            menu.Items.Add(CreateTraySeparator());
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Options, (s, e) => OptionsExecute(null, null), "icon.options"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_StatusHistory, (s, e) => StatusHistoryExecute(null, null), "icon.status-history"));
-            menu.Items.Add(CreateTrayMenuItem(Strings.Menu_Help, (s, e) => HelpExecute(null, null), "icon.question-circle"));
-            menu.Items.Add(CreateTraySeparator());
+            // ── Visual style submenu ──────────────────────────────────────────
+            var styleParent = new System.Windows.Forms.ToolStripMenuItem("Visual style")
+            {
+                Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle)
+            };
 
-            // Display mode quick toggle – placed just above Exit for discoverability.
-            _trayToggleDisplayMode = CreateTrayMenuItem(
-                string.Empty,   // Header set below via TextBlock
-                (s, e) =>
+            _trayNativeStyleClassic = new System.Windows.Forms.ToolStripMenuItem("Classic")
+            {
+                CheckOnClick = false
+            };
+            _trayNativeStyleClassic.Click += (s, e) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    VisualStyleManager.ApplyStyle(VisualStyle.Classic);
+                    ApplicationOptions.VisualStyle = VisualStyleManager.GetStyleName(VisualStyle.Classic);
+                    Configuration.Save();
+                    UpdateTrayStyleChecks();
+                });
+            };
+
+            _trayNativeStyleModern = new System.Windows.Forms.ToolStripMenuItem("Modern")
+            {
+                CheckOnClick = false
+            };
+            _trayNativeStyleModern.Click += (s, e) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    VisualStyleManager.ApplyStyle(VisualStyle.Modern);
+                    ApplicationOptions.VisualStyle = VisualStyleManager.GetStyleName(VisualStyle.Modern);
+                    Configuration.Save();
+                    UpdateTrayStyleChecks();
+                });
+            };
+
+            styleParent.DropDownItems.Add(_trayNativeStyleClassic);
+            styleParent.DropDownItems.Add(_trayNativeStyleModern);
+            menu.Items.Add(styleParent);
+            UpdateTrayStyleChecks();
+
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
+            // ── Display mode quick toggle ─────────────────────────────────────
+            _trayNativeToggleItem = MakeItem(
+                ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                    ? Strings.Tray_SwitchToNormal
+                    : Strings.Tray_SwitchToCompact,
+                () => Dispatcher.Invoke(() =>
                 {
                     var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
                         ? ApplicationOptions.DisplayMode.Normal
                         : ApplicationOptions.DisplayMode.Compact;
                     SwitchDisplayMode(target);
-                },
-                "icon.compact-view");
-            // Use an explicit TextBlock as Header so FontWeight.Bold renders
-            // reliably regardless of how the MenuItemStyle template handles it.
-            _trayToggleTextBlock = new TextBlock
-            {
-                Text = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                    ? Strings.Tray_SwitchToNormal
-                    : Strings.Tray_SwitchToCompact,
-                FontWeight = FontWeights.Bold
-            };
-            _trayToggleTextBlock.SetResourceReference(TextBlock.ForegroundProperty, "Theme.Text.Primary");
-            _trayToggleDisplayMode.Header = _trayToggleTextBlock;
-            menu.Items.Add(_trayToggleDisplayMode);
-            menu.Items.Add(CreateTraySeparator());
+                }),
+                TrayIcon.ToggleDisplay);
+            _trayNativeToggleItem.Font = new System.Drawing.Font(
+                _trayNativeToggleItem.Font, System.Drawing.FontStyle.Bold);
+            menu.Items.Add(_trayNativeToggleItem);
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            menu.Items.Add(CreateTrayMenuItem(Strings.Tray_Exit, (s, e) =>
+            menu.Items.Add(MakeItem(Strings.Tray_Exit, () => Dispatcher.Invoke(() =>
             {
                 _IsShuttingDown = true;
                 Application.Current.Shutdown();
-            }, "icon.window-close-red"));
+            }), TrayIcon.Exit));
 
-            // Subscribe once: hide the host window when the menu closes.
-            menu.Closed += TrayContextMenu_Closed;
+            // Apply dark theme immediately so the first open already looks correct.
+            ApplyTrayMenuTheme();
 
             return menu;
         }
 
-        private static MenuItem CreateTrayMenuItem(string header, RoutedEventHandler clickHandler,
-            string iconResourceKey = null, string iconUri = null)
+        /// <summary>
+        /// Convenience factory: creates a ToolStripMenuItem with the given text, click action,
+        /// and an optional GDI+ icon drawn to match the current theme text color.
+        /// </summary>
+        private static System.Windows.Forms.ToolStripMenuItem MakeItem(string text, Action onClick, int iconKind = -1)
         {
-            var item = new MenuItem { Header = header };
-            // Ensure text is readable: bind Foreground to theme text brush so it
-            // stays correct in both light and dark themes and across theme switches.
-            item.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
-            item.Click += clickHandler;
-
-            // Set icon from application DrawingImage resource key or pack URI.
-            if (iconResourceKey != null)
-            {
-                var iconSource = Application.Current.TryFindResource(iconResourceKey) as System.Windows.Media.ImageSource;
-                if (iconSource != null)
-                    item.Icon = new System.Windows.Controls.Image { Source = iconSource, Width = 16, Height = 16 };
-            }
-            else if (iconUri != null)
-            {
-                try
-                {
-                    var bmp = new System.Windows.Media.Imaging.BitmapImage(
-                        new Uri("pack://application:,,," + iconUri, UriKind.Absolute));
-                    item.Icon = new System.Windows.Controls.Image { Source = bmp, Width = 16, Height = 16 };
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Trace.WriteLine(
-                        $"MultiPingMonitor: Could not load tray menu icon '{iconUri}': {ex.Message}");
-                }
-            }
-
+            var item = new System.Windows.Forms.ToolStripMenuItem(text);
+            if (iconKind >= 0)
+                item.Image = MakeTrayMenuBitmap(iconKind);
+            item.Click += (s, e) => onClick();
             return item;
         }
 
-        private static Separator CreateTraySeparator()
+        /// <summary>
+        /// Updates the checked state of the Classic/Modern tray style menu items
+        /// to reflect the currently active visual style.
+        /// </summary>
+        private void UpdateTrayStyleChecks()
         {
-            var sep = new Separator();
-            sep.SetResourceReference(Separator.BackgroundProperty, "Theme.Border");
-            sep.Margin = new Thickness(4, 2, 4, 2);
-            return sep;
+            if (_trayNativeStyleClassic == null || _trayNativeStyleModern == null)
+                return;
+
+            bool isClassic = VisualStyleManager.CurrentStyle == VisualStyle.Classic;
+            _trayNativeStyleClassic.Checked = isClassic;
+            _trayNativeStyleModern.Checked  = !isClassic;
         }
 
         /// <summary>
-        /// Shows the themed WPF tray context menu near the cursor position.
-        /// Uses the hidden helper window to get foreground activation so the
-        /// menu closes correctly when the user clicks elsewhere.
+        /// Applies the current app theme and visual style to the native tray
+        /// ContextMenuStrip by installing a custom renderer that reads colors live
+        /// from the WPF application resources. Called at construction and on every
+        /// Opening event so theme/style switches are immediately visible.
         /// </summary>
-        private void ShowTrayContextMenu()
+        private void ApplyTrayMenuTheme()
         {
-            if (_trayContextMenu == null || _trayMenuHost == null)
+            if (_trayNativeMenu == null)
                 return;
 
-            // Get cursor position (physical pixels).
-            var cursorPos = System.Windows.Forms.Cursor.Position;
+            _trayNativeMenu.Renderer = new TrayMenuRenderer();
 
-            // Convert physical screen pixels to WPF device-independent units.
-            var source = PresentationSource.FromVisual(_trayMenuHost)
-                         ?? HwndSource.FromHwnd(new WindowInteropHelper(_trayMenuHost).Handle);
-            double dpiScaleX = 1.0, dpiScaleY = 1.0;
-            if (source?.CompositionTarget != null)
+            // Set BackColor/ForeColor on the strip itself as a fallback for any
+            // non-renderer codepath (e.g., the system drawing the window border).
+            if (Application.Current?.TryFindResource("Theme.Surface") is System.Windows.Media.SolidColorBrush surfaceBrush)
             {
-                dpiScaleX = source.CompositionTarget.TransformFromDevice.M11;
-                dpiScaleY = source.CompositionTarget.TransformFromDevice.M22;
+                var c = surfaceBrush.Color;
+                _trayNativeMenu.BackColor = System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
             }
-
-            double x = cursorPos.X * dpiScaleX;
-            double y = cursorPos.Y * dpiScaleY;
-
-            // Position the helper window at the cursor so the ContextMenu opens there.
-            _trayMenuHost.Left = x;
-            _trayMenuHost.Top = y;
-            _trayMenuHost.Show();
-            _trayMenuHost.Activate();
-
-            _trayContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
-            _trayContextMenu.PlacementTarget = _trayMenuHost;
-            _trayContextMenu.IsOpen = true;
+            if (Application.Current?.TryFindResource("Theme.Text.Primary") is System.Windows.Media.SolidColorBrush textBrush)
+            {
+                var c = textBrush.Color;
+                var foreColor = System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                _trayNativeMenu.ForeColor = foreColor;
+                SetTrayItemColors(_trayNativeMenu.Items, foreColor);
+            }
         }
 
-        private void TrayContextMenu_Closed(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Recursively sets ForeColor on all ToolStripItems so WinForms has the
+        /// right text color regardless of which rendering path is used.
+        /// </summary>
+        private static void SetTrayItemColors(
+            System.Windows.Forms.ToolStripItemCollection items,
+            System.Drawing.Color foreColor)
         {
-            _trayMenuHost?.Hide();
+            foreach (System.Windows.Forms.ToolStripItem item in items)
+            {
+                item.ForeColor = foreColor;
+                if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
+                    SetTrayItemColors(mi.DropDownItems, foreColor);
+            }
         }
 
         // ── P/Invoke for reliable bring-to-front ────────────────────────────
@@ -1949,13 +2010,10 @@ namespace MultiPingMonitor.UI
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                // Left single click. Toggle window visibility.
+                // Left single click: toggle window visibility.
+                // The right-click context menu is handled natively by
+                // NotifyIcon.ContextMenuStrip; no explicit code needed here.
                 ToggleMainWindowFromTray();
-            }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                // Right click. Display themed WPF context menu at cursor position.
-                ShowTrayContextMenu();
             }
         }
 
@@ -1988,7 +2046,7 @@ namespace MultiPingMonitor.UI
 
                 Configuration.Save();
                 NotifyIcon?.Dispose();
-                _trayMenuHost?.Close();
+                _trayNativeMenu?.Dispose();
             }
         }
 
@@ -2142,6 +2200,282 @@ namespace MultiPingMonitor.UI
                 rect.Top    = wa.Top;
             if (snapBottom && Math.Abs(rect.Bottom - wa.Bottom) <= EdgeSnapThresholdPx)
                 rect.Bottom = wa.Bottom;
+        }
+
+        // ── Native tray menu dark theming ─────────────────────────────────────────
+        //
+        // TrayMenuColorTable reads WPF theme colors live on every property access
+        // so the menu always matches whichever theme/palette is currently active.
+        // TrayMenuRenderer wraps it and controls text color per item state:
+        //   - Normal/Classic: Theme.Text.Primary (light on dark surface)
+        //   - Selected+Modern: Theme.AccentForeground (dark on accent bg for contrast)
+        // MakeTrayMenuBitmap draws simple GDI+ icons in the current text color.
+
+        /// <summary>
+        /// Icon kind identifiers used by MakeTrayMenuBitmap.
+        /// </summary>
+        private static class TrayIcon
+        {
+            public const int Open         = 0;
+            public const int NewInstance  = 1;
+            public const int Traceroute   = 2;
+            public const int FloodHost    = 3;
+            public const int Options      = 4;
+            public const int StatusHistory= 5;
+            public const int Help         = 6;
+            public const int VisualStyle  = 7;
+            public const int ToggleDisplay= 8;
+            public const int Exit         = 9;
+        }
+
+        /// <summary>
+        /// Creates a 16×16 GDI+ bitmap icon for the tray menu, drawn in the
+        /// current theme text color so it is always readable on the dark background.
+        /// </summary>
+        private static System.Drawing.Bitmap MakeTrayMenuBitmap(int kind)
+        {
+            var bmp = new System.Drawing.Bitmap(16, 16,
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            System.Drawing.Color ic = GetThemeDrawingColor("Theme.Text.Primary",
+                System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4));
+            System.Drawing.Color ac = GetThemeDrawingColor("Theme.Accent",
+                System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA));
+
+            using var g = System.Drawing.Graphics.FromImage(bmp);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.Clear(System.Drawing.Color.Transparent);
+
+            using var pen = new System.Drawing.Pen(ic, 1.2f);
+            using var brush = new System.Drawing.SolidBrush(ic);
+            using var accentBrush = new System.Drawing.SolidBrush(ac);
+
+            switch (kind)
+            {
+                case TrayIcon.Open:
+                    // Window outline + outward arrow
+                    g.DrawRectangle(pen, 1f, 3f, 8f, 8f);
+                    g.DrawLine(pen, 10f, 5f, 14f, 5f);
+                    g.DrawLine(pen, 11f, 3f, 14f, 5f);
+                    g.DrawLine(pen, 11f, 7f, 14f, 5f);
+                    break;
+
+                case TrayIcon.NewInstance:
+                    // Two overlapping window outlines
+                    g.DrawRectangle(pen, 5f, 1f, 8f, 7f);
+                    g.FillRectangle(new System.Drawing.SolidBrush(
+                        GetThemeDrawingColor("Theme.Surface", System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E))),
+                        1f, 5f, 9f, 8f);
+                    g.DrawRectangle(pen, 1f, 5f, 8f, 7f);
+                    break;
+
+                case TrayIcon.Traceroute:
+                    // Dashed path with arrowhead
+                    using (var dash = new System.Drawing.Pen(ic, 1.2f)
+                        { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
+                    {
+                        g.DrawLine(dash, 1f, 8f, 10f, 8f);
+                    }
+                    g.DrawLine(pen, 8f, 5f, 13f, 8f);
+                    g.DrawLine(pen, 8f, 11f, 13f, 8f);
+                    break;
+
+                case TrayIcon.FloodHost:
+                    // Lightning bolt (filled polygon)
+                    g.FillPolygon(brush, new System.Drawing.PointF[]
+                    {
+                        new(9f,1f), new(5f,8f), new(8f,8f),
+                        new(7f,14f), new(11f,7f), new(8f,7f)
+                    });
+                    break;
+
+                case TrayIcon.Options:
+                    // Gear: circle + 4 teeth at cardinal directions
+                    g.DrawEllipse(pen, 4f, 4f, 7f, 7f);
+                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 4f);
+                    g.DrawLine(pen, 7.5f, 11f, 7.5f, 14f);
+                    g.DrawLine(pen, 1f, 7.5f, 4f, 7.5f);
+                    g.DrawLine(pen, 11f, 7.5f, 14f, 7.5f);
+                    break;
+
+                case TrayIcon.StatusHistory:
+                    // Clock face
+                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
+                    g.DrawLine(pen, 7.5f, 5f, 7.5f, 8f);
+                    g.DrawLine(pen, 7.5f, 8f, 10f, 8f);
+                    break;
+
+                case TrayIcon.Help:
+                    // Circle + "?" glyph
+                    g.DrawEllipse(pen, 2f, 2f, 11f, 11f);
+                    using (var f = new System.Drawing.Font("Segoe UI", 7f,
+                        System.Drawing.FontStyle.Bold,
+                        System.Drawing.GraphicsUnit.Point))
+                    {
+                        g.DrawString("?", f, brush, 4.5f, 3f);
+                    }
+                    break;
+
+                case TrayIcon.VisualStyle:
+                    // Classic vs Modern: two small squares, second in accent color
+                    g.FillRectangle(brush, 1f, 3f, 6f, 9f);
+                    g.FillRectangle(accentBrush, 9f, 3f, 6f, 9f);
+                    g.DrawLine(pen, 7.5f, 1f, 7.5f, 14f);
+                    break;
+
+                case TrayIcon.ToggleDisplay:
+                    // Two-headed horizontal arrow (swap)
+                    g.DrawLine(pen, 2f, 8f, 13f, 8f);
+                    g.DrawLine(pen, 5f, 5f, 2f, 8f);
+                    g.DrawLine(pen, 5f, 11f, 2f, 8f);
+                    g.DrawLine(pen, 10f, 5f, 13f, 8f);
+                    g.DrawLine(pen, 10f, 11f, 13f, 8f);
+                    break;
+
+                case TrayIcon.Exit:
+                    // Door outline + outward arrow
+                    g.DrawRectangle(pen, 1f, 2f, 6f, 11f);
+                    g.DrawLine(pen, 8f, 8f, 14f, 8f);
+                    g.DrawLine(pen, 11f, 5f, 14f, 8f);
+                    g.DrawLine(pen, 11f, 11f, 14f, 8f);
+                    break;
+            }
+
+            return bmp;
+        }
+
+        /// <summary>
+        /// Reads a WPF SolidColorBrush theme resource and converts it to a GDI+ Color.
+        /// Falls back to <paramref name="fallback"/> if the resource is unavailable.
+        /// </summary>
+        private static System.Drawing.Color GetThemeDrawingColor(string key, System.Drawing.Color fallback)
+        {
+            try
+            {
+                if (Application.Current?.TryFindResource(key) is System.Windows.Media.SolidColorBrush b)
+                {
+                    var c = b.Color;
+                    return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                }
+            }
+            catch { }
+            return fallback;
+        }
+
+        /// <summary>
+        /// ProfessionalColorTable that reads all colors from the WPF application theme
+        /// resources at access time so any palette or visual-style switch is immediately
+        /// reflected without needing to recreate the renderer.
+        /// </summary>
+        private sealed class TrayMenuColorTable : System.Windows.Forms.ProfessionalColorTable
+        {
+            // ── Color helpers ─────────────────────────────────────────────────
+            private static System.Drawing.Color Get(string key, System.Drawing.Color fallback)
+            {
+                try
+                {
+                    if (Application.Current?.TryFindResource(key) is System.Windows.Media.SolidColorBrush b)
+                    {
+                        var c = b.Color;
+                        return System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+                    }
+                }
+                catch { }
+                return fallback;
+            }
+
+            private static System.Drawing.Color Surface     => Get("Theme.Surface",     System.Drawing.Color.FromArgb(0x2A, 0x2A, 0x3E));
+            private static System.Drawing.Color SurfaceAlt  => Get("Theme.SurfaceAlt",  System.Drawing.Color.FromArgb(0x36, 0x36, 0x50));
+            private static System.Drawing.Color Border      => Get("Theme.Border",      System.Drawing.Color.FromArgb(0x44, 0x44, 0x5A));
+            private static System.Drawing.Color Accent      => Get("Theme.Accent",      System.Drawing.Color.FromArgb(0x89, 0xB4, 0xFA));
+            private static System.Drawing.Color AccentHover => Get("Theme.AccentHover", System.Drawing.Color.FromArgb(0x74, 0xC7, 0xEC));
+
+            private static bool IsModern    => VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+            // Modern: accent highlight; Classic: subtle surface-alt highlight
+            private static System.Drawing.Color HighlightBg => IsModern ? Accent      : SurfaceAlt;
+            private static System.Drawing.Color PressedBg   => IsModern ? AccentHover : Border;
+            // Classic image margin gets the same surface-alt so icons don't float on a
+            // different shade; Modern keeps SurfaceAlt for a subtle gutter contrast
+            private static System.Drawing.Color ImageMargin => SurfaceAlt;
+
+            // ── ProfessionalColorTable overrides ──────────────────────────────
+            public override System.Drawing.Color ToolStripDropDownBackground   => Surface;
+            public override System.Drawing.Color MenuBorder                    => IsModern ? Accent : Border;
+            public override System.Drawing.Color MenuItemBorder                => IsModern ? Accent : Border;
+            public override System.Drawing.Color MenuItemSelected              => HighlightBg;
+            public override System.Drawing.Color MenuItemSelectedGradientBegin => HighlightBg;
+            public override System.Drawing.Color MenuItemSelectedGradientEnd   => HighlightBg;
+            public override System.Drawing.Color MenuItemPressedGradientBegin  => PressedBg;
+            public override System.Drawing.Color MenuItemPressedGradientMiddle => PressedBg;
+            public override System.Drawing.Color MenuItemPressedGradientEnd    => PressedBg;
+            public override System.Drawing.Color ImageMarginGradientBegin      => ImageMargin;
+            public override System.Drawing.Color ImageMarginGradientMiddle     => ImageMargin;
+            public override System.Drawing.Color ImageMarginGradientEnd        => ImageMargin;
+            public override System.Drawing.Color SeparatorLight                => Surface;
+            public override System.Drawing.Color SeparatorDark                 => Border;
+            public override System.Drawing.Color CheckBackground               => HighlightBg;
+            public override System.Drawing.Color CheckSelectedBackground       => PressedBg;
+            public override System.Drawing.Color CheckPressedBackground        => PressedBg;
+            public override System.Drawing.Color ButtonCheckedGradientBegin    => HighlightBg;
+            public override System.Drawing.Color ButtonCheckedGradientMiddle   => HighlightBg;
+            public override System.Drawing.Color ButtonCheckedGradientEnd      => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientBegin   => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientMiddle  => HighlightBg;
+            public override System.Drawing.Color ButtonSelectedGradientEnd     => HighlightBg;
+            public override System.Drawing.Color ButtonPressedGradientBegin    => PressedBg;
+            public override System.Drawing.Color ButtonPressedGradientMiddle   => PressedBg;
+            public override System.Drawing.Color ButtonPressedGradientEnd      => PressedBg;
+            public override System.Drawing.Color ToolStripGradientBegin        => Surface;
+            public override System.Drawing.Color ToolStripGradientMiddle       => Surface;
+            public override System.Drawing.Color ToolStripGradientEnd          => Surface;
+            public override System.Drawing.Color ToolStripBorder               => IsModern ? Accent : Border;
+            public override System.Drawing.Color GripLight                     => Surface;
+            public override System.Drawing.Color GripDark                      => Border;
+        }
+
+        /// <summary>
+        /// ToolStripProfessionalRenderer backed by TrayMenuColorTable.
+        /// Controls text and arrow colors per item state to ensure readable contrast:
+        ///   Classic normal/hover: Theme.Text.Primary (light on dark surface/SurfaceAlt)
+        ///   Modern  normal:       Theme.Text.Primary
+        ///   Modern  hover/pressed:Theme.AccentForeground (dark on accent for WCAG contrast)
+        /// </summary>
+        private sealed class TrayMenuRenderer : System.Windows.Forms.ToolStripProfessionalRenderer
+        {
+            public TrayMenuRenderer() : base(new TrayMenuColorTable()) { }
+
+            /// <summary>
+            /// Returns the appropriate text/arrow color for an item, choosing between
+            /// the primary text color and AccentForeground depending on state + style.
+            /// </summary>
+            private static System.Drawing.Color ItemForeColor(System.Windows.Forms.ToolStripItem item)
+            {
+                bool active = item.Selected || item.Pressed;
+                bool modern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
+                if (active && modern)
+                {
+                    // Accent background in Modern — use the dedicated AccentForeground
+                    // (dark) so the text/arrow has correct contrast against the light accent.
+                    return GetThemeDrawingColor("Theme.AccentForeground",
+                        System.Drawing.Color.FromArgb(0x1E, 0x1E, 0x2E));
+                }
+                return GetThemeDrawingColor("Theme.Text.Primary",
+                    System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4));
+            }
+
+            protected override void OnRenderItemText(
+                System.Windows.Forms.ToolStripItemTextRenderEventArgs e)
+            {
+                e.TextColor = ItemForeColor(e.Item);
+                base.OnRenderItemText(e);
+            }
+
+            protected override void OnRenderArrow(
+                System.Windows.Forms.ToolStripArrowRenderEventArgs e)
+            {
+                e.ArrowColor = ItemForeColor(e.Item);
+                base.OnRenderArrow(e);
+            }
         }
     }
 }

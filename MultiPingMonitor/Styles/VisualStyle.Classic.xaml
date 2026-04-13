@@ -112,6 +112,43 @@
         </Setter>
     </Style>
 
+    <!-- Pin / always-on-top toggle button: Classic (TargetType=ToggleButton) -->
+    <Style x:Key="Style.PinToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="border"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Margin="0"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Focusable="False"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Window main panel: Classic (replica of WindowMainPanelStyle) -->
     <Style x:Key="Style.WindowMainPanel" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
