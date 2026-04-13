@@ -107,7 +107,9 @@ namespace MultiPingMonitor.Classes
 
             // WARNING: The key is hardcoded and published to GitHub. It's not truly secure.
             // The encryption process still provides local obfuscation.
-            using (var key = new Rfc2898DeriveBytes("https://github.com/R-Smith/MultiPingMonitor" + Environment.MachineName, Encoding.ASCII.GetBytes(Environment.UserName + "@@vmping-salt@@")))
+            // Explicit SHA1/1000 preserves backward compatibility with data encrypted by earlier versions
+            // (the obsolete Rfc2898DeriveBytes(string,byte[]) constructor defaulted to SHA1 with 1000 iterations).
+            using (var key = new Rfc2898DeriveBytes("https://github.com/R-Smith/MultiPingMonitor" + Environment.MachineName, Encoding.ASCII.GetBytes(Environment.UserName + "@@vmping-salt@@"), 1000, HashAlgorithmName.SHA1))
             using (var aes = Aes.Create())
             {
                 aes.Key = key.GetBytes(aes.KeySize / 8);
@@ -144,7 +146,9 @@ namespace MultiPingMonitor.Classes
 
                 // WARNING: The key is hardcoded and published to GitHub. It's not truly secure.
                 // The encryption process still provides local obfuscation.
-                using (var key = new Rfc2898DeriveBytes("https://github.com/R-Smith/MultiPingMonitor" + Environment.MachineName, Encoding.ASCII.GetBytes(Environment.UserName + "@@vmping-salt@@")))
+                // Explicit SHA1/1000 preserves backward compatibility with data encrypted by earlier versions
+                // (the obsolete Rfc2898DeriveBytes(string,byte[]) constructor defaulted to SHA1 with 1000 iterations).
+                using (var key = new Rfc2898DeriveBytes("https://github.com/R-Smith/MultiPingMonitor" + Environment.MachineName, Encoding.ASCII.GetBytes(Environment.UserName + "@@vmping-salt@@"), 1000, HashAlgorithmName.SHA1))
                 using (var memoryStream = new MemoryStream(bytes))
                 using (var aes = Aes.Create())
                 {
