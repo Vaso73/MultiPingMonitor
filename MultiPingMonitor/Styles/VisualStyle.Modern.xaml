@@ -13,12 +13,12 @@
     <CornerRadius x:Key="Style.CornerRadius.Small">4</CornerRadius>
     <CornerRadius x:Key="Style.CornerRadius.Button">5</CornerRadius>
     <CornerRadius x:Key="Style.CornerRadius.Menu">6</CornerRadius>
-    <Thickness x:Key="Style.Padding.Button">12,6</Thickness>
-    <Thickness x:Key="Style.Padding.MenuItem">8,5,8,5</Thickness>
-    <Thickness x:Key="Style.Padding.Header">14,10</Thickness>
+    <Thickness x:Key="Style.Padding.Button">14,7</Thickness>
+    <Thickness x:Key="Style.Padding.MenuItem">10,6,10,6</Thickness>
+    <Thickness x:Key="Style.Padding.Header">16,12</Thickness>
     <Thickness x:Key="Style.BorderThickness">1</Thickness>
     <Thickness x:Key="Style.BorderThickness.Button">1</Thickness>
-    <Thickness x:Key="Style.Margin.Section">2</Thickness>
+    <Thickness x:Key="Style.Margin.Section">4</Thickness>
     <System:Double x:Key="Style.FontSize.Normal"
                    xmlns:System="clr-namespace:System;assembly=mscorlib">12</System:Double>
     <System:Double x:Key="Style.FontSize.Header"
@@ -28,7 +28,7 @@
 
     <!-- ── Opacity tokens ────────────────────────────────────────────── -->
     <System:Double x:Key="Style.Opacity.Secondary"
-                   xmlns:System="clr-namespace:System;assembly=mscorlib">0.85</System:Double>
+                   xmlns:System="clr-namespace:System;assembly=mscorlib">0.82</System:Double>
 
     <!-- ── Window chrome ─────────────────────────────────────────────── -->
     <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
@@ -126,6 +126,14 @@
         </Style.Triggers>
     </Style>
 
+    <!-- ── Modern Header Panel (info bar below title bar) ──────────── -->
+    <Style x:Key="Style.HeaderPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="Padding" Value="{DynamicResource Style.Padding.Header}" />
+    </Style>
+
     <!-- ── Modern Button (primary / dark) ──────────────────────────── -->
     <Style x:Key="Style.Button" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{DynamicResource Theme.Accent}" />
@@ -134,8 +142,9 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Padding" Value="16,7" />
         <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
@@ -183,7 +192,7 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Padding" Value="16,7" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -242,7 +251,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Padding" Value="16,7" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
@@ -283,7 +292,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Secondary}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Padding" Value="12,4" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
@@ -320,21 +329,21 @@
 
     <!-- ── Modern Menu Popup Border ────────────────────────────────── -->
     <Style x:Key="Style.MenuPopupBorder" TargetType="{x:Type Border}">
-        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2,4" />
+        <Setter Property="Padding" Value="4,6" />
     </Style>
 
-    <!-- ── Modern Content Panel (subtle surface card) ─────────────── -->
+    <!-- ── Modern Content Panel (accent-bordered card surface) ─────── -->
     <Style x:Key="Style.ContentPanel" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="14,12" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Margin" Value="0,6" />
+        <Setter Property="Padding" Value="18,16" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="6,8" />
     </Style>
 
     <!-- ── Modern Footer Panel ────────────────────────────────────── -->
@@ -342,7 +351,24 @@
         <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="0,2,0,0" />
-        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="Padding" Value="14,12" />
+    </Style>
+
+    <!-- ── Modern Compact Row (card-like host row in Compact mode) ── -->
+    <Style x:Key="Style.CompactRow" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="Margin" Value="2,1" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <!-- ── Modern Compact Latency Badge ────────────────────────────── -->
+    <Style x:Key="Style.CompactLatencyBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="6,1" />
+        <Setter Property="Margin" Value="6,0,0,0" />
     </Style>
 
 </ResourceDictionary>

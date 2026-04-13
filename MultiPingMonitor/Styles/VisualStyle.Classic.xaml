@@ -123,6 +123,14 @@
         </Style.Triggers>
     </Style>
 
+    <!-- ── Header panel: Classic (conservative, matches original) ──── -->
+    <Style x:Key="Style.HeaderPanel" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="{DynamicResource Style.Padding.Header}" />
+    </Style>
+
     <!-- Buttons: Classic dark (replica of ButtonStyle.Dark) -->
     <Style x:Key="Style.Button" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="#3f3f46"/>
@@ -315,6 +323,23 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
         <Setter Property="Padding" Value="9" />
+    </Style>
+
+    <!-- ── Compact row: Classic (flat, original look) ─────────────────── -->
+    <Style x:Key="Style.CompactRow" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <!-- ── Compact latency badge: Classic (no decoration) ─────────────── -->
+    <Style x:Key="Style.CompactLatencyBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="4,0,0,0" />
     </Style>
 
 </ResourceDictionary>

@@ -69,9 +69,8 @@
 
         <!-- Compact View: single-row item template for monitoring overview -->
         <DataTemplate x:Key="CompactProbeTemplate">
-            <Border BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1"
+            <Border Style="{DynamicResource Style.CompactRow}"
                     Background="{Binding Status, Converter={StaticResource ProbeStatusToBackgroundBrushConverter}}"
-                    Padding="4,2"
                     MouseLeftButtonDown="CompactItem_MouseLeftButtonDown">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -104,15 +103,15 @@
                     </TextBlock>
 
                     <!-- Latency value -->
-                    <TextBlock Grid.Column="2"
-                               Text="{Binding LastRoundtripTime, Converter={StaticResource RoundtripTimeToStringConverter}}"
-                               FontSize="11"
-                               FontFamily="Consolas"
-                               VerticalAlignment="Center"
-                               Foreground="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"
-                               Margin="4,0,0,0"
-                               MinWidth="32"
-                               TextAlignment="Right"/>
+                    <Border Grid.Column="2" Style="{DynamicResource Style.CompactLatencyBadge}">
+                        <TextBlock Text="{Binding LastRoundtripTime, Converter={StaticResource RoundtripTimeToStringConverter}}"
+                                   FontSize="11"
+                                   FontFamily="Consolas"
+                                   VerticalAlignment="Center"
+                                   Foreground="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"
+                                   MinWidth="32"
+                                   TextAlignment="Right"/>
+                    </Border>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -402,7 +401,7 @@
 
 
         <!-- Compact mode: slim drag bar (hidden by default, shown in Compact mode) -->
-        <Grid x:Name="CompactTitleBar" DockPanel.Dock="Top" Height="22" Background="{DynamicResource Theme.Surface}"
+        <Grid x:Name="CompactTitleBar" DockPanel.Dock="Top" Height="26" Background="{DynamicResource Theme.Surface}"
               Visibility="Collapsed" MouseLeftButtonDown="CompactTitleBar_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -414,52 +413,34 @@
                        FontSize="11"
                        Foreground="{DynamicResource Theme.Text.Secondary}"
                        VerticalAlignment="Center"
-                       Margin="4,0,0,0"
+                       Margin="6,0,0,0"
                        TextTrimming="CharacterEllipsis"
                        Opacity="0.7"/>
             <!-- Compact title bar: menu button for quick access to compact data source -->
             <Button Grid.Column="1"
                     x:Name="CompactMenuButton"
                     Click="CompactMenuButton_Click"
+                    Style="{DynamicResource Style.TitleBarButton}"
                     WindowChrome.IsHitTestVisibleInChrome="True"
                     ToolTip="{x:Static resource:Strings.Menu_CompactTargets}"
                     ToolTipService.InitialShowDelay="1000"
-                    Width="22" Height="22"
-                    Background="Transparent" BorderThickness="0" Padding="0"
+                    Width="36" MinHeight="26"
                     Cursor="Hand">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Button.Style>
-                <Path Data="M 4,6 L 11,6 M 4,10 L 11,10 M 4,14 L 11,14"
-                      Stroke="{DynamicResource Theme.Text.Secondary}"
+                <Path Data="M 3,5 L 12,5 M 3,9 L 12,9 M 3,13 L 12,13"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                       StrokeThickness="1.2"
                       Width="15" Height="18"
-                      Stretch="None"
-                      Opacity="0.7"/>
+                      Stretch="None"/>
             </Button>
             <Button Grid.Column="2"
                     Click="OnCloseButtonClick"
                     Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"
                     ToolTip="Close" ToolTipService.InitialShowDelay="1000"
-                    Width="28" Height="22">
-                <Path Width="28" Height="22"
-                      Data="M 9,7 19,17 M 9,17 19,7"
+                    Width="36" MinHeight="26">
+                <Path Width="10" Height="10"
+                      Data="M0,0 L10,10 M0,10 L10,0"
+                      Stretch="None"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                       StrokeThickness="1" />
             </Button>
