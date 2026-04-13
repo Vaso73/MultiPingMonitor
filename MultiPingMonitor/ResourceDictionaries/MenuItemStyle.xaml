@@ -111,7 +111,7 @@
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                   TextElement.Foreground="{DynamicResource Theme.Text.Primary}"/>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PlacementTarget="{Binding ElementName=templateRoot}">
-                    <Border x:Name="SubMenuBorder" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1" Background="{DynamicResource Theme.Surface}" Padding="2" CornerRadius="4">
+                    <Border x:Name="SubMenuBorder" Style="{DynamicResource Style.MenuSubPopupBorder}">
                         <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                             <Grid RenderOptions.ClearTypeHint="Enabled">
                                 <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
@@ -279,11 +279,7 @@
                        Placement="Right"
                        VerticalOffset="-3">
                     <Border x:Name="SubMenuBorder"
-                            BorderBrush="{DynamicResource Theme.Border}"
-                            BorderThickness="1"
-                            Background="{DynamicResource Theme.Surface}"
-                            Padding="2"
-                            CornerRadius="4">
+                            Style="{DynamicResource Style.MenuSubPopupBorder}">
                         <ScrollViewer x:Name="SubMenuScrollViewer"
                                       Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                             <Grid RenderOptions.ClearTypeHint="Enabled">
@@ -446,7 +442,7 @@
                       Visibility="Collapsed"
                       VerticalAlignment="Center"/>
                 <Popup x:Name="PART_Popup" AllowsTransparency="true" Focusable="false" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PlacementTarget="{Binding ElementName=templateRoot}">
-                    <Border x:Name="SubMenuBorder" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1" Background="{DynamicResource Theme.Surface}" Padding="2" CornerRadius="4">
+                    <Border x:Name="SubMenuBorder" Style="{DynamicResource Style.MenuSubPopupBorder}">
                         <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                             <Grid RenderOptions.ClearTypeHint="Enabled">
                                 <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">

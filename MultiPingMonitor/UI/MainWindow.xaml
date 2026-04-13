@@ -657,20 +657,20 @@
 
                                 <!-- Ping statistics -->
                                 <DockPanel DockPanel.Dock="Bottom"
-                                           Style="{DynamicResource Style.ProbeCardStats}"
-                                           ClipToBounds="True">
+                                           ClipToBounds="True"
+                                           Style="{DynamicResource Style.ProbeCardStats}">
                                     <DockPanel.Resources>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="DockPanel.Dock" Value="Left"/>
                                             <Setter Property="FontFamily" Value="Segoe UI"/>
                                             <Setter Property="FontSize" Value="11"/>
                                             <Setter Property="FontWeight" Value="SemiBold"/>
-                                            <Setter Property="Padding" Value="0,3,0,3"/>
+                                            <Setter Property="Padding" Value="{DynamicResource Style.ProbeCardStatsLabel.Padding}"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="Foreground" Value="{Binding Status, Converter={StaticResource ProbeStatusToStatisticsBrushConverter}}"/>
                                         </Style>
                                     </DockPanel.Resources>
-                                    <TextBlock Text="Sent: " Opacity="0.65" Padding="{DynamicResource Style.ProbeCardStatsLabel.Padding}" />
+                                    <TextBlock Text="Sent: " Opacity="0.65" />
                                     <TextBlock Text="{Binding Statistics.Sent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -684,7 +684,8 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="Received: " Opacity="0.65" Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
+                                    <TextBlock Text="Received: " Opacity="0.65"
+                                               Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Received, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -698,7 +699,8 @@
                                             </EventTrigger>
                                         </TextBlock.Triggers>
                                     </TextBlock>
-                                    <TextBlock Text="Lost: " Opacity="0.65" Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
+                                    <TextBlock Text="Lost: " Opacity="0.65"
+                                               Margin="{DynamicResource Style.ProbeCardStatsLabel.Margin}"/>
                                     <TextBlock Text="{Binding Statistics.Lost, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}">
                                         <TextBlock.Triggers>
                                             <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -806,8 +808,8 @@
                                 <Button Click="ProbeStartStop_Click"
                                         Grid.Column="2"
                                         FontSize="14"
-                                        Padding="0,3"
-                                        Margin="3"
+                                        Padding="0,2"
+                                        Margin="2"
                                         HorizontalAlignment="Right"
                                         Background="{DynamicResource Theme.Surface}">
                                     <Button.Template>

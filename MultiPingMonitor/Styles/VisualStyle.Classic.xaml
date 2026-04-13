@@ -381,7 +381,14 @@
         <Setter Property="Margin" Value="4,0,0,0" />
     </Style>
 
-    <!-- ── Classic Probe Card (Normal mode outer card grid dividers) ─── -->
+    <!-- ── Classic Probe Card spacing tokens (original tight spacing) ─── -->
+    <Thickness x:Key="Style.ProbeCardAlias.Padding">6,5,4,5</Thickness>
+    <Thickness x:Key="Style.ProbeCardGlyph.Padding">6,0,2,0</Thickness>
+    <Thickness x:Key="Style.ProbeCardHostname.Padding">2,5,0,5</Thickness>
+    <Thickness x:Key="Style.ProbeCardStatsLabel.Padding">6,2,0,4</Thickness>
+    <Thickness x:Key="Style.ProbeCardStatsLabel.Margin">6,0,0,0</Thickness>
+
+    <!-- ── Classic Probe Card outer divider border ───────────────────── -->
     <Style x:Key="Style.ProbeCard" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="0,0,2,2" />
@@ -389,7 +396,7 @@
         <Setter Property="Margin" Value="0" />
     </Style>
 
-    <!-- ── Classic Probe Card Statistics Band ─────────────────────────── -->
+    <!-- ── Classic Probe Card stats band (flat, transparent) ────────── -->
     <Style x:Key="Style.ProbeCardStats" TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Visibility" Value="Collapsed" />
@@ -403,19 +410,22 @@
         </Style.Triggers>
     </Style>
 
-    <!-- ── Classic Probe Card Footer (hostname + ping button row) ──────── -->
+    <!-- ── Classic Probe Card footer row (subtle border) ────────────── -->
     <Style x:Key="Style.ProbeCardFooter" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
     </Style>
 
-    <!-- ── Classic Probe Card spacing tokens (original tight spacing) ──── -->
-    <Thickness x:Key="Style.ProbeCardAlias.Padding">6,5,4,5</Thickness>
-    <Thickness x:Key="Style.ProbeCardGlyph.Padding">6,0,2,0</Thickness>
-    <Thickness x:Key="Style.ProbeCardHostname.Padding">2,5,0,5</Thickness>
-    <Thickness x:Key="Style.ProbeCardStatsLabel.Padding">6,2,0,4</Thickness>
-    <Thickness x:Key="Style.ProbeCardStatsLabel.Margin">6,0,0,0</Thickness>
+    <!-- ── Classic Menu Sub-Popup Border (no rounding, standard look) ── -->
+    <Style x:Key="Style.MenuSubPopupBorder" TargetType="{x:Type Border}">
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2" />
+    </Style>
 
 </ResourceDictionary>
+
 

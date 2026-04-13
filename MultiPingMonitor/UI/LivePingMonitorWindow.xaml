@@ -125,6 +125,7 @@
                                             Background="{TemplateBinding Background}"
                                             BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
                                             Padding="{TemplateBinding Padding}"
                                             SnapsToDevicePixels="True">
                                         <ContentPresenter HorizontalAlignment="Center"
