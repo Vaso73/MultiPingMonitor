@@ -416,6 +416,14 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <!-- Icon: Flood Host (lightning bolt) -->
+    <DrawingImage x:Key="icon.flood-host">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <GeometryDrawing Brush="#424242" Geometry="F1 M512,512z M0,0z M282,26 L154,256 256,256 230,461 358,230 256,230 Z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
     <!-- Icon: compact-view (three stacked horizontal bars representing compact list rows) -->
     <DrawingImage x:Key="icon.compact-view">
         <DrawingImage.Drawing>
