@@ -34,12 +34,11 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <!-- Window icon -->
-                <Image Grid.Column="0" Source="/MultiPingMonitor.ico" Width="16" Height="16" Margin="8,0,4,0"
+                <Image Grid.Column="0" Source="{StaticResource icon.vmping-logo-simple}" Width="16" Height="16" Margin="8,0,4,0"
                        RenderOptions.BitmapScalingMode="HighQuality" />
                 <!-- Title text -->
-                <TextBlock Grid.Column="1" Text="Live Ping Monitor"
-                           VerticalAlignment="Center" FontSize="12"
-                           Foreground="{DynamicResource Theme.Text.Secondary}" Margin="4,0,0,0" />
+                <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
+                           Text="Live Ping Monitor" />
                 <!-- Arrange menu button -->
                 <Button x:Name="ArrangeMenuButton" Grid.Column="2"
                         Style="{DynamicResource Style.TitleBarButton}"
@@ -56,7 +55,7 @@
                 <Button Grid.Column="3" Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="MinimizeButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Path Width="10" Height="1" Data="M0,0 H10" Stretch="None"
+                    <Path Width="46" Height="32" Data="M 18,15 H 28" Stretch="None"
                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                           StrokeThickness="1" />
                 </Button>
@@ -64,7 +63,7 @@
                 <Button Grid.Column="4" Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="MaximizeRestoreButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Path Width="10" Height="10" Data="M0,0 H10 V10 H0 Z" Stretch="None"
+                    <Path Width="46" Height="32" Data="M 18.5,10.5 H 27.5 V 19.5 H 18.5 Z" Stretch="None"
                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                           StrokeThickness="1" />
                 </Button>
@@ -72,7 +71,7 @@
                 <Button Grid.Column="5" Style="{DynamicResource Style.TitleBarCloseButton}"
                         Width="46" Click="CloseButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Path Width="10" Height="10" Data="M0,0 L10,10 M0,10 L10,0" Stretch="None"
+                    <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11" Stretch="None"
                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                           StrokeThickness="1" />
                 </Button>
@@ -113,34 +112,11 @@
                     </Border>
                     <!-- Toolbar row: Always on top + separator + Copy actions -->
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,6,0,0">
-                        <ToggleButton x:Name="AlwaysOnTopCheckBox" VerticalAlignment="Center"
-                                      Padding="5,2" FontSize="11"
-                                      Background="{DynamicResource Theme.SurfaceAlt}"
-                                      BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1"
-                                      WindowChrome.IsHitTestVisibleInChrome="True" Cursor="Hand"
-                                      Checked="AlwaysOnTopCheckBox_Changed" Unchecked="AlwaysOnTopCheckBox_Changed">
-                            <ToggleButton.Template>
-                                <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                    <Border x:Name="ToggleBorder"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
-                                            Padding="{TemplateBinding Padding}"
-                                            SnapsToDevicePixels="True">
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                          VerticalAlignment="Center" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
-                                                    Value="{DynamicResource Theme.Accent}" />
-                                            <Setter TargetName="ToggleBorder" Property="BorderThickness"
-                                                    Value="2" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </ToggleButton.Template>
+                        <ToggleButton x:Name="AlwaysOnTopCheckBox"
+                                      Style="{DynamicResource Style.HeaderToggleButton}"
+                                      VerticalAlignment="Center"
+                                      Checked="AlwaysOnTopCheckBox_Changed"
+                                      Unchecked="AlwaysOnTopCheckBox_Changed">
                             <StackPanel Orientation="Horizontal">
                                 <Path x:Name="PinIcon" Width="10" Height="12" Stretch="Uniform"
                                       Fill="{DynamicResource Theme.Text.Secondary}" VerticalAlignment="Center"

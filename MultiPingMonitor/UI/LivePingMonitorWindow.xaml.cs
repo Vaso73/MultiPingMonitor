@@ -58,6 +58,7 @@ namespace MultiPingMonitor.UI
             UpdatePinIconState();
 
             LogListBox.ItemsSource = _logLines;
+            Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
 
             // Restore saved window placement, then apply cascade offset for new windows.
             RestorePlacementWithCascade();

@@ -35,8 +35,7 @@
             </Grid.ColumnDefinitions>
             <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
                    Source="/Resources/bomb-16.png" />
-            <TextBlock Grid.Column="1" Margin="4,0,0,0" VerticalAlignment="Center" FontSize="13"
-                       Foreground="{DynamicResource Theme.Text.Primary}"
+            <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <Button Grid.Column="2" Click="OnCloseButtonClick"
                     Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"

@@ -48,13 +48,9 @@
 
                 <!-- Title -->
                 <TextBlock Grid.Column="1"
-                           Margin="4,0,0,0"
-                           VerticalAlignment="Center"
-                           FontSize="13"
-                           Foreground="{DynamicResource Theme.Text.Primary}"
+                           Style="{DynamicResource Style.TitleBar.Title}"
                            Text="{Binding Path=Title,
-                                 RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-                </TextBlock>
+                                 RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
 
                 <!-- Minimize button -->
                 <Button Grid.Column="4"

@@ -31,7 +31,16 @@
                    xmlns:System="clr-namespace:System;assembly=mscorlib">0.82</System:Double>
 
     <!-- ── Window chrome ─────────────────────────────────────────────── -->
-    <CornerRadius x:Key="Style.Window.CornerRadius">0</CornerRadius>
+    <CornerRadius x:Key="Style.Window.CornerRadius">8</CornerRadius>
+
+    <!-- ── Shared titlebar title style (all custom-chrome windows) ─── -->
+    <Style x:Key="Style.TitleBar.Title" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Text.Primary}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
 
     <!-- ══════════════════════════════════════════════════════════════════
          STYLE ROUTING – Modern versions with rounded corners,
@@ -160,10 +169,12 @@
     <Style x:Key="Style.WindowMainPanel" TargetType="{x:Type Border}">
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource Style.Window.CornerRadius}" />
+        <Setter Property="ClipToBounds" Value="True" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                 <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="CornerRadius" Value="0" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -507,6 +518,53 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <!-- ── Modern Menu Item hover tokens (accent-tinted per-style hover) ── -->
+    <!--
+         SolidColorBrush with DynamicResource Color: WPF resolves the Color DP at
+         runtime through Freezable inheritance context once the brush is applied to a
+         visual-tree element, making these live-track the active theme palette.
+    -->
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Background"   Color="{DynamicResource Theme.Accent.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.BorderBrush"  Color="{DynamicResource Theme.Accent.Color}"/>
+    <SolidColorBrush x:Key="Style.MenuItem.Hover.Foreground"   Color="{DynamicResource Theme.AccentForeground.Color}"/>
+
+    <!-- ── Modern Header Toggle Button (e.g. Always-on-top in LPMW header) ── -->
+    <Style x:Key="Style.HeaderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background"   Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush"  Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding"      Value="5,2" />
+        <Setter Property="FontSize"     Value="11" />
+        <Setter Property="Cursor"       Value="Hand" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="ToggleBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="ToggleBorder" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Accent}" />
+                            <Setter TargetName="ToggleBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- ── Modern Context Menu (rounded popup with accent border) ────── -->

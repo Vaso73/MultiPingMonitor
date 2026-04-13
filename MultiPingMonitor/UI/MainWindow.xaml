@@ -151,10 +151,7 @@
                    Source="{StaticResource icon.vmping-logo-simple}" />
             <!-- Window title -->
             <TextBlock Grid.Column="1"
-                       Margin="4,0,0,0"
-                       VerticalAlignment="Center"
-                       FontSize="13"
-                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       Style="{DynamicResource Style.TitleBar.Title}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
             <!-- Pin / always-on-top toggle (Normal mode) -->
             <ToggleButton Grid.Column="2"

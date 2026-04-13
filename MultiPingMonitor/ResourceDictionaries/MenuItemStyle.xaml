@@ -136,8 +136,8 @@
                 <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Border}"/>
+                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Background}"/>
+                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.BorderBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Theme.Text.Secondary}"/>
@@ -196,8 +196,8 @@
                 <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Border}"/>
+                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Background}"/>
+                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.BorderBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Theme.Text.Secondary}"/>
@@ -319,8 +319,9 @@
                 <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Border}"/>
+                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Background}"/>
+                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.BorderBrush}"/>
+                <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Foreground}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Theme.Text.Secondary}"/>
@@ -396,8 +397,9 @@
                 <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Border}"/>
+                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Background}"/>
+                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.BorderBrush}"/>
+                <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Foreground}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Theme.Text.Secondary}"/>
@@ -467,8 +469,8 @@
                 <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
             </Trigger>
             <Trigger Property="IsHighlighted" Value="True">
-                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Theme.SurfaceAlt}"/>
-                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Theme.Border}"/>
+                <Setter Property="Background" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.Background}"/>
+                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{DynamicResource Style.MenuItem.Hover.BorderBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource Theme.Text.Secondary}"/>

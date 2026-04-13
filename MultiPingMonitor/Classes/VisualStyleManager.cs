@@ -1,5 +1,7 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace MultiPingMonitor.Classes
 {
@@ -97,5 +99,48 @@ namespace MultiPingMonitor.Classes
                 _ => "Classic"
             };
         }
+
+        /// <summary>
+        /// Applies native OS-level rounded corners (Windows 11+) to the given window
+        /// based on the current visual style. Modern uses ROUNDSMALL for a subtle rounding;
+        /// Classic uses DONOTROUND to keep window corners square.
+        /// Falls back silently on Windows 10 and earlier.
+        /// </summary>
+        public static void ApplyNativeWindowCorners(Window window)
+        {
+            if (window == null) return;
+            try
+            {
+                var hwndSource = PresentationSource.FromVisual(window) as HwndSource;
+                if (hwndSource == null) return;
+
+                IntPtr hwnd = hwndSource.Handle;
+                DwmWindowCornerPreference pref = _currentStyle == VisualStyle.Modern
+                    ? DwmWindowCornerPreference.ROUNDSMALL
+                    : DwmWindowCornerPreference.DONOTROUND;
+
+                int value = (int)pref;
+                DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref value, sizeof(int));
+            }
+            catch
+            {
+                // DWM API unavailable on this platform – ignore silently.
+            }
+        }
+
+        // ── DWM P/Invoke ─────────────────────────────────────────────────────
+
+        private const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+
+        private enum DwmWindowCornerPreference
+        {
+            DEFAULT    = 0,
+            DONOTROUND = 1,
+            ROUND      = 2,
+            ROUNDSMALL = 3,
+        }
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
     }
 }
