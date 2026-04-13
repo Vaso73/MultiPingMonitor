@@ -1917,13 +1917,14 @@ namespace MultiPingMonitor.UI
             // match the active theme regardless of when the menu was first built.
             RefreshTrayItemIcons(_trayNativeMenu.Items);
 
-            // Align item vertical padding with the active WPF menu style:
-            // Modern uses 6 px top/bottom (matches Style.Padding.MenuItem = 10,6,10,6).
-            // Classic uses 4 px top/bottom (matches Style.Padding.MenuItem = 6,4,6,4).
+            // Align item vertical padding with the active WPF menu style.
+            // WPF Style.Padding.MenuItem is a Thickness applied inside the item template;
+            // native Padding(left, top, right, bottom) is different in layout but we
+            // target the same perceived vertical rhythm: Modern ≈ 6 px, Classic ≈ 4 px.
             bool isModern = VisualStyleManager.CurrentStyle == VisualStyle.Modern;
             var itemPadding = isModern
-                ? new System.Windows.Forms.Padding(4, 6, 6, 6)
-                : new System.Windows.Forms.Padding(4, 4, 4, 4);
+                ? new System.Windows.Forms.Padding(4, 6, 6, 6)   // 6 px top/bottom matches WPF Modern Style.Padding.MenuItem (10,6,10,6)
+                : new System.Windows.Forms.Padding(4, 4, 4, 4);  // 4 px top/bottom matches WPF Classic Style.Padding.MenuItem (6,4,6,4)
             SetTrayItemPadding(_trayNativeMenu.Items, itemPadding);
         }
 
@@ -2573,6 +2574,8 @@ namespace MultiPingMonitor.UI
                     : GetThemeDrawingColor("Theme.SurfaceAlt",
                         System.Drawing.Color.FromArgb(0x36, 0x36, 0x50));
 
+                // Horizontal inset so the rounded highlight doesn't touch the outer border,
+                // giving a small visual breathing room that matches the WPF menu item feel.
                 const int inset = 2;
                 var rect = new System.Drawing.RectangleF(
                     inset, 1f, e.Item.Width - inset * 2, e.Item.Height - 2f);
@@ -2607,7 +2610,9 @@ namespace MultiPingMonitor.UI
                         System.Drawing.Color.FromArgb(0x44, 0x44, 0x5A));
                 var lineColor = System.Drawing.Color.FromArgb(modern ? 70 : 160, lineBase);
 
-                // Modern: full-width inset; Classic: inset past the 30 px icon gutter.
+                // Classic: start line after the ~30 px icon-gutter column so the
+                // separator aligns with the text column, matching WPF Classic menu layout.
+                // Modern: start at 4 px for a near-full-width line (no visible gutter).
                 int x1 = modern ? 4 : 30;
                 int y  = e.Item.Height / 2;
                 int x2 = e.Item.Width - 4;
