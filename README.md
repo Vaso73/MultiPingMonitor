@@ -1,43 +1,133 @@
 # MultiPingMonitor
 
-A network monitoring tool that pings multiple hosts simultaneously, giving you real-time status for all your network targets at a glance.
+MultiPingMonitor is a portable Windows network monitoring tool for watching multiple targets in real time from one desktop app.
 
-Based on [vmPing](https://github.com/r-smith/vmPing) by [Ryan Smith](https://github.com/r-smith) (MIT License), rebranded and extended with multi-theme support, window placement persistence, and Slovak localization.
+It started as a derivative of [vmPing](https://github.com/r-smith/vmPing) by [Ryan Smith](https://github.com/r-smith), and has since been expanded with a significantly broader desktop UX, compact monitoring workflows, visual customization, persistent window management, and English/Slovak localization.
 
-## Features
+## Highlights
 
 - Monitor multiple hosts in parallel with continuous ICMP ping
-- TCP port probing (prefix host with a port, e.g. `80/example.com`)
-- DNS lookup probing (prefix with `D/`)
-- Traceroute window
-- Flood host utility
-- Popup and email alerts on status changes
-- Status history log
-- Favorite sets to quickly restore monitored hosts
-- Aliases for friendly host names
-- Configurable probe interval, timeout, TTL, and packet size
-- Audio alerts on up/down transitions
-- Log output to file
-- Window position and size remembered across restarts (multi-monitor safe)
+- Probe TCP ports by prefixing a target with a port, for example `80/example.com`
+- Probe DNS resolution by prefixing a target with `D/`
+- Open traceroute and flood-host utilities
+- Use popup, audio, and email alerts on status changes
+- Store favorites for quickly restoring monitored targets
+- Assign aliases for more readable target names
+- Keep a status history log and optional log file output
+- Configure probe interval, timeout, TTL, and packet size
+- Remember window placement across restarts in a multi-monitor-safe way
+- Run in a fully portable mode with configuration stored next to the executable
 
-## Themes
+## Monitoring Modes
 
-MultiPingMonitor supports 10 built-in themes, selectable from **Options → Display → Theme**:
+### Normal mode
 
-| Theme          | Description                           |
-|----------------|---------------------------------------|
-| Auto           | Follows Windows light/dark mode       |
-| Light          | Clean light theme                     |
-| Dark           | Modern dark theme (Catppuccin Mocha)  |
-| Nord           | Arctic Nord color palette             |
-| Dracula        | Classic Dracula palette               |
-| Solarized Light| Solarized light variant               |
-| Solarized Dark | Solarized dark variant                |
-| Forest         | Deep green forest theme               |
-| Ocean          | Deep ocean blue theme                 |
-| Sunset         | Warm sunset orange/red theme          |
+Normal mode is the primary multi-target monitoring view. It is designed for watching several endpoints at once with quick access to favorites, aliases, alerts, and logging.
 
-## Building
+Typical use cases:
+
+- infrastructure and homelab monitoring
+- server or gateway reachability checks
+- service endpoint spot checks
+- watching multiple WAN/LAN devices at once
+
+### Compact mode
+
+Compact mode is optimized for smaller always-visible monitoring blocks and quick desktop placement.
+
+Key capabilities:
+
+- dedicated Compact Sets
+- custom compact targets
+- data source switching for compact targets
+- manual reordering of compact sets and compact targets
+- drag-and-drop reordering for compact sets and compact targets
+- import/export support for Compact Sets
+- full separation of Compact mode data from Normal mode data
+
+Compact mode is useful when you want a lightweight status board on screen without keeping the main monitoring window open all the time.
+
+## Live Ping Monitor Windows
+
+MultiPingMonitor includes dedicated Live Ping Monitor windows for focused per-target monitoring.
+
+Capabilities include:
+
+- open a Live Ping Monitor window directly from Compact mode
+- double-click compact targets to open a live window
+- open all live windows for a set
+- arrange live windows with **Cascade**
+- arrange live windows with **Tile**
+- close all live windows from a central action
+- keep live windows **Always on Top**
+- persistent live-window placement across restarts
+- copy actions for working with the monitored target
+- newer **New Live Ping...** flow with manual/direct mode
+- add a manually opened live target directly into a set with **Add to Set**
+
+## Visual Customization
+
+### Built-in themes
+
+MultiPingMonitor supports 10 built-in themes available from **Options → Display → Theme**:
+
+| Theme | Description |
+|---|---|
+| Auto | Follows Windows light/dark mode |
+| Light | Clean light theme |
+| Dark | Modern dark theme (Catppuccin Mocha) |
+| Nord | Arctic Nord color palette |
+| Dracula | Classic Dracula palette |
+| Solarized Light | Solarized light variant |
+| Solarized Dark | Solarized dark variant |
+| Forest | Deep green forest theme |
+| Ocean | Deep ocean blue theme |
+| Sunset | Warm sunset orange/red theme |
+
+### Visual style
+
+In addition to themes, MultiPingMonitor supports switchable **Visual Style** modes:
+
+- **Classic**
+- **Modern**
+
+The visual style can be changed live without restarting the application.
+
+Recent UI work also improved parity and consistency across main windows, live windows, and tray/menu surfaces.
+
+## Alerts and Logging
+
+MultiPingMonitor can notify you about state changes through multiple channels:
+
+- popup alerts
+- audio alerts
+- email alerts
+
+It also provides:
+
+- status history logging
+- optional log output to file
+
+## Localization
+
+MultiPingMonitor includes:
+
+- English (default)
+- Slovak (`sk-SK`)
+
+## Configuration and Portability
+
+MultiPingMonitor is designed to run as a portable application.
+
+Configuration is stored strictly next to the executable as:
+
+`MultiPingMonitor.xml`
+
+There is no fallback to `%LOCALAPPDATA%` or another roaming/system profile path for the main configuration file.
+
+This makes the application suitable for portable deployments, custom folders, synced tool directories, and self-contained release archives.
+
+## Build
 
 Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
 
@@ -45,41 +135,49 @@ Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
 dotnet build
 ```
 
-To run:
+Run from source:
 
 ```bash
 dotnet run --project MultiPingMonitor/MultiPingMonitor.csproj
 ```
 
-## Publishing
+## Publish
 
-### Single-file self-contained executable (recommended)
+### Single-file self-contained executable
 
-Produces a single `MultiPingMonitor.exe` (win-x64) that includes the .NET runtime — no installation required on the target machine:
+Produces a single `MultiPingMonitor.exe` (`win-x64`) that includes the .NET runtime:
 
 ```bash
 dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -p:PublishProfile=SingleFile
 ```
 
-Output: `MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe`
+Output:
+
+`MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe`
 
 ### Folder publish
 
-Produces a self-contained folder layout with all DLLs alongside the executable:
+Produces a self-contained folder layout with the executable and runtime files:
 
 ```bash
 dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -p:PublishProfile=FolderPublish
 ```
 
-Output: `MultiPingMonitor/bin/publish/folder/`
+Output:
 
-## Localization
+`MultiPingMonitor/bin/publish/folder/`
 
-MultiPingMonitor includes English (default) and Slovak (`sk-SK`) localizations.
+## Project Status
 
-## Configuration
+MultiPingMonitor has evolved well beyond the original minimal derivative scope and now includes:
 
-Configuration is stored strictly next to the executable as `MultiPingMonitor.xml` (portable-only). There is no fallback to `%LOCALAPPDATA%` or any other system path.
+- expanded compact monitoring workflows
+- dedicated live monitoring windows
+- richer window management
+- switchable visual styles
+- broader UI polish and consistency improvements
+- portable-first behavior
+- English and Slovak desktop localization
 
 ## License
 
@@ -87,4 +185,4 @@ See [LICENSE](LICENSE).
 
 ## Attribution
 
-This project is a derivative of [vmPing](https://github.com/r-smith/vmPing) by Ryan Smith, released under the MIT License.
+This project is derived from [vmPing](https://github.com/r-smith/vmPing) by Ryan Smith and remains under the MIT licensing model used by the upstream project.
