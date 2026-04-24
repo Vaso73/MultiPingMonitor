@@ -1373,13 +1373,15 @@ namespace MultiPingMonitor.UI
         private void IsolatedView_Click(object sender, RoutedEventArgs e)
         {
             var probe = (sender as Button).DataContext as Probe;
-            if (probe.IsolatedWindow == null || probe.IsolatedWindow.IsLoaded == false)
+            if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
             {
-                new IsolatedPingWindow(probe).Show();
+                probe.LivePingMonitorWindow.Activate();
             }
-            else if (probe.IsolatedWindow.IsLoaded)
+            else
             {
-                probe.IsolatedWindow.Focus();
+                var window = new LivePingMonitorWindow(probe, this);
+                probe.LivePingMonitorWindow = window;
+                window.Show();
             }
         }
 
