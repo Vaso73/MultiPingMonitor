@@ -787,8 +787,8 @@ namespace MultiPingMonitor.UI
             if (!showToolbar)
                 return;
 
-            if (CompactSetNameText != null)
-                CompactSetNameText.Text = activeSet!.Name;
+            if (CompactSetNameText != null && activeSet != null)
+                CompactSetNameText.Text = activeSet.Name;
 
             bool running = ApplicationOptions.IsCompactSetRunning;
             if (CompactStartStopButton != null)
