@@ -1439,9 +1439,12 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Open Live Ping after adding</value>
   </data>
   <data name="Compact_AddHost_DuplicateMessage" xml:space="preserve">
-    <value>This target is already in the active Compact Set. Add it anyway?</value>
+    <value>This target is already in the active Compact Set.</value>
   </data>
   <data name="Compact_AddHost_DuplicateTitle" xml:space="preserve">
     <value>Duplicate target</value>
+  </data>
+  <data name="Compact_AddHost_EmptyHost" xml:space="preserve">
+    <value>Host cannot be empty.</value>
   </data>
 </root>

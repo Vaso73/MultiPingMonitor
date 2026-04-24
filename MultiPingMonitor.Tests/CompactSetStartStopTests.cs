@@ -690,5 +690,108 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("Alias", source);
             Assert.Contains("OpenLivePing", source);
         }
+
+        [Fact]
+        public void AddCompactHostDialog_ValidatesEmptyHost_InOkClick()
+        {
+            var dialogPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "AddCompactHostDialog.xaml.cs");
+            var source = File.ReadAllText(dialogPath);
+            // Validation must be in OK_Click, not deferred to the caller.
+            int methodIdx = source.IndexOf("private void OK_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "OK_Click not found");
+            int methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Must check for empty/whitespace host.
+            Assert.True(body.Contains("IsNullOrWhiteSpace") || body.Contains("string.IsNullOrWhiteSpace"),
+                "OK_Click must validate for empty/whitespace host");
+            // Must NOT set DialogResult = true unconditionally.
+            Assert.Contains("return", body);
+        }
+
+        [Fact]
+        public void AddCompactHostDialog_ShowsErrorDialog_WhenHostIsEmpty()
+        {
+            var dialogPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "AddCompactHostDialog.xaml.cs");
+            var source = File.ReadAllText(dialogPath);
+            int methodIdx = source.IndexOf("private void OK_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "OK_Click not found");
+            int methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Must use the themed DialogWindow for error display (not plain MessageBox).
+            Assert.Contains("DialogWindow", body);
+            Assert.Contains("Compact_AddHost_EmptyHost", body);
+        }
+
+        [Fact]
+        public void AddCompactHostDialog_FocusesHostField_AfterEmptyValidation()
+        {
+            var dialogPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "AddCompactHostDialog.xaml.cs");
+            var source = File.ReadAllText(dialogPath);
+            int methodIdx = source.IndexOf("private void OK_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "OK_Click not found");
+            int methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("HostField.Focus()", body);
+        }
+
+        [Fact]
+        public void Strings_Default_HasCompact_AddHost_EmptyHost()
+        {
+            var value = ResxValue(DefaultResxPath(), "Compact_AddHost_EmptyHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_HasCompact_AddHost_EmptyHost()
+        {
+            var value = ResxValue(SkSkResxPath(), "Compact_AddHost_EmptyHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_Compact_AddHost_EmptyHost_IsNotEnglish()
+        {
+            var skValue = ResxValue(SkSkResxPath(), "Compact_AddHost_EmptyHost");
+            var enValue = ResxValue(DefaultResxPath(), "Compact_AddHost_EmptyHost");
+            Assert.NotEqual(enValue, skValue);
+        }
+
+        [Fact]
+        public void MainWindow_CompactAddHostButton_DuplicateIsHardRejected_NotYesNo()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactAddHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactAddHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Duplicate must be handled via DialogWindow.InfoWindow (themed), not MessageBoxButton.YesNo.
+            Assert.Contains("InfoWindow", body);
+            Assert.DoesNotContain("MessageBoxButton.YesNo", body);
+            Assert.DoesNotContain("MessageBoxResult.Yes", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactAddHostButton_DuplicateReturnsWithoutAdding()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactAddHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactAddHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // After showing the duplicate message the handler must return without adding.
+            int duplicateIdx = body.IndexOf("isDuplicate", StringComparison.Ordinal);
+            Assert.True(duplicateIdx >= 0, "isDuplicate check not found");
+            // Within the duplicate block there must be a return statement before _CompactProbeCollection.Add.
+            int addIdx = body.IndexOf("_CompactProbeCollection.Add", StringComparison.Ordinal);
+            int returnInDuplicate = body.IndexOf("return;", duplicateIdx, StringComparison.Ordinal);
+            Assert.True(returnInDuplicate < addIdx, "Duplicate block must return before adding to collection");
+        }
     }
 }

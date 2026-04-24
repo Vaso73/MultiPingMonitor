@@ -1,4 +1,5 @@
 using System.Windows;
+using MultiPingMonitor.Properties;
 
 namespace MultiPingMonitor.UI
 {
@@ -29,6 +30,16 @@ namespace MultiPingMonitor.UI
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Host))
+            {
+                var errorDialog = DialogWindow.ErrorWindow(Strings.Compact_AddHost_EmptyHost);
+                errorDialog.Owner = this;
+                errorDialog.ShowDialog();
+                HostField.Focus();
+                HostField.SelectAll();
+                return;
+            }
+
             DialogResult = true;
         }
 

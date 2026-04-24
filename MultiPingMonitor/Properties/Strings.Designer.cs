@@ -3962,5 +3962,14 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Host cannot be empty.
+        /// </summary>
+        public static string Compact_AddHost_EmptyHost {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_EmptyHost", resourceCulture);
+            }
+        }
+
     }
 }

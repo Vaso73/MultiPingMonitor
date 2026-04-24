@@ -1317,9 +1317,12 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
     <value>Otvoriť Live Ping po pridaní</value>
   </data>
   <data name="Compact_AddHost_DuplicateMessage" xml:space="preserve">
-    <value>Tento cieľ sa už nachádza v aktívnej Compact sade. Napriek tomu pridať?</value>
+    <value>Tento cieľ sa už nachádza v aktívnej Compact sade.</value>
   </data>
   <data name="Compact_AddHost_DuplicateTitle" xml:space="preserve">
     <value>Duplicitný cieľ</value>
+  </data>
+  <data name="Compact_AddHost_EmptyHost" xml:space="preserve">
+    <value>Hostiteľ nemôže byť prázdny.</value>
   </data>
 </root>

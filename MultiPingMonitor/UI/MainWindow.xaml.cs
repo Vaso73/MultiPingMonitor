@@ -827,22 +827,18 @@ namespace MultiPingMonitor.UI
                 return;
 
             var host = dialog.Host;
-            if (string.IsNullOrWhiteSpace(host))
-                return;
 
-            // Check for duplicate target in the active set.
+            // Check for duplicate target in the active set (case-insensitive).
             bool isDuplicate = activeSet.Entries.Any(
                 entry => string.Equals(entry.Target, host, StringComparison.OrdinalIgnoreCase));
 
             if (isDuplicate)
             {
-                var answer = System.Windows.MessageBox.Show(
+                var infoDialog = DialogWindow.InfoWindow(
                     Strings.Compact_AddHost_DuplicateMessage,
-                    Strings.Compact_AddHost_DuplicateTitle,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-                if (answer != MessageBoxResult.Yes)
-                    return;
+                    this);
+                infoDialog.ShowDialog();
+                return;
             }
 
             var alias = dialog.Alias;
