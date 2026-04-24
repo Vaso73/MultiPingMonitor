@@ -483,10 +483,12 @@
     <!-- Lightning bolt (flood host) — same geometry as icon.flood-host -->
     <Geometry x:Key="geom.menu.flood-host">F1 M512,512z M0,0z M282,26 L154,256 256,256 230,461 358,230 256,230 Z</Geometry>
 
-    <!-- Window frame with play triangle inside (new live ping monitor) -->
-    <!-- EvenOdd: outer square fills, inner square punches glass, triangle fills inside glass -->
-    <!-- 80px border (≈2px at 14px) ensures the frame is visible at menu icon size -->
-    <Geometry x:Key="geom.menu.new-live-ping">F1 M 0,0 H 512 V 512 H 0 Z M 80,80 H 432 V 432 H 80 Z M 160,165 L 352,256 L 160,347 Z</Geometry>
+    <!-- Window frame + title bar + play triangle (new live ping monitor) -->
+    <!-- EvenOdd: outer fills border, inner punches glass, title-bar rect re-fills title area, -->
+    <!--          triangle fills in the glass area below the title bar. -->
+    <!-- 80px border (≈2px at 14px) ensures the frame is visible at menu icon size. -->
+    <!-- Title bar: y=80–192 (~30% of inner height, matching the tray menu visual proportion). -->
+    <Geometry x:Key="geom.menu.new-live-ping">F1 M 0,0 H 512 V 512 H 0 Z M 80,80 H 432 V 432 H 80 Z M 80,80 H 432 V 192 H 80 Z M 182,271 L 358,352 L 182,432 Z</Geometry>
 
     <!-- Two overlapping windows (new instance) — same geometry as icon.window-restore-black -->
     <Geometry x:Key="geom.menu.new-instance">F1 M512,512z M0,0z M464,0L168,0C141.5,0,120.73583,21.510218,120,48L120,120 48,120C21.5,120,0,117.5,0,144L0,464C0,490.5,21.5,512,48,512L344,512C370.5,512,394,490.5,394,464L394,392 464,392C490.5,392,512,370.5,512,344L512,48C512,21.5,490.5,0,464,0z M344,464L48,464 48,244 344,244z M464,344L394,344 394,144C394,117.5,370.5,120,344,120L168,120 168,48 464,48z</Geometry>

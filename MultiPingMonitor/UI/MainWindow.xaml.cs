@@ -2160,7 +2160,7 @@ namespace MultiPingMonitor.UI
             menu.Opened += (s, e) => ApplyTrayPopupRegion(menu);
             menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
 
-            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), TrayIcon.NewLivePing));
+            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), "geom.menu.new-live-ping"));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
@@ -2169,7 +2169,7 @@ namespace MultiPingMonitor.UI
             menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
             menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       TrayIcon.Options));
+            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       "geom.menu.options"));
             menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
             menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -2265,6 +2265,21 @@ namespace MultiPingMonitor.UI
                 item.Image = MakeTrayMenuBitmap(iconKind);
                 item.Tag   = iconKind;
             }
+            item.Click += (s, e) => onClick();
+            return item;
+        }
+
+        /// <summary>
+        /// Convenience factory: creates a ToolStripMenuItem with an icon rendered from a
+        /// <c>geom.menu.*</c> WPF Geometry resource so the tray icon is pixel-identical to
+        /// the WPF menu icon for the same action.  The geometry key is stored in Tag so the
+        /// icon can be regenerated when the theme changes via <see cref="RefreshTrayItemIcons"/>.
+        /// </summary>
+        private static System.Windows.Forms.ToolStripMenuItem MakeItem(string text, Action onClick, string geometryKey)
+        {
+            var item = new System.Windows.Forms.ToolStripMenuItem(text);
+            item.Image = RenderGeometryToBitmap(geometryKey);
+            item.Tag   = geometryKey;
             item.Click += (s, e) => onClick();
             return item;
         }
@@ -2414,7 +2429,8 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// Recursively regenerates the bitmap icon for every item whose Tag holds
-        /// an icon-kind integer, so icons always reflect the current theme colors.
+        /// an icon-kind integer or a geom.menu.* geometry key string, so icons always
+        /// reflect the current theme colors.
         /// </summary>
         private static void RefreshTrayItemIcons(
             System.Windows.Forms.ToolStripItemCollection items)
@@ -2423,6 +2439,8 @@ namespace MultiPingMonitor.UI
             {
                 if (item.Tag is int kind)
                     item.Image = MakeTrayMenuBitmap(kind);
+                else if (item.Tag is string geometryKey)
+                    item.Image = RenderGeometryToBitmap(geometryKey);
                 if (item is System.Windows.Forms.ToolStripMenuItem mi && mi.DropDownItems.Count > 0)
                     RefreshTrayItemIcons(mi.DropDownItems);
             }
@@ -2762,6 +2780,7 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// Icon kind identifiers used by MakeTrayMenuBitmap.
+        /// Options and NewLivePing are rendered via RenderGeometryToBitmap instead.
         /// </summary>
         private static class TrayIcon
         {
@@ -2769,13 +2788,11 @@ namespace MultiPingMonitor.UI
             public const int NewInstance  = 1;
             public const int Traceroute   = 2;
             public const int FloodHost    = 3;
-            public const int Options      = 4;
             public const int StatusHistory= 5;
             public const int Help         = 6;
             public const int VisualStyle  = 7;
             public const int ToggleDisplay= 8;
             public const int Exit         = 9;
-            public const int NewLivePing  = 10;
         }
 
         /// <summary>
@@ -2843,15 +2860,6 @@ namespace MultiPingMonitor.UI
                     });
                     break;
 
-                case TrayIcon.Options:
-                    // Gear: circle + 4 teeth at cardinal directions (coords × 1.25)
-                    g.DrawEllipse(pen, 5f, 5f, 9f, 9f);
-                    g.DrawLine(pen, 9.5f, 1f,  9.5f, 5f);
-                    g.DrawLine(pen, 9.5f, 14f, 9.5f, 18f);
-                    g.DrawLine(pen, 1f,  9.5f, 5f,   9.5f);
-                    g.DrawLine(pen, 14f, 9.5f, 18f,  9.5f);
-                    break;
-
                 case TrayIcon.StatusHistory:
                     // Clock face (coords × 1.25)
                     g.DrawEllipse(pen, 2f, 2f, 15f, 15f);
@@ -2893,19 +2901,72 @@ namespace MultiPingMonitor.UI
                     g.DrawLine(pen, 14f, 6f,  18f, 10f);
                     g.DrawLine(pen, 14f, 14f, 18f, 10f);
                     break;
-
-                case TrayIcon.NewLivePing:
-                    // Window outline + play-triangle inside (live ping concept)
-                    g.DrawRectangle(pen, 1f, 3f, 14f, 13f);
-                    g.DrawLine(pen, 1f, 7f, 15f, 7f);
-                    g.FillPolygon(accentBrush, new System.Drawing.PointF[]
-                    {
-                        new(5f, 10f), new(12f, 13f), new(5f, 16f)
-                    });
-                    break;
             }
 
             return bmp;
+        }
+
+        /// <summary>
+        /// Renders a <c>geom.menu.*</c> WPF <see cref="System.Windows.Media.Geometry"/> resource
+        /// into a <see cref="System.Drawing.Bitmap"/> at <paramref name="size"/>×<paramref name="size"/>
+        /// pixels, filled with the current <c>Theme.Text.Primary</c> color.  This ensures the tray icon
+        /// is pixel-identical to the WPF menu Path icon for the same action.
+        /// Returns <see langword="null"/> if the resource cannot be found or rendering fails.
+        /// </summary>
+        /// <param name="geometryKey">A <c>geom.menu.*</c> resource key defined in Icons.xaml.</param>
+        /// <param name="size">Output bitmap dimension in pixels (square). Defaults to 20.</param>
+        private static System.Drawing.Bitmap RenderGeometryToBitmap(string geometryKey, int size = 20)
+        {
+            try
+            {
+                if (Application.Current?.TryFindResource(geometryKey)
+                        is not System.Windows.Media.Geometry geometry)
+                    return null;
+
+                var rawColor = GetThemeDrawingColor("Theme.Text.Primary",
+                    System.Drawing.Color.FromArgb(0xCD, 0xD6, 0xF4));
+                var fill = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(rawColor.A, rawColor.R, rawColor.G, rawColor.B));
+
+                var bounds = geometry.Bounds;
+                if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
+                    return null;
+
+                double scale = Math.Min(size / bounds.Width, size / bounds.Height);
+                double tx = (size - bounds.Width  * scale) / 2 - bounds.X * scale;
+                double ty = (size - bounds.Height * scale) / 2 - bounds.Y * scale;
+
+                var dv = new System.Windows.Media.DrawingVisual();
+                using (var dc = dv.RenderOpen())
+                {
+                    dc.PushTransform(new System.Windows.Media.MatrixTransform(
+                        scale, 0, 0, scale, tx, ty));
+                    dc.DrawGeometry(fill, null, geometry);
+                    dc.Pop();
+                }
+
+                var rtb = new System.Windows.Media.Imaging.RenderTargetBitmap(
+                    size, size, 96, 96, System.Windows.Media.PixelFormats.Pbgra32);
+                rtb.Render(dv);
+
+                // Encode to PNG in a MemoryStream and load into a Bitmap.
+                // The stream is kept alive until after the Bitmap is cloned so that
+                // GDI+ does not reference a disposed stream after the method returns.
+                var ms = new System.IO.MemoryStream();
+                var enc = new System.Windows.Media.Imaging.PngBitmapEncoder();
+                enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(rtb));
+                enc.Save(ms);
+                ms.Position = 0;
+                using var loaded = new System.Drawing.Bitmap(ms);
+                // Clone into a standalone bitmap whose pixel data is independent of the stream.
+                return new System.Drawing.Bitmap(loaded);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"MultiPingMonitor: RenderGeometryToBitmap('{geometryKey}') failed: {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>
