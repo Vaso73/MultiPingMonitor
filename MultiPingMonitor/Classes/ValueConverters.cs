@@ -377,8 +377,8 @@ namespace MultiPingMonitor.Classes
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             long count = (value is long v) ? v : 0;
-            var key = count > 0 ? "geom.menu.stop" : "geom.menu.start";
-            return Application.Current.TryFindResource(key) as System.Windows.Media.Geometry
+            var geometryResourceKey = count > 0 ? "geom.menu.stop" : "geom.menu.start";
+            return Application.Current.TryFindResource(geometryResourceKey) as System.Windows.Media.Geometry
                 ?? System.Windows.Media.Geometry.Empty;
         }
 

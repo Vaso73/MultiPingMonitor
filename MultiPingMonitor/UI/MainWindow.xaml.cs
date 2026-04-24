@@ -762,11 +762,6 @@ namespace MultiPingMonitor.UI
             UpdateCompactStartStopButton();
         }
 
-        // Play triangle icon (▶): start state
-        private const string CompactStartIconData = "M 0,0 L 8,4.5 0,9 Z";
-        // Stop square icon (■): stop state
-        private const string CompactStopIconData = "M 0,0 H 8 V 9 H 0 Z";
-
         /// <summary>
         /// Updates the compact set toolbar row and its Start/Stop button:
         /// - Shows/hides the whole toolbar row
@@ -798,8 +793,9 @@ namespace MultiPingMonitor.UI
             if (CompactStartStopButton != null)
                 CompactStartStopButton.ToolTip = running ? Strings.Compact_StopSet : Strings.Compact_StartSet;
             if (CompactStartStopIcon != null)
-                CompactStartStopIcon.Data = System.Windows.Media.Geometry.Parse(
-                    running ? CompactStopIconData : CompactStartIconData);
+                CompactStartStopIcon.Data =
+                    Application.Current.TryFindResource(running ? "geom.menu.stop" : "geom.menu.start") as System.Windows.Media.Geometry
+                    ?? System.Windows.Media.Geometry.Empty;
 
             if (CompactRemoveHostButton != null)
                 CompactRemoveHostButton.IsEnabled = activeSet != null && activeSet.Entries.Count > 0;
