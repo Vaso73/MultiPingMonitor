@@ -1060,7 +1060,8 @@ namespace MultiPingMonitor.UI
                 bool isRunning = ApplicationOptions.IsCompactSetRunning;
                 var startStopItem = new MenuItem
                 {
-                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet
+                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet,
+                    Icon = MakeMenuIconPath(isRunning ? "geom.menu.stop" : "geom.menu.start")
                 };
                 startStopItem.Click += (s, args) => StartStopCompactSet();
                 CompactTargetsMenu.Items.Add(startStopItem);
@@ -1070,16 +1071,33 @@ namespace MultiPingMonitor.UI
             CompactTargetsMenu.Items.Add(new Separator());
             var manageItem = new MenuItem
             {
-                Header = Strings.Menu_CompactManageSets
+                Header = Strings.Menu_CompactManageSets,
+                Icon = MakeMenuIconPath("geom.menu.edit")
             };
-            var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
-            if (editIconSource != null)
-                manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
             manageItem.Click += (s, args) => OpenManageCompactSets();
             CompactTargetsMenu.Items.Add(manageItem);
         }
 
         // ── Compact title bar menu button handler ─────────────────────────────
+
+        /// <summary>
+        /// Creates a themed 14×14 Path icon from a <c>geom.menu.*</c> Geometry resource.
+        /// The icon fill tracks <c>Theme.Text.Primary</c> dynamically.
+        /// </summary>
+        private static System.Windows.Shapes.Path MakeMenuIconPath(string geometryKey)
+        {
+            var path = new System.Windows.Shapes.Path
+            {
+                Width = 14,
+                Height = 14,
+                Stretch = System.Windows.Media.Stretch.Uniform,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            if (Application.Current.TryFindResource(geometryKey) is System.Windows.Media.Geometry geom)
+                path.Data = geom;
+            path.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Text.Primary");
+            return path;
+        }
 
         /// <summary>
         /// Builds compact set selection menu items and appends them to the given items collection.
@@ -1150,7 +1168,8 @@ namespace MultiPingMonitor.UI
                 bool isRunning = ApplicationOptions.IsCompactSetRunning;
                 var startStopItem = new MenuItem
                 {
-                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet
+                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet,
+                    Icon = MakeMenuIconPath(isRunning ? "geom.menu.stop" : "geom.menu.start")
                 };
                 startStopItem.Click += (s, args) => StartStopCompactSet();
                 menu.Items.Add(startStopItem);
@@ -1161,20 +1180,20 @@ namespace MultiPingMonitor.UI
             // "Open All Live Windows" submenu with Cascade and Tile options.
             var openAllSub = new MenuItem
             {
-                Header = Strings.LivePing_OpenAllLive
+                Header = Strings.LivePing_OpenAllLive,
+                Icon = MakeMenuIconPath("geom.menu.new-live-ping")
             };
-            var openAllIcon = Application.Current.TryFindResource("icon.window-restore-blue") as System.Windows.Media.ImageSource;
-            if (openAllIcon != null)
-                openAllSub.Icon = new System.Windows.Controls.Image { Source = openAllIcon, Width = 16, Height = 16 };
-            var cascadeItem = new MenuItem { Header = Strings.LivePing_OpenAllCascade };
-            var cascadeIcon = Application.Current.TryFindResource("icon.cascade") as System.Windows.Media.ImageSource;
-            if (cascadeIcon != null)
-                cascadeItem.Icon = new System.Windows.Controls.Image { Source = cascadeIcon, Width = 16, Height = 16 };
+            var cascadeItem = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllCascade,
+                Icon = MakeMenuIconPath("geom.menu.cascade")
+            };
             cascadeItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: true);
-            var tileItem = new MenuItem { Header = Strings.LivePing_OpenAllTile };
-            var tileIcon = Application.Current.TryFindResource("icon.columns-grid") as System.Windows.Media.ImageSource;
-            if (tileIcon != null)
-                tileItem.Icon = new System.Windows.Controls.Image { Source = tileIcon, Width = 16, Height = 16 };
+            var tileItem = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllTile,
+                Icon = MakeMenuIconPath("geom.menu.columns-grid")
+            };
             tileItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: false);
             openAllSub.Items.Add(cascadeItem);
             openAllSub.Items.Add(tileItem);
@@ -1184,11 +1203,9 @@ namespace MultiPingMonitor.UI
 
             var manageItem = new MenuItem
             {
-                Header = Strings.Menu_CompactManageSets
+                Header = Strings.Menu_CompactManageSets,
+                Icon = MakeMenuIconPath("geom.menu.edit")
             };
-            var editIconSource = Application.Current.TryFindResource("icon.edit") as System.Windows.Media.ImageSource;
-            if (editIconSource != null)
-                manageItem.Icon = new System.Windows.Controls.Image { Source = editIconSource, Width = 16, Height = 16 };
             manageItem.Click += (s, args) => OpenManageCompactSets();
 
             menu.Items.Add(manageItem);
@@ -1197,11 +1214,9 @@ namespace MultiPingMonitor.UI
 
             var newLivePingItem = new MenuItem
             {
-                Header = Strings.Menu_NewLivePing
+                Header = Strings.Menu_NewLivePing,
+                Icon = MakeMenuIconPath("geom.menu.new-live-ping")
             };
-            var newLivePingIconSource = Application.Current.TryFindResource("icon.window-restore-blue") as System.Windows.Media.ImageSource;
-            if (newLivePingIconSource != null)
-                newLivePingItem.Icon = new System.Windows.Controls.Image { Source = newLivePingIconSource, Width = 16, Height = 16 };
             newLivePingItem.Click += (s, args) => NewLivePingMenu_Click(null, null);
 
             menu.Items.Add(newLivePingItem);
