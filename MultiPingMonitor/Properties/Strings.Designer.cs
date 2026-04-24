@@ -3908,5 +3908,104 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Add host.
+        /// </summary>
+        public static string Compact_AddHost {
+            get {
+                return ResourceManager.GetString("Compact_AddHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Host.
+        /// </summary>
+        public static string Compact_AddHost_Host {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_Host", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alias.
+        /// </summary>
+        public static string Compact_AddHost_Alias {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_Alias", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open Live Ping after adding.
+        /// </summary>
+        public static string Compact_AddHost_OpenLivePing {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_OpenLivePing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This target is already in the active Compact Set.
+        /// </summary>
+        public static string Compact_AddHost_DuplicateMessage {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_DuplicateMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate target.
+        /// </summary>
+        public static string Compact_AddHost_DuplicateTitle {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_DuplicateTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Host cannot be empty.
+        /// </summary>
+        public static string Compact_AddHost_EmptyHost {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_EmptyHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove host.
+        /// </summary>
+        public static string Compact_RemoveHost {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select host to remove.
+        /// </summary>
+        public static string Compact_RemoveHost_SelectHost {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_SelectHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close open Live Ping window.
+        /// </summary>
+        public static string Compact_RemoveHost_CloseLivePing {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_CloseLivePing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No hosts to remove.
+        /// </summary>
+        public static string Compact_RemoveHost_NoHosts {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_NoHosts", resourceCulture);
+            }
+        }
+
     }
 }
