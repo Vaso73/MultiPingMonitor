@@ -458,7 +458,7 @@
 
     <!-- ── Modern Compact Set Toolbar strip ────────────────────────── -->
     <Style x:Key="Style.CompactSetToolbar" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="0,1,0,1" />
         <Setter Property="Padding" Value="4,0" />
