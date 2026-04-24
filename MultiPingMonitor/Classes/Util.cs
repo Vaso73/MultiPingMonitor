@@ -199,5 +199,25 @@ namespace MultiPingMonitor.Classes
             char[] invalidCharacters = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
             return string.Join("_", filename.Split(invalidCharacters));
         }
+
+        /// <summary>
+        /// Creates a themed 14×14 Path icon from a <c>geom.menu.*</c> Geometry resource.
+        /// The icon fill tracks <c>Theme.Text.Primary</c> dynamically so it adapts to
+        /// both Classic and Modern visual styles.
+        /// </summary>
+        public static System.Windows.Shapes.Path MakeMenuIconPath(string geometryKey)
+        {
+            var path = new System.Windows.Shapes.Path
+            {
+                Width = 14,
+                Height = 14,
+                Stretch = System.Windows.Media.Stretch.Uniform,
+                VerticalAlignment = System.Windows.VerticalAlignment.Center
+            };
+            if (System.Windows.Application.Current.TryFindResource(geometryKey) is System.Windows.Media.Geometry geom)
+                path.Data = geom;
+            path.SetResourceReference(System.Windows.Shapes.Path.FillProperty, "Theme.Text.Primary");
+            return path;
+        }
     }
 }

@@ -242,7 +242,8 @@
                     <AccessText Text="{x:Static resource:Strings.Toolbar_Add}" VerticalAlignment="Center"/>
                 </MenuItem.Header>
                 <MenuItem.Icon>
-                    <Image Source="{StaticResource icon.add}" VerticalAlignment="Center" Width="16" Height="16"/>
+                    <Path Data="{StaticResource geom.menu.add}" Fill="{DynamicResource Theme.Text.Primary}"
+                          Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -252,7 +253,8 @@
                     <AccessText Text="{x:Static resource:Strings.Toolbar_Columns}" VerticalAlignment="Center"/>
                 </MenuItem.Header>
                 <MenuItem.Icon>
-                    <Image Source="{StaticResource icon.columns-grid}" VerticalAlignment="Center" Width="16" Height="16"/>
+                    <Path Data="{StaticResource geom.menu.columns-grid}" Fill="{DynamicResource Theme.Text.Primary}"
+                          Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
                 <!-- Columns slider -->
                 <StackPanel Orientation="Horizontal">
@@ -286,10 +288,9 @@
                                 Text="{Binding Path=(classes:Probe.ActiveCount), Converter={StaticResource ProbeCountToGlobalStartStopText}}"/>
                 </MenuItem.Header>
                 <MenuItem.Icon>
-                    <Image Name="StartStopMenuImage"
-                           VerticalAlignment="Center"
-                           Width="16" Height="16"
-                           Source="{Binding Path=(classes:Probe.ActiveCount), Converter={StaticResource ProbeCountToGlobalStartStopIcon}}"/>
+                    <Path Data="{Binding Path=(classes:Probe.ActiveCount), Converter={StaticResource ProbeCountToGlobalStartStopIcon}}"
+                          Fill="{DynamicResource Theme.Text.Primary}"
+                          Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -298,7 +299,8 @@
                       DockPanel.Dock="Right"
                       Template="{StaticResource TopLevelHeaderNoPaddingTemplate}">
                 <MenuItem.Icon>
-                    <Image Source="{StaticResource icon.chevron-circle-down}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16"/>
+                    <Path Data="{StaticResource geom.menu.chevron-down}" Fill="{DynamicResource Theme.Text.Primary}"
+                          Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </MenuItem.Icon>
 
                 <!-- Menu: Options -->
@@ -306,20 +308,23 @@
                           Header="{x:Static resource:Strings.Menu_Options}"
                           InputGestureText="F10">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.options}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.options}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Switch display mode (Normal ↔ Compact) -->
                 <MenuItem x:Name="ToggleDisplayModeMenu" Click="ToggleDisplayMode_Click">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.toggle-display}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Compact targets submenu -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_CompactTargets}" x:Name="CompactTargetsMenu"
                           SubmenuOpened="CompactTargetsMenu_SubmenuOpened">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.compact-view}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                     <MenuItem x:Name="MenuCompactSourceNormal"
                               Header="{x:Static resource:Strings.Options_CompactSource_NormalTargets}"
@@ -335,13 +340,15 @@
                 <!-- Menu: Status history -->
                 <MenuItem Name="StatusHistoryMenu" Header="{x:Static resource:Strings.Menu_StatusHistory}" InputGestureText="F12">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.status-history}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.status-history}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Input addresses-->
                 <MenuItem Name="MultiInputMenu" Header="{x:Static resource:Strings.Menu_InputAddresses}" InputGestureText="F2">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.input-addresses}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.input-addresses}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Popup alerts -->
@@ -364,12 +371,14 @@
                 <MenuItem Header="{x:Static resource:Strings.Menu_FavoriteSets}" x:Name="FavoritesMenu">
                     <MenuItem Header="{x:Static resource:Strings.Menu_SaveToFavorites}" Click="CreateFavorite_Click">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource icon.new-favorite}" VerticalAlignment="Center" Width="16" Height="16"/>
+                            <Path Data="{StaticResource geom.menu.new-favorite}" Fill="{DynamicResource Theme.Text.Primary}"
+                                  Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{x:Static resource:Strings.Menu_ManageFavorites}" Click="ManageFavorites_Click">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource icon.favorite}" VerticalAlignment="Center" Width="16" Height="16"/>
+                            <Path Data="{StaticResource geom.menu.favorite}" Fill="{DynamicResource Theme.Text.Primary}"
+                                  Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
@@ -378,7 +387,8 @@
                 <MenuItem Header="{x:Static resource:Strings.Menu_Aliases}" x:Name="AliasesMenu">
                     <MenuItem Header="{x:Static resource:Strings.Menu_ManageAliases}" Click="ManageAliases_Click">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource icon.alias}" VerticalAlignment="Center" Width="16" Height="16"/>
+                            <Path Data="{StaticResource geom.menu.alias}" Fill="{DynamicResource Theme.Text.Primary}"
+                                  Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
@@ -387,33 +397,38 @@
                 <!-- Menu: Traceroute -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_Traceroute}" x:Name="TracerouteMenu" InputGestureText="Ctrl-T">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.route}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.traceroute}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: Flood host -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_FloodHost}" x:Name="FloodHostMenu" InputGestureText="Ctrl-F">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.flood-host}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.flood-host}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: New Live Ping (manual/direct) -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_NewLivePing}" x:Name="NewLivePingMenu"
                           Click="NewLivePingMenu_Click">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.window-restore-blue}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.new-live-ping}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <!-- Menu: New instance -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_NewInstance}" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.vmping-logo-simple}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.new-instance}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
                 <!-- Menu: Help -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_Help}" x:Name="HelpMenu" InputGestureText="F1">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource icon.question-circle}" VerticalAlignment="Center" Width="16" Height="16"/>
+                        <Path Data="{StaticResource geom.menu.help}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -533,7 +548,7 @@
                     <Path Width="9" Height="9" Stretch="Uniform"
                           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                           VerticalAlignment="Center"
-                          Data="M 4,0 L 5,0 5,4 9,4 9,5 5,5 5,9 4,9 4,5 0,5 0,4 4,4 Z"/>
+                          Data="{StaticResource geom.menu.add}"/>
                 </Button>
                 <!-- Remove host quick-access button -->
                 <Button Grid.Column="3"
@@ -548,7 +563,7 @@
                     <Path Width="9" Height="2" Stretch="Uniform"
                           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                           VerticalAlignment="Center"
-                          Data="M 0,0 L 9,0 9,2 0,2 Z"/>
+                          Data="{StaticResource geom.menu.remove}"/>
                 </Button>
                 <!-- Start/Stop quick-access button -->
                 <Button Grid.Column="4"
@@ -563,7 +578,7 @@
                           Width="8" Height="9" Stretch="Uniform"
                           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                           VerticalAlignment="Center"
-                          Data="M 0,0 L 8,4.5 0,9 Z"/>
+                          Data="{StaticResource geom.menu.start}"/>
                 </Button>
             </Grid>
         </Border>

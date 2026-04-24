@@ -3621,7 +3621,7 @@ namespace MultiPingMonitor.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ⏸  Paused.
+        ///   Looks up a localized string similar to Paused.
         /// </summary>
         public static string LivePing_Paused {
             get {
