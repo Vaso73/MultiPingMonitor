@@ -742,7 +742,7 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Shows or hides the "Stopped" badge in the compact title bar.
+        /// Shows or hides the "Stopped" badge in the compact set toolbar.
         /// The badge is visible when the compact set is stopped and in CustomTargets mode.
         /// Also updates the Start/Stop button state.
         /// </summary>
@@ -765,26 +765,34 @@ namespace MultiPingMonitor.UI
         private const string CompactStopIconData = "M 0,0 H 8 V 9 H 0 Z";
 
         /// <summary>
-        /// Updates the compact titlebar Start/Stop button:
-        /// visibility, tooltip, and icon reflect the current running state.
-        /// The button is only visible when CompactSource is CustomTargets and an active set exists.
+        /// Updates the compact set toolbar row and its Start/Stop button:
+        /// - Shows/hides the whole toolbar row
+        /// - Populates the active set name
+        /// - Updates the button tooltip and icon to reflect the current running state
+        /// The toolbar is only visible when CompactSource is CustomTargets, an active set
+        /// exists, and the app is in Compact display mode.
         /// </summary>
         private void UpdateCompactStartStopButton()
         {
-            if (CompactStartStopButton == null)
+            if (CompactSetToolbar == null)
                 return;
 
-            bool showButton = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
-                && ApplicationOptions.GetActiveCompactSet() != null
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            bool showToolbar = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && activeSet != null
                 && ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact;
 
-            CompactStartStopButton.Visibility = showButton ? Visibility.Visible : Visibility.Collapsed;
+            CompactSetToolbar.Visibility = showToolbar ? Visibility.Visible : Visibility.Collapsed;
 
-            if (!showButton)
+            if (!showToolbar)
                 return;
 
+            if (CompactSetNameText != null)
+                CompactSetNameText.Text = activeSet!.Name;
+
             bool running = ApplicationOptions.IsCompactSetRunning;
-            CompactStartStopButton.ToolTip = running ? Strings.Compact_StopSet : Strings.Compact_StartSet;
+            if (CompactStartStopButton != null)
+                CompactStartStopButton.ToolTip = running ? Strings.Compact_StopSet : Strings.Compact_StartSet;
             if (CompactStartStopIcon != null)
                 CompactStartStopIcon.Data = System.Windows.Media.Geometry.Parse(
                     running ? CompactStopIconData : CompactStartIconData);

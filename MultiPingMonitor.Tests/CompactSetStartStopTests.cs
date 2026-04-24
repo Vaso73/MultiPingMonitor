@@ -292,7 +292,54 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("StartStopCompactSet", body);
         }
 
-        // ── Titlebar Start/Stop button ─────────────────────────────────────────
+        // ── Compact set toolbar row ────────────────────────────────────────────
+
+        [Fact]
+        public void MainWindow_Xaml_HasCompactSetToolbar()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactSetToolbar", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactSetToolbar_IsInitiallyCollapsed()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            int idx = xaml.IndexOf("CompactSetToolbar", StringComparison.Ordinal);
+            Assert.True(idx >= 0, "CompactSetToolbar not found in XAML");
+            // The toolbar Grid element must declare Visibility="Collapsed" (managed by code-behind)
+            string region = xaml.Substring(Math.Max(0, idx - 50), Math.Min(400, xaml.Length - Math.Max(0, idx - 50)));
+            Assert.Contains("Visibility=\"Collapsed\"", region);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_HasCompactSetNameText()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactSetNameText", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactSetNameText_HasEllipsis()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            int idx = xaml.IndexOf("CompactSetNameText", StringComparison.Ordinal);
+            Assert.True(idx >= 0);
+            string region = xaml.Substring(Math.Max(0, idx - 50), Math.Min(400, xaml.Length - Math.Max(0, idx - 50)));
+            Assert.Contains("TextTrimming", region);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactStoppedBadge_IsInToolbarRow()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            // CompactSetToolbar must appear before CompactStoppedBadge in the document
+            int toolbarIdx = xaml.IndexOf("CompactSetToolbar", StringComparison.Ordinal);
+            int badgeIdx = xaml.IndexOf("CompactStoppedBadge", StringComparison.Ordinal);
+            Assert.True(toolbarIdx >= 0, "CompactSetToolbar not found");
+            Assert.True(badgeIdx >= 0, "CompactStoppedBadge not found");
+            Assert.True(badgeIdx > toolbarIdx, "CompactStoppedBadge should appear inside CompactSetToolbar (after it in XAML)");
+        }
 
         [Fact]
         public void MainWindow_Xaml_HasCompactStartStopButton()
@@ -309,16 +356,17 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void MainWindow_Xaml_CompactStartStopButton_IsInitiallyCollapsed()
+        public void MainWindow_Xaml_CompactStartStopButton_IsInToolbarRow_NotTitleBar()
         {
             var xaml = File.ReadAllText(MainWindowXamlPath());
-            // The button must be declared Collapsed so it is hidden by default
-            // and only shown by code-behind when applicable.
-            int idx = xaml.IndexOf("CompactStartStopButton", StringComparison.Ordinal);
-            Assert.True(idx >= 0, "CompactStartStopButton not found in XAML");
-            // Look in a reasonable window around the name for Visibility="Collapsed"
-            string region = xaml.Substring(Math.Max(0, idx - 200), Math.Min(600, xaml.Length - Math.Max(0, idx - 200)));
-            Assert.Contains("Visibility=\"Collapsed\"", region);
+            int toolbarIdx = xaml.IndexOf("CompactSetToolbar", StringComparison.Ordinal);
+            int titleBarIdx = xaml.IndexOf("x:Name=\"CompactTitleBar\"", StringComparison.Ordinal);
+            int btnIdx = xaml.IndexOf("CompactStartStopButton", StringComparison.Ordinal);
+            Assert.True(toolbarIdx >= 0, "CompactSetToolbar not found");
+            Assert.True(titleBarIdx >= 0, "CompactTitleBar not found");
+            Assert.True(btnIdx >= 0, "CompactStartStopButton not found");
+            // Button must appear after the toolbar starts and after the title bar section
+            Assert.True(btnIdx > toolbarIdx, "CompactStartStopButton should be inside CompactSetToolbar");
         }
 
         [Fact]
@@ -340,6 +388,31 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("CustomTargets", body);
             Assert.Contains("GetActiveCompactSet", body);
             Assert.Contains("IsCompactSetRunning", body);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStartStopButton_UpdatesSetNameText()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStartStopButton()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0);
+            int methodEnd = source.IndexOf("\n        private ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CompactSetNameText", body);
+            Assert.Contains(".Name", body);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStartStopButton_ManagesToolbarVisibility()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStartStopButton()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0);
+            int methodEnd = source.IndexOf("\n        private ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CompactSetToolbar", body);
         }
 
         [Fact]

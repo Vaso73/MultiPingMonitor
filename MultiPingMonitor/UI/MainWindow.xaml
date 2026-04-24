@@ -428,8 +428,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="MultiPingMonitor"
@@ -439,38 +437,8 @@
                        Margin="6,0,0,0"
                        TextTrimming="CharacterEllipsis"
                        Opacity="0.7"/>
-            <!-- Stopped badge: visible when the active compact set is stopped -->
-            <Border x:Name="CompactStoppedBadge"
-                    Grid.Column="1"
-                    Visibility="Collapsed"
-                    Background="{DynamicResource Theme.Warning}"
-                    CornerRadius="{DynamicResource Style.CornerRadius.Small}"
-                    Padding="4,1"
-                    Margin="4,0,0,0"
-                    VerticalAlignment="Center">
-                <TextBlock Text="{x:Static resource:Strings.Compact_SetStopped}"
-                           FontSize="10"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource Theme.AccentForeground}"/>
-            </Border>
-            <!-- Compact title bar: quick Start/Stop button for the active Compact Set -->
-            <Button Grid.Column="2"
-                    x:Name="CompactStartStopButton"
-                    Visibility="Collapsed"
-                    Click="CompactStartStopButton_Click"
-                    Style="{DynamicResource Style.TitleBarButton}"
-                    WindowChrome.IsHitTestVisibleInChrome="True"
-                    ToolTipService.InitialShowDelay="800"
-                    Width="26" MinHeight="26"
-                    Cursor="Hand">
-                <Path x:Name="CompactStartStopIcon"
-                      Width="8" Height="9" Stretch="Uniform"
-                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                      VerticalAlignment="Center"
-                      Data="M 0,0 L 8,4.5 0,9 Z"/>
-            </Button>
             <!-- Compact title bar: pin / always-on-top toggle -->
-            <ToggleButton Grid.Column="3"
+            <ToggleButton Grid.Column="1"
                           x:Name="CompactPinButton"
                           Click="PinButton_Click"
                           Style="{DynamicResource Style.PinToggleButton}"
@@ -486,7 +454,7 @@
                       Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
             </ToggleButton>
             <!-- Compact title bar: menu button for quick access to compact data source -->
-            <Button Grid.Column="4"
+            <Button Grid.Column="2"
                     x:Name="CompactMenuButton"
                     Click="CompactMenuButton_Click"
                     Style="{DynamicResource Style.TitleBarButton}"
@@ -501,7 +469,7 @@
                       Width="15" Height="18"
                       Stretch="None"/>
             </Button>
-            <Button Grid.Column="5"
+            <Button Grid.Column="3"
                     Click="OnCloseButtonClick"
                     Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"
@@ -512,6 +480,57 @@
                       Stretch="None"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                       StrokeThickness="1" />
+            </Button>
+        </Grid>
+
+        <!-- Compact mode: active set toolbar — shown below title bar when a custom set is active -->
+        <Grid x:Name="CompactSetToolbar"
+              DockPanel.Dock="Top"
+              Height="24"
+              Visibility="Collapsed"
+              Background="{DynamicResource Theme.Surface}"
+              Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <!-- Active compact set name -->
+            <TextBlock x:Name="CompactSetNameText"
+                       Grid.Column="0"
+                       FontSize="11"
+                       Foreground="{DynamicResource Theme.Text.Primary}"
+                       VerticalAlignment="Center"
+                       Margin="6,0,4,0"
+                       TextTrimming="CharacterEllipsis"/>
+            <!-- Stopped badge: visible when the active compact set is stopped -->
+            <Border x:Name="CompactStoppedBadge"
+                    Grid.Column="1"
+                    Visibility="Collapsed"
+                    Background="{DynamicResource Theme.Warning}"
+                    CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                    Padding="4,1"
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center">
+                <TextBlock Text="{x:Static resource:Strings.Compact_SetStopped}"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource Theme.AccentForeground}"/>
+            </Border>
+            <!-- Start/Stop quick-access button -->
+            <Button Grid.Column="2"
+                    x:Name="CompactStartStopButton"
+                    Click="CompactStartStopButton_Click"
+                    Style="{DynamicResource Style.TitleBarButton}"
+                    WindowChrome.IsHitTestVisibleInChrome="True"
+                    ToolTipService.InitialShowDelay="800"
+                    Width="28" MinHeight="24"
+                    Cursor="Hand">
+                <Path x:Name="CompactStartStopIcon"
+                      Width="8" Height="9" Stretch="Uniform"
+                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                      VerticalAlignment="Center"
+                      Data="M 0,0 L 8,4.5 0,9 Z"/>
             </Button>
         </Grid>
 
