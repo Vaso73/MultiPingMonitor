@@ -219,6 +219,12 @@ namespace MultiPingMonitor.Classes
         private void OnStatusChange(ProbeStatus newStatus, string alertType)
         {
             Status = newStatus;
+
+            // Skip all notifications when this probe is outside the active monitoring
+            // context (e.g. Normal/Main probe while Compact custom-set mode is active).
+            if (SuppressNotifications)
+                return;
+
             TriggerStatusChange(new StatusChangeLog
             {
                 Timestamp = DateTime.Now,
