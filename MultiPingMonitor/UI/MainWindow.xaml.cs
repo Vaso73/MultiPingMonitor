@@ -831,7 +831,7 @@ namespace MultiPingMonitor.UI
                     (int)this.ActualWidth, (int)this.ActualHeight));
             var wa = screen.WorkingArea;
 
-            left = Math.Max(wa.Left, Math.Min(left, wa.Right  - dialog.Width));
+            left = Math.Max(wa.Left, Math.Min(left, wa.Right - dialog.Width));
             top  = Math.Max(wa.Top,  Math.Min(top,  wa.Bottom - dialog.Height));
 
             dialog.Left = left;
