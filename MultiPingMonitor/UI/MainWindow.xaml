@@ -486,7 +486,7 @@
         <!-- Compact mode: active set toolbar — shown below title bar when a custom set is active -->
         <Border x:Name="CompactSetToolbar"
                 DockPanel.Dock="Top"
-                Height="24"
+                Height="26"
                 Visibility="Collapsed"
                 Style="{DynamicResource Style.CompactSetToolbar}">
             <Grid>
@@ -499,10 +499,11 @@
                 <TextBlock x:Name="CompactSetNameText"
                            Grid.Column="0"
                            FontSize="11"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"
                            Foreground="{DynamicResource Theme.Text.Primary}"
                            VerticalAlignment="Center"
-                           Margin="6,0,4,0"
-                           TextTrimming="CharacterEllipsis"/>
+                           Margin="2,0,4,0"/>
                 <!-- Stopped badge: visible when the active compact set is stopped -->
                 <Border x:Name="CompactStoppedBadge"
                         Grid.Column="1"
@@ -524,7 +525,7 @@
                         Style="{DynamicResource Style.TitleBarButton}"
                         WindowChrome.IsHitTestVisibleInChrome="True"
                         ToolTipService.InitialShowDelay="800"
-                        Width="28" MinHeight="24"
+                        Width="28" MinHeight="26"
                         Cursor="Hand">
                     <Path x:Name="CompactStartStopIcon"
                           Width="8" Height="9" Stretch="Uniform"
