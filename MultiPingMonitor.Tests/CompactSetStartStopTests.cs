@@ -793,5 +793,282 @@ namespace MultiPingMonitor.Tests
             int returnInDuplicate = body.IndexOf("return;", duplicateIdx, StringComparison.Ordinal);
             Assert.True(returnInDuplicate < addIdx, "Duplicate block must return before adding to collection");
         }
+
+        // ── Remove Compact Host feature ────────────────────────────────────────
+
+        [Fact]
+        public void MainWindow_Xaml_HasCompactRemoveHostButton()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactRemoveHostButton", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactRemoveHostButton_IsInToolbarRow()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            int toolbarIdx = xaml.IndexOf("CompactSetToolbar", StringComparison.Ordinal);
+            int btnIdx = xaml.IndexOf("CompactRemoveHostButton", StringComparison.Ordinal);
+            Assert.True(toolbarIdx >= 0, "CompactSetToolbar not found");
+            Assert.True(btnIdx >= 0, "CompactRemoveHostButton not found");
+            Assert.True(btnIdx > toolbarIdx, "CompactRemoveHostButton should be inside CompactSetToolbar");
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactRemoveHostButton_HasClickHandler()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactRemoveHostButton_Click", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactRemoveHostButton_UsesTitleBarButtonStyle()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            int idx = xaml.IndexOf("CompactRemoveHostButton", StringComparison.Ordinal);
+            Assert.True(idx >= 0);
+            string region = xaml.Substring(Math.Max(0, idx - 100), Math.Min(800, xaml.Length - Math.Max(0, idx - 100)));
+            Assert.Contains("Style.TitleBarButton", region);
+        }
+
+        [Fact]
+        public void MainWindow_HasCompactRemoveHostButton_ClickHandler()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("CompactRemoveHostButton_Click", source);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_ChecksCustomTargets()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CustomTargets", body);
+            Assert.Contains("GetActiveCompactSet", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_RemovesFromActiveSet()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("activeSet.Entries.Remove", body);
+            Assert.Contains("Configuration.Save()", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_RemovesFromProbeCollection()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("_CompactProbeCollection.Remove", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_StopsProbeIfActive()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("IsActive", body);
+            Assert.Contains("probe.StartStop()", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_DoesNotTouchNormalProbeCollection()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Must not touch the Normal-mode probe collection or favorites.
+            Assert.DoesNotContain("_ProbeCollection", body);
+            Assert.DoesNotContain("_Favorites", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_ClickHandler_HandlesCloseLivePing()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CloseLivePing", body);
+            Assert.Contains("LivePingMonitorWindow", body);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStartStopButton_UpdatesRemoveButtonEnabled()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStartStopButton()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "UpdateCompactStartStopButton not found");
+            int methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CompactRemoveHostButton", body);
+            Assert.Contains("IsEnabled", body);
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Exists()
+        {
+            var dialogPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml.cs");
+            Assert.True(File.Exists(dialogPath), "RemoveCompactHostDialog.xaml.cs not found");
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_HasExpectedMembers()
+        {
+            var dialogPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml.cs");
+            var source = File.ReadAllText(dialogPath);
+            Assert.Contains("SelectedEntry", source);
+            Assert.Contains("CloseLivePing", source);
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Xaml_Exists()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml");
+            Assert.True(File.Exists(xamlPath), "RemoveCompactHostDialog.xaml not found");
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Xaml_HasListBox()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml");
+            var xaml = File.ReadAllText(xamlPath);
+            Assert.Contains("HostListBox", xaml);
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Xaml_HasCloseLivePingCheckBox()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml");
+            var xaml = File.ReadAllText(xamlPath);
+            Assert.Contains("CloseLivePingCheckBox", xaml);
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Xaml_UsesDynamicResources()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml");
+            var xaml = File.ReadAllText(xamlPath);
+            Assert.Contains("DynamicResource Theme.Background", xaml);
+            Assert.Contains("DynamicResource Style.ButtonStandard", xaml);
+        }
+
+        [Fact]
+        public void Strings_Default_HasCompact_RemoveHost()
+        {
+            var value = ResxValue(DefaultResxPath(), "Compact_RemoveHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_Default_HasCompact_RemoveHost_SelectHost()
+        {
+            var value = ResxValue(DefaultResxPath(), "Compact_RemoveHost_SelectHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_Default_HasCompact_RemoveHost_CloseLivePing()
+        {
+            var value = ResxValue(DefaultResxPath(), "Compact_RemoveHost_CloseLivePing");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_Default_HasCompact_RemoveHost_NoHosts()
+        {
+            var value = ResxValue(DefaultResxPath(), "Compact_RemoveHost_NoHosts");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_HasCompact_RemoveHost()
+        {
+            var value = ResxValue(SkSkResxPath(), "Compact_RemoveHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_HasCompact_RemoveHost_SelectHost()
+        {
+            var value = ResxValue(SkSkResxPath(), "Compact_RemoveHost_SelectHost");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_HasCompact_RemoveHost_CloseLivePing()
+        {
+            var value = ResxValue(SkSkResxPath(), "Compact_RemoveHost_CloseLivePing");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_HasCompact_RemoveHost_NoHosts()
+        {
+            var value = ResxValue(SkSkResxPath(), "Compact_RemoveHost_NoHosts");
+            Assert.False(string.IsNullOrWhiteSpace(value));
+        }
+
+        [Fact]
+        public void Strings_SkSk_Compact_RemoveHost_IsNotEnglish()
+        {
+            var skValue = ResxValue(SkSkResxPath(), "Compact_RemoveHost");
+            var enValue = ResxValue(DefaultResxPath(), "Compact_RemoveHost");
+            Assert.NotEqual(enValue, skValue);
+        }
+
+        [Fact]
+        public void Strings_SkSk_Compact_RemoveHost_SelectHost_IsNotEnglish()
+        {
+            var skValue = ResxValue(SkSkResxPath(), "Compact_RemoveHost_SelectHost");
+            var enValue = ResxValue(DefaultResxPath(), "Compact_RemoveHost_SelectHost");
+            Assert.NotEqual(enValue, skValue);
+        }
+
+        [Fact]
+        public void Strings_SkSk_Compact_RemoveHost_CloseLivePing_IsNotEnglish()
+        {
+            var skValue = ResxValue(SkSkResxPath(), "Compact_RemoveHost_CloseLivePing");
+            var enValue = ResxValue(DefaultResxPath(), "Compact_RemoveHost_CloseLivePing");
+            Assert.NotEqual(enValue, skValue);
+        }
+
+        [Fact]
+        public void Strings_SkSk_Compact_RemoveHost_NoHosts_IsNotEnglish()
+        {
+            var skValue = ResxValue(SkSkResxPath(), "Compact_RemoveHost_NoHosts");
+            var enValue = ResxValue(DefaultResxPath(), "Compact_RemoveHost_NoHosts");
+            Assert.NotEqual(enValue, skValue);
+        }
     }
 }

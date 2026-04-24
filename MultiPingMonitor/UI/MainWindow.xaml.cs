@@ -772,6 +772,7 @@ namespace MultiPingMonitor.UI
         /// - Shows/hides the whole toolbar row
         /// - Populates the active set name
         /// - Updates the button tooltip and icon to reflect the current running state
+        /// - Updates the Remove button's enabled state (only enabled when entries exist)
         /// The toolbar is only visible when CompactSource is CustomTargets, an active set
         /// exists, and the app is in Compact display mode.
         /// </summary>
@@ -799,6 +800,9 @@ namespace MultiPingMonitor.UI
             if (CompactStartStopIcon != null)
                 CompactStartStopIcon.Data = System.Windows.Media.Geometry.Parse(
                     running ? CompactStopIconData : CompactStartIconData);
+
+            if (CompactRemoveHostButton != null)
+                CompactRemoveHostButton.IsEnabled = activeSet != null && activeSet.Entries.Count > 0;
         }
 
         private void CompactStartStopButton_Click(object sender, RoutedEventArgs e)
@@ -883,6 +887,62 @@ namespace MultiPingMonitor.UI
                     livePingWindow.Show();
                 }
             }
+        }
+
+        /// <summary>
+        /// Handles the "Remove host" quick-action button on the Compact Set toolbar.
+        /// Opens a compact dialog listing all targets in the active Compact Set and lets
+        /// the user pick one to remove.  Only active when CompactSource == CustomTargets,
+        /// an active set exists, and the set has at least one entry.
+        /// </summary>
+        private void CompactRemoveHostButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ApplicationOptions.CompactSource != ApplicationOptions.CompactSourceMode.CustomTargets)
+                return;
+
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            if (activeSet == null || activeSet.Entries.Count == 0)
+                return;
+
+            var dialog = new RemoveCompactHostDialog(activeSet.Entries);
+            dialog.Owner = this;
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            var entry = dialog.SelectedEntry;
+            if (entry == null)
+                return;
+
+            // Find the matching probe in the compact collection (case-insensitive target match).
+            var probe = _CompactProbeCollection.FirstOrDefault(p =>
+                string.Equals(p.Hostname, entry.Target, StringComparison.OrdinalIgnoreCase));
+
+            // Stop the probe before removing it if it is currently active.
+            if (probe != null && probe.IsActive)
+                probe.StartStop();
+
+            // Optionally close the probe's open Live Ping window.
+            if (dialog.CloseLivePing && probe?.LivePingMonitorWindow != null
+                && probe.LivePingMonitorWindow.IsLoaded)
+            {
+                probe.LivePingMonitorWindow.Close();
+            }
+
+            // Remove the probe from the live collection.
+            if (probe != null)
+                _CompactProbeCollection.Remove(probe);
+
+            // Remove the entry from the active Compact Set and persist.
+            activeSet.Entries.Remove(entry);
+            Configuration.Save();
+
+            // Update the Remove button enabled state (may now be empty).
+            UpdateCompactStartStopButton();
+
+            // Update tray to pick up any status change.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
         }
 
         /// <summary>

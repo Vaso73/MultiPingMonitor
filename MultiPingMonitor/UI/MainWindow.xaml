@@ -495,6 +495,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <!-- Active compact set name -->
                 <TextBlock x:Name="CompactSetNameText"
@@ -534,8 +535,23 @@
                           VerticalAlignment="Center"
                           Data="M 4,0 L 5,0 5,4 9,4 9,5 5,5 5,9 4,9 4,5 0,5 0,4 4,4 Z"/>
                 </Button>
-                <!-- Start/Stop quick-access button -->
+                <!-- Remove host quick-access button -->
                 <Button Grid.Column="3"
+                        x:Name="CompactRemoveHostButton"
+                        Click="CompactRemoveHostButton_Click"
+                        Style="{DynamicResource Style.TitleBarButton}"
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        ToolTip="{x:Static resource:Strings.Compact_RemoveHost}"
+                        ToolTipService.InitialShowDelay="800"
+                        Width="28" MinHeight="26"
+                        Cursor="Hand">
+                    <Path Width="9" Height="2" Stretch="Uniform"
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                          VerticalAlignment="Center"
+                          Data="M 0,0 L 9,0 9,2 0,2 Z"/>
+                </Button>
+                <!-- Start/Stop quick-access button -->
+                <Button Grid.Column="4"
                         x:Name="CompactStartStopButton"
                         Click="CompactStartStopButton_Click"
                         Style="{DynamicResource Style.TitleBarButton}"

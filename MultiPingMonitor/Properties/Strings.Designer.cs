@@ -3971,5 +3971,41 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Remove host.
+        /// </summary>
+        public static string Compact_RemoveHost {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select host to remove.
+        /// </summary>
+        public static string Compact_RemoveHost_SelectHost {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_SelectHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close open Live Ping window.
+        /// </summary>
+        public static string Compact_RemoveHost_CloseLivePing {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_CloseLivePing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No hosts to remove.
+        /// </summary>
+        public static string Compact_RemoveHost_NoHosts {
+            get {
+                return ResourceManager.GetString("Compact_RemoveHost_NoHosts", resourceCulture);
+            }
+        }
+
     }
 }

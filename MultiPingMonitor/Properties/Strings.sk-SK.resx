@@ -1325,4 +1325,16 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Compact_AddHost_EmptyHost" xml:space="preserve">
     <value>Hostiteľ nemôže byť prázdny.</value>
   </data>
+  <data name="Compact_RemoveHost" xml:space="preserve">
+    <value>Odstrániť hostiteľa</value>
+  </data>
+  <data name="Compact_RemoveHost_SelectHost" xml:space="preserve">
+    <value>Vyberte hostiteľa na odstránenie</value>
+  </data>
+  <data name="Compact_RemoveHost_CloseLivePing" xml:space="preserve">
+    <value>Zavrieť otvorené Live Ping okno</value>
+  </data>
+  <data name="Compact_RemoveHost_NoHosts" xml:space="preserve">
+    <value>Nie sú dostupní žiadni hostitelia na odstránenie</value>
+  </data>
 </root>
