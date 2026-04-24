@@ -1426,4 +1426,22 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Compact_SetStopped" xml:space="preserve">
     <value>Stopped</value>
   </data>
+  <data name="Compact_AddHost" xml:space="preserve">
+    <value>Add host</value>
+  </data>
+  <data name="Compact_AddHost_Host" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="Compact_AddHost_Alias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="Compact_AddHost_OpenLivePing" xml:space="preserve">
+    <value>Open Live Ping after adding</value>
+  </data>
+  <data name="Compact_AddHost_DuplicateMessage" xml:space="preserve">
+    <value>This target is already in the active Compact Set. Add it anyway?</value>
+  </data>
+  <data name="Compact_AddHost_DuplicateTitle" xml:space="preserve">
+    <value>Duplicate target</value>
+  </data>
 </root>

@@ -3908,5 +3908,59 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Add host.
+        /// </summary>
+        public static string Compact_AddHost {
+            get {
+                return ResourceManager.GetString("Compact_AddHost", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Host.
+        /// </summary>
+        public static string Compact_AddHost_Host {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_Host", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alias.
+        /// </summary>
+        public static string Compact_AddHost_Alias {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_Alias", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open Live Ping after adding.
+        /// </summary>
+        public static string Compact_AddHost_OpenLivePing {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_OpenLivePing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This target is already in the active Compact Set. Add it anyway?
+        /// </summary>
+        public static string Compact_AddHost_DuplicateMessage {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_DuplicateMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate target.
+        /// </summary>
+        public static string Compact_AddHost_DuplicateTitle {
+            get {
+                return ResourceManager.GetString("Compact_AddHost_DuplicateTitle", resourceCulture);
+            }
+        }
+
     }
 }

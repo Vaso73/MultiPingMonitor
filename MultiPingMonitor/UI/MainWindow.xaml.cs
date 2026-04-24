@@ -807,6 +807,89 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Handles the "Add host" quick-action button on the Compact Set toolbar.
+        /// Opens a compact dialog to add a new target directly to the active Compact Set.
+        /// Only active when CompactSource == CustomTargets and an active set exists.
+        /// </summary>
+        private void CompactAddHostButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ApplicationOptions.CompactSource != ApplicationOptions.CompactSourceMode.CustomTargets)
+                return;
+
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            if (activeSet == null)
+                return;
+
+            var dialog = new AddCompactHostDialog();
+            dialog.Owner = this;
+
+            if (dialog.ShowDialog() != true)
+                return;
+
+            var host = dialog.Host;
+            if (string.IsNullOrWhiteSpace(host))
+                return;
+
+            // Check for duplicate target in the active set.
+            bool isDuplicate = activeSet.Entries.Any(
+                entry => string.Equals(entry.Target, host, StringComparison.OrdinalIgnoreCase));
+
+            if (isDuplicate)
+            {
+                var answer = System.Windows.MessageBox.Show(
+                    Strings.Compact_AddHost_DuplicateMessage,
+                    Strings.Compact_AddHost_DuplicateTitle,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+                if (answer != MessageBoxResult.Yes)
+                    return;
+            }
+
+            var alias = dialog.Alias;
+            var entry = new CompactTargetEntry(host, alias);
+            activeSet.Entries.Add(entry);
+            Configuration.Save();
+
+            // Add a new probe to the live collection immediately.
+            var probe = new Probe();
+            probe.Hostname = host;
+            if (!string.IsNullOrWhiteSpace(alias))
+                probe.Alias = alias;
+
+            _CompactProbeCollection.Add(probe);
+
+            if (ApplicationOptions.IsCompactSetRunning)
+            {
+                // Set is running: start monitoring the new target immediately.
+                probe.StartStop();
+            }
+            else
+            {
+                // Set is stopped: add the probe but keep it stopped and suppressed.
+                probe.SuppressNotifications = true;
+            }
+
+            // Update tray to pick up any status change.
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+
+            // Open a Live Ping Monitor window if the checkbox was checked.
+            if (dialog.OpenLivePing)
+            {
+                if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
+                {
+                    probe.LivePingMonitorWindow.Activate();
+                }
+                else
+                {
+                    var livePingWindow = new LivePingMonitorWindow(probe, this);
+                    probe.LivePingMonitorWindow = livePingWindow;
+                    livePingWindow.Show();
+                }
+            }
+        }
+
+        /// <summary>
         /// Opens the Manage Compact Sets window.
         /// Live changes are applied immediately via Owner-cast calls back into MainWindow.
         /// After the user closes it, does a final safety refresh.

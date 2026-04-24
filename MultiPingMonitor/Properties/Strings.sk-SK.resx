@@ -1304,4 +1304,22 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Compact_SetStopped" xml:space="preserve">
     <value>Zastavená</value>
   </data>
+  <data name="Compact_AddHost" xml:space="preserve">
+    <value>Pridať hostiteľa</value>
+  </data>
+  <data name="Compact_AddHost_Host" xml:space="preserve">
+    <value>Hostiteľ</value>
+  </data>
+  <data name="Compact_AddHost_Alias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="Compact_AddHost_OpenLivePing" xml:space="preserve">
+    <value>Otvoriť Live Ping po pridaní</value>
+  </data>
+  <data name="Compact_AddHost_DuplicateMessage" xml:space="preserve">
+    <value>Tento cieľ sa už nachádza v aktívnej Compact sade. Napriek tomu pridať?</value>
+  </data>
+  <data name="Compact_AddHost_DuplicateTitle" xml:space="preserve">
+    <value>Duplicitný cieľ</value>
+  </data>
 </root>
