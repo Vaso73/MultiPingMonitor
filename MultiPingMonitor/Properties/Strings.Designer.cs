@@ -3945,7 +3945,7 @@ namespace MultiPingMonitor.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to This target is already in the active Compact Set. Add it anyway?
+        ///   Looks up a localized string similar to This target is already in the active Compact Set.
         /// </summary>
         public static string Compact_AddHost_DuplicateMessage {
             get {
