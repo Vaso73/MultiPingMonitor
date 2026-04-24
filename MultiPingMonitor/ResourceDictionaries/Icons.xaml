@@ -511,6 +511,9 @@
     <!-- Left-right double arrow (toggle between Normal and Compact display mode) -->
     <Geometry x:Key="geom.menu.toggle-display">M 0,256 L 192,96 V 176 H 320 V 96 L 512,256 L 320,416 V 336 H 192 V 416 Z</Geometry>
 
+    <!-- X cross (close all live windows) -->
+    <Geometry x:Key="geom.menu.close-all">F1 M512,512z M0,0z M193.94,256L2.34,64.4C-0.78,61.28,-0.78,56.21,2.34,53.09L53.09,2.34C56.21,-0.78,61.28,-0.78,64.4,2.34L256,193.94 447.6,2.34C450.72,-0.78,455.79,-0.78,458.91,2.34L509.66,53.09C512.78,56.21,512.78,61.28,509.66,64.4L318.06,256 509.66,447.6C512.78,450.72,512.78,455.79,509.66,458.91L458.91,509.66C455.79,512.78,450.72,512.78,447.6,509.66L256,318.06 64.4,509.66C61.28,512.78,56.21,512.78,53.09,509.66L2.34,458.91C-0.78,455.79,-0.78,450.72,2.34,447.6Z</Geometry>
+
     <!-- Icon: compact-view (three stacked horizontal bars representing compact list rows) -->
     <DrawingImage x:Key="icon.compact-view">
         <DrawingImage.Drawing>
