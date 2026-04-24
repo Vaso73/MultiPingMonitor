@@ -1158,7 +1158,7 @@ namespace MultiPingMonitor.UI
             var openAllSub = new MenuItem
             {
                 Header = Strings.LivePing_OpenAllLive,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.new-live-ping")
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.cascade")
             };
             var cascadeItem = new MenuItem
             {
