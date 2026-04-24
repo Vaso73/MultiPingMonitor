@@ -459,6 +459,20 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
+        public void MainWindow_ApplyDisplayMode_CollapsesToolbarOnReturnToNormal()
+        {
+            // When ApplyDisplayMode switches back to Normal mode it must call
+            // UpdateCompactStartStopButton() so the toolbar is collapsed.
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("internal void ApplyDisplayMode(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "ApplyDisplayMode not found");
+            int methodEnd = source.IndexOf("\n        // ── Pin", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("UpdateCompactStartStopButton", body);
+        }
+
+        [Fact]
         public void MainWindow_Xaml_CompactStartStopButton_HasClickHandler()
         {
             var xaml = File.ReadAllText(MainWindowXamlPath());

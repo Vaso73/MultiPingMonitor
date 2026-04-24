@@ -479,6 +479,9 @@ namespace MultiPingMonitor.UI
                 // Returning to Normal mode: lift any notification suppression so that
                 // Normal/Main probes resume firing all alerts.
                 ApplyNormalProbeNotificationScope();
+
+                // Collapse the compact set toolbar — it must never show in Normal mode.
+                UpdateCompactStartStopButton();
             }
 
             // Update tray toggle text whenever display mode is applied.
