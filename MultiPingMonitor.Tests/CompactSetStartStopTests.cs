@@ -291,5 +291,116 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("Compact_StartSet", body);
             Assert.Contains("StartStopCompactSet", body);
         }
+
+        // ── Titlebar Start/Stop button ─────────────────────────────────────────
+
+        [Fact]
+        public void MainWindow_Xaml_HasCompactStartStopButton()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactStartStopButton", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_HasCompactStartStopIcon()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactStartStopIcon", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactStartStopButton_IsInitiallyCollapsed()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            // The button must be declared Collapsed so it is hidden by default
+            // and only shown by code-behind when applicable.
+            int idx = xaml.IndexOf("CompactStartStopButton", StringComparison.Ordinal);
+            Assert.True(idx >= 0, "CompactStartStopButton not found in XAML");
+            // Look in a reasonable window around the name for Visibility="Collapsed"
+            string region = xaml.Substring(Math.Max(0, idx - 200), Math.Min(600, xaml.Length - Math.Max(0, idx - 200)));
+            Assert.Contains("Visibility=\"Collapsed\"", region);
+        }
+
+        [Fact]
+        public void MainWindow_HasUpdateCompactStartStopButton()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("UpdateCompactStartStopButton", source);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStartStopButton_ChecksCustomTargetsAndActiveSet()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStartStopButton()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "UpdateCompactStartStopButton not found");
+            int methodEnd = source.IndexOf("\n        private ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("CustomTargets", body);
+            Assert.Contains("GetActiveCompactSet", body);
+            Assert.Contains("IsCompactSetRunning", body);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStartStopButton_UsesStartStopStrings()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStartStopButton()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0);
+            int methodEnd = source.IndexOf("\n        private ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("Compact_StopSet", body);
+            Assert.Contains("Compact_StartSet", body);
+        }
+
+        [Fact]
+        public void MainWindow_HasCompactStartStopButton_ClickHandler()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("CompactStartStopButton_Click", source);
+        }
+
+        [Fact]
+        public void MainWindow_CompactStartStopButton_ClickHandler_CallsStartStopCompactSet()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactStartStopButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactStartStopButton_Click not found");
+            int methodEnd = source.IndexOf("\n        }", methodIdx, StringComparison.Ordinal);
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("StartStopCompactSet()", body);
+        }
+
+        [Fact]
+        public void MainWindow_UpdateCompactStoppedIndicator_CallsUpdateCompactStartStopButton()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void UpdateCompactStoppedIndicator()", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "UpdateCompactStoppedIndicator not found");
+            int methodEnd = source.IndexOf("\n        private ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("UpdateCompactStartStopButton", body);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactStartStopButton_HasClickHandler()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactStartStopButton_Click", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_Xaml_CompactStartStopButton_UsesTitleBarButtonStyle()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            int idx = xaml.IndexOf("CompactStartStopButton", StringComparison.Ordinal);
+            Assert.True(idx >= 0);
+            // Look forward from the button name for the style reference within the same element
+            string region = xaml.Substring(Math.Max(0, idx - 100), Math.Min(800, xaml.Length - Math.Max(0, idx - 100)));
+            Assert.Contains("Style.TitleBarButton", region);
+        }
     }
 }

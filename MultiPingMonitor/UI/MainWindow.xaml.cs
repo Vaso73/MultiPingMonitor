@@ -744,6 +744,7 @@ namespace MultiPingMonitor.UI
         /// <summary>
         /// Shows or hides the "Stopped" badge in the compact title bar.
         /// The badge is visible when the compact set is stopped and in CustomTargets mode.
+        /// Also updates the Start/Stop button state.
         /// </summary>
         private void UpdateCompactStoppedIndicator()
         {
@@ -755,6 +756,43 @@ namespace MultiPingMonitor.UI
                 && ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact;
 
             CompactStoppedBadge.Visibility = showStopped ? Visibility.Visible : Visibility.Collapsed;
+            UpdateCompactStartStopButton();
+        }
+
+        // Play triangle icon (▶): start state
+        private const string CompactStartIconData = "M 0,0 L 8,4.5 0,9 Z";
+        // Stop square icon (■): stop state
+        private const string CompactStopIconData = "M 0,0 H 8 V 9 H 0 Z";
+
+        /// <summary>
+        /// Updates the compact titlebar Start/Stop button:
+        /// visibility, tooltip, and icon reflect the current running state.
+        /// The button is only visible when CompactSource is CustomTargets and an active set exists.
+        /// </summary>
+        private void UpdateCompactStartStopButton()
+        {
+            if (CompactStartStopButton == null)
+                return;
+
+            bool showButton = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.GetActiveCompactSet() != null
+                && ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact;
+
+            CompactStartStopButton.Visibility = showButton ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!showButton)
+                return;
+
+            bool running = ApplicationOptions.IsCompactSetRunning;
+            CompactStartStopButton.ToolTip = running ? Strings.Compact_StopSet : Strings.Compact_StartSet;
+            if (CompactStartStopIcon != null)
+                CompactStartStopIcon.Data = System.Windows.Media.Geometry.Parse(
+                    running ? CompactStopIconData : CompactStartIconData);
+        }
+
+        private void CompactStartStopButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartStopCompactSet();
         }
 
         /// <summary>
