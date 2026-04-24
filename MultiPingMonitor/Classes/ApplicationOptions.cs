@@ -109,6 +109,9 @@ namespace MultiPingMonitor.Classes
         public static List<CompactTargetSet> CompactSets { get; set; } = new List<CompactTargetSet>();
         // Id of the currently active compact set (null/empty ⇒ none).
         public static string ActiveCompactSetId { get; set; } = string.Empty;
+        // Whether the active compact set is currently running (probes active).
+        // Defaults to true so a freshly configured set starts monitoring automatically.
+        public static bool IsCompactSetRunning { get; set; } = true;
 
         // Manage Compact Sets window: persisted left-pane width (pixels).
         // -1 means "use XAML default" (no saved value yet).

@@ -428,6 +428,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="MultiPingMonitor"
@@ -437,8 +438,22 @@
                        Margin="6,0,0,0"
                        TextTrimming="CharacterEllipsis"
                        Opacity="0.7"/>
+            <!-- Stopped badge: visible when the active compact set is stopped -->
+            <Border x:Name="CompactStoppedBadge"
+                    Grid.Column="1"
+                    Visibility="Collapsed"
+                    Background="{DynamicResource Theme.Warning}"
+                    CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                    Padding="4,1"
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Center">
+                <TextBlock Text="{x:Static resource:Strings.Compact_SetStopped}"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource Theme.AccentForeground}"/>
+            </Border>
             <!-- Compact title bar: pin / always-on-top toggle -->
-            <ToggleButton Grid.Column="1"
+            <ToggleButton Grid.Column="2"
                           x:Name="CompactPinButton"
                           Click="PinButton_Click"
                           Style="{DynamicResource Style.PinToggleButton}"
@@ -454,7 +469,7 @@
                       Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
             </ToggleButton>
             <!-- Compact title bar: menu button for quick access to compact data source -->
-            <Button Grid.Column="2"
+            <Button Grid.Column="3"
                     x:Name="CompactMenuButton"
                     Click="CompactMenuButton_Click"
                     Style="{DynamicResource Style.TitleBarButton}"
@@ -469,7 +484,7 @@
                       Width="15" Height="18"
                       Stretch="None"/>
             </Button>
-            <Button Grid.Column="3"
+            <Button Grid.Column="4"
                     Click="OnCloseButtonClick"
                     Style="{DynamicResource Style.TitleBarCloseButton}"
                     AutomationProperties.Name="Close"

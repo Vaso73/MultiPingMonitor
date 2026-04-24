@@ -1295,4 +1295,13 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitorovanie prebieha. Zastaviť a zmeniť cieľ?</value>
   </data>
+  <data name="Compact_StartSet" xml:space="preserve">
+    <value>Spustiť sadu</value>
+  </data>
+  <data name="Compact_StopSet" xml:space="preserve">
+    <value>Zastaviť sadu</value>
+  </data>
+  <data name="Compact_SetStopped" xml:space="preserve">
+    <value>Zastavená</value>
+  </data>
 </root>
