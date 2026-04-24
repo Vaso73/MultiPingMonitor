@@ -178,6 +178,14 @@ namespace MultiPingMonitor.Classes
             OnPropertyChanged(nameof(Type));
         }
 
+        /// <summary>
+        /// When true, status-change notifications (popup, sound, email, status-change log)
+        /// are suppressed for this probe.  Set by the main window to scope notifications to
+        /// the active monitoring context when Compact mode is running a custom Compact Set
+        /// and this probe belongs to the Normal/Main collection.
+        /// </summary>
+        public bool SuppressNotifications { get; set; } = false;
+
         private bool isActive = false;
         public bool IsActive
         {

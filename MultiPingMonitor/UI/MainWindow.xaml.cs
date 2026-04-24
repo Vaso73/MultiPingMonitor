@@ -475,6 +475,10 @@ namespace MultiPingMonitor.UI
 
                 // Normal mode always uses the main probe collection.
                 ProbeItemsControl.ItemsSource = _ProbeCollection;
+
+                // Returning to Normal mode: lift any notification suppression so that
+                // Normal/Main probes resume firing all alerts.
+                ApplyNormalProbeNotificationScope();
             }
 
             // Update tray toggle text whenever display mode is applied.
@@ -540,6 +544,26 @@ namespace MultiPingMonitor.UI
                 RebuildCompactProbes();
                 ProbeItemsControl.ItemsSource = _CompactProbeCollection;
             }
+
+            // Scope notifications to the active monitoring context.
+            ApplyNormalProbeNotificationScope();
+        }
+
+        /// <summary>
+        /// Sets <see cref="Probe.SuppressNotifications"/> on every probe in the Normal/Main
+        /// collection to scope alerts to the active monitoring context.
+        /// Suppression is enabled when Compact mode is active and uses a custom Compact Set;
+        /// in that case all popup, sound, email, and status-change-log notifications must
+        /// come only from the active Compact Set, not also from the Normal/Main targets.
+        /// Suppression is cleared as soon as the user returns to Normal mode, or switches
+        /// the Compact source back to Normal Targets.
+        /// </summary>
+        private void ApplyNormalProbeNotificationScope()
+        {
+            bool suppress = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
+            foreach (var probe in _ProbeCollection)
+                probe.SuppressNotifications = suppress;
         }
 
         /// <summary>
@@ -1671,6 +1695,20 @@ namespace MultiPingMonitor.UI
                 {
                     if (_subscribedProbes.Add(p))
                         p.PropertyChanged += Probe_PropertyChanged;
+                }
+
+                // When new probes are added to the Normal/Main collection while Compact
+                // custom-set mode is active, mark them suppressed immediately so they
+                // don't fire notifications from outside the active monitoring context.
+                if (ReferenceEquals(sender, _ProbeCollection))
+                {
+                    bool suppress = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                        && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
+                    if (suppress)
+                    {
+                        foreach (Probe p in e.NewItems)
+                            p.SuppressNotifications = true;
+                    }
                 }
             }
             if (e.OldItems != null)
