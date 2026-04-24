@@ -106,6 +106,13 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
+        public void MainWindow_HasShouldSuppressNormalProbeNotificationsHelper()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("ShouldSuppressNormalProbeNotifications", source);
+        }
+
+        [Fact]
         public void MainWindow_ApplyNormalProbeNotificationScope_SetsSuppressOnNormalProbes()
         {
             var source = File.ReadAllText(MainWindowSourcePath());
@@ -121,19 +128,21 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void MainWindow_ApplyNormalProbeNotificationScope_SuppressesWhenCompactCustom()
+        public void MainWindow_ShouldSuppressHelper_ChecksCompactAndCustomTargets()
         {
             var source = File.ReadAllText(MainWindowSourcePath());
-            int methodStart = source.IndexOf("private void ApplyNormalProbeNotificationScope()",
+            int methodStart = source.IndexOf("ShouldSuppressNormalProbeNotifications()",
                 StringComparison.Ordinal);
             Assert.True(methodStart >= 0);
 
-            int methodEnd = source.IndexOf("\n        }", methodStart, StringComparison.Ordinal);
-            string body = source.Substring(methodStart, methodEnd - methodStart);
+            // Locate the lambda/method body (search forward for the condition).
+            int conditionRegion = source.IndexOf("DisplayMode.Compact", methodStart, StringComparison.Ordinal);
+            Assert.True(conditionRegion > methodStart && conditionRegion - methodStart < 300,
+                "ShouldSuppressNormalProbeNotifications must check DisplayMode.Compact");
 
-            // Must check both CurrentDisplayMode == Compact and CompactSource == CustomTargets.
-            Assert.Contains("DisplayMode.Compact", body);
-            Assert.Contains("CustomTargets", body);
+            int customTargetsRegion = source.IndexOf("CustomTargets", methodStart, StringComparison.Ordinal);
+            Assert.True(customTargetsRegion > methodStart && customTargetsRegion - methodStart < 400,
+                "ShouldSuppressNormalProbeNotifications must check CustomTargets");
         }
 
         // ── Call sites ─────────────────────────────────────────────────────────

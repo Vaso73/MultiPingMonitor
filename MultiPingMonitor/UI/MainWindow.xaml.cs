@@ -550,6 +550,16 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Returns true when Normal/Main probe notifications should be suppressed —
+        /// i.e. when Compact mode is the active context and uses its own custom Compact Set.
+        /// Centralizes the condition to avoid duplication across <see cref="ApplyNormalProbeNotificationScope"/>
+        /// and <see cref="ProbeCollection_CollectionChanged"/>.
+        /// </summary>
+        private static bool ShouldSuppressNormalProbeNotifications() =>
+            ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+            && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
+
+        /// <summary>
         /// Sets <see cref="Probe.SuppressNotifications"/> on every probe in the Normal/Main
         /// collection to scope alerts to the active monitoring context.
         /// Suppression is enabled when Compact mode is active and uses a custom Compact Set;
@@ -560,8 +570,7 @@ namespace MultiPingMonitor.UI
         /// </summary>
         private void ApplyNormalProbeNotificationScope()
         {
-            bool suppress = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
+            bool suppress = ShouldSuppressNormalProbeNotifications();
             foreach (var probe in _ProbeCollection)
                 probe.SuppressNotifications = suppress;
         }
@@ -1700,15 +1709,10 @@ namespace MultiPingMonitor.UI
                 // When new probes are added to the Normal/Main collection while Compact
                 // custom-set mode is active, mark them suppressed immediately so they
                 // don't fire notifications from outside the active monitoring context.
-                if (ReferenceEquals(sender, _ProbeCollection))
+                if (ReferenceEquals(sender, _ProbeCollection) && ShouldSuppressNormalProbeNotifications())
                 {
-                    bool suppress = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                        && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
-                    if (suppress)
-                    {
-                        foreach (Probe p in e.NewItems)
-                            p.SuppressNotifications = true;
-                    }
+                    foreach (Probe p in e.NewItems)
+                        p.SuppressNotifications = true;
                 }
             }
             if (e.OldItems != null)
