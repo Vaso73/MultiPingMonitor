@@ -1417,4 +1417,13 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitoring is active. Stop monitoring and change the target?</value>
   </data>
+  <data name="Compact_StartSet" xml:space="preserve">
+    <value>Start set</value>
+  </data>
+  <data name="Compact_StopSet" xml:space="preserve">
+    <value>Stop set</value>
+  </data>
+  <data name="Compact_SetStopped" xml:space="preserve">
+    <value>Stopped</value>
+  </data>
 </root>

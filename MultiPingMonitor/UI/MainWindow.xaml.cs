@@ -479,6 +479,9 @@ namespace MultiPingMonitor.UI
                 // Returning to Normal mode: lift any notification suppression so that
                 // Normal/Main probes resume firing all alerts.
                 ApplyNormalProbeNotificationScope();
+
+                // Collapse the compact set toolbar — it must never show in Normal mode.
+                UpdateCompactStartStopButton();
             }
 
             // Update tray toggle text whenever display mode is applied.
@@ -547,6 +550,7 @@ namespace MultiPingMonitor.UI
 
             // Scope notifications to the active monitoring context.
             ApplyNormalProbeNotificationScope();
+            UpdateCompactStoppedIndicator();
         }
 
         /// <summary>
@@ -618,7 +622,11 @@ namespace MultiPingMonitor.UI
                 if (!string.IsNullOrWhiteSpace(entry.Alias))
                     probe.Alias = entry.Alias;
                 _CompactProbeCollection.Add(probe);
-                probe.StartStop();
+                // Only auto-start if the compact set is currently in the running state.
+                if (ApplicationOptions.IsCompactSetRunning)
+                    probe.StartStop();
+                else
+                    probe.SuppressNotifications = true;
             }
         }
 
@@ -700,6 +708,105 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Toggles the running state of the active compact set.
+        /// When stopped: all compact probes are stopped and notifications are suppressed.
+        /// When started: all compact probes are started and notifications are restored.
+        /// Only applies when CompactSource is set to CustomTargets.
+        /// </summary>
+        internal void StartStopCompactSet()
+        {
+            ApplicationOptions.IsCompactSetRunning = !ApplicationOptions.IsCompactSetRunning;
+
+            if (ApplicationOptions.IsCompactSetRunning)
+            {
+                // Start: resume monitoring for all compact probes.
+                foreach (var probe in _CompactProbeCollection)
+                {
+                    probe.SuppressNotifications = false;
+                    if (!probe.IsActive)
+                        probe.StartStop();
+                }
+            }
+            else
+            {
+                // Stop: halt monitoring and suppress notifications for all compact probes.
+                foreach (var probe in _CompactProbeCollection)
+                {
+                    probe.SuppressNotifications = true;
+                    if (probe.IsActive)
+                        probe.StartStop();
+                }
+            }
+
+            UpdateCompactStoppedIndicator();
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+            Configuration.Save();
+        }
+
+        /// <summary>
+        /// Shows or hides the "Stopped" badge in the compact set toolbar.
+        /// The badge is visible when the compact set is stopped and in CustomTargets mode.
+        /// Also updates the Start/Stop button state.
+        /// </summary>
+        private void UpdateCompactStoppedIndicator()
+        {
+            if (CompactStoppedBadge == null)
+                return;
+
+            bool showStopped = !ApplicationOptions.IsCompactSetRunning
+                && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact;
+
+            CompactStoppedBadge.Visibility = showStopped ? Visibility.Visible : Visibility.Collapsed;
+            UpdateCompactStartStopButton();
+        }
+
+        // Play triangle icon (▶): start state
+        private const string CompactStartIconData = "M 0,0 L 8,4.5 0,9 Z";
+        // Stop square icon (■): stop state
+        private const string CompactStopIconData = "M 0,0 H 8 V 9 H 0 Z";
+
+        /// <summary>
+        /// Updates the compact set toolbar row and its Start/Stop button:
+        /// - Shows/hides the whole toolbar row
+        /// - Populates the active set name
+        /// - Updates the button tooltip and icon to reflect the current running state
+        /// The toolbar is only visible when CompactSource is CustomTargets, an active set
+        /// exists, and the app is in Compact display mode.
+        /// </summary>
+        private void UpdateCompactStartStopButton()
+        {
+            if (CompactSetToolbar == null)
+                return;
+
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            bool showToolbar = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && activeSet != null
+                && ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact;
+
+            CompactSetToolbar.Visibility = showToolbar ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!showToolbar)
+                return;
+
+            if (CompactSetNameText != null && activeSet != null)
+                CompactSetNameText.Text = activeSet.Name;
+
+            bool running = ApplicationOptions.IsCompactSetRunning;
+            if (CompactStartStopButton != null)
+                CompactStartStopButton.ToolTip = running ? Strings.Compact_StopSet : Strings.Compact_StartSet;
+            if (CompactStartStopIcon != null)
+                CompactStartStopIcon.Data = System.Windows.Media.Geometry.Parse(
+                    running ? CompactStopIconData : CompactStartIconData);
+        }
+
+        private void CompactStartStopButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartStopCompactSet();
+        }
+
+        /// <summary>
         /// Opens the Manage Compact Sets window.
         /// Live changes are applied immediately via Owner-cast calls back into MainWindow.
         /// After the user closes it, does a final safety refresh.
@@ -776,6 +883,20 @@ namespace MultiPingMonitor.UI
             // Compact set selection items.
             AppendCompactSetMenuItems(CompactTargetsMenu.Items);
 
+            // Start/Stop set — only meaningful when using a custom compact set.
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.GetActiveCompactSet() != null)
+            {
+                CompactTargetsMenu.Items.Add(new Separator());
+                bool isRunning = ApplicationOptions.IsCompactSetRunning;
+                var startStopItem = new MenuItem
+                {
+                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet
+                };
+                startStopItem.Click += (s, args) => StartStopCompactSet();
+                CompactTargetsMenu.Items.Add(startStopItem);
+            }
+
             // Separator + Manage Compact Sets...
             CompactTargetsMenu.Items.Add(new Separator());
             var manageItem = new MenuItem
@@ -851,6 +972,20 @@ namespace MultiPingMonitor.UI
 
             // Compact set selection items.
             AppendCompactSetMenuItems(menu.Items);
+
+            // Start/Stop set item — only meaningful when using a custom compact set.
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.GetActiveCompactSet() != null)
+            {
+                menu.Items.Add(new Separator());
+                bool isRunning = ApplicationOptions.IsCompactSetRunning;
+                var startStopItem = new MenuItem
+                {
+                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet
+                };
+                startStopItem.Click += (s, args) => StartStopCompactSet();
+                menu.Items.Add(startStopItem);
+            }
 
             menu.Items.Add(new Separator());
 

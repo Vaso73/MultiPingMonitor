@@ -3881,5 +3881,32 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Start set.
+        /// </summary>
+        public static string Compact_StartSet {
+            get {
+                return ResourceManager.GetString("Compact_StartSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Stop set.
+        /// </summary>
+        public static string Compact_StopSet {
+            get {
+                return ResourceManager.GetString("Compact_StopSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped.
+        /// </summary>
+        public static string Compact_SetStopped {
+            get {
+                return ResourceManager.GetString("Compact_SetStopped", resourceCulture);
+            }
+        }
+
     }
 }

@@ -275,7 +275,8 @@ namespace MultiPingMonitor.Classes
         private static XElement GenerateCompactSetsNode()
         {
             var element = new XElement("compactSets",
-                new XAttribute("activeSetId", ApplicationOptions.ActiveCompactSetId ?? string.Empty));
+                new XAttribute("activeSetId", ApplicationOptions.ActiveCompactSetId ?? string.Empty),
+                new XAttribute("isRunning", ApplicationOptions.IsCompactSetRunning));
 
             foreach (var set in ApplicationOptions.CompactSets)
             {
@@ -449,6 +450,10 @@ namespace MultiPingMonitor.Classes
                 if (setsNode != null)
                 {
                     ApplicationOptions.ActiveCompactSetId = setsNode.Attributes?["activeSetId"]?.Value ?? string.Empty;
+
+                    // isRunning defaults to true when the attribute is absent (e.g. older configs).
+                    var isRunningAttr = setsNode.Attributes?["isRunning"]?.Value;
+                    ApplicationOptions.IsCompactSetRunning = isRunningAttr == null || isRunningAttr != "False";
 
                     foreach (XmlNode setNode in setsNode.SelectNodes("set"))
                     {
