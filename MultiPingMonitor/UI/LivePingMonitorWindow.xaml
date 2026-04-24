@@ -203,8 +203,14 @@
             <Border x:Name="PausedBanner" DockPanel.Dock="Top" Visibility="Collapsed"
                     Background="{DynamicResource Theme.SurfaceAlt}" Padding="8,4"
                     BorderBrush="{DynamicResource Theme.Border}" BorderThickness="0,0,0,1">
-                <TextBlock x:Name="PausedBannerText" Text="⏸  Paused" FontSize="11" FontStyle="Italic"
-                           Foreground="{DynamicResource Theme.Warning}" HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <!-- Pause icon: two vertical bars -->
+                    <Path Width="9" Height="11" Stretch="Uniform" VerticalAlignment="Center"
+                          Fill="{DynamicResource Theme.Warning}" Margin="0,0,5,0"
+                          Data="M 0,0 H 3 V 11 H 0 Z M 5,0 H 8 V 11 H 5 Z" />
+                    <TextBlock x:Name="PausedBannerText" Text="Paused" FontSize="11" FontStyle="Italic"
+                               Foreground="{DynamicResource Theme.Warning}" VerticalAlignment="Center" />
+                </StackPanel>
             </Border>
 
             <!-- Footer: stats and buttons -->

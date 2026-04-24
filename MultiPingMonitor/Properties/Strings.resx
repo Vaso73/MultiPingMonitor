@@ -1331,7 +1331,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Resume</value>
   </data>
   <data name="LivePing_Paused" xml:space="preserve">
-    <value>⏸  Paused</value>
+    <value>Paused</value>
   </data>
   <data name="LivePing_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>

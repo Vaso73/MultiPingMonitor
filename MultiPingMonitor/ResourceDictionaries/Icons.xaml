@@ -424,6 +424,20 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+    <!-- Icon: remove (horizontal minus bar, complement to icon.add) -->
+    <!-- Credit: Ryan Smith -->
+    <DrawingImage x:Key="icon.remove">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <GeometryDrawing Brush="#000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,190,512,132" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- Icon: compact-view (three stacked horizontal bars representing compact list rows) -->
     <DrawingImage x:Key="icon.compact-view">
         <DrawingImage.Drawing>
