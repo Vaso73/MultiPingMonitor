@@ -8,7 +8,7 @@
         Height="Auto" SizeToContent="Height"
         Width="380" MinWidth="280"
         Background="{DynamicResource Theme.Background}"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="Manual"
         ShowInTaskbar="False"
         ResizeMode="NoResize">
     <WindowChrome.WindowChrome>

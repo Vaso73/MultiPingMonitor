@@ -811,6 +811,34 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
+        /// Positions a Compact quick-action dialog near the top of the Compact window,
+        /// just below the titlebar/toolbar area, horizontally centered over it.
+        /// Clamps the result to the current monitor's working area so the dialog
+        /// never opens off-screen on multi-monitor setups.
+        /// </summary>
+        private void PositionCompactQuickDialog(Window dialog)
+        {
+            const double topOffset = 60.0;
+
+            // Horizontal: center the dialog over the Compact window.
+            double left = this.Left + (this.ActualWidth - dialog.Width) / 2.0;
+            // Vertical: place just below the titlebar + toolbar, not at vertical center.
+            double top = this.Top + topOffset;
+
+            // Clamp to the working area of the monitor that contains the Compact window.
+            var screen = System.Windows.Forms.Screen.FromRectangle(
+                new System.Drawing.Rectangle((int)this.Left, (int)this.Top,
+                    (int)this.ActualWidth, (int)this.ActualHeight));
+            var wa = screen.WorkingArea;
+
+            left = Math.Max(wa.Left, Math.Min(left, wa.Right  - dialog.Width));
+            top  = Math.Max(wa.Top,  Math.Min(top,  wa.Bottom - dialog.Height));
+
+            dialog.Left = left;
+            dialog.Top  = top;
+        }
+
+        /// <summary>
         /// Handles the "Add host" quick-action button on the Compact Set toolbar.
         /// Opens a compact dialog to add a new target directly to the active Compact Set.
         /// Only active when CompactSource == CustomTargets and an active set exists.
@@ -826,6 +854,7 @@ namespace MultiPingMonitor.UI
 
             var dialog = new AddCompactHostDialog();
             dialog.Owner = this;
+            PositionCompactQuickDialog(dialog);
 
             if (dialog.ShowDialog() != true)
                 return;
@@ -906,6 +935,7 @@ namespace MultiPingMonitor.UI
 
             var dialog = new RemoveCompactHostDialog(activeSet.Entries);
             dialog.Owner = this;
+            PositionCompactQuickDialog(dialog);
 
             if (dialog.ShowDialog() != true)
                 return;

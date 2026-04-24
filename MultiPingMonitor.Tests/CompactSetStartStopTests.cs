@@ -1070,5 +1070,90 @@ namespace MultiPingMonitor.Tests
             var enValue = ResxValue(DefaultResxPath(), "Compact_RemoveHost_NoHosts");
             Assert.NotEqual(enValue, skValue);
         }
+
+        // ── Compact quick dialog placement ────────────────────────────────────
+
+        [Fact]
+        public void MainWindow_HasPositionCompactQuickDialog_Helper()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("PositionCompactQuickDialog", source);
+        }
+
+        [Fact]
+        public void MainWindow_PositionCompactQuickDialog_UsesTopOffset()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void PositionCompactQuickDialog(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "PositionCompactQuickDialog not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Must use this.Top plus a positive offset, not vertical center of the window.
+            Assert.Contains("this.Top", body);
+            Assert.DoesNotContain("ActualHeight / 2", body);
+        }
+
+        [Fact]
+        public void MainWindow_PositionCompactQuickDialog_ClampsToWorkArea()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void PositionCompactQuickDialog(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "PositionCompactQuickDialog not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            // Must query a working area for clamping.
+            Assert.True(body.Contains("WorkingArea") || body.Contains("WorkArea"),
+                "PositionCompactQuickDialog must clamp to a working area");
+            Assert.Contains("dialog.Left", body);
+            Assert.Contains("dialog.Top", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactAddHostButton_Click_CallsPositionHelper()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactAddHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactAddHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("PositionCompactQuickDialog", body);
+        }
+
+        [Fact]
+        public void MainWindow_CompactRemoveHostButton_Click_CallsPositionHelper()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            int methodIdx = source.IndexOf("private void CompactRemoveHostButton_Click(", StringComparison.Ordinal);
+            Assert.True(methodIdx >= 0, "CompactRemoveHostButton_Click not found");
+            int methodEnd = source.IndexOf("\n        /// ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.IndexOf("\n        private void ", methodIdx + 1, StringComparison.Ordinal);
+            if (methodEnd < 0) methodEnd = source.Length;
+            string body = source.Substring(methodIdx, methodEnd - methodIdx);
+            Assert.Contains("PositionCompactQuickDialog", body);
+        }
+
+        [Fact]
+        public void AddCompactHostDialog_Xaml_WindowStartupLocation_IsManual()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "AddCompactHostDialog.xaml");
+            var xaml = File.ReadAllText(xamlPath);
+            Assert.Contains("WindowStartupLocation=\"Manual\"", xaml);
+            Assert.DoesNotContain("WindowStartupLocation=\"CenterOwner\"", xaml);
+        }
+
+        [Fact]
+        public void RemoveCompactHostDialog_Xaml_WindowStartupLocation_IsManual()
+        {
+            var xamlPath = Path.Combine(SolutionRoot(), "MultiPingMonitor", "UI", "RemoveCompactHostDialog.xaml");
+            var xaml = File.ReadAllText(xamlPath);
+            Assert.Contains("WindowStartupLocation=\"Manual\"", xaml);
+            Assert.DoesNotContain("WindowStartupLocation=\"CenterOwner\"", xaml);
+        }
     }
 }
