@@ -423,6 +423,14 @@
         <Setter Property="CornerRadius" Value="0" />
     </Style>
 
+    <!-- ── Compact Set Toolbar strip: Classic ──────────────────────────── -->
+    <Style x:Key="Style.CompactSetToolbar" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
     <!-- ── Compact latency badge: Classic (no decoration) ─────────────── -->
     <Style x:Key="Style.CompactLatencyBadge" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="Transparent" />

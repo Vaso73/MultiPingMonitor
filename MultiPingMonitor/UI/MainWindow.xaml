@@ -484,55 +484,56 @@
         </Grid>
 
         <!-- Compact mode: active set toolbar — shown below title bar when a custom set is active -->
-        <Grid x:Name="CompactSetToolbar"
-              DockPanel.Dock="Top"
-              Height="24"
-              Visibility="Collapsed"
-              Background="{DynamicResource Theme.Surface}"
-              Margin="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <!-- Active compact set name -->
-            <TextBlock x:Name="CompactSetNameText"
-                       Grid.Column="0"
-                       FontSize="11"
-                       Foreground="{DynamicResource Theme.Text.Primary}"
-                       VerticalAlignment="Center"
-                       Margin="6,0,4,0"
-                       TextTrimming="CharacterEllipsis"/>
-            <!-- Stopped badge: visible when the active compact set is stopped -->
-            <Border x:Name="CompactStoppedBadge"
-                    Grid.Column="1"
-                    Visibility="Collapsed"
-                    Background="{DynamicResource Theme.Warning}"
-                    CornerRadius="{DynamicResource Style.CornerRadius.Small}"
-                    Padding="4,1"
-                    Margin="0,0,4,0"
-                    VerticalAlignment="Center">
-                <TextBlock Text="{x:Static resource:Strings.Compact_SetStopped}"
-                           FontSize="10"
-                           FontWeight="Bold"
-                           Foreground="{DynamicResource Theme.AccentForeground}"/>
-            </Border>
-            <!-- Start/Stop quick-access button -->
-            <Button Grid.Column="2"
-                    x:Name="CompactStartStopButton"
-                    Click="CompactStartStopButton_Click"
-                    Style="{DynamicResource Style.TitleBarButton}"
-                    WindowChrome.IsHitTestVisibleInChrome="True"
-                    ToolTipService.InitialShowDelay="800"
-                    Width="28" MinHeight="24"
-                    Cursor="Hand">
-                <Path x:Name="CompactStartStopIcon"
-                      Width="8" Height="9" Stretch="Uniform"
-                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
-                      VerticalAlignment="Center"
-                      Data="M 0,0 L 8,4.5 0,9 Z"/>
-            </Button>
-        </Grid>
+        <Border x:Name="CompactSetToolbar"
+                DockPanel.Dock="Top"
+                Height="24"
+                Visibility="Collapsed"
+                Style="{DynamicResource Style.CompactSetToolbar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <!-- Active compact set name -->
+                <TextBlock x:Name="CompactSetNameText"
+                           Grid.Column="0"
+                           FontSize="11"
+                           Foreground="{DynamicResource Theme.Text.Primary}"
+                           VerticalAlignment="Center"
+                           Margin="6,0,4,0"
+                           TextTrimming="CharacterEllipsis"/>
+                <!-- Stopped badge: visible when the active compact set is stopped -->
+                <Border x:Name="CompactStoppedBadge"
+                        Grid.Column="1"
+                        Visibility="Collapsed"
+                        Background="{DynamicResource Theme.Warning}"
+                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                        Padding="4,1"
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="{x:Static resource:Strings.Compact_SetStopped}"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource Theme.AccentForeground}"/>
+                </Border>
+                <!-- Start/Stop quick-access button -->
+                <Button Grid.Column="2"
+                        x:Name="CompactStartStopButton"
+                        Click="CompactStartStopButton_Click"
+                        Style="{DynamicResource Style.TitleBarButton}"
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        ToolTipService.InitialShowDelay="800"
+                        Width="28" MinHeight="24"
+                        Cursor="Hand">
+                    <Path x:Name="CompactStartStopIcon"
+                          Width="8" Height="9" Stretch="Uniform"
+                          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                          VerticalAlignment="Center"
+                          Data="M 0,0 L 8,4.5 0,9 Z"/>
+                </Button>
+            </Grid>
+        </Border>
 
         <!-- Items Control -->
         <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="{DynamicResource Style.ProbeCardGrid.Margin}">
