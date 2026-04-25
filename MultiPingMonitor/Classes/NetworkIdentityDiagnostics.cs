@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -34,6 +35,21 @@ namespace MultiPingMonitor.Classes
         private const int ChildProcessTimeoutMs     = 30_000;
         // ── Public-facing entry points ────────────────────────────────────────────
 
+        internal static string ResolveExecutablePath(string? candidate = null)
+        {
+            if (!string.IsNullOrWhiteSpace(candidate)
+                && File.Exists(candidate)
+                && string.Equals(Path.GetFileName(candidate), "MultiPingMonitor.exe", StringComparison.OrdinalIgnoreCase))
+                return candidate;
+
+            var processPath = Environment.ProcessPath;
+            if (!string.IsNullOrWhiteSpace(processPath)
+                && File.Exists(processPath)
+                && string.Equals(Path.GetFileName(processPath), "MultiPingMonitor.exe", StringComparison.OrdinalIgnoreCase))
+                return processPath;
+
+            return Path.Combine(AppContext.BaseDirectory, "MultiPingMonitor.exe");
+        }
         /// <summary>
         /// Runs the full public-IP + metadata lookup using a fresh HttpClient.
         /// Returns compact JSON suitable for writing to stdout.
@@ -78,12 +94,14 @@ namespace MultiPingMonitor.Classes
             int       childExitCode = -1;
             try
             {
-                var psi = new ProcessStartInfo(exePath, "--network-identity-lookup")
+                var childExePath = ResolveExecutablePath(exePath);
+                var psi = new ProcessStartInfo(childExePath, "--network-identity-lookup")
                 {
                     UseShellExecute        = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError  = true,
                     CreateNoWindow         = true,
+                    WorkingDirectory       = AppContext.BaseDirectory,
                 };
                 using var proc = Process.Start(psi)
                     ?? throw new InvalidOperationException("Process.Start returned null");

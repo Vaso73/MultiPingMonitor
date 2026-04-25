@@ -177,7 +177,7 @@ namespace MultiPingMonitor.Classes
         /// Safe to call multiple times: stops existing timers before starting new ones
         /// so calling Start() again never leaks orphaned timer instances.
         /// </summary>
-        public void Start()
+        public void Start(bool immediateRefresh = true)
         {
             // Stop and dispose any previously-started timers.
             lock (_timerLock)
@@ -185,8 +185,8 @@ namespace MultiPingMonitor.Classes
                 _wanTimer?.Stop(); _wanTimer?.Dispose(); _wanTimer = null;
                 _lanTimer?.Stop(); _lanTimer?.Dispose(); _lanTimer = null;
             }
-
-            _ = RefreshAllAsync();
+            if (immediateRefresh)
+                _ = RefreshAllAsync();
 
             lock (_timerLock)
             {
@@ -339,6 +339,22 @@ namespace MultiPingMonitor.Classes
                     OnStateChanged();
                 }
 
+                // 1c. Forced/manual refresh: use a fresh child process as the reliable
+                //     boundary for VPN/Tailscale/WFP routing changes. Recreating the
+                //     service or HttpClient inside this process is not sufficient on
+                //     some Windows VPN stacks.
+                if (clearWan)
+                {
+                    bool childApplied = await TryApplyChildProcessWanLookupAsync().ConfigureAwait(false);
+                    if (childApplied)
+                    {
+                        LastRefresh = DateTime.UtcNow;
+                        OnStateChanged();
+                        System.Diagnostics.Debug.WriteLine(
+                            $"NetworkIdentityService: forced refresh used child-process WAN IP={PublicIp}");
+                        return;
+                    }
+                }
                 // 2a. Fast public-IP lookup: update UI as soon as IP is known.
                 //     Hard timeout via Task.WhenAny ensures we always proceed within bounds,
                 //     even if HttpClient does not immediately honour the CancellationToken.
@@ -448,6 +464,144 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        private async Task<bool> TryApplyChildProcessWanLookupAsync()
+        {
+            if (_disposed || !_allowHttpClientRecreation)
+                return false;
+
+            try
+            {
+                var exePath = NetworkIdentityDiagnostics.ResolveExecutablePath(null);
+                var psi = new System.Diagnostics.ProcessStartInfo(exePath, "--network-identity-lookup")
+                {
+                    UseShellExecute        = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError  = true,
+                    CreateNoWindow         = true,
+                    WorkingDirectory       = AppContext.BaseDirectory,
+                };
+
+                using var proc = System.Diagnostics.Process.Start(psi);
+                if (proc == null)
+                    return false;
+
+                var stdoutTask = proc.StandardOutput.ReadToEndAsync();
+                var stderrTask = proc.StandardError.ReadToEndAsync();
+
+                try
+                {
+                    using var timeoutCts = new CancellationTokenSource(12_000);
+                    await proc.WaitForExitAsync(timeoutCts.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    try { proc.Kill(); } catch { }
+                    System.Diagnostics.Trace.WriteLine("NetworkIdentityService: child-process WAN lookup timed out");
+                    return false;
+                }
+
+                string stdout = await stdoutTask.ConfigureAwait(false);
+                string stderr = await stderrTask.ConfigureAwait(false);
+
+                if (proc.ExitCode != 0)
+                {
+                    System.Diagnostics.Trace.WriteLine(
+                        $"NetworkIdentityService: child-process WAN lookup exitCode={proc.ExitCode}, stderr={stderr}");
+                    return false;
+                }
+
+                return TryApplyChildLookupJson(stdout);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"NetworkIdentityService: child-process WAN lookup failed: {ex.GetType().Name}: {ex.Message}");
+                return false;
+            }
+        }
+
+        private bool TryApplyChildLookupJson(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                return false;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                var publicIp = GetStringProp(root, "selectedPublicIp");
+                if (!System.Net.IPAddress.TryParse(publicIp, out _))
+                    return false;
+
+                string countryCode = GetStringProp(root, "countryCode");
+                string asn         = GetStringProp(root, "asn");
+                string provider    = GetStringProp(root, "provider");
+
+                if (root.TryGetProperty("metaProviders", out var metaProviders)
+                    && metaProviders.ValueKind == JsonValueKind.Array)
+                {
+                    string providerOnlyCountry  = string.Empty;
+                    string providerOnlyProvider = string.Empty;
+
+                    foreach (var meta in metaProviders.EnumerateArray())
+                    {
+                        bool parsed = meta.TryGetProperty("parsed", out var parsedEl)
+                            && parsedEl.ValueKind == JsonValueKind.True;
+
+                        if (!parsed)
+                            continue;
+
+                        var metaCountry  = GetStringProp(meta, "countryCode");
+                        var metaAsn      = GetStringProp(meta, "asn");
+                        var metaProvider = GetStringProp(meta, "provider");
+
+                        // Prefer ASN-backed metadata over provider-only metadata.
+                        // Some providers return stale/wrong country while still returning
+                        // a provider name; the ASN-backed provider is usually the stronger signal.
+                        if (!string.IsNullOrEmpty(metaCountry) && !string.IsNullOrEmpty(metaAsn))
+                        {
+                            countryCode = metaCountry;
+                            asn         = metaAsn;
+                            provider    = metaProvider;
+                            break;
+                        }
+
+                        if (string.IsNullOrEmpty(providerOnlyCountry)
+                            && !string.IsNullOrEmpty(metaCountry)
+                            && !string.IsNullOrEmpty(metaProvider))
+                        {
+                            providerOnlyCountry  = metaCountry;
+                            providerOnlyProvider = metaProvider;
+                        }
+
+                        if (string.IsNullOrEmpty(countryCode) && !string.IsNullOrEmpty(metaCountry))
+                            countryCode = metaCountry;
+                    }
+
+                    if (string.IsNullOrEmpty(asn) && !string.IsNullOrEmpty(providerOnlyCountry))
+                    {
+                        countryCode = providerOnlyCountry;
+                        provider    = providerOnlyProvider;
+                    }
+                }
+
+                PublicIp     = publicIp;
+                CountryCode  = countryCode;
+                Asn          = asn;
+                Provider     = provider;
+                WanState     = WanLookupState.Succeeded;
+
+                OnStateChanged();
+                return true;
+            }
+            catch (Exception ex) when (ex is JsonException or InvalidOperationException)
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"NetworkIdentityService: child-process WAN JSON parse failed: {ex.GetType().Name}: {ex.Message}");
+                return false;
+            }
+        }
         private async Task<string> FetchPublicIpAsync()
         {
             if (_disposed) return string.Empty;

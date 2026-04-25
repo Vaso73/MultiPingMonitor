@@ -53,7 +53,7 @@ namespace MultiPingMonitor
                     // Run in-process + child-process lookup; compare; write JSON; exit.
                     System.Diagnostics.Debug.WriteLine(
                         "NetworkIdentityDiagnostics: --network-identity-diagnose");
-                    var exePath = args[0]; // args[0] is the full path of this exe
+                    var exePath = Classes.NetworkIdentityDiagnostics.ResolveExecutablePath(args[0]);
                     try
                     {
                         var json = Task.Run(

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -704,8 +704,13 @@ namespace MultiPingMonitor.UI
             // this reproduces the startup path without requiring an app restart.
             _networkIdentityService = new Classes.NetworkIdentityService();
             _networkIdentityService.StateChanged += NetworkIdentityService_StateChanged;
-            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: new service created, calling Start()");
-            _networkIdentityService.Start();
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: new service created, starting timers without normal immediate lookup");
+            _networkIdentityService.Start(immediateRefresh: false);
+
+            // Manual refresh must use only the forced-refresh path here. A normal
+            // immediate lookup would briefly show the stale local-provider IP before
+            // the child-process VPN-aware lookup replaces it.
+            _networkIdentityService.RequestRefresh();
 
             // Show the loading state immediately while the new service runs its first lookup.
             // The synchronous call here ensures the footer reflects the loading state before
