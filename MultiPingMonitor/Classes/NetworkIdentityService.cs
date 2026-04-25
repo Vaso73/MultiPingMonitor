@@ -384,7 +384,7 @@ namespace MultiPingMonitor.Classes
             // Country badge prefix (before "WAN:").
             var countryPrefix = string.IsNullOrEmpty(countryCode) ? string.Empty : countryCode + " ";
 
-            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{(lastRefresh.HasValue ? $" | {updatedLabel} {lastRefresh.Value.ToLocalTime():HH:mm}" : string.Empty)}";
+            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{(lastRefresh.HasValue ? $" | {updatedLabel} {lastRefresh.Value:HH:mm}" : string.Empty)}";
         }
 
         // ── Private utilities ─────────────────────────────────────────────────────
