@@ -1187,6 +1187,8 @@ namespace MultiPingMonitor.Tests
             // All public IP providers hang until cancelled.
             // RefreshAllAsync must complete within a bounded time even though no
             // provider ever returns — the per-provider and phase timeouts must fire.
+            const double MaxRefreshSeconds = 12.0; // phase timeout (5s) + hard-timeout buffer (2s) + overrun
+
             var handler = new StubHttpMessageHandler(
                 ("https://api.ipify.org",         null),
                 ("https://ipv4.icanhazip.com",    null),
@@ -1199,10 +1201,8 @@ namespace MultiPingMonitor.Tests
             await svc.RefreshAllAsync();
             sw.Stop();
 
-            // Allow up to 12 seconds: phase timeout (5s) + hard timeout buffer (2s)
-            // + per-provider overrun buffer.  In practice it should finish in ~5-7s.
-            Assert.True(sw.Elapsed.TotalSeconds < 12,
-                $"RefreshAllAsync took {sw.Elapsed.TotalSeconds:F1}s — must complete within 12s.");
+            Assert.True(sw.Elapsed.TotalSeconds < MaxRefreshSeconds,
+                $"RefreshAllAsync took {sw.Elapsed.TotalSeconds:F1}s — must complete within {MaxRefreshSeconds}s.");
             Assert.False(svc.IsRefreshing);
             Assert.Equal(WanLookupState.Failed, svc.WanState);
         }

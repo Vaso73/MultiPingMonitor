@@ -81,14 +81,18 @@ namespace MultiPingMonitor.Classes
             "http://ip-api.com/json/{ip}?fields=status,countryCode,isp,as,query",
         };
 
-        private const int WanPollIntervalMs    = 60_000;
-        private const int LanPollIntervalMs    = 120_000;
-        private const int BurstIntervalMs      = 10_000;
-        private const int BurstDurationMs      = 60_000;
-        private const int DebounceMs           = 2_000;
-        private const int PublicIpTimeoutMs    = 5_000;
-        private const int MetaTimeoutMs        = 5_000;
-        private const int PerProviderTimeoutMs = 2_500;
+        private const int WanPollIntervalMs          = 60_000;
+        private const int LanPollIntervalMs          = 120_000;
+        private const int BurstIntervalMs            = 10_000;
+        private const int BurstDurationMs            = 60_000;
+        private const int DebounceMs                 = 2_000;
+        private const int PublicIpTimeoutMs          = 5_000;
+        private const int MetaTimeoutMs              = 5_000;
+        private const int PerProviderTimeoutMs       = 2_500;
+        // Extra buffers so Task.WhenAny hard timeouts fire after the CancellationToken
+        // timeouts, acting only as a final safety net if HttpClient ignores the token.
+        private const int PhaseHardTimeoutBufferMs   = 2_000;
+        private const int ProviderHardTimeoutBufferMs = 1_000;
 
         // Internals
 
@@ -260,7 +264,7 @@ namespace MultiPingMonitor.Classes
                 var publicIpTask = FetchPublicIpAsync();
                 using (var hardCts = new CancellationTokenSource())
                 {
-                    var hardTimeout = Task.Delay(PublicIpTimeoutMs + 2000, hardCts.Token);
+                    var hardTimeout = Task.Delay(PublicIpTimeoutMs + PhaseHardTimeoutBufferMs, hardCts.Token);
                     var phaseWinner = await Task.WhenAny(publicIpTask, hardTimeout).ConfigureAwait(false);
                     hardCts.Cancel(); // stop the delay timer early
 
@@ -398,7 +402,7 @@ namespace MultiPingMonitor.Classes
                 // Hard-timeout fallback: proceed even if GetStringAsync does not honour
                 // the CancellationToken promptly (e.g. OS-level TCP keep-alive behaviour).
                 using var hardCts = new CancellationTokenSource();
-                var hardTimeout = Task.Delay(PerProviderTimeoutMs + 1000, hardCts.Token);
+                var hardTimeout = Task.Delay(PerProviderTimeoutMs + ProviderHardTimeoutBufferMs, hardCts.Token);
                 var winner = await Task.WhenAny(fetchTask, hardTimeout).ConfigureAwait(false);
                 hardCts.Cancel(); // clean up the delay task early
 
