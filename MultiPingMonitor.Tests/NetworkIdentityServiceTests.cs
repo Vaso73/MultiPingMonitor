@@ -1582,5 +1582,237 @@ namespace MultiPingMonitor.Tests
             // The partial continuation must be present in the source.
             Assert.Contains("partialCountry", source);
         }
+        // ── VPN / IP-change behavioral tests ─────────────────────────────────────
+        //
+        // SequentialStubHttpMessageHandler: returns canned responses in sequence per URL.
+        // Each URL maps to a queue of bodies; null means "hang until cancellation".
+        // Requests to URLs not in the rule set return 404.
+
+        private sealed class SequentialStubHttpMessageHandler : HttpMessageHandler
+        {
+            private readonly (string UrlPrefix, Queue<string?> Responses)[] _rules;
+            private readonly object _queueLock = new();
+
+            internal SequentialStubHttpMessageHandler(
+                params (string UrlPrefix, string?[] Responses)[] rules)
+            {
+                _rules = rules
+                    .Select(r => (r.UrlPrefix, new Queue<string?>(r.Responses)))
+                    .ToArray();
+            }
+
+            protected override async Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var url = request.RequestUri?.ToString() ?? string.Empty;
+
+                foreach (var (prefix, queue) in _rules)
+                {
+                    if (!url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    string? body;
+                    lock (_queueLock)
+                    {
+                        body = queue.Count > 0 ? queue.Dequeue() : null;
+                    }
+
+                    if (body == null)
+                    {
+                        await Task.Delay(Timeout.Infinite, cancellationToken);
+                        return null!; // unreachable
+                    }
+
+                    return new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(body),
+                    };
+                }
+
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            }
+        }
+
+        // ── VPN test 1 ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that a second refresh with a different public IP (e.g. after VPN connect)
+        /// updates PublicIp immediately, not keeping the old cached value.
+        /// </summary>
+        [Fact]
+        public async Task VPN_SecondRefresh_UpdatesPublicIp_WhenIpChanges()
+        {
+            var handler = new SequentialStubHttpMessageHandler(
+                // ipify: first refresh → ISP IP; second refresh → VPN IP.
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "172.236.0.106" }),
+                // Remaining IP providers fail fast (not a valid IP string).
+                ("https://ipv4.icanhazip.com",    new[] { "bad", "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad", "bad" }),
+                // Metadata providers fail fast (not JSON) on both refreshes.
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("172.236.0.106", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── VPN test 2 ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// When the public IP changes, stale metadata from the old IP must be cleared
+        /// so the UI never shows the wrong country/ASN even briefly.
+        /// </summary>
+        [Fact]
+        public async Task VPN_SecondRefresh_ClearsStaleMetadata_WhenIpChanges()
+        {
+            const string oldMeta =
+                @"{""countryCode"":""SK"",""asnNumber"":209429,""asnOrganisation"":""Old ISP""}";
+
+            var handler = new SequentialStubHttpMessageHandler(
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "172.236.0.106" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad", "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad", "bad" }),
+                // First meta refresh returns SK + old ASN; second returns garbage (fails fast).
+                ("https://free.freeipapi.com",    new[] { oldMeta, "bad" }),
+                ("https://api.seeip.org",         new[] { "bad",   "bad" }),
+                ("http://ip-api.com",             new[] { "bad",   "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            await svc.RefreshAllAsync();
+            Assert.Equal("SK",      svc.CountryCode);
+            Assert.Equal("AS209429", svc.Asn);
+            Assert.Equal("Old ISP", svc.Provider);
+
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("172.236.0.106", svc.PublicIp);
+            // Stale SK/Old ISP metadata must have been cleared when the IP changed.
+            Assert.True(string.IsNullOrEmpty(svc.CountryCode),
+                "CountryCode must be cleared when the public IP changes.");
+            Assert.True(string.IsNullOrEmpty(svc.Asn),
+                "Asn must be cleared when the public IP changes.");
+            Assert.True(string.IsNullOrEmpty(svc.Provider),
+                "Provider must be cleared when the public IP changes.");
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+        }
+
+        // ── VPN test 3 ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// The new public IP must be visible in the UI even when metadata lookup
+        /// for the new IP fails completely.
+        /// </summary>
+        [Fact]
+        public async Task VPN_NewIpVisible_EvenIfMetadataForNewIpFails()
+        {
+            var handler = new SequentialStubHttpMessageHandler(
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "172.236.0.106" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad", "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad", "bad" }),
+                // Both refreshes: all metadata providers fail fast.
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            await svc.RefreshAllAsync();
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("172.236.0.106", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── VPN test 4 ────────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// When all IP providers fail on the second refresh, the old cached IP must
+        /// remain visible and WanState must be Succeeded (not Loading or Failed).
+        /// </summary>
+        [Fact]
+        public async Task VPN_SecondRefreshAllFail_CachedIpPreserved_WanStateSucceeded()
+        {
+            var handler = new SequentialStubHttpMessageHandler(
+                // First refresh: ipify returns valid IP.
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "bad" }),
+                // Second refresh: all IP providers fail fast.
+                ("https://ipv4.icanhazip.com",    new[] { "bad", "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad", "bad" }),
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            await svc.RefreshAllAsync();
+
+            // Cached IP must be kept because the new lookup failed.
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── VPN test 5 (structural) ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that the service uses SocketsHttpHandler with PooledConnectionLifetime=Zero
+        /// in the production constructor to prevent stale connections after VPN route changes.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_UsesSocketsHandlerWithZeroPoolLifetime()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("SocketsHttpHandler", source);
+            Assert.Contains("PooledConnectionLifetime", source);
+            Assert.Contains("TimeSpan.Zero", source);
+        }
+
+        // ── VPN test 6 (structural) ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that RequestRefresh() queues a pending refresh (_pendingRefresh)
+        /// so it is never silently dropped while another refresh is running.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_RequestRefresh_QueuesPendingRefresh()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("_pendingRefresh", source);
+            // The finally block must check and consume the pending flag.
+            Assert.Contains("Interlocked.Exchange(ref _pendingRefresh, 0)", source);
+        }
+
+        // ── VPN test 7 (structural) ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Verifies that the service clears stale metadata (CountryCode, Asn, Provider)
+        /// when the public IP changes, so the UI shows a clean state for the new IP.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_ClearsMetadata_WhenIpChanges()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // The IP-change detection must be present in the source.
+            Assert.Contains("IP changed", source);
+            Assert.Contains("metadata cleared", source);
+        }
     }
 }

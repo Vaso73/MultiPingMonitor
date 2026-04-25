@@ -115,6 +115,11 @@ namespace MultiPingMonitor.Classes
         // Guards against overlapping refreshes (0 = free, 1 = busy).
         private int _refreshBusy;
 
+        // Set to 1 when a refresh is requested while _refreshBusy == 1.
+        // The running refresh's finally block fires exactly one follow-up when it completes,
+        // so RequestRefresh() and network-change events are never silently dropped.
+        private volatile int _pendingRefresh;
+
         // Master cancellation token: cancelled on Dispose to abort in-flight requests.
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -125,7 +130,16 @@ namespace MultiPingMonitor.Classes
 
         public NetworkIdentityService()
         {
-            _http = new HttpClient { Timeout = TimeSpan.FromMilliseconds(12_000) };
+            // SocketsHttpHandler with PooledConnectionLifetime=Zero creates a fresh TCP
+            // connection for every request, preventing stale pooled connections from
+            // surviving VPN connect/disconnect or other route changes.
+            var socketsHandler = new System.Net.Http.SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.Zero,
+            };
+            _http = new HttpClient(socketsHandler) { Timeout = TimeSpan.FromMilliseconds(12_000) };
+            _http.DefaultRequestHeaders.CacheControl =
+                new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true, NoStore = true };
             _subscribedNetworkEvents = true;
             NetworkChange.NetworkAddressChanged     += OnNetworkChanged;
             NetworkChange.NetworkAvailabilityChanged += OnNetworkChanged;
@@ -182,6 +196,8 @@ namespace MultiPingMonitor.Classes
                 _debounceTimer = new System.Timers.Timer(DebounceMs) { AutoReset = false };
                 _debounceTimer.Elapsed += (s, ev) =>
                 {
+                    // Mark pending so the request is not dropped if a refresh is already running.
+                    Interlocked.Exchange(ref _pendingRefresh, 1);
                     _ = RefreshAllAsync();
                     StartBurstMode();
                 };
@@ -218,11 +234,16 @@ namespace MultiPingMonitor.Classes
 
         /// <summary>
         /// Starts an immediate refresh on demand (e.g. manual refresh button).
-        /// The internal overlap guard silently ignores concurrent calls.
+        /// If a refresh is already running, queues exactly one follow-up so the
+        /// request is never silently dropped.
         /// </summary>
         public void RequestRefresh()
         {
             if (_disposed) return;
+            // Mark a pending refresh so the request is not lost if _refreshBusy is currently 1.
+            // RefreshAllAsync clears this flag at its very start; the finally block fires a
+            // follow-up if the flag was set while the previous refresh was still running.
+            Interlocked.Exchange(ref _pendingRefresh, 1);
             _ = RefreshAllAsync();
         }
 
@@ -238,6 +259,10 @@ namespace MultiPingMonitor.Classes
 
             if (Interlocked.CompareExchange(ref _refreshBusy, 1, 0) != 0)
                 return;
+
+            // This refresh is now the "pending" one — consume the flag so the finally block
+            // only fires a follow-up if another request arrives during this run.
+            Interlocked.Exchange(ref _pendingRefresh, 0);
 
             System.Diagnostics.Debug.WriteLine("NetworkIdentityService: RefreshAllAsync start");
 
@@ -275,6 +300,17 @@ namespace MultiPingMonitor.Classes
 
                     if (!string.IsNullOrEmpty(publicIp))
                     {
+                        // When the public IP changes, clear stale metadata immediately so the
+                        // UI never shows the country/ASN that belonged to the old IP address.
+                        if (!string.Equals(publicIp, PublicIp, StringComparison.Ordinal)
+                            && !string.IsNullOrEmpty(PublicIp))
+                        {
+                            CountryCode = string.Empty;
+                            Asn         = string.Empty;
+                            Provider    = string.Empty;
+                            System.Diagnostics.Debug.WriteLine(
+                                $"NetworkIdentityService: IP changed {PublicIp} → {publicIp}, stale metadata cleared");
+                        }
                         PublicIp = publicIp;
                         WanState = WanLookupState.Succeeded;
                         OnStateChanged(); // immediate UI update — do not wait for metadata
@@ -347,6 +383,11 @@ namespace MultiPingMonitor.Classes
                 Interlocked.Exchange(ref _refreshBusy, 0);
                 OnStateChanged();
                 System.Diagnostics.Debug.WriteLine("NetworkIdentityService: IsRefreshing=false, RefreshAllAsync done");
+
+                // If a refresh was requested while we were running (e.g. manual button press
+                // or network-change event), honour it now with a fresh lookup.
+                if (Interlocked.Exchange(ref _pendingRefresh, 0) == 1 && !_disposed)
+                    _ = RefreshAllAsync();
             }
         }
 
