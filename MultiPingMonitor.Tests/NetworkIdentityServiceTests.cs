@@ -1430,5 +1430,157 @@ namespace MultiPingMonitor.Tests
             Assert.DoesNotContain("NetworkIdentity", source);
             Assert.DoesNotContain("CompactFooter", source);
         }
+
+        // ── Metadata chain continuation tests ────────────────────────────────────
+
+        /// <summary>
+        /// First metadata provider returns country code only (no ASN/provider).
+        /// The service must continue to the second provider and pick up the ASN.
+        /// Final result must contain both country code and ASN.
+        /// </summary>
+        [Fact]
+        public async Task Behavioral_MetaChain_FirstCountryOnly_SecondFullData_UsesFull()
+        {
+            // First metadata provider returns only country code.
+            const string countryOnlyJson =
+                @"{""countryCode"":""SK""}";
+            // Second metadata provider returns country + ASN.
+            const string fullJson =
+                @"{""status"":""success"",""countryCode"":""SK"",""as"":""AS209429 Max Telekom s.r.o."",""isp"":""Max Telekom s.r.o."",""query"":""45.66.72.254""}";
+
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              "45.66.72.254"),
+                ("https://free.freeipapi.com",         countryOnlyJson),   // country-only → must continue
+                ("https://api.seeip.org",              "not-json"),         // fails parse → skip
+                ("http://ip-api.com",                  fullJson)            // full result
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Equal("SK", svc.CountryCode);
+            Assert.False(string.IsNullOrEmpty(svc.Asn),
+                "Service must continue past country-only provider and pick up ASN from next provider.");
+        }
+
+        /// <summary>
+        /// All metadata providers return only country code (no ASN/provider).
+        /// The service must use country as a fallback after exhausting all providers.
+        /// </summary>
+        [Fact]
+        public async Task Behavioral_MetaChain_AllCountryOnly_UsesBestPartial()
+        {
+            const string countryOnlyJson = @"{""countryCode"":""SK""}";
+
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              "45.66.72.254"),
+                ("https://free.freeipapi.com",         countryOnlyJson),
+                ("https://api.seeip.org",              countryOnlyJson),
+                ("http://ip-api.com",                  countryOnlyJson)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            // Country must be present as fallback.
+            Assert.Equal("SK", svc.CountryCode);
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            // ASN and Provider remain empty — country-only fallback.
+            Assert.True(string.IsNullOrEmpty(svc.Asn),
+                "Asn must be empty when all metadata providers return only country code.");
+        }
+
+        /// <summary>
+        /// First metadata provider returns full data (country + ASN).
+        /// The service must stop immediately and not call subsequent providers.
+        /// </summary>
+        [Fact]
+        public async Task Behavioral_MetaChain_FirstFullData_StopsImmediately()
+        {
+            const string fullJson =
+                @"{""countryCode"":""SK"",""asnNumber"":209429,""asnOrganisation"":""Max Telekom s.r.o.""}";
+
+            // Only the first meta provider has a valid rule; second hangs.
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              "45.66.72.254"),
+                ("https://free.freeipapi.com",         fullJson),
+                // seeip would hang if reached — but it must not be reached.
+                ("https://api.seeip.org",              null),
+                ("http://ip-api.com",                  null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("SK", svc.CountryCode);
+            Assert.Equal("AS209429", svc.Asn);
+            Assert.Equal("Max Telekom s.r.o.", svc.Provider);
+        }
+
+        // ── Country badge position structural tests ───────────────────────────────
+
+        /// <summary>
+        /// The country badge must appear AFTER the WAN IP TextBlock in the XAML source,
+        /// not before it. This ensures the rendered layout is:
+        ///   ⊕ WAN IP 45.66.72.254 [SK]
+        /// rather than [SK] ⊕ WAN IP 45.66.72.254.
+        /// </summary>
+        [Fact]
+        public void MainWindow_CountryBadge_AppearsAfterWanText_InXaml()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+
+            int wanTextIdx   = xaml.IndexOf("CompactFooterWanText",   StringComparison.Ordinal);
+            int countryBadge = xaml.IndexOf("CompactFooterCountryBadge", StringComparison.Ordinal);
+
+            Assert.True(wanTextIdx   >= 0, "CompactFooterWanText must exist in XAML.");
+            Assert.True(countryBadge >= 0, "CompactFooterCountryBadge must exist in XAML.");
+            Assert.True(countryBadge > wanTextIdx,
+                "CompactFooterCountryBadge must appear AFTER CompactFooterWanText in XAML " +
+                "(badge should be positioned after the WAN IP value, not before the WAN label).");
+        }
+
+        /// <summary>
+        /// The WAN row must use a WrapPanel container so the country badge can
+        /// wrap after the IP when the window is narrow.
+        /// </summary>
+        [Fact]
+        public void MainWindow_WanRow_UsesWrapPanel()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("WrapPanel", xaml);
+        }
+
+        /// <summary>
+        /// FetchMetaAsync logic: TryParseMetaJson with country-only input returns true
+        /// (country is a valid partial result) but has no ASN, so the chain must continue.
+        /// Verify the parser correctly signals that ASN/provider are empty.
+        /// </summary>
+        [Fact]
+        public void TryParseMetaJson_CountryOnly_ReturnsTrue_WithEmptyAsn()
+        {
+            const string json = @"{""countryCode"":""SK""}";
+            var ok = TryParseMetaJson(json, out var cc, out var asn, out var prov);
+            Assert.True(ok, "Country-only response must be considered a valid (partial) parse.");
+            Assert.Equal("SK", cc);
+            Assert.True(string.IsNullOrEmpty(asn),
+                "ASN must be empty when the response contains only countryCode.");
+            Assert.True(string.IsNullOrEmpty(prov),
+                "Provider must be empty when the response contains only countryCode.");
+        }
+
+        /// <summary>
+        /// Verify NetworkIdentityService source contains the logic to continue past
+        /// country-only provider results (the "partial" continuation logic).
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_MetaChain_ContinuesPastCountryOnlyResults()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // The partial continuation must be present in the source.
+            Assert.Contains("partialCountry", source);
+        }
     }
 }

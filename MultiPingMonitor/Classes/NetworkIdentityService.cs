@@ -385,6 +385,10 @@ namespace MultiPingMonitor.Classes
             phaseCts.CancelAfter(MetaTimeoutMs);
 
             var ip = PublicIp;
+
+            // Best partial result seen so far: country is known but ASN/provider is not yet.
+            string partialCountry = string.Empty;
+
             foreach (var urlTemplate in MetaProviders)
             {
                 if (phaseCts.IsCancellationRequested) break;
@@ -394,17 +398,48 @@ namespace MultiPingMonitor.Classes
                 var json = await TryFetchStringAsync(url, phaseCts.Token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(json)) continue;
 
-                if (TryParseMetaJson(json, out var country, out var parsedAsn, out var parsedProvider))
+                if (!TryParseMetaJson(json, out var country, out var parsedAsn, out var parsedProvider))
+                    continue;
+
+                bool hasAsn = !string.IsNullOrEmpty(parsedAsn) || !string.IsNullOrEmpty(parsedProvider);
+
+                if (!string.IsNullOrEmpty(country) && hasAsn)
                 {
+                    // Full result: country AND ASN/provider → use immediately and stop.
                     CountryCode = country;
                     Asn         = parsedAsn;
                     Provider    = parsedProvider;
                     System.Diagnostics.Debug.WriteLine(
-                        $"NetworkIdentityService: metadata success: CC={country}, ASN={parsedAsn}");
+                        $"NetworkIdentityService: metadata success (full): CC={country}, ASN={parsedAsn}");
                     OnStateChanged();
                     return;
                 }
+
+                // Partial result: has country but no ASN/provider.
+                // Remember it and keep trying richer providers.
+                // First-partial-wins: we only capture the first country-only result; if
+                // multiple providers return different country codes, the first one is kept
+                // so the displayed country is stable and not changed by later partial hits.
+                if (!string.IsNullOrEmpty(country) && string.IsNullOrEmpty(partialCountry))
+                {
+                    partialCountry = country;
+                    System.Diagnostics.Debug.WriteLine(
+                        $"NetworkIdentityService: metadata partial (country-only): CC={country}, continuing...");
+                }
             }
+
+            // All providers exhausted (or phase timed out).
+            // Apply the best partial result we found (country-only), if any.
+            if (!string.IsNullOrEmpty(partialCountry))
+            {
+                CountryCode = partialCountry;
+                // Asn and Provider remain empty — that is the correct fallback.
+                System.Diagnostics.Debug.WriteLine(
+                    $"NetworkIdentityService: metadata fallback (country-only): CC={partialCountry}");
+                OnStateChanged();
+                return;
+            }
+
             System.Diagnostics.Debug.WriteLine("NetworkIdentityService: metadata failed — no provider succeeded");
         }
 

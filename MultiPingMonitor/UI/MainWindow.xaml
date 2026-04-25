@@ -650,16 +650,21 @@
                     </Button>
                 </Grid>
 
-                <!-- Row 1: country badge (hidden when empty) + WAN IP -->
-                <Grid Grid.Row="1" Margin="0,3,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Country badge: styled border with 2-letter country code -->
+                <!-- Row 1: WAN IP + country badge (badge follows IP, may wrap to next line) -->
+                <WrapPanel Grid.Row="1" Margin="0,3,0,0">
+                    <!-- WAN label (bold) + public IP — no-wrap so the IP stays on one line;
+                         the WrapPanel wraps the badge to the next line when width is tight. -->
+                    <TextBlock x:Name="CompactFooterWanText"
+                               FontSize="11"
+                               TextWrapping="NoWrap"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Theme.Text.Primary}"/>
+                    <!-- Country badge: styled border with 2-letter country code,
+                         positioned after the WAN IP value. -->
                     <Border x:Name="CompactFooterCountryBadge"
-                            Grid.Column="0"
                             Style="{DynamicResource Style.CompactCountryBadge}"
+                            VerticalAlignment="Center"
+                            Margin="4,0,0,0"
                             Visibility="Collapsed">
                         <TextBlock x:Name="CompactFooterCountryText"
                                    FontSize="10"
@@ -667,14 +672,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="{DynamicResource Theme.Text.Primary}"/>
                     </Border>
-                    <!-- WAN label (bold) + public IP — wraps when narrow -->
-                    <TextBlock x:Name="CompactFooterWanText"
-                               Grid.Column="1"
-                               FontSize="11"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource Theme.Text.Primary}"/>
-                </Grid>
+                </WrapPanel>
 
                 <!-- Row 2: ASN/provider · timestamp — collapsed until first WAN data -->
                 <TextBlock x:Name="CompactFooterProviderText"
