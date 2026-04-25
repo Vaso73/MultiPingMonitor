@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace MultiPingMonitor.Classes
 {
     /// <summary>
-    /// Diagnostic helpers for the network-identity CLI modes.
+    /// Headless helpers for the network-identity CLI modes.
     ///
     /// --network-identity-lookup  : query all configured public-IP and metadata
     ///     providers; write compact JSON to stdout; exit without starting the WPF UI.
@@ -20,9 +20,10 @@ namespace MultiPingMonitor.Classes
     ///     running --network-identity-lookup; compare both results; write JSON with
     ///     both result blocks and a summary indicating whether they differ.
     ///
-    /// These modes are temporary diagnostic tools whose purpose is to prove whether
-    /// a fresh child process sees the correct WAN IP after a VPN toggle while the
-    /// already-running UI process does not.  No WAN refresh behaviour is changed here.
+    /// The lookup mode is used by forced/manual WAN refresh as a fresh process
+    /// boundary so VPN/Tailscale/WFP routing changes are observed reliably.
+    /// The diagnose mode remains as a support/debug command for comparing
+    /// in-process and child-process lookup behaviour.
     /// </summary>
     internal static class NetworkIdentityDiagnostics
     {
