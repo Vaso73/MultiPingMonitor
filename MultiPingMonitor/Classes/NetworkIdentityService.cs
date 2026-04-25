@@ -100,7 +100,7 @@ namespace MultiPingMonitor.Classes
         // Per-instance HttpClient.
         // Production constructor creates one backed by a SocketsHttpHandler; see ReplaceHttpClientInternal.
         // Test constructor creates one backed by a stub HttpMessageHandler that must not be recreated.
-        // Guarded by _httpLock: must hold _httpLock to swap _http or to dispose it.
+        // ALL reads and writes to _http must be performed under _httpLock.
         private HttpClient _http;
         private readonly object _httpLock = new object();
 
@@ -544,7 +544,7 @@ namespace MultiPingMonitor.Classes
 
         private static bool IsTransientHttpException(Exception ex) =>
             ex is HttpRequestException or TaskCanceledException or OperationCanceledException
-                or JsonException or System.IO.IOException;
+                or JsonException or System.IO.IOException or ObjectDisposedException;
 
         /// <summary>
         /// Unified JSON parser for metadata responses from any supported provider.
@@ -789,7 +789,7 @@ namespace MultiPingMonitor.Classes
 
             try { _cts.Cancel(); } catch { }
             _cts.Dispose();
-            lock (_httpLock) { try { _http?.Dispose(); } catch { } }
+            lock (_httpLock) { try { _http?.Dispose(); } catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: HttpClient dispose failed: {ex.GetType().Name}: {ex.Message}"); } }
 
             lock (_timerLock)
             {
