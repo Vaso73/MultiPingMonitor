@@ -8,6 +8,21 @@ using System.Text.Json;
 namespace MultiPingMonitor.Classes
 {
     /// <summary>
+    /// Explicit state of the WAN public-IP lookup phase.
+    /// </summary>
+    public enum WanLookupState
+    {
+        /// <summary>No lookup has been started yet (initial state).</summary>
+        NotStarted,
+        /// <summary>A lookup is actively in progress.</summary>
+        Loading,
+        /// <summary>The last lookup completed and PublicIp contains a valid IP.</summary>
+        Succeeded,
+        /// <summary>The last lookup failed and no PublicIp is available.</summary>
+        Failed,
+    }
+
+    /// <summary>
     /// Background service that continuously monitors and exposes local/public
     /// network identity: LAN IP, WAN IP, country code, ASN, and provider.
     ///
@@ -33,6 +48,13 @@ namespace MultiPingMonitor.Classes
         public string Provider     { get; private set; } = string.Empty;
         public DateTime? LastRefresh { get; private set; }
         public bool IsRefreshing   { get; private set; }
+
+        /// <summary>
+        /// Explicit state of the WAN public-IP lookup phase.
+        /// UI should render loading only when this is <see cref="WanLookupState.Loading"/>;
+        /// it must not rely solely on <see cref="IsRefreshing"/>.
+        /// </summary>
+        public WanLookupState WanState { get; private set; } = WanLookupState.NotStarted;
 
         /// <summary>
         /// Raised whenever any public state property changes.
@@ -212,10 +234,15 @@ namespace MultiPingMonitor.Classes
             if (Interlocked.CompareExchange(ref _refreshBusy, 1, 0) != 0)
                 return;
 
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: RefreshAllAsync start");
+
             try
             {
                 IsRefreshing = true;
+                WanState     = WanLookupState.Loading;
                 OnStateChanged();
+
+                System.Diagnostics.Debug.WriteLine("NetworkIdentityService: WanState → Loading");
 
                 // 1. LAN (fast, no network required).
                 var localIp = GetPreferredLocalIp();
@@ -226,21 +253,69 @@ namespace MultiPingMonitor.Classes
                 }
 
                 // 2a. Fast public-IP lookup: update UI as soon as IP is known.
-                var publicIp = await FetchPublicIpAsync().ConfigureAwait(false);
-                if (!string.IsNullOrEmpty(publicIp) && publicIp != PublicIp)
+                //     Hard timeout via Task.WhenAny ensures we always proceed within bounds,
+                //     even if HttpClient does not immediately honour the CancellationToken.
+                System.Diagnostics.Debug.WriteLine("NetworkIdentityService: WAN phase start");
+
+                var publicIpTask = FetchPublicIpAsync();
+                using (var hardCts = new CancellationTokenSource())
                 {
-                    PublicIp = publicIp;
-                    OnStateChanged();
+                    var hardTimeout = Task.Delay(PublicIpTimeoutMs + 2000, hardCts.Token);
+                    var phaseWinner = await Task.WhenAny(publicIpTask, hardTimeout).ConfigureAwait(false);
+                    hardCts.Cancel(); // stop the delay timer early
+
+                    string publicIp = (phaseWinner == publicIpTask && publicIpTask.IsCompletedSuccessfully)
+                        ? publicIpTask.Result
+                        : string.Empty;
+
+                    if (!string.IsNullOrEmpty(publicIp))
+                    {
+                        PublicIp = publicIp;
+                        WanState = WanLookupState.Succeeded;
+                        OnStateChanged(); // immediate UI update — do not wait for metadata
+                        System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: WanState → Succeeded, IP={publicIp}");
+                    }
+                    else
+                    {
+                        // All providers failed or timed out.
+                        // If a previous IP is cached, keep showing it (Succeeded).
+                        // Otherwise mark as Failed so the UI exits the loading state.
+                        if (!string.IsNullOrEmpty(PublicIp))
+                        {
+                            WanState = WanLookupState.Succeeded;
+                            System.Diagnostics.Debug.WriteLine(
+                                $"NetworkIdentityService: WAN phase failed — keeping cached IP={PublicIp}");
+                        }
+                        else
+                        {
+                            WanState = WanLookupState.Failed;
+                            System.Diagnostics.Debug.WriteLine(
+                                "NetworkIdentityService: WAN phase failed — WanState → Failed");
+                        }
+                        OnStateChanged();
+                    }
                 }
 
-                // 2b. Metadata lookup (country, ASN, provider).
-                await FetchMetaAsync().ConfigureAwait(false);
+                // 2b. Metadata lookup (country, ASN, provider) — only when we have an IP.
+                if (!string.IsNullOrEmpty(PublicIp))
+                {
+                    System.Diagnostics.Debug.WriteLine("NetworkIdentityService: metadata start");
+                    await FetchMetaAsync().ConfigureAwait(false);
+                    System.Diagnostics.Debug.WriteLine("NetworkIdentityService: metadata done");
+                }
 
                 if (!string.IsNullOrEmpty(PublicIp))
                     LastRefresh = DateTime.UtcNow;
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
+                // Ensure WAN state exits Loading on any unexpected error.
+                if (WanState == WanLookupState.Loading)
+                {
+                    WanState = string.IsNullOrEmpty(PublicIp)
+                        ? WanLookupState.Failed
+                        : WanLookupState.Succeeded;
+                }
                 System.Diagnostics.Trace.WriteLine(
                     $"NetworkIdentityService: Unexpected refresh error: {ex.Message}");
             }
@@ -249,6 +324,7 @@ namespace MultiPingMonitor.Classes
                 IsRefreshing = false;
                 Interlocked.Exchange(ref _refreshBusy, 0);
                 OnStateChanged();
+                System.Diagnostics.Debug.WriteLine("NetworkIdentityService: IsRefreshing=false, RefreshAllAsync done");
             }
         }
 
@@ -263,11 +339,17 @@ namespace MultiPingMonitor.Classes
             {
                 if (phaseCts.IsCancellationRequested) break;
 
+                System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: WAN provider attempt: {url}");
                 var text = await TryFetchStringAsync(url, phaseCts.Token).ConfigureAwait(false);
                 // Trim() removes trailing newlines from icanhazip/checkip responses.
                 // IPAddress.TryParse confirms it is a bare IPv4 address, not HTML/JSON.
                 if (System.Net.IPAddress.TryParse(text, out _))
+                {
+                    System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: WAN provider success: {url} → {text}");
                     return text;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: WAN provider failed/timeout: {url}");
             }
 
             return string.Empty;
@@ -286,6 +368,7 @@ namespace MultiPingMonitor.Classes
                 if (phaseCts.IsCancellationRequested) break;
 
                 var url  = urlTemplate.Replace("{ip}", ip);
+                System.Diagnostics.Debug.WriteLine($"NetworkIdentityService: metadata attempt: {url}");
                 var json = await TryFetchStringAsync(url, phaseCts.Token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(json)) continue;
 
@@ -294,10 +377,13 @@ namespace MultiPingMonitor.Classes
                     CountryCode = country;
                     Asn         = parsedAsn;
                     Provider    = parsedProvider;
+                    System.Diagnostics.Debug.WriteLine(
+                        $"NetworkIdentityService: metadata success: CC={country}, ASN={parsedAsn}");
                     OnStateChanged();
                     return;
                 }
             }
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: metadata failed — no provider succeeded");
         }
 
         private async Task<string> TryFetchStringAsync(string url, CancellationToken phaseToken)
@@ -307,8 +393,19 @@ namespace MultiPingMonitor.Classes
                 using var providerCts = CancellationTokenSource.CreateLinkedTokenSource(phaseToken);
                 providerCts.CancelAfter(PerProviderTimeoutMs);
 
-                return (await _http.GetStringAsync(url, providerCts.Token)
-                    .ConfigureAwait(false)).Trim();
+                var fetchTask = _http.GetStringAsync(url, providerCts.Token);
+
+                // Hard-timeout fallback: proceed even if GetStringAsync does not honour
+                // the CancellationToken promptly (e.g. OS-level TCP keep-alive behaviour).
+                using var hardCts = new CancellationTokenSource();
+                var hardTimeout = Task.Delay(PerProviderTimeoutMs + 1000, hardCts.Token);
+                var winner = await Task.WhenAny(fetchTask, hardTimeout).ConfigureAwait(false);
+                hardCts.Cancel(); // clean up the delay task early
+
+                if (winner != fetchTask || fetchTask.IsFaulted || fetchTask.IsCanceled)
+                    return string.Empty;
+
+                return fetchTask.Result.Trim();
             }
             catch (Exception ex) when (IsTransientHttpException(ex))
             {

@@ -593,9 +593,22 @@ namespace MultiPingMonitor.UI
                 CompactFooterWanText.Inlines.Add(
                     new System.Windows.Documents.Run("WAN IP ")
                     { FontWeight = System.Windows.FontWeights.SemiBold });
-                string wanIp = string.IsNullOrEmpty(svc.PublicIp)
-                    ? (svc.IsRefreshing ? loadingText : "—")
-                    : svc.PublicIp;
+
+                // Render WAN based on the explicit WanState, not only IsRefreshing.
+                // This prevents the footer from staying stuck at "loading…" indefinitely.
+                string wanIp;
+                if (svc.WanState == WanLookupState.Loading && string.IsNullOrEmpty(svc.PublicIp))
+                {
+                    wanIp = loadingText;
+                }
+                else if (string.IsNullOrEmpty(svc.PublicIp))
+                {
+                    wanIp = "\u2014"; // em dash — WAN lookup failed or not yet started
+                }
+                else
+                {
+                    wanIp = svc.PublicIp;
+                }
                 CompactFooterWanText.Inlines.Add(new System.Windows.Documents.Run(wanIp));
             }
 
