@@ -141,6 +141,11 @@ namespace MultiPingMonitor.Classes
         // to the cached IP when all providers are temporarily unreachable.
         private volatile bool _forceClearCachedWan;
 
+        // Set to true by background/network-change refreshes to use the child-process WAN lookup
+        // without clearing the currently displayed WAN IP first.
+        // This detects VPN connect/disconnect changes without footer flicker.
+        private volatile bool _forceChildProcessWanLookup;
+
         // Master cancellation token: cancelled on Dispose to abort in-flight requests.
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -191,7 +196,7 @@ namespace MultiPingMonitor.Classes
             lock (_timerLock)
             {
                 _wanTimer = new System.Timers.Timer(WanPollIntervalMs) { AutoReset = true };
-                _wanTimer.Elapsed += (s, e) => _ = RefreshAllAsync();
+                _wanTimer.Elapsed += (s, e) => RequestBackgroundRefresh();
                 _wanTimer.Start();
 
                 _lanTimer = new System.Timers.Timer(LanPollIntervalMs) { AutoReset = true };
@@ -213,11 +218,9 @@ namespace MultiPingMonitor.Classes
                 _debounceTimer = new System.Timers.Timer(DebounceMs) { AutoReset = false };
                 _debounceTimer.Elapsed += (s, ev) =>
                 {
-                    // Mark pending so the request is not dropped if a refresh is already running.
-                    // Also flag for HttpClient recreation: the VPN route has changed.
-                    _forceRecreateHttp = true;
-                    Interlocked.Exchange(ref _pendingRefresh, 1);
-                    _ = RefreshAllAsync();
+                    // Use the same forced path as the manual footer refresh.
+                    // RefreshAllAsync updates LAN first, then WAN via child-process lookup.
+                    RequestBackgroundRefresh();
                     StartBurstMode();
                 };
                 _debounceTimer.Start();
@@ -245,7 +248,9 @@ namespace MultiPingMonitor.Classes
                             _burstTimer?.Stop();
                         }
                     }
-                    _ = RefreshAllAsync();
+                    // During the post-change burst, keep using the forced path.
+                    // This catches delayed VPN route updates without manual refresh.
+                    RequestBackgroundRefresh();
                 };
                 _burstTimer.Start();
             }
@@ -262,6 +267,7 @@ namespace MultiPingMonitor.Classes
             // Recreate the HttpClient on the next lookup so stale OS-level DNS/socket state
             // bound to the old VPN route is not reused.
             _forceRecreateHttp = true;
+            _forceChildProcessWanLookup = true;
             // Clear stale WAN data before the lookup so a failed forced refresh shows
             // WanState.Failed instead of preserving the old cached IP as if it were current.
             _forceClearCachedWan = true;
@@ -272,6 +278,20 @@ namespace MultiPingMonitor.Classes
             _ = RefreshAllAsync();
         }
 
+        /// <summary>
+        /// Starts a background refresh after network-change or scheduled WAN poll events.
+        /// Uses the child-process WAN lookup path, but keeps the currently displayed WAN IP
+        /// until a new value is confirmed, avoiding manual-refresh-style loading/flicker.
+        /// </summary>
+        public void RequestBackgroundRefresh()
+        {
+            if (_disposed) return;
+
+            _forceRecreateHttp = true;
+            _forceChildProcessWanLookup = true;
+            Interlocked.Exchange(ref _pendingRefresh, 1);
+            _ = RefreshAllAsync();
+        }
         // Refresh logic
 
         /// <summary>
@@ -293,7 +313,9 @@ namespace MultiPingMonitor.Classes
             // this refresh is running.
             Interlocked.Exchange(ref _pendingRefresh, 0);
             bool clearWan = forceClearCachedWan || _forceClearCachedWan;
-            if (clearWan) _forceClearCachedWan = false;
+            bool useChildProcessWanLookup = clearWan || _forceChildProcessWanLookup;
+            _forceClearCachedWan = false;
+            _forceChildProcessWanLookup = false;
 
             // If a forced refresh was requested (manual button or network-change), swap out
             // the HttpClient so a fresh TCP connection and DNS resolution are used.
@@ -343,7 +365,7 @@ namespace MultiPingMonitor.Classes
                 //     boundary for VPN/Tailscale/WFP routing changes. Recreating the
                 //     service or HttpClient inside this process is not sufficient on
                 //     some Windows VPN stacks.
-                if (clearWan)
+                if (useChildProcessWanLookup)
                 {
                     bool childApplied = await TryApplyChildProcessWanLookupAsync().ConfigureAwait(false);
                     if (childApplied)

@@ -11,6 +11,17 @@ namespace MultiPingMonitor.Classes
         public ProbeStatus Status { get; set; }
         public bool HasStatusBeenCleared { get; set; }
 
+        /// <summary>
+        /// Optional display text for non-probe entries such as LAN/WAN IP changes.
+        /// When empty, the normal ProbeStatus localized text is used.
+        /// </summary>
+        public string CustomStatusText { get; set; }
+
+        /// <summary>
+        /// Optional Marlett glyph override for non-probe entries.
+        /// </summary>
+        public string CustomGlyph { get; set; }
+
         public string AliasIfExistOrHostname =>
             !string.IsNullOrWhiteSpace(Alias) ? Alias : Hostname;
 
@@ -18,6 +29,9 @@ namespace MultiPingMonitor.Classes
         {
             get
             {
+                if (!string.IsNullOrWhiteSpace(CustomStatusText))
+                    return CustomStatusText;
+
                 switch (Status)
                 {
                     case ProbeStatus.Down:
@@ -44,6 +58,9 @@ namespace MultiPingMonitor.Classes
         {
             get
             {
+                if (!string.IsNullOrWhiteSpace(CustomGlyph))
+                    return CustomGlyph;
+
                 switch (Status)
                 {
                     case ProbeStatus.Error:
