@@ -1,7 +1,12 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using MultiPingMonitor.Classes;
 
 namespace MultiPingMonitor.Tests
 {
@@ -777,6 +782,283 @@ namespace MultiPingMonitor.Tests
             var source = File.ReadAllText(ClassicStylePath());
             // Both CompactSetToolbar and CompactNetworkFooter should use Theme.SurfaceAlt.
             Assert.Contains("Theme.SurfaceAlt", source);
+        }
+
+        // ── Behavioral tests using injectable HttpMessageHandler ──────────────────
+        //
+        // These tests exercise the actual runtime flow through NetworkIdentityService
+        // using a stub HttpMessageHandler so no real network I/O occurs.
+        // They run on any OS (the test constructor skips NetworkChange subscriptions).
+
+        /// <summary>
+        /// Stub HttpMessageHandler: maps URL prefixes to canned response bodies.
+        /// Unmatched URLs return 404 immediately.
+        /// A null body causes the request to hang until the CancellationToken fires,
+        /// simulating a timeout.
+        /// </summary>
+        private sealed class StubHttpMessageHandler : HttpMessageHandler
+        {
+            private readonly (string UrlPrefix, string? Body)[] _rules;
+
+            internal StubHttpMessageHandler(params (string UrlPrefix, string? Body)[] rules)
+                => _rules = rules;
+
+            protected override async Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var url = request.RequestUri?.ToString() ?? string.Empty;
+
+                foreach (var (prefix, body) in _rules)
+                {
+                    if (!url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    if (body == null)
+                    {
+                        // Simulate timeout: hang until the cancellation token fires.
+                        await Task.Delay(Timeout.Infinite, cancellationToken);
+                        return null!; // unreachable
+                    }
+
+                    return new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(body)
+                    };
+                }
+
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            }
+        }
+
+        // Helper: waits for StateChanged to fire with the predicate true,
+        // or throws if the service completes the refresh first without satisfying it.
+        private static async Task<bool> WaitForStateAsync(
+            NetworkIdentityService svc,
+            Func<NetworkIdentityService, bool> predicate,
+            int timeoutMs = 5000)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            void Handler(object? s, EventArgs e)
+            {
+                if (predicate(svc))
+                    tcs.TrySetResult(true);
+            }
+
+            svc.StateChanged += Handler;
+            try
+            {
+                if (predicate(svc)) return true; // already satisfied
+
+                var winner = await Task.WhenAny(tcs.Task, Task.Delay(timeoutMs));
+                return winner == tcs.Task && tcs.Task.Result;
+            }
+            finally
+            {
+                svc.StateChanged -= Handler;
+            }
+        }
+
+        // ── Behavioral test 1 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_FirstProviderSucceeds_SetsPublicIp()
+        {
+            var handler = new StubHttpMessageHandler(
+                // First public IP provider returns a plain IP.
+                ("https://api.ipify.org",              "45.66.72.254"),
+                // Metadata providers return 404 (no match rule) → metadata phase skipped gracefully.
+                ("https://free.freeipapi.com",         null),  // hang → cancelled, falls through
+                ("https://api.seeip.org",              null),
+                ("http://ip-api.com",                  null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+        }
+
+        // ── Behavioral test 2 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_TrailingNewlineIsStripped_SetsPublicIp()
+        {
+            // icanhazip.com and checkip.amazonaws.com add a trailing newline.
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",      "45.66.72.254\n"),
+                ("https://free.freeipapi.com", null),
+                ("https://api.seeip.org",      null),
+                ("http://ip-api.com",          null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+        }
+
+        // ── Behavioral test 3 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_FirstProviderTimesOut_SecondSucceeds_SetsPublicIp()
+        {
+            var handler = new StubHttpMessageHandler(
+                // First public IP provider hangs → per-provider timeout fires.
+                ("https://api.ipify.org",              null),
+                // Second provider responds.
+                ("https://ipv4.icanhazip.com",         "45.66.72.254"),
+                ("https://free.freeipapi.com",         null),
+                ("https://api.seeip.org",              null),
+                ("http://ip-api.com",                  null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+        }
+
+        // ── Behavioral test 4 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_MetadataFails_PublicIpPreserved()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              "45.66.72.254"),
+                // All metadata providers return garbage → TryParseMetaJson returns false.
+                ("https://free.freeipapi.com",         "not-json"),
+                ("https://api.seeip.org",              "not-json"),
+                ("http://ip-api.com",                  "not-json")
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            // PublicIp must survive even when metadata completely fails.
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Empty(svc.CountryCode);
+        }
+
+        // ── Behavioral test 5 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_IsRefreshingResets_AfterSuccess()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",      "45.66.72.254"),
+                ("https://free.freeipapi.com", null),
+                ("https://api.seeip.org",      null),
+                ("http://ip-api.com",          null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── Behavioral test 6 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_IsRefreshingResets_AfterAllProvidersFail()
+        {
+            // All public IP providers hang → per-provider timeout, phase timeout fires.
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              null),
+                ("https://ipv4.icanhazip.com",         null),
+                ("https://checkip.amazonaws.com",      null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            Assert.False(svc.IsRefreshing);
+            Assert.Empty(svc.PublicIp);
+        }
+
+        // ── Behavioral test 7 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_StateChangedFires_WithPublicIpBeforeMetadata()
+        {
+            bool ipSetEventFired = false;
+
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              "45.66.72.254"),
+                // Metadata providers all hang (cancelled by phase timeout).
+                ("https://free.freeipapi.com",         null),
+                ("https://api.seeip.org",              null),
+                ("http://ip-api.com",                  null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            svc.StateChanged += (s, e) =>
+            {
+                if (!string.IsNullOrEmpty(svc.PublicIp))
+                    ipSetEventFired = true;
+            };
+
+            await svc.RefreshAllAsync();
+
+            Assert.True(ipSetEventFired,
+                "StateChanged must fire with a non-empty PublicIp during the refresh cycle.");
+        }
+
+        // ── Behavioral test 8 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public void Behavioral_BuildFooterText_IsRefreshingWithPublicIp_ShowsIpNotLoading()
+        {
+            // When PublicIp is already populated but IsRefreshing is still true
+            // (metadata phase in progress), the WAN row must show the IP, not the loading text.
+            var text = NetworkIdentityService.BuildFooterText(
+                localIp:      "192.168.1.1",
+                publicIp:     "45.66.72.254",
+                countryCode:  string.Empty,
+                asn:          string.Empty,
+                provider:     string.Empty,
+                lastRefresh:  null,
+                isRefreshing: true,
+                loadingText:  "zist\u013eujem\u2026",
+                updatedLabel: "akt.");
+
+            Assert.Contains("45.66.72.254", text);
+            Assert.DoesNotContain("zist\u013eujem", text);
+        }
+
+        // ── Behavioral test 9 ─────────────────────────────────────────────────────
+
+        [Fact]
+        public async Task Behavioral_AllProvidersFail_FooterExitsLoading_ShowsFallback()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",              null),
+                ("https://ipv4.icanhazip.com",         null),
+                ("https://checkip.amazonaws.com",      null)
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+            await svc.RefreshAllAsync();
+
+            // After all providers fail the service must not stay in loading state.
+            Assert.False(svc.IsRefreshing);
+
+            var text = NetworkIdentityService.BuildFooterText(
+                localIp:      "192.168.1.1",
+                publicIp:     svc.PublicIp,
+                countryCode:  svc.CountryCode,
+                asn:          svc.Asn,
+                provider:     svc.Provider,
+                lastRefresh:  svc.LastRefresh,
+                isRefreshing: svc.IsRefreshing,
+                loadingText:  "zist\u013eujem\u2026",
+                updatedLabel: "akt.");
+
+            Assert.DoesNotContain("zist\u013eujem", text);
+            // WAN IP should be the em-dash fallback.
+            Assert.Contains("WAN: \u2014", text);
         }
 
         // ── AssemblyInfo unchanged ────────────────────────────────────────────────

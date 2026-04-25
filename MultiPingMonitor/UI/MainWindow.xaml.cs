@@ -519,7 +519,7 @@ namespace MultiPingMonitor.UI
                 if (!_networkIdentityService.LastRefresh.HasValue
                     || (DateTime.UtcNow - _networkIdentityService.LastRefresh.Value).TotalSeconds > 90)
                 {
-                    _networkIdentityService.Start();
+                    _networkIdentityService.RequestRefresh();
                 }
                 return;
             }
