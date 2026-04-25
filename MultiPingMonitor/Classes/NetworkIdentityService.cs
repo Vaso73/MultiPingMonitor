@@ -133,6 +133,14 @@ namespace MultiPingMonitor.Classes
         // even when PooledConnectionLifetime=Zero is in use.
         private volatile bool _forceRecreateHttp;
 
+        // Set to true by RequestRefresh() to indicate that the next refresh must clear the
+        // cached PublicIp/CountryCode/Asn/Provider BEFORE performing the WAN lookup.
+        // This ensures a forced/manual refresh that fails shows WanState.Failed (WAN unavailable)
+        // rather than re-displaying the old startup IP as if it were a current lookup result.
+        // Normal scheduled-timer refreshes do NOT set this flag so they may still fall back
+        // to the cached IP when all providers are temporarily unreachable.
+        private volatile bool _forceClearCachedWan;
+
         // Master cancellation token: cancelled on Dispose to abort in-flight requests.
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -254,6 +262,9 @@ namespace MultiPingMonitor.Classes
             // Recreate the HttpClient on the next lookup so stale OS-level DNS/socket state
             // bound to the old VPN route is not reused.
             _forceRecreateHttp = true;
+            // Clear stale WAN data before the lookup so a failed forced refresh shows
+            // WanState.Failed instead of preserving the old cached IP as if it were current.
+            _forceClearCachedWan = true;
             // Mark a pending refresh so the request is not lost if _refreshBusy is currently 1.
             // RefreshAllAsync clears this flag at its very start; the finally block fires a
             // follow-up if the flag was set while the previous refresh was still running.
@@ -266,17 +277,23 @@ namespace MultiPingMonitor.Classes
         /// <summary>
         /// Runs one complete LAN + WAN refresh cycle.
         /// Internal visibility allows unit tests to await the full cycle directly.
+        /// The optional <paramref name="forceClearCachedWan"/> parameter lets tests drive the
+        /// forced-clear path without going through <see cref="RequestRefresh"/>; production code
+        /// uses the <see cref="_forceClearCachedWan"/> volatile flag set by RequestRefresh().
         /// </summary>
-        internal async Task RefreshAllAsync()
+        internal async Task RefreshAllAsync(bool forceClearCachedWan = false)
         {
             if (_disposed) return;
 
             if (Interlocked.CompareExchange(ref _refreshBusy, 1, 0) != 0)
                 return;
 
-            // This refresh is now the "pending" one — consume the flag so the finally block
-            // only fires a follow-up if another request arrives during this run.
+            // Consume both the pending-refresh flag and the forced-clear-WAN flag at the very
+            // start so the finally block only fires a follow-up if a NEW request arrives while
+            // this refresh is running.
             Interlocked.Exchange(ref _pendingRefresh, 0);
+            bool clearWan = forceClearCachedWan || _forceClearCachedWan;
+            if (clearWan) _forceClearCachedWan = false;
 
             // If a forced refresh was requested (manual button or network-change), swap out
             // the HttpClient so a fresh TCP connection and DNS resolution are used.
@@ -303,6 +320,22 @@ namespace MultiPingMonitor.Classes
                 if (localIp != LocalIp)
                 {
                     LocalIp = localIp;
+                    OnStateChanged();
+                }
+
+                // 1b. Forced/manual refresh: clear stale WAN data BEFORE the WAN lookup so
+                //     a failed lookup shows WanState.Failed (WAN unavailable) rather than
+                //     re-displaying the old cached startup IP as if it were the current result.
+                //     Normal scheduled refreshes do not clear the cache here so they can still
+                //     fall back to the last known IP when all providers are temporarily down.
+                if (clearWan)
+                {
+                    PublicIp    = string.Empty;
+                    CountryCode = string.Empty;
+                    Asn         = string.Empty;
+                    Provider    = string.Empty;
+                    System.Diagnostics.Debug.WriteLine(
+                        "NetworkIdentityService: forced refresh — stale WAN data cleared before lookup");
                     OnStateChanged();
                 }
 

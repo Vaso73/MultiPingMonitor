@@ -1894,5 +1894,97 @@ namespace MultiPingMonitor.Tests
             // Must call Start() on the new instance.
             Assert.Contains("_networkIdentityService.Start()", source);
         }
+        // ── VPN test 13 (behavioral) — forced refresh clears stale IP on failure ───
+
+        /// <summary>
+        /// When RequestRefresh() is used (forced/manual refresh) and ALL WAN providers fail,
+        /// the old cached PublicIp must be cleared (empty) and WanState must be Failed.
+        /// The UI must not re-display the old startup IP as if it were a current lookup result.
+        /// </summary>
+        [Fact]
+        public async Task ForcedRefresh_ClearsStalePublicIp_WhenAllProvidersFail()
+        {
+            var handler = new SequentialStubHttpMessageHandler(
+                // First normal refresh: ipify returns the old ISP IP.
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "bad" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad",          "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad",          "bad" }),
+                // All metadata providers fail on both refreshes.
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            // First (normal) refresh: caches the ISP IP.
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+
+            // Forced/manual refresh: all providers fail.
+            // The cached IP must be cleared, not preserved.
+            await svc.RefreshAllAsync(forceClearCachedWan: true);
+
+            Assert.True(string.IsNullOrEmpty(svc.PublicIp),
+                "Forced refresh failure must clear PublicIp — old cached IP must not be shown.");
+            Assert.Equal(WanLookupState.Failed, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── VPN test 14 (behavioral) — forced refresh clears then updates ──────────
+
+        /// <summary>
+        /// When RequestRefresh() is used (forced/manual refresh) and a provider returns a
+        /// new IP (e.g. VPN IP), the old cached IP is replaced by the new one.
+        /// WanState must be Succeeded with the new IP.
+        /// </summary>
+        [Fact]
+        public async Task ForcedRefresh_ShowsNewIp_AfterClearingOldCache()
+        {
+            var handler = new SequentialStubHttpMessageHandler(
+                // First normal refresh: ipify returns the old ISP IP.
+                // Forced refresh: ipify returns the VPN IP.
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "75.98.207.195" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad",          "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad",          "bad" }),
+                // Metadata providers fail on both refreshes.
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            // First (normal) refresh: caches the ISP IP.
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            // Forced/manual refresh: provider returns the VPN IP.
+            await svc.RefreshAllAsync(forceClearCachedWan: true);
+
+            Assert.Equal("75.98.207.195", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
+        // ── VPN test 15 (structural) — _forceClearCachedWan field ───────────────────
+
+        /// <summary>
+        /// Verifies that NetworkIdentityService has a _forceClearCachedWan field
+        /// and that RequestRefresh() sets it, ensuring forced/manual refreshes
+        /// clear stale WAN data rather than re-displaying the old cached startup IP.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_ForcedRefresh_ClearsWanCache()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("_forceClearCachedWan", source);
+            // RequestRefresh must set the flag.
+            Assert.Contains("_forceClearCachedWan = true", source);
+            // The forced-clear message must appear in the source.
+            Assert.Contains("stale WAN data cleared before lookup", source);
+        }
+
     }
 }
