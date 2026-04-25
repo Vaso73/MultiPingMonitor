@@ -858,14 +858,18 @@ namespace MultiPingMonitor.UI
 
             // After the dialog has been measured and arranged, re-clamp using the
             // actual rendered dimensions so the dialog never overflows the right or
-            // bottom edge of the monitor work area.
-            dialog.Loaded += (_, _) =>
+            // bottom edge of the monitor work area.  The handler unsubscribes itself
+            // after the first invocation so it does not linger on the dialog instance.
+            RoutedEventHandler loadedHandler = null;
+            loadedHandler = (_, _) =>
             {
+                dialog.Loaded -= loadedHandler;
                 double w = dialog.ActualWidth;
                 double h = dialog.ActualHeight;
                 dialog.Left = Math.Max(waLeft, Math.Min(dialog.Left, waRight  - w));
                 dialog.Top  = Math.Max(waTop,  Math.Min(dialog.Top,  waBottom - h));
             };
+            dialog.Loaded += loadedHandler;
         }
 
         /// <summary>
