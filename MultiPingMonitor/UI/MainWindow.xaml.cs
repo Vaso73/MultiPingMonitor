@@ -68,7 +68,9 @@ namespace MultiPingMonitor.UI
         // Service that polls LAN/WAN identity and raises StateChanged when data
         // changes.  Created lazily on first switch to Compact mode and disposed
         // when the window is closed.
+#pragma warning disable CS8632
         private Classes.NetworkIdentityService? _networkIdentityService;
+#pragma warning restore CS8632
 
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
@@ -447,7 +449,18 @@ namespace MultiPingMonitor.UI
             if (CompactNetworkFooter != null)
                 CompactNetworkFooter.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
             if (compact)
+            {
                 EnsureNetworkIdentityService();
+                // Fallback: if the service already has a result (StateChanged fired before
+                // the footer was visible / before the window was loaded), re-apply its
+                // current state now that layout is complete.
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (_networkIdentityService == null) return;
+                    if (CompactFooterLanText == null || CompactFooterWanText == null) return;
+                    UpdateCompactNetworkFooter();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
 
             // ── Mode-specific minimum window width ──
             // Compact mode needs a much smaller minimum to allow narrow side-panel usage.
@@ -536,16 +549,22 @@ namespace MultiPingMonitor.UI
         /// Called by NetworkIdentityService when any state property changes.
         /// Safely dispatches the UI update to the UI thread.
         /// </summary>
-        private void NetworkIdentityService_StateChanged(object sender, EventArgs e)
+#pragma warning disable CS8632
+        private void NetworkIdentityService_StateChanged(object? sender, EventArgs e)
+#pragma warning restore CS8632
         {
-            // Guard: do not touch UI elements after the window has been closed.
-            if (!IsLoaded) return;
+            // Guard: skip only if the window is actually shutting down / service disposed.
+            // Do NOT guard on IsLoaded — StateChanged can fire before the window finishes
+            // loading (the service starts immediately), and dropping that event is what
+            // causes the footer to remain stuck at the loading text.
+            if (_networkIdentityService == null) return;
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (!IsLoaded || _networkIdentityService == null) return;
+                if (_networkIdentityService == null) return;
+                if (CompactFooterLanText == null || CompactFooterWanText == null) return;
                 UpdateCompactNetworkFooter();
-            }));
+            }), System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
