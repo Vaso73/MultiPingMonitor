@@ -667,11 +667,51 @@ namespace MultiPingMonitor.UI
 
         /// <summary>
         /// Handles click on the manual refresh button in the compact network identity footer.
-        /// Delegates to the service, which guards against overlapping refreshes internally.
+        /// Recreates the entire NetworkIdentityService so that a fresh OS-level DNS resolution
+        /// and HTTP stack are used.  This is the only approach that reliably picks up the new
+        /// routing table after a VPN connect/disconnect while the app is running.
         /// </summary>
         private void CompactFooterRefresh_Click(object sender, RoutedEventArgs e)
         {
-            _networkIdentityService?.RequestRefresh();
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: CompactFooterRefresh_Click fired");
+            RecreateNetworkIdentityServiceAndRefresh();
+        }
+
+        /// <summary>
+        /// Disposes the existing <see cref="_networkIdentityService"/>, creates a brand-new
+        /// instance, wires up <see cref="NetworkIdentityService_StateChanged"/>, starts it,
+        /// and immediately triggers a UI update so the footer shows the loading state while
+        /// the new lookup runs.
+        ///
+        /// This is the only approach that reliably picks up the new WAN IP after a VPN
+        /// connect/disconnect while the app is running.  Replacing the internal HttpClient
+        /// alone was insufficient because the OS-level routing/DNS cache is not reset.
+        /// </summary>
+        private void RecreateNetworkIdentityServiceAndRefresh()
+        {
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: RecreateNetworkIdentityServiceAndRefresh – disposing old service");
+
+            // Unsubscribe from the old instance before disposing it.
+            var old = _networkIdentityService;
+            _networkIdentityService = null;
+            if (old != null)
+            {
+                old.StateChanged -= NetworkIdentityService_StateChanged;
+                try { old.Dispose(); } catch { }
+                System.Diagnostics.Debug.WriteLine("NetworkIdentityService: old service disposed");
+            }
+
+            // Create a fresh service instance.  A new process would do the same thing;
+            // this reproduces the startup path without requiring an app restart.
+            _networkIdentityService = new Classes.NetworkIdentityService();
+            _networkIdentityService.StateChanged += NetworkIdentityService_StateChanged;
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: new service created, calling Start()");
+            _networkIdentityService.Start();
+
+            // Show the loading state immediately while the new service runs its first lookup.
+            UpdateCompactNetworkFooter();
+            Dispatcher.BeginInvoke(new Action(UpdateCompactNetworkFooter),
+                System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
