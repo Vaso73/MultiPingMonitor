@@ -25,6 +25,13 @@ namespace MultiPingMonitor.Classes
     /// </summary>
     internal static class NetworkIdentityDiagnostics
     {
+        // Per-provider timeout used by the diagnostic HTTP client (milliseconds).
+        // Intentionally slightly longer than the service's PerProviderTimeoutMs (2 500 ms)
+        // so the diagnostic has its own budget independent of the service constants.
+        private const int DiagPerProviderTimeoutMs  = 8_000;
+
+        // Maximum time to wait for the child process before killing it (milliseconds).
+        private const int ChildProcessTimeoutMs     = 30_000;
         // ── Public-facing entry points ────────────────────────────────────────────
 
         /// <summary>
@@ -83,7 +90,7 @@ namespace MultiPingMonitor.Classes
                 var stdoutTask = proc.StandardOutput.ReadToEndAsync();
                 var stderrTask = proc.StandardError.ReadToEndAsync();
 
-                if (!proc.WaitForExit(30_000))
+                if (!proc.WaitForExit(ChildProcessTimeoutMs))
                 {
                     try { proc.Kill(); } catch { }
                     childError = "child-process-timeout";
@@ -270,7 +277,7 @@ namespace MultiPingMonitor.Classes
             {
                 using var providerCts =
                     CancellationTokenSource.CreateLinkedTokenSource(phaseCt);
-                providerCts.CancelAfter(TimeSpan.FromSeconds(8));
+                providerCts.CancelAfter(TimeSpan.FromMilliseconds(DiagPerProviderTimeoutMs));
 
                 using var req  = new HttpRequestMessage(HttpMethod.Get, url);
                 using var resp = await http
