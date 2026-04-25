@@ -60,7 +60,7 @@ namespace MultiPingMonitor.Classes
         /// Raised whenever any public state property changes.
         /// May be raised from a thread-pool thread.
         /// </summary>
-        public event EventHandler StateChanged;
+        public event EventHandler? StateChanged;
 
         // Configuration constants
 
@@ -105,10 +105,10 @@ namespace MultiPingMonitor.Classes
         // The test constructor skips the subscription so tests run on any OS.
         private readonly bool _subscribedNetworkEvents;
 
-        private System.Timers.Timer _wanTimer;
-        private System.Timers.Timer _lanTimer;
-        private System.Timers.Timer _burstTimer;
-        private System.Timers.Timer _debounceTimer;
+        private System.Timers.Timer? _wanTimer;
+        private System.Timers.Timer? _lanTimer;
+        private System.Timers.Timer? _burstTimer;
+        private System.Timers.Timer? _debounceTimer;
         private int _burstTicksLeft;
 
         // Guards against overlapping refreshes (0 = free, 1 = busy).
@@ -170,7 +170,7 @@ namespace MultiPingMonitor.Classes
 
         // Network change handling
 
-        private void OnNetworkChanged(object sender, EventArgs e)
+        private void OnNetworkChanged(object? sender, EventArgs e)
         {
             if (_disposed) return;
 
@@ -311,20 +311,37 @@ namespace MultiPingMonitor.Classes
                 if (!string.IsNullOrEmpty(PublicIp))
                     LastRefresh = DateTime.UtcNow;
             }
-            catch (Exception ex) when (!(ex is OperationCanceledException))
+            catch (Exception ex)
             {
-                // Ensure WAN state exits Loading on any unexpected error.
+                // Ensure WAN state exits Loading on any exception (including OperationCanceledException
+                // from master CTS, which was previously excluded by the when-filter).
                 if (WanState == WanLookupState.Loading)
                 {
                     WanState = string.IsNullOrEmpty(PublicIp)
                         ? WanLookupState.Failed
                         : WanLookupState.Succeeded;
                 }
-                System.Diagnostics.Trace.WriteLine(
-                    $"NetworkIdentityService: Unexpected refresh error: {ex.Message}");
+                if (ex is OperationCanceledException)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        $"NetworkIdentityService: Refresh cancelled: {ex.Message}");
+                }
+                else
+                {
+                    System.Diagnostics.Trace.WriteLine(
+                        $"NetworkIdentityService: Unexpected refresh error: {ex.Message}");
+                }
             }
             finally
             {
+                // Safety net: WanState must NEVER remain Loading after RefreshAllAsync exits,
+                // regardless of how the method exits (success, cancellation, or exception).
+                if (WanState == WanLookupState.Loading)
+                {
+                    WanState = string.IsNullOrEmpty(PublicIp)
+                        ? WanLookupState.Failed
+                        : WanLookupState.Succeeded;
+                }
                 IsRefreshing = false;
                 Interlocked.Exchange(ref _refreshBusy, 0);
                 OnStateChanged();
