@@ -564,6 +564,8 @@ namespace MultiPingMonitor.UI
             // ── LAN row ────────────────────────────────────────────────────────────
             CompactFooterLanText.Inlines.Clear();
             CompactFooterLanText.Inlines.Add(
+                new System.Windows.Documents.Run("⌂ ")); // HOUSE glyph — visually marks LAN row
+            CompactFooterLanText.Inlines.Add(
                 new System.Windows.Documents.Run("LAN IP ")
                 { FontWeight = System.Windows.FontWeights.SemiBold });
             CompactFooterLanText.Inlines.Add(new System.Windows.Documents.Run(
@@ -586,6 +588,8 @@ namespace MultiPingMonitor.UI
             if (CompactFooterWanText != null)
             {
                 CompactFooterWanText.Inlines.Clear();
+                CompactFooterWanText.Inlines.Add(
+                    new System.Windows.Documents.Run("⊕ ")); // CIRCLED PLUS glyph — visually marks WAN row
                 CompactFooterWanText.Inlines.Add(
                     new System.Windows.Documents.Run("WAN IP ")
                     { FontWeight = System.Windows.FontWeights.SemiBold });

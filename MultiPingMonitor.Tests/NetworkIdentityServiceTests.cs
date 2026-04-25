@@ -299,6 +299,120 @@ namespace MultiPingMonitor.Tests
             Assert.Equal(string.Empty, provider);
         }
 
+        // ── TryParseMetaJson tests ────────────────────────────────────────────────
+
+        [Fact]
+        public void TryParseMetaJson_FreeIpApiSchema_ParsesCorrectly()
+        {
+            // freeipapi.com schema: integer asnNumber + asnOrganisation string
+            const string json = @"{""countryCode"":""SK"",""asnNumber"":5578,""asnOrganisation"":""Orange Slovensko""}";
+            var ok = TryParseMetaJson(json, out var cc, out var asn, out var prov);
+            Assert.True(ok);
+            Assert.Equal("SK", cc);
+            Assert.Equal("AS5578", asn);
+            Assert.Equal("Orange Slovensko", prov);
+        }
+
+        [Fact]
+        public void TryParseMetaJson_SeeIpSchema_ParsesCorrectly()
+        {
+            // seeip.org schema: country_code + organization in AS12345 format
+            const string json = @"{""country_code"":""SK"",""organization"":""AS5578 Orange Slovensko a.s.""}";
+            var ok = TryParseMetaJson(json, out var cc, out var asn, out var prov);
+            Assert.True(ok);
+            Assert.Equal("SK", cc);
+            Assert.Equal("AS5578", asn);
+            Assert.Equal("Orange Slovensko a.s.", prov);
+        }
+
+        [Fact]
+        public void TryParseMetaJson_IpApiSchema_ParsesCorrectly()
+        {
+            // ip-api.com schema: status + countryCode + as field
+            const string json = @"{""status"":""success"",""countryCode"":""SK"",""as"":""AS5578 Orange"",""isp"":""Orange Slovensko"",""query"":""1.2.3.4""}";
+            var ok = TryParseMetaJson(json, out var cc, out var asn, out var prov);
+            Assert.True(ok);
+            Assert.Equal("SK", cc);
+            Assert.Equal("AS5578", asn);
+            Assert.Equal("Orange", prov);
+        }
+
+        [Fact]
+        public void TryParseMetaJson_IpApiFailStatus_ReturnsFalse()
+        {
+            const string json = @"{""status"":""fail"",""message"":""private range""}";
+            var ok = TryParseMetaJson(json, out _, out _, out _);
+            Assert.False(ok);
+        }
+
+        [Fact]
+        public void TryParseMetaJson_InvalidJson_ReturnsFalse()
+        {
+            var ok = TryParseMetaJson("not json", out _, out _, out _);
+            Assert.False(ok);
+        }
+
+        [Fact]
+        public void TryParseMetaJson_EmptyString_ReturnsFalse()
+        {
+            var ok = TryParseMetaJson(string.Empty, out _, out _, out _);
+            Assert.False(ok);
+        }
+
+        // Inline reimplementation of TryParseMetaJson for portable unit tests.
+        private static bool TryParseMetaJson(
+            string json,
+            out string countryCode,
+            out string asn,
+            out string provider)
+        {
+            countryCode = asn = provider = string.Empty;
+            if (string.IsNullOrWhiteSpace(json)) return false;
+
+            try
+            {
+                using var doc  = System.Text.Json.JsonDocument.Parse(json);
+                var        root = doc.RootElement;
+
+                if (root.TryGetProperty("status", out var statusEl)
+                    && statusEl.ValueKind == System.Text.Json.JsonValueKind.String
+                    && !string.Equals(statusEl.GetString(), "success",
+                           StringComparison.OrdinalIgnoreCase))
+                    return false;
+
+                countryCode = GetJsonString(root, "countryCode");
+                if (string.IsNullOrEmpty(countryCode))
+                    countryCode = GetJsonString(root, "country_code");
+
+                var orgStr = GetJsonString(root, "org");
+                if (string.IsNullOrEmpty(orgStr)) orgStr = GetJsonString(root, "organization");
+                if (string.IsNullOrEmpty(orgStr)) orgStr = GetJsonString(root, "as");
+
+                if (!string.IsNullOrEmpty(orgStr))
+                {
+                    ParseOrgField(orgStr, out asn, out provider);
+                }
+                else
+                {
+                    if (root.TryGetProperty("asnNumber", out var asnEl)
+                        && asnEl.TryGetInt32(out int asnNum) && asnNum > 0)
+                        asn = "AS" + asnNum;
+                    provider = GetJsonString(root, "asnOrganisation");
+                    if (string.IsNullOrEmpty(provider))
+                        provider = GetJsonString(root, "isp");
+                }
+
+                return !string.IsNullOrEmpty(countryCode) || !string.IsNullOrEmpty(asn);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return false;
+            }
+        }
+
+        private static string GetJsonString(System.Text.Json.JsonElement root, string name) =>
+            root.TryGetProperty(name, out var p) ? (p.GetString() ?? string.Empty) : string.Empty;
+
         // ── Local IP selection logic tests ────────────────────────────────────────
 
         [Theory]
@@ -401,12 +515,14 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void NetworkIdentityService_HasFallbackPublicIpEndpoint()
+        public void NetworkIdentityService_HasMultiplePublicIpProviders()
         {
             var source = File.ReadAllText(ServiceSourcePath());
-            // A dedicated fallback endpoint for the public-IP phase must be declared.
-            Assert.Contains("PublicIpFallbackUrl", source);
+            // A named array of public-IP endpoints must exist.
+            Assert.Contains("PublicIpProviders", source);
             Assert.Contains("api.ipify.org", source);
+            // At least one additional fallback provider must be listed.
+            Assert.Contains("icanhazip.com", source);
         }
 
         [Fact]
@@ -428,12 +544,29 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void NetworkIdentityService_LookupUrlIsIsolated()
+        public void NetworkIdentityService_MetaProvidersAreIsolated()
         {
             var source = File.ReadAllText(ServiceSourcePath());
-            // URL must be in a single constant, not scattered around the code.
-            Assert.Contains("LookupUrl", source);
-            Assert.Contains("ipinfo.io", source);
+            // Metadata provider URLs must be declared in a named array, not scattered in code.
+            Assert.Contains("MetaProviders", source);
+            Assert.Contains("freeipapi.com", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityService_HasPerProviderTimeout()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("PerProviderTimeoutMs", source);
+            Assert.Contains("2_500", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityService_HasMultipleMetaProviders()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // At least two distinct metadata provider hosts must be listed.
+            Assert.Contains("freeipapi.com", source);
+            Assert.Contains("seeip.org", source);
         }
 
         [Fact]
@@ -560,6 +693,15 @@ namespace MultiPingMonitor.Tests
             // Labels in the compact footer must say "LAN IP" and "WAN IP".
             Assert.Contains("\"LAN IP \"", source);
             Assert.Contains("\"WAN IP \"", source);
+        }
+
+        [Fact]
+        public void MainWindow_FooterLanAndWanRowsHaveDistinctGlyphs()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            // Unicode glyphs (⌂ for LAN, ⊕ for WAN) make each row visually distinct.
+            Assert.Contains("⌂", source); // HOUSE — marks the LAN row
+            Assert.Contains("⊕", source); // CIRCLED PLUS — marks the WAN row
         }
 
         // ── Localization tests ────────────────────────────────────────────────────

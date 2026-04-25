@@ -42,23 +42,37 @@ namespace MultiPingMonitor.Classes
 
         // ── Configuration constants ───────────────────────────────────────────────
 
-        // Public IP / metadata lookup endpoints.
-        // Isolated here so they can be changed in one place.
-        internal const string LookupUrl          = "https://ipinfo.io/json";
-        internal const string PublicIpFallbackUrl = "https://api.ipify.org";
+        // Public IP providers – plain-text endpoints that return just the IP address.
+        // Tried in order; the first valid IPv4 response wins.
+        internal static readonly string[] PublicIpProviders = new[]
+        {
+            "https://api.ipify.org",
+            "https://ipv4.icanhazip.com",
+            "https://checkip.amazonaws.com",
+        };
 
-        private const int WanPollIntervalMs  = 60_000;   // 60 seconds
-        private const int LanPollIntervalMs  = 120_000;  // 2 minutes
-        private const int BurstIntervalMs    = 10_000;   // 10 seconds between burst ticks
-        private const int BurstDurationMs    = 60_000;   // 60 seconds of burst
-        private const int DebounceMs         = 2_000;    // 2-second debounce after network change
-        private const int PublicIpTimeoutMs  = 5_000;    // 5-second timeout for public-IP phase
-        private const int MetaTimeoutMs      = 5_000;    // 5-second timeout for metadata phase
+        // Metadata providers – tried in order; the first successful parse wins.
+        // Each URL template uses {ip} as a placeholder for the resolved public IP.
+        internal static readonly string[] MetaProviders = new[]
+        {
+            "https://free.freeipapi.com/api/json/{ip}",
+            "https://api.seeip.org/geoip/{ip}",
+            "http://ip-api.com/json/{ip}?fields=status,countryCode,isp,as,query",
+        };
+
+        private const int WanPollIntervalMs      = 60_000;   // 60 seconds
+        private const int LanPollIntervalMs      = 120_000;  // 2 minutes
+        private const int BurstIntervalMs        = 10_000;   // 10 seconds between burst ticks
+        private const int BurstDurationMs        = 60_000;   // 60 seconds of burst
+        private const int DebounceMs             = 2_000;    // 2-second debounce after network change
+        private const int PublicIpTimeoutMs      = 5_000;    // overall 5-second cap for the public-IP phase
+        private const int MetaTimeoutMs          = 5_000;    // overall 5-second cap for the metadata phase
+        private const int PerProviderTimeoutMs   = 2_500;    // per-provider attempt cap (≤ phase cap)
 
         // ── Internals ────────────────────────────────────────────────────────────
 
-        // Per-request timeouts are enforced with CancellationToken; the HttpClient
-        // timeout is a backstop only (covers both phases + overhead).
+        // Per-request timeouts are enforced with CancellationTokens.
+        // The HttpClient.Timeout is a hard backstop covering both phases.
         private static readonly HttpClient _http = new HttpClient
         {
             Timeout = TimeSpan.FromMilliseconds(12_000)
@@ -218,58 +232,86 @@ namespace MultiPingMonitor.Classes
         }
 
         /// <summary>
-        /// Phase 1 of WAN refresh: quickly fetches the public egress IP from a
-        /// lightweight plain-text endpoint (api.ipify.org).  Returns the IP string
-        /// on success, or an empty string on timeout / failure.
+        /// Phase 1 of WAN refresh: tries each public-IP provider in order and returns
+        /// the first valid IPv4 address received.  The overall phase is capped at
+        /// PublicIpTimeoutMs; each individual attempt is capped at PerProviderTimeoutMs.
+        /// Returns empty string if all providers fail or time out.
         /// </summary>
         private async Task<string> FetchPublicIpAsync()
         {
             if (_disposed) return string.Empty;
 
-            try
-            {
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
-                cts.CancelAfter(PublicIpTimeoutMs);
+            using var phaseCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+            phaseCts.CancelAfter(PublicIpTimeoutMs);
 
-                var text = (await _http.GetStringAsync(PublicIpFallbackUrl, cts.Token)
-                    .ConfigureAwait(false)).Trim();
-
-                // Validate that the response is a bare IP address.
-                return System.Net.IPAddress.TryParse(text, out _) ? text : string.Empty;
-            }
-            catch (Exception ex) when (IsTransientHttpException(ex))
+            foreach (var url in PublicIpProviders)
             {
-                System.Diagnostics.Trace.WriteLine(
-                    $"NetworkIdentityService: PublicIP lookup failed: {ex.GetType().Name}: {ex.Message}");
-                return string.Empty;
+                if (phaseCts.IsCancellationRequested) break;
+
+                var text = await TryFetchStringAsync(url, phaseCts.Token).ConfigureAwait(false);
+                if (System.Net.IPAddress.TryParse(text, out _))
+                    return text;
             }
+
+            return string.Empty;
         }
 
         /// <summary>
-        /// Phase 2 of WAN refresh: fetches full metadata (IP, country, ASN, provider)
-        /// from ipinfo.io.  On timeout or failure, existing values are silently kept
-        /// so the IP shown after phase 1 is never lost.
+        /// Phase 2 of WAN refresh: tries each metadata provider in order and applies
+        /// the first successful parse (country code, ASN, provider name).  The overall
+        /// phase is capped at MetaTimeoutMs.  Metadata failure never removes the public
+        /// IP resolved in phase 1 — it silently keeps existing values.
         /// </summary>
         private async Task FetchMetaAsync()
         {
-            if (_disposed) return;
+            if (_disposed || string.IsNullOrEmpty(PublicIp)) return;
 
+            using var phaseCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+            phaseCts.CancelAfter(MetaTimeoutMs);
+
+            var ip = PublicIp;
+            foreach (var urlTemplate in MetaProviders)
+            {
+                if (phaseCts.IsCancellationRequested) break;
+
+                var url  = urlTemplate.Replace("{ip}", ip);
+                var json = await TryFetchStringAsync(url, phaseCts.Token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(json)) continue;
+
+                if (TryParseMetaJson(json, out var country, out var parsedAsn, out var parsedProvider))
+                {
+                    CountryCode = country;
+                    Asn         = parsedAsn;
+                    Provider    = parsedProvider;
+                    // Notify immediately so metadata appears mid-refresh.
+                    OnStateChanged();
+                    return;
+                }
+            }
+
+            // All metadata providers failed — public IP is still shown; keep existing metadata.
+        }
+
+        /// <summary>
+        /// Shared helper: fetches a URL as a trimmed string within the given cancellation
+        /// token, also applying a PerProviderTimeoutMs sub-deadline.  Returns empty string
+        /// on any transient HTTP error or timeout.
+        /// </summary>
+        private async Task<string> TryFetchStringAsync(string url, CancellationToken phaseToken)
+        {
             try
             {
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
-                cts.CancelAfter(MetaTimeoutMs);
+                using var providerCts = CancellationTokenSource.CreateLinkedTokenSource(phaseToken);
+                providerCts.CancelAfter(PerProviderTimeoutMs);
 
-                var json = await _http.GetStringAsync(LookupUrl, cts.Token).ConfigureAwait(false);
-                ParseAndApplyWanResult(json);
-                // Notify immediately so country / ASN / provider appear in the UI
-                // while IsRefreshing is still true (before the finally-block reset).
-                OnStateChanged();
+                return (await _http.GetStringAsync(url, providerCts.Token)
+                    .ConfigureAwait(false)).Trim();
             }
             catch (Exception ex) when (IsTransientHttpException(ex))
             {
-                // Silently keep existing values on transient failure.
                 System.Diagnostics.Trace.WriteLine(
-                    $"NetworkIdentityService: Meta lookup failed: {ex.GetType().Name}: {ex.Message}");
+                    $"NetworkIdentityService: Fetch from {url} failed: {ex.GetType().Name}: {ex.Message}");
+                return string.Empty;
             }
         }
 
@@ -278,29 +320,66 @@ namespace MultiPingMonitor.Classes
                 or JsonException or System.IO.IOException;
 
         /// <summary>
-        /// Parses the JSON response from the lookup endpoint and updates public-IP state.
-        /// Extracted to a separate internal method so it can be unit-tested without I/O.
-        /// Expected JSON shape (ipinfo.io): { "ip":"...", "country":"...", "org":"AS12345 Name" }
+        /// Unified JSON parser for metadata responses from any supported provider.
+        /// Handles the three supported schemas:
+        ///   – freeipapi.com:  { "countryCode":"SK", "asnNumber":5578, "asnOrganisation":"…" }
+        ///   – seeip.org:      { "country_code":"SK", "organization":"AS5578 …" }
+        ///   – ip-api.com:     { "status":"success", "countryCode":"SK", "as":"AS5578 …" }
+        /// Returns true when at least a country code or ASN was extracted.
         /// </summary>
-        internal void ParseAndApplyWanResult(string json)
+        internal static bool TryParseMetaJson(
+            string json,
+            out string countryCode,
+            out string asn,
+            out string provider)
         {
-            if (string.IsNullOrWhiteSpace(json)) return;
+            countryCode = asn = provider = string.Empty;
+            if (string.IsNullOrWhiteSpace(json)) return false;
 
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+            try
+            {
+                using var doc  = JsonDocument.Parse(json);
+                var        root = doc.RootElement;
 
-            var newIp      = GetStringProp(root, "ip");
-            var newCountry = GetStringProp(root, "country");
-            var org        = GetStringProp(root, "org");
+                // ip-api.com signals failure via a "status" field.
+                if (root.TryGetProperty("status", out var statusEl)
+                    && statusEl.ValueKind == JsonValueKind.String
+                    && !string.Equals(statusEl.GetString(), "success",
+                           StringComparison.OrdinalIgnoreCase))
+                    return false;
 
-            // Parse "org" field into ASN token and provider name.
-            // ipinfo.io format: "AS12345 WATEL" → Asn="AS12345", Provider="WATEL"
-            ParseOrgField(org, out string newAsn, out string newProvider);
+                // Country code: "countryCode" (freeipapi, ip-api) or "country_code" (seeip).
+                countryCode = GetStringProp(root, "countryCode");
+                if (string.IsNullOrEmpty(countryCode))
+                    countryCode = GetStringProp(root, "country_code");
 
-            PublicIp    = newIp;
-            CountryCode = newCountry;
-            Asn         = newAsn;
-            Provider    = newProvider;
+                // Org string in AS12345 format: "org" (ipinfo), "organization" (seeip), "as" (ip-api).
+                var orgStr = GetStringProp(root, "org");
+                if (string.IsNullOrEmpty(orgStr)) orgStr = GetStringProp(root, "organization");
+                if (string.IsNullOrEmpty(orgStr)) orgStr = GetStringProp(root, "as");
+
+                if (!string.IsNullOrEmpty(orgStr))
+                {
+                    ParseOrgField(orgStr, out asn, out provider);
+                }
+                else
+                {
+                    // freeipapi.com: integer asnNumber + asnOrganisation string.
+                    if (root.TryGetProperty("asnNumber", out var asnNumEl)
+                        && asnNumEl.TryGetInt32(out int asnNum) && asnNum > 0)
+                        asn = "AS" + asnNum;
+
+                    provider = GetStringProp(root, "asnOrganisation");
+                    if (string.IsNullOrEmpty(provider))
+                        provider = GetStringProp(root, "isp");
+                }
+
+                return !string.IsNullOrEmpty(countryCode) || !string.IsNullOrEmpty(asn);
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
         }
 
         private void RefreshLocalIpAndNotify()
