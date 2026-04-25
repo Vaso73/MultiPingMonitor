@@ -97,10 +97,17 @@ namespace MultiPingMonitor.Classes
 
         // Internals
 
-        // Per-instance HttpClient. Production constructor creates a plain client;
-        // test constructor creates one backed by a stub HttpMessageHandler.
-        // Disposed in Dispose() in both cases.
-        private readonly HttpClient _http;
+        // Per-instance HttpClient.
+        // Production constructor creates one backed by a SocketsHttpHandler; see ReplaceHttpClientInternal.
+        // Test constructor creates one backed by a stub HttpMessageHandler that must not be recreated.
+        // Guarded by _httpLock: must hold _httpLock to swap _http or to dispose it.
+        private HttpClient _http;
+        private readonly object _httpLock = new object();
+
+        // True in the production constructor: manual/network-change refreshes are allowed to
+        // recreate the HttpClient so OS-level DNS/socket state never survives VPN route changes.
+        // False in the test constructor: the injected handler must not be recreated.
+        private readonly bool _allowHttpClientRecreation;
 
         // Whether this instance subscribed to NetworkChange events.
         // The test constructor skips the subscription so tests run on any OS.
@@ -120,6 +127,12 @@ namespace MultiPingMonitor.Classes
         // so RequestRefresh() and network-change events are never silently dropped.
         private volatile int _pendingRefresh;
 
+        // Set to true by RequestRefresh() and network-change debounce to indicate that the
+        // next refresh must recreate the HttpClient before making any requests.
+        // This defeats OS-level DNS caching and socket/route state that survives VPN changes
+        // even when PooledConnectionLifetime=Zero is in use.
+        private volatile bool _forceRecreateHttp;
+
         // Master cancellation token: cancelled on Dispose to abort in-flight requests.
         private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -130,16 +143,10 @@ namespace MultiPingMonitor.Classes
 
         public NetworkIdentityService()
         {
-            // SocketsHttpHandler with PooledConnectionLifetime=Zero creates a fresh TCP
-            // connection for every request, preventing stale pooled connections from
-            // surviving VPN connect/disconnect or other route changes.
-            var socketsHandler = new System.Net.Http.SocketsHttpHandler
-            {
-                PooledConnectionLifetime = TimeSpan.Zero,
-            };
-            _http = new HttpClient(socketsHandler) { Timeout = TimeSpan.FromMilliseconds(12_000) };
-            _http.DefaultRequestHeaders.CacheControl =
-                new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true, NoStore = true };
+            _allowHttpClientRecreation = true;
+            // Initialise _http via the shared helper so the same creation logic is used
+            // both here and during forced-refresh recreation.
+            _http = BuildFreshHttpClient();
             _subscribedNetworkEvents = true;
             NetworkChange.NetworkAddressChanged     += OnNetworkChanged;
             NetworkChange.NetworkAvailabilityChanged += OnNetworkChanged;
@@ -148,10 +155,12 @@ namespace MultiPingMonitor.Classes
         /// <summary>
         /// Constructor for unit testing. Accepts a stub HttpMessageHandler and
         /// does NOT subscribe to NetworkChange events so tests run on any OS.
+        /// HttpClient recreation is disabled because the injected handler must not be replaced.
         /// </summary>
         internal NetworkIdentityService(HttpMessageHandler testHandler)
         {
             _http = new HttpClient(testHandler) { Timeout = TimeSpan.FromMilliseconds(12_000) };
+            _allowHttpClientRecreation = false;
             _subscribedNetworkEvents = false;
         }
 
@@ -197,6 +206,8 @@ namespace MultiPingMonitor.Classes
                 _debounceTimer.Elapsed += (s, ev) =>
                 {
                     // Mark pending so the request is not dropped if a refresh is already running.
+                    // Also flag for HttpClient recreation: the VPN route has changed.
+                    _forceRecreateHttp = true;
                     Interlocked.Exchange(ref _pendingRefresh, 1);
                     _ = RefreshAllAsync();
                     StartBurstMode();
@@ -240,6 +251,9 @@ namespace MultiPingMonitor.Classes
         public void RequestRefresh()
         {
             if (_disposed) return;
+            // Recreate the HttpClient on the next lookup so stale OS-level DNS/socket state
+            // bound to the old VPN route is not reused.
+            _forceRecreateHttp = true;
             // Mark a pending refresh so the request is not lost if _refreshBusy is currently 1.
             // RefreshAllAsync clears this flag at its very start; the finally block fires a
             // follow-up if the flag was set while the previous refresh was still running.
@@ -263,6 +277,16 @@ namespace MultiPingMonitor.Classes
             // This refresh is now the "pending" one — consume the flag so the finally block
             // only fires a follow-up if another request arrives during this run.
             Interlocked.Exchange(ref _pendingRefresh, 0);
+
+            // If a forced refresh was requested (manual button or network-change), swap out
+            // the HttpClient so a fresh TCP connection and DNS resolution are used.
+            // This prevents stale OS-level socket/route state from surviving VPN changes,
+            // which persists even when PooledConnectionLifetime=Zero is configured.
+            if (_forceRecreateHttp)
+            {
+                _forceRecreateHttp = false;
+                ReplaceHttpClientInternal();
+            }
 
             System.Diagnostics.Debug.WriteLine("NetworkIdentityService: RefreshAllAsync start");
 
@@ -491,7 +515,12 @@ namespace MultiPingMonitor.Classes
                 using var providerCts = CancellationTokenSource.CreateLinkedTokenSource(phaseToken);
                 providerCts.CancelAfter(PerProviderTimeoutMs);
 
-                var fetchTask = _http.GetStringAsync(url, providerCts.Token);
+                // Snapshot the current client under lock so that a concurrent Dispose()
+                // call cannot null/replace it between the null-check and use.
+                HttpClient http;
+                lock (_httpLock) { http = _http; }
+
+                var fetchTask = http.GetStringAsync(url, providerCts.Token);
 
                 // Hard-timeout fallback: proceed even if GetStringAsync does not honour
                 // the CancellationToken promptly (e.g. OS-level TCP keep-alive behaviour).
@@ -703,6 +732,48 @@ namespace MultiPingMonitor.Classes
             StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        // HTTP client helpers
+
+        /// <summary>
+        /// Creates a brand-new <see cref="HttpClient"/> backed by a fresh
+        /// <see cref="System.Net.Http.SocketsHttpHandler"/> with zero connection pool lifetime
+        /// and no-cache headers. Called once at construction and again on each forced refresh.
+        /// </summary>
+        private static HttpClient BuildFreshHttpClient()
+        {
+            var socketsHandler = new System.Net.Http.SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.Zero,
+            };
+            var client = new HttpClient(socketsHandler) { Timeout = TimeSpan.FromMilliseconds(12_000) };
+            client.DefaultRequestHeaders.CacheControl =
+                new System.Net.Http.Headers.CacheControlHeaderValue { NoCache = true, NoStore = true };
+            return client;
+        }
+
+        /// <summary>
+        /// Replaces the current <see cref="HttpClient"/> with a fresh instance.
+        /// Must only be called while <c>_refreshBusy == 1</c> (i.e. from inside
+        /// <see cref="RefreshAllAsync"/>) so no concurrent request is using the old client.
+        /// No-ops when <see cref="_allowHttpClientRecreation"/> is false (test constructor).
+        /// </summary>
+        private void ReplaceHttpClientInternal()
+        {
+            if (!_allowHttpClientRecreation) return;
+
+            HttpClient? oldClient;
+            lock (_httpLock)
+            {
+                oldClient = _http;
+                _http = BuildFreshHttpClient();
+            }
+
+            // Dispose the old client after replacing it; any in-flight request on it will
+            // fail gracefully (ObjectDisposedException is caught in TryFetchStringAsync).
+            try { oldClient?.Dispose(); } catch { }
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: HttpClient recreated (forced refresh)");
+        }
+
         // IDisposable
 
         public void Dispose()
@@ -718,7 +789,7 @@ namespace MultiPingMonitor.Classes
 
             try { _cts.Cancel(); } catch { }
             _cts.Dispose();
-            try { _http?.Dispose(); } catch { }
+            lock (_httpLock) { try { _http?.Dispose(); } catch { } }
 
             lock (_timerLock)
             {

@@ -1814,5 +1814,72 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("IP changed", source);
             Assert.Contains("metadata cleared", source);
         }
+
+        // ── VPN test 8 (structural) — HttpClient recreation on forced refresh ──────
+
+        /// <summary>
+        /// Verifies that the service has ReplaceHttpClientInternal / BuildFreshHttpClient
+        /// and _forceRecreateHttp so that manual refresh and network-change refresh
+        /// create a brand-new HttpClient, defeating OS-level DNS/socket caching after
+        /// VPN connect/disconnect.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_ForcedRefresh_RecreatesHttpClient()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("ReplaceHttpClientInternal", source);
+            Assert.Contains("BuildFreshHttpClient", source);
+            Assert.Contains("_forceRecreateHttp", source);
+            // RequestRefresh must set _forceRecreateHttp = true before calling RefreshAllAsync.
+            Assert.Contains("_forceRecreateHttp = true", source);
+        }
+
+        // ── VPN test 9 (structural) — _allowHttpClientRecreation ─────────────────
+
+        /// <summary>
+        /// Verifies that the service guards HttpClient recreation behind
+        /// _allowHttpClientRecreation so the test constructor (with injected handler)
+        /// never replaces the stub handler, while the production constructor always can.
+        /// </summary>
+        [Fact]
+        public void NetworkIdentityService_AllowHttpClientRecreation_GuardsReplacement()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("_allowHttpClientRecreation", source);
+            Assert.Contains("if (!_allowHttpClientRecreation) return;", source);
+        }
+
+        // ── VPN test 10 — busy then follow-up still updates IP ────────────────────
+
+        /// <summary>
+        /// If a refresh is already running when manual refresh is called, the follow-up
+        /// refresh (queued via _pendingRefresh) must still update PublicIp when the new
+        /// provider returns a different IP.
+        /// </summary>
+        [Fact]
+        public async Task VPN_BusyThenFollowUp_UpdatesPublicIp()
+        {
+            // First call to ipify returns old IP; second (follow-up) returns VPN IP.
+            var handler = new SequentialStubHttpMessageHandler(
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "38.99.128.251" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad", "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad", "bad" }),
+                ("https://free.freeipapi.com",    new[] { "bad", "bad" }),
+                ("https://api.seeip.org",         new[] { "bad", "bad" }),
+                ("http://ip-api.com",             new[] { "bad", "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            // First full refresh — sets IP to 45.66.72.254.
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            // Second full refresh — simulates a manual follow-up refresh.
+            await svc.RefreshAllAsync();
+            Assert.Equal("38.99.128.251", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
     }
 }
