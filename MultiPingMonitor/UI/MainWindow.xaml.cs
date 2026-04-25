@@ -517,7 +517,7 @@ namespace MultiPingMonitor.UI
                 // is stale (no refresh in the last 90 s), kick a background refresh.
                 UpdateCompactNetworkFooter();
                 if (!_networkIdentityService.LastRefresh.HasValue
-                    || (DateTime.Now - _networkIdentityService.LastRefresh.Value).TotalSeconds > 90)
+                    || (DateTime.UtcNow - _networkIdentityService.LastRefresh.Value).TotalSeconds > 90)
                 {
                     _networkIdentityService.Start();
                 }
@@ -617,7 +617,7 @@ namespace MultiPingMonitor.UI
                     {
                         string sep = hasProvider ? " · " : string.Empty;
                         CompactFooterProviderText.Inlines.Add(new System.Windows.Documents.Run(
-                            $"{sep}{Properties.Strings.Compact_Footer_Updated} {svc.LastRefresh.Value:HH:mm}"));
+                            $"{sep}{Properties.Strings.Compact_Footer_Updated} {svc.LastRefresh.Value.ToLocalTime():HH:mm}"));
                     }
 
                     CompactFooterProviderText.Visibility = Visibility.Visible;

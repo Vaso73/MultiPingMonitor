@@ -106,11 +106,7 @@ namespace MultiPingMonitor.Tests
             }
 
             var countryPrefix = string.IsNullOrEmpty(countryCode) ? string.Empty : countryCode + " ";
-            var timePart = lastRefresh.HasValue
-                ? $" | {updatedLabel} {lastRefresh.Value:HH:mm}"
-                : string.Empty;
-
-            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{timePart}";
+            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{(lastRefresh.HasValue ? $" | {updatedLabel} {lastRefresh.Value.ToLocalTime():HH:mm}" : string.Empty)}";
         }
 
         // Inline reimplementation of ParseOrgField for portable tests.

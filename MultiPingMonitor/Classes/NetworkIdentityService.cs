@@ -187,7 +187,7 @@ namespace MultiPingMonitor.Classes
                 // 2. WAN (async HTTP).
                 await RefreshWanAsync().ConfigureAwait(false);
 
-                LastRefresh = DateTime.Now;
+                LastRefresh = DateTime.UtcNow;
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
@@ -384,12 +384,7 @@ namespace MultiPingMonitor.Classes
             // Country badge prefix (before "WAN:").
             var countryPrefix = string.IsNullOrEmpty(countryCode) ? string.Empty : countryCode + " ";
 
-            // Timestamp segment.
-            var timePart = lastRefresh.HasValue
-                ? $" | {updatedLabel} {lastRefresh.Value:HH:mm}"
-                : string.Empty;
-
-            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{timePart}";
+            return $"LAN: {lan} | {countryPrefix}WAN: {wan}{(lastRefresh.HasValue ? $" | {updatedLabel} {lastRefresh.Value.ToLocalTime():HH:mm}" : string.Empty)}";
         }
 
         // ── Private utilities ─────────────────────────────────────────────────────
@@ -418,8 +413,8 @@ namespace MultiPingMonitor.Classes
                 && (org[0] == 'A' || org[0] == 'a')
                 && (org[1] == 'S' || org[1] == 's'))
             {
-                asn      = org.Substring(0, spaceIdx);
-                provider = org.Substring(spaceIdx + 1);
+                asn      = org[..spaceIdx];
+                provider = org[(spaceIdx + 1)..];
             }
             else
             {
