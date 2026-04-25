@@ -564,7 +564,7 @@ namespace MultiPingMonitor.UI
             // ── LAN row ────────────────────────────────────────────────────────────
             CompactFooterLanText.Inlines.Clear();
             CompactFooterLanText.Inlines.Add(
-                new System.Windows.Documents.Run("LAN ")
+                new System.Windows.Documents.Run("LAN IP ")
                 { FontWeight = System.Windows.FontWeights.SemiBold });
             CompactFooterLanText.Inlines.Add(new System.Windows.Documents.Run(
                 string.IsNullOrEmpty(svc.LocalIp)
@@ -587,7 +587,7 @@ namespace MultiPingMonitor.UI
             {
                 CompactFooterWanText.Inlines.Clear();
                 CompactFooterWanText.Inlines.Add(
-                    new System.Windows.Documents.Run("WAN ")
+                    new System.Windows.Documents.Run("WAN IP ")
                     { FontWeight = System.Windows.FontWeights.SemiBold });
                 string wanIp = string.IsNullOrEmpty(svc.PublicIp)
                     ? (svc.IsRefreshing ? loadingText : "—")

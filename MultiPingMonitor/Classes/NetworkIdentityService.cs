@@ -42,22 +42,26 @@ namespace MultiPingMonitor.Classes
 
         // ── Configuration constants ───────────────────────────────────────────────
 
-        // Public IP / metadata lookup endpoint.
-        // Isolated here so it can be changed in one place.
-        internal const string LookupUrl = "https://ipinfo.io/json";
+        // Public IP / metadata lookup endpoints.
+        // Isolated here so they can be changed in one place.
+        internal const string LookupUrl          = "https://ipinfo.io/json";
+        internal const string PublicIpFallbackUrl = "https://api.ipify.org";
 
         private const int WanPollIntervalMs  = 60_000;   // 60 seconds
         private const int LanPollIntervalMs  = 120_000;  // 2 minutes
         private const int BurstIntervalMs    = 10_000;   // 10 seconds between burst ticks
         private const int BurstDurationMs    = 60_000;   // 60 seconds of burst
         private const int DebounceMs         = 2_000;    // 2-second debounce after network change
-        private const int HttpTimeoutMs      = 3_000;    // 3-second HTTP timeout
+        private const int PublicIpTimeoutMs  = 5_000;    // 5-second timeout for public-IP phase
+        private const int MetaTimeoutMs      = 5_000;    // 5-second timeout for metadata phase
 
         // ── Internals ────────────────────────────────────────────────────────────
 
+        // Per-request timeouts are enforced with CancellationToken; the HttpClient
+        // timeout is a backstop only (covers both phases + overhead).
         private static readonly HttpClient _http = new HttpClient
         {
-            Timeout = TimeSpan.FromMilliseconds(HttpTimeoutMs)
+            Timeout = TimeSpan.FromMilliseconds(12_000)
         };
 
         private System.Timers.Timer _wanTimer;
@@ -184,10 +188,21 @@ namespace MultiPingMonitor.Classes
                     OnStateChanged();
                 }
 
-                // 2. WAN (async HTTP).
-                await RefreshWanAsync().ConfigureAwait(false);
+                // 2a. Fast public-IP lookup — update UI as soon as the IP is known,
+                //     without waiting for country / ASN / provider metadata.
+                var publicIp = await FetchPublicIpAsync().ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(publicIp) && publicIp != PublicIp)
+                {
+                    PublicIp = publicIp;
+                    OnStateChanged();
+                }
 
-                LastRefresh = DateTime.UtcNow;
+                // 2b. Metadata lookup (country, ASN, provider).
+                await FetchMetaAsync().ConfigureAwait(false);
+
+                // Record completion time only when we obtained at least a public IP.
+                if (!string.IsNullOrEmpty(PublicIp))
+                    LastRefresh = DateTime.UtcNow;
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
@@ -202,30 +217,65 @@ namespace MultiPingMonitor.Classes
             }
         }
 
-        private async Task RefreshWanAsync()
+        /// <summary>
+        /// Phase 1 of WAN refresh: quickly fetches the public egress IP from a
+        /// lightweight plain-text endpoint (api.ipify.org).  Returns the IP string
+        /// on success, or an empty string on timeout / failure.
+        /// </summary>
+        private async Task<string> FetchPublicIpAsync()
+        {
+            if (_disposed) return string.Empty;
+
+            try
+            {
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+                cts.CancelAfter(PublicIpTimeoutMs);
+
+                var text = (await _http.GetStringAsync(PublicIpFallbackUrl, cts.Token)
+                    .ConfigureAwait(false)).Trim();
+
+                // Validate that the response is a bare IP address.
+                return System.Net.IPAddress.TryParse(text, out _) ? text : string.Empty;
+            }
+            catch (Exception ex) when (IsTransientHttpException(ex))
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"NetworkIdentityService: PublicIP lookup failed: {ex.GetType().Name}: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Phase 2 of WAN refresh: fetches full metadata (IP, country, ASN, provider)
+        /// from ipinfo.io.  On timeout or failure, existing values are silently kept
+        /// so the IP shown after phase 1 is never lost.
+        /// </summary>
+        private async Task FetchMetaAsync()
         {
             if (_disposed) return;
 
             try
             {
-                using var linked = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
-                linked.CancelAfter(HttpTimeoutMs);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+                cts.CancelAfter(MetaTimeoutMs);
 
-                var json = await _http.GetStringAsync(LookupUrl, linked.Token).ConfigureAwait(false);
+                var json = await _http.GetStringAsync(LookupUrl, cts.Token).ConfigureAwait(false);
                 ParseAndApplyWanResult(json);
+                // Notify immediately so country / ASN / provider appear in the UI
+                // while IsRefreshing is still true (before the finally-block reset).
+                OnStateChanged();
             }
-            catch (Exception ex) when (
-                ex is HttpRequestException        ||
-                ex is TaskCanceledException       ||
-                ex is OperationCanceledException  ||
-                ex is JsonException               ||
-                ex is System.IO.IOException)
+            catch (Exception ex) when (IsTransientHttpException(ex))
             {
                 // Silently keep existing values on transient failure.
                 System.Diagnostics.Trace.WriteLine(
-                    $"NetworkIdentityService: WAN lookup failed: {ex.GetType().Name}: {ex.Message}");
+                    $"NetworkIdentityService: Meta lookup failed: {ex.GetType().Name}: {ex.Message}");
             }
         }
+
+        private static bool IsTransientHttpException(Exception ex) =>
+            ex is HttpRequestException or TaskCanceledException or OperationCanceledException
+                or JsonException or System.IO.IOException;
 
         /// <summary>
         /// Parses the JSON response from the lookup endpoint and updates public-IP state.

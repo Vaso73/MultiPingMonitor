@@ -201,6 +201,28 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
+        public void BuildFooterText_PublicIpShownWithoutMeta()
+        {
+            // When PublicIp is set but country/ASN/provider are all empty
+            // (as happens when only phase 1 of the WAN lookup succeeded),
+            // the footer must still show the IP — not a loading/error placeholder.
+            var result = BuildFooterText("10.0.0.1", "203.0.113.5", "", "", "", null, false, "loading…", "upd.");
+            Assert.Contains("203.0.113.5", result);
+            Assert.DoesNotContain("loading", result);
+            Assert.DoesNotContain("·", result);
+        }
+
+        [Fact]
+        public void BuildFooterText_IsRefreshingWithPublicIp_ShowsIpNotLoading()
+        {
+            // While IsRefreshing=true (phase 2 in progress) but PublicIp is already
+            // known (from phase 1), the WAN field must show the IP, not "loading…".
+            var result = BuildFooterText("10.0.0.1", "203.0.113.5", "US", "AS1", "ISP", null, true, "loading…", "upd.");
+            Assert.Contains("203.0.113.5", result);
+            Assert.DoesNotContain("loading…", result);
+        }
+
+        [Fact]
         public void BuildFooterText_IsRefreshingWithExistingLanData_ShowsLoadingForWan()
         {
             // LAN data available, WAN not yet — while refreshing WAN.
@@ -360,11 +382,40 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void NetworkIdentityService_HttpTimeoutIs3Seconds()
+        public void NetworkIdentityService_HasPublicIpAndMetaTimeoutConstants()
         {
             var source = File.ReadAllText(ServiceSourcePath());
-            Assert.Contains("3_000", source);
-            Assert.Contains("HttpTimeoutMs", source);
+            // Per-phase timeouts must each be 5 000 ms.
+            Assert.Contains("5_000", source);
+            Assert.Contains("PublicIpTimeoutMs", source);
+            Assert.Contains("MetaTimeoutMs", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityService_IsRefreshingResetInFinally()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // IsRefreshing must be unconditionally reset to false in a finally block.
+            Assert.Contains("finally", source);
+            Assert.Contains("IsRefreshing = false", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityService_HasFallbackPublicIpEndpoint()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // A dedicated fallback endpoint for the public-IP phase must be declared.
+            Assert.Contains("PublicIpFallbackUrl", source);
+            Assert.Contains("api.ipify.org", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityService_TwoPhaseWanLookup()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            // Two separate methods must exist: one for the IP phase and one for metadata.
+            Assert.Contains("FetchPublicIpAsync", source);
+            Assert.Contains("FetchMetaAsync", source);
         }
 
         [Fact]
@@ -500,6 +551,15 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("CompactFooterCountryBadge", source);
             Assert.Contains("Visibility.Visible", source);
             Assert.Contains("Visibility.Collapsed", source);
+        }
+
+        [Fact]
+        public void MainWindow_FooterLabelsUseLanIpAndWanIp()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            // Labels in the compact footer must say "LAN IP" and "WAN IP".
+            Assert.Contains("\"LAN IP \"", source);
+            Assert.Contains("\"WAN IP \"", source);
         }
 
         // ── Localization tests ────────────────────────────────────────────────────
