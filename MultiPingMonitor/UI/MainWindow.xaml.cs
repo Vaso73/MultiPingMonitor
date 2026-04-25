@@ -72,6 +72,11 @@ namespace MultiPingMonitor.UI
         private Classes.NetworkIdentityService? _networkIdentityService;
 #pragma warning restore CS8632
 
+
+        // Baselines for LAN/WAN identity change alerts.
+        // First non-empty value is baseline; later non-empty changes raise notifications.
+        private string _lastObservedLanIpForAlert = string.Empty;
+        private string _lastObservedWanIpForAlert = string.Empty;
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -116,6 +121,9 @@ namespace MultiPingMonitor.UI
             InitializeComponent();
             InitializeApplication();
             InitializeTrayIcon();
+            // Start LAN/WAN identity monitoring for footer auto-refresh and IP-change alerts.
+            // The footer itself remains visible only in Compact mode.
+            EnsureNetworkIdentityService();
 
             // Attach window placement using a mode-specific key so Normal and Compact
             // each remember their own position and size independently.
@@ -456,7 +464,8 @@ namespace MultiPingMonitor.UI
                 // current state now that layout is complete.
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    if (_networkIdentityService == null) return;
+                    var svc = _networkIdentityService;
+                    if (svc == null) return;
                     if (CompactFooterLanText == null || CompactFooterWanText == null) return;
                     UpdateCompactNetworkFooter();
                 }), System.Windows.Threading.DispatcherPriority.Background);
@@ -561,7 +570,11 @@ namespace MultiPingMonitor.UI
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (_networkIdentityService == null) return;
+                var svc = _networkIdentityService;
+                if (svc == null) return;
+
+                HandleNetworkIdentityIpChangeAlerts(svc);
+
                 if (CompactFooterLanText == null || CompactFooterWanText == null) return;
                 UpdateCompactNetworkFooter();
             }), System.Windows.Threading.DispatcherPriority.Background);
@@ -665,6 +678,87 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        private void HandleNetworkIdentityIpChangeAlerts(Classes.NetworkIdentityService svc)
+        {
+            TrackNetworkIdentityIpChange("LAN IP", ref _lastObservedLanIpForAlert, svc.LocalIp);
+            TrackNetworkIdentityIpChange("WAN IP", ref _lastObservedWanIpForAlert, svc.PublicIp);
+        }
+
+        private void TrackNetworkIdentityIpChange(string label, ref string previousIp, string currentIp)
+        {
+            if (string.IsNullOrWhiteSpace(currentIp))
+                return;
+
+            if (string.IsNullOrWhiteSpace(previousIp))
+            {
+                previousIp = currentIp;
+                return;
+            }
+
+            if (string.Equals(previousIp, currentIp, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            var oldIp = previousIp;
+            previousIp = currentIp;
+
+            ShowNetworkIdentityIpChangedNotification(label, oldIp, currentIp);
+        }
+
+        private void ShowNetworkIdentityIpChangedNotification(string label, string previousIp, string currentIp)
+        {
+            var entry = new StatusChangeLog
+            {
+                Timestamp = DateTime.Now,
+                Hostname = label,
+                Alias = string.Empty,
+                Status = ProbeStatus.Up,
+                CustomGlyph = "h",
+                CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})"
+            };
+
+            bool shouldPopup = ApplicationOptions.PopupOption == ApplicationOptions.PopupNotificationOption.Always
+                || (ApplicationOptions.PopupOption == ApplicationOptions.PopupNotificationOption.WhenMinimized
+                    && WindowState == WindowState.Minimized);
+
+            lock (Probe.StatusChangeLog)
+            {
+                if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>().Any())
+                {
+                    foreach (var existing in Probe.StatusChangeLog)
+                        existing.HasStatusBeenCleared = true;
+                }
+
+                Probe.StatusChangeLog.Add(entry);
+            }
+
+            WriteNetworkIdentityChangeToStatusLog(entry);
+
+            if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>().Any())
+            {
+                new PopupNotificationWindow(Probe.StatusChangeLog).Show();
+            }
+        }
+
+        private static void WriteNetworkIdentityChangeToStatusLog(StatusChangeLog entry)
+        {
+            if (!ApplicationOptions.IsLogStatusChangesEnabled || string.IsNullOrEmpty(ApplicationOptions.LogStatusChangesPath))
+                return;
+
+            try
+            {
+                string expandedPath = PortablePath.ExpandTokens(ApplicationOptions.LogStatusChangesPath);
+                PortablePath.EnsureParentDirectoryExists(expandedPath);
+                System.IO.File.AppendAllText(
+                    expandedPath,
+                    $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{entry.Hostname}\t{entry.Alias}\t{entry.StatusAsString}{Environment.NewLine}");
+            }
+            catch (Exception ex)
+            {
+                ApplicationOptions.IsLogStatusChangesEnabled = false;
+                System.Diagnostics.Trace.WriteLine(
+                    $"MultiPingMonitor: failed writing network identity change to status log: {ex.Message}");
+            }
+        }
         /// <summary>
         /// Handles click on the manual refresh button in the compact network identity footer.
         /// Recreates the entire NetworkIdentityService so that a fresh OS-level DNS resolution
@@ -1331,6 +1425,15 @@ namespace MultiPingMonitor.UI
 
             // Separator + Manage Compact Sets...
             CompactTargetsMenu.Items.Add(new Separator());
+            var statusHistoryItem = new MenuItem
+            {
+                Header = Strings.Menu_StatusHistory,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.status-history")
+            };
+            statusHistoryItem.Click += (s, args) => StatusHistoryExecute(null, null);
+            CompactTargetsMenu.Items.Add(statusHistoryItem);
+
+            CompactTargetsMenu.Items.Add(new Separator());
             var manageItem = new MenuItem
             {
                 Header = Strings.Menu_CompactManageSets,
@@ -1444,6 +1547,15 @@ namespace MultiPingMonitor.UI
 
             menu.Items.Add(new Separator());
 
+            var statusHistoryItem = new MenuItem
+            {
+                Header = Strings.Menu_StatusHistory,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.status-history")
+            };
+            statusHistoryItem.Click += (s, args) => StatusHistoryExecute(null, null);
+            menu.Items.Add(statusHistoryItem);
+
+            menu.Items.Add(new Separator());
             var manageItem = new MenuItem
             {
                 Header = Strings.Menu_CompactManageSets,
