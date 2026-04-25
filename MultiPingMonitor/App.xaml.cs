@@ -17,9 +17,9 @@ namespace MultiPingMonitor
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // ── Diagnostic CLI modes ──────────────────────────────────────────────
+            // Headless network identity CLI modes.
             // Handle --network-identity-lookup and --network-identity-diagnose BEFORE
-            // creating any WPF window so they run cleanly as headless console commands.
+            // creating any WPF window so they run cleanly as internal helper commands.
             // stdout is written via Console.OpenStandardOutput() so output is available
             // when the caller uses -RedirectStandardOutput (e.g. Start-Process in PowerShell).
             var args = Environment.GetCommandLineArgs();
@@ -29,7 +29,7 @@ namespace MultiPingMonitor
 
                 if (cliArg == "--network-identity-lookup")
                 {
-                    // Run WAN lookup diagnostics; write compact JSON to stdout; exit.
+                    // Run headless WAN lookup; write compact JSON to stdout; exit.
                     System.Diagnostics.Debug.WriteLine(
                         "NetworkIdentityDiagnostics: --network-identity-lookup");
                     try
@@ -70,7 +70,7 @@ namespace MultiPingMonitor
                     return;
                 }
             }
-            // ─────────────────────────────────────────────────────────────────────
+            // -----------------------------------------------------------------------------
 
             // Force software rendering. Otherwise application may have high GPU usage on some video cards.
             RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
