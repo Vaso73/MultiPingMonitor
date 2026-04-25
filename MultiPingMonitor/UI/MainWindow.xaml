@@ -583,6 +583,108 @@
             </Grid>
         </Border>
 
+        <!-- Compact mode: network identity footer — shown below host list in Compact mode.
+             Layout reflows to multiple lines at narrow Compact widths via TextWrapping.
+             Row 0 : LAN IP (left) + manual refresh button (right)
+             Row 1 : country badge (auto, collapsed when empty) + WAN IP
+             Row 2 : ASN/provider · last-refresh time (collapsed until first data arrives) -->
+        <Border x:Name="CompactNetworkFooter"
+                DockPanel.Dock="Bottom"
+                Visibility="Collapsed"
+                Style="{DynamicResource Style.CompactNetworkFooter}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Row 0: LAN IP + manual refresh button -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- LAN label (bold) + LAN IP value — wraps when narrow -->
+                    <TextBlock x:Name="CompactFooterLanText"
+                               Grid.Column="0"
+                               FontSize="11"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Theme.Text.Primary}"/>
+                    <!-- Manual refresh button — disabled while a refresh is running -->
+                    <Button x:Name="CompactFooterRefreshButton"
+                            Grid.Column="1"
+                            Click="CompactFooterRefresh_Click"
+                            MinHeight="0"
+                            Width="22" Height="20"
+                            Margin="6,0,0,0"
+                            Cursor="Hand"
+                            ToolTip="{x:Static resource:Strings.Compact_Footer_Refresh}"
+                            ToolTipService.InitialShowDelay="800">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="refreshBorder"
+                                        Background="Transparent"
+                                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                                        Padding="2,1">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="refreshBorder" Property="Background"
+                                                Value="{DynamicResource Theme.Surface}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.35"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <!-- ↺ U+21BA: counterclockwise open circle arrow — reliable on all Windows fonts -->
+                        <TextBlock Text="↺"
+                                   FontSize="14"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource Theme.Text.Secondary}"/>
+                    </Button>
+                </Grid>
+
+                <!-- Row 1: WAN IP + country badge (badge follows IP, may wrap to next line) -->
+                <WrapPanel Grid.Row="1" Margin="0,3,0,0">
+                    <!-- WAN label (bold) + public IP — no-wrap so the IP stays on one line;
+                         the WrapPanel wraps the badge to the next line when width is tight. -->
+                    <TextBlock x:Name="CompactFooterWanText"
+                               FontSize="11"
+                               TextWrapping="NoWrap"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Theme.Text.Primary}"/>
+                    <!-- Country badge: styled border with 2-letter country code,
+                         positioned after the WAN IP value. -->
+                    <Border x:Name="CompactFooterCountryBadge"
+                            Style="{DynamicResource Style.CompactCountryBadge}"
+                            VerticalAlignment="Center"
+                            Margin="4,0,0,0"
+                            Visibility="Collapsed">
+                        <TextBlock x:Name="CompactFooterCountryText"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Theme.Text.Primary}"/>
+                    </Border>
+                </WrapPanel>
+
+                <!-- Row 2: ASN/provider · timestamp — collapsed until first WAN data -->
+                <TextBlock x:Name="CompactFooterProviderText"
+                           Grid.Row="2"
+                           FontSize="10"
+                           TextWrapping="Wrap"
+                           Margin="0,3,0,0"
+                           Visibility="Collapsed"
+                           Foreground="{DynamicResource Theme.Text.Secondary}"/>
+            </Grid>
+        </Border>
+
         <!-- Items Control -->
         <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="{DynamicResource Style.ProbeCardGrid.Margin}">
             <ItemsControl.ItemTemplate>

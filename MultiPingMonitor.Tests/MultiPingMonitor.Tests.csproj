@@ -16,6 +16,13 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
+  <!-- Compile NetworkIdentityService directly so behavioral tests can access
+       internal members without needing a net8.0-windows project reference. -->
+  <ItemGroup>
+    <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityService.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityDiagnostics.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>

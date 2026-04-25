@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -63,6 +63,14 @@ namespace MultiPingMonitor.UI
         // Separate probe collection used when Compact mode is configured to use
         // custom targets instead of the normal dataset.
         private readonly ObservableCollection<Probe> _CompactProbeCollection = new ObservableCollection<Probe>();
+
+        // ── Compact network identity ──────────────────────────────────────────
+        // Service that polls LAN/WAN identity and raises StateChanged when data
+        // changes.  Created lazily on first switch to Compact mode and disposed
+        // when the window is closed.
+#pragma warning disable CS8632
+        private Classes.NetworkIdentityService? _networkIdentityService;
+#pragma warning restore CS8632
 
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
@@ -437,6 +445,23 @@ namespace MultiPingMonitor.UI
             MainMenu.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
             CompactTitleBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
 
+            // ── Network identity footer ──
+            if (CompactNetworkFooter != null)
+                CompactNetworkFooter.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
+            if (compact)
+            {
+                EnsureNetworkIdentityService();
+                // Fallback: if the service already has a result (StateChanged fired before
+                // the footer was visible / before the window was loaded), re-apply its
+                // current state now that layout is complete.
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (_networkIdentityService == null) return;
+                    if (CompactFooterLanText == null || CompactFooterWanText == null) return;
+                    UpdateCompactNetworkFooter();
+                }), System.Windows.Threading.DispatcherPriority.Background);
+            }
+
             // ── Mode-specific minimum window width ──
             // Compact mode needs a much smaller minimum to allow narrow side-panel usage.
             // Normal mode retains the original 350 to protect its multi-column layout.
@@ -489,6 +514,209 @@ namespace MultiPingMonitor.UI
         }
 
         // ── Pin / Always-on-top buttons ───────────────────────────────────────
+
+        // ── Compact network identity footer ──────────────────────────────────
+
+        /// <summary>
+        /// Creates and starts the NetworkIdentityService if it does not yet exist.
+        /// Updates the footer immediately with whatever state is available.
+        /// Called when switching into Compact mode.
+        /// </summary>
+        private void EnsureNetworkIdentityService()
+        {
+            if (_networkIdentityService != null)
+            {
+                // Already running – trigger an immediate text refresh and, if data
+                // is stale (no refresh in the last 90 s), kick a background refresh.
+                UpdateCompactNetworkFooter();
+                if (!_networkIdentityService.LastRefresh.HasValue
+                    || (DateTime.UtcNow - _networkIdentityService.LastRefresh.Value).TotalSeconds > 90)
+                {
+                    _networkIdentityService.RequestRefresh();
+                }
+                return;
+            }
+
+            _networkIdentityService = new Classes.NetworkIdentityService();
+            _networkIdentityService.StateChanged += NetworkIdentityService_StateChanged;
+            _networkIdentityService.Start();
+
+            // Show loading state immediately.
+            UpdateCompactNetworkFooter();
+        }
+
+        /// <summary>
+        /// Called by NetworkIdentityService when any state property changes.
+        /// Safely dispatches the UI update to the UI thread.
+        /// </summary>
+#pragma warning disable CS8632
+        private void NetworkIdentityService_StateChanged(object? sender, EventArgs e)
+#pragma warning restore CS8632
+        {
+            // Guard: skip only if the window is actually shutting down / service disposed.
+            // Do NOT guard on IsLoaded — StateChanged can fire before the window finishes
+            // loading (the service starts immediately), and dropping that event is what
+            // causes the footer to remain stuck at the loading text.
+            if (_networkIdentityService == null) return;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (_networkIdentityService == null) return;
+                if (CompactFooterLanText == null || CompactFooterWanText == null) return;
+                UpdateCompactNetworkFooter();
+            }), System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        /// <summary>
+        /// Rebuilds the compact network footer from the current service state.
+        /// Populates each named element individually so data wraps naturally at narrow widths.
+        /// Must be called on the UI thread.
+        /// </summary>
+        private void UpdateCompactNetworkFooter()
+        {
+            if (CompactFooterLanText == null || _networkIdentityService == null)
+                return;
+
+            var svc         = _networkIdentityService;
+            var loadingText = Properties.Strings.Compact_Footer_Loading;
+
+            // ── LAN row ────────────────────────────────────────────────────────────
+            CompactFooterLanText.Inlines.Clear();
+            CompactFooterLanText.Inlines.Add(
+                new System.Windows.Documents.Run("⌂ ")); // HOUSE glyph — visually marks LAN row
+            CompactFooterLanText.Inlines.Add(
+                new System.Windows.Documents.Run("LAN IP ")
+                { FontWeight = System.Windows.FontWeights.SemiBold });
+            CompactFooterLanText.Inlines.Add(new System.Windows.Documents.Run(
+                string.IsNullOrEmpty(svc.LocalIp)
+                    ? (svc.IsRefreshing ? loadingText : "—")
+                    : svc.LocalIp));
+
+            // Refresh button: disabled while a refresh is in progress.
+            if (CompactFooterRefreshButton != null)
+                CompactFooterRefreshButton.IsEnabled = !svc.IsRefreshing;
+
+            // ── Country badge ──────────────────────────────────────────────────────
+            bool hasCountry = !string.IsNullOrEmpty(svc.CountryCode);
+            if (CompactFooterCountryBadge != null)
+                CompactFooterCountryBadge.Visibility = hasCountry ? Visibility.Visible : Visibility.Collapsed;
+            if (CompactFooterCountryText != null && hasCountry)
+                CompactFooterCountryText.Text = svc.CountryCode;
+
+            // ── WAN row ────────────────────────────────────────────────────────────
+            if (CompactFooterWanText != null)
+            {
+                CompactFooterWanText.Inlines.Clear();
+                CompactFooterWanText.Inlines.Add(
+                    new System.Windows.Documents.Run("⊕ ")); // CIRCLED PLUS glyph — visually marks WAN row
+                CompactFooterWanText.Inlines.Add(
+                    new System.Windows.Documents.Run("WAN IP ")
+                    { FontWeight = System.Windows.FontWeights.SemiBold });
+
+                // Render WAN based on the explicit WanState, not only IsRefreshing.
+                // This prevents the footer from staying stuck at "loading…" indefinitely.
+                string wanIp;
+                if (svc.WanState == WanLookupState.Loading && string.IsNullOrEmpty(svc.PublicIp))
+                {
+                    wanIp = loadingText;
+                }
+                else if (string.IsNullOrEmpty(svc.PublicIp))
+                {
+                    wanIp = "\u2014"; // em dash — WAN lookup failed or not yet started
+                }
+                else
+                {
+                    wanIp = svc.PublicIp;
+                }
+                CompactFooterWanText.Inlines.Add(new System.Windows.Documents.Run(wanIp));
+            }
+
+            // ── Provider / timestamp row ───────────────────────────────────────────
+            if (CompactFooterProviderText != null)
+            {
+                bool hasProvider = !string.IsNullOrEmpty(svc.Asn) || !string.IsNullOrEmpty(svc.Provider);
+                bool hasTime     = svc.LastRefresh.HasValue;
+
+                if (hasProvider || hasTime)
+                {
+                    CompactFooterProviderText.Inlines.Clear();
+
+                    if (hasProvider)
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(svc.Asn))      sb.Append(svc.Asn);
+                        if (!string.IsNullOrEmpty(svc.Provider)) { if (sb.Length > 0) sb.Append(' '); sb.Append(svc.Provider); }
+                        CompactFooterProviderText.Inlines.Add(new System.Windows.Documents.Run(sb.ToString()));
+                    }
+
+                    if (hasTime)
+                    {
+                        string sep = hasProvider ? " · " : string.Empty;
+                        CompactFooterProviderText.Inlines.Add(new System.Windows.Documents.Run(
+                            $"{sep}{Properties.Strings.Compact_Footer_Updated} {svc.LastRefresh.Value.ToLocalTime():HH:mm}"));
+                    }
+
+                    CompactFooterProviderText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    CompactFooterProviderText.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles click on the manual refresh button in the compact network identity footer.
+        /// Recreates the entire NetworkIdentityService so that a fresh OS-level DNS resolution
+        /// and HTTP stack are used.  This is the only approach that reliably picks up the new
+        /// routing table after a VPN connect/disconnect while the app is running.
+        /// </summary>
+        private void CompactFooterRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            RecreateNetworkIdentityServiceAndRefresh();
+        }
+
+        /// <summary>
+        /// Disposes the existing <see cref="_networkIdentityService"/>, creates a brand-new
+        /// instance, wires up <see cref="NetworkIdentityService_StateChanged"/>, starts it,
+        /// and immediately triggers a UI update so the footer shows the loading state while
+        /// the new lookup runs.
+        ///
+        /// This is the only approach that reliably picks up the new WAN IP after a VPN
+        /// connect/disconnect while the app is running.  Replacing the internal HttpClient
+        /// alone was insufficient because the OS-level routing/DNS cache is not reset.
+        /// </summary>
+        private void RecreateNetworkIdentityServiceAndRefresh()
+        {
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: RecreateNetworkIdentityServiceAndRefresh – disposing old service");
+
+            // Unsubscribe from the old instance before disposing it.
+            var old = _networkIdentityService;
+            _networkIdentityService = null;
+            if (old != null)
+            {
+                old.StateChanged -= NetworkIdentityService_StateChanged;
+                try { old.Dispose(); } catch { }
+                System.Diagnostics.Debug.WriteLine("NetworkIdentityService: old service disposed");
+            }
+
+            // Create a fresh service instance.  A new process would do the same thing;
+            // this reproduces the startup path without requiring an app restart.
+            _networkIdentityService = new Classes.NetworkIdentityService();
+            _networkIdentityService.StateChanged += NetworkIdentityService_StateChanged;
+            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: new service created, starting timers without normal immediate lookup");
+            _networkIdentityService.Start(immediateRefresh: false);
+
+            // Manual refresh must use only the forced-refresh path here. A normal
+            // immediate lookup would briefly show the stale local-provider IP before
+            // the child-process VPN-aware lookup replaces it.
+            _networkIdentityService.RequestRefresh();
+
+            // Show the loading state immediately while the new service runs its first lookup.
+            // The synchronous call here ensures the footer reflects the loading state before
+            // returning; the StateChanged event from the new service will drive all subsequent updates.
+            UpdateCompactNetworkFooter();
+        }
 
         /// <summary>
         /// Handles click on either pin button (Normal or Compact mode).
@@ -2652,6 +2880,8 @@ namespace MultiPingMonitor.UI
                 Configuration.Save();
                 NotifyIcon?.Dispose();
                 _trayNativeMenu?.Dispose();
+                _networkIdentityService?.Dispose();
+                _networkIdentityService = null;
             }
         }
 

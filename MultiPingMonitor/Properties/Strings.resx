@@ -1459,4 +1459,13 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Compact_RemoveHost_NoHosts" xml:space="preserve">
     <value>No hosts to remove</value>
   </data>
+  <data name="Compact_Footer_Loading" xml:space="preserve">
+    <value>loading…</value>
+  </data>
+  <data name="Compact_Footer_Updated" xml:space="preserve">
+    <value>upd.</value>
+  </data>
+  <data name="Compact_Footer_Refresh" xml:space="preserve">
+    <value>refresh</value>
+  </data>
 </root>
