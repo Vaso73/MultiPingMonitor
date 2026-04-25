@@ -431,6 +431,14 @@
         <Setter Property="Padding" Value="4,0" />
     </Style>
 
+    <!-- ── Compact Network Identity Footer: Classic ─────────────────────── -->
+    <Style x:Key="Style.CompactNetworkFooter" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="4,3" />
+    </Style>
+
     <!-- ── Compact latency badge: Classic (no decoration) ─────────────── -->
     <Style x:Key="Style.CompactLatencyBadge" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="Transparent" />

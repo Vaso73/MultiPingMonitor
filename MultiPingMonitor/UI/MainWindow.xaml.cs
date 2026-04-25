@@ -64,6 +64,12 @@ namespace MultiPingMonitor.UI
         // custom targets instead of the normal dataset.
         private readonly ObservableCollection<Probe> _CompactProbeCollection = new ObservableCollection<Probe>();
 
+        // ── Compact network identity ──────────────────────────────────────────
+        // Service that polls LAN/WAN identity and raises StateChanged when data
+        // changes.  Created lazily on first switch to Compact mode and disposed
+        // when the window is closed.
+        private Classes.NetworkIdentityService _networkIdentityService;
+
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
         // edge.  Only tiny accidental overshoots/gaps are corrected; the user
@@ -437,6 +443,12 @@ namespace MultiPingMonitor.UI
             MainMenu.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
             CompactTitleBar.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
 
+            // ── Network identity footer ──
+            if (CompactNetworkFooter != null)
+                CompactNetworkFooter.Visibility = compact ? Visibility.Visible : Visibility.Collapsed;
+            if (compact)
+                EnsureNetworkIdentityService();
+
             // ── Mode-specific minimum window width ──
             // Compact mode needs a much smaller minimum to allow narrow side-panel usage.
             // Normal mode retains the original 350 to protect its multi-column layout.
@@ -489,6 +501,75 @@ namespace MultiPingMonitor.UI
         }
 
         // ── Pin / Always-on-top buttons ───────────────────────────────────────
+
+        // ── Compact network identity footer ──────────────────────────────────
+
+        /// <summary>
+        /// Creates and starts the NetworkIdentityService if it does not yet exist.
+        /// Updates the footer immediately with whatever state is available.
+        /// Called when switching into Compact mode.
+        /// </summary>
+        private void EnsureNetworkIdentityService()
+        {
+            if (_networkIdentityService != null)
+            {
+                // Already running – trigger an immediate text refresh and, if data
+                // is stale (no refresh in the last 90 s), kick a background refresh.
+                UpdateCompactNetworkFooter();
+                if (!_networkIdentityService.LastRefresh.HasValue
+                    || (DateTime.Now - _networkIdentityService.LastRefresh.Value).TotalSeconds > 90)
+                {
+                    _networkIdentityService.Start();
+                }
+                return;
+            }
+
+            _networkIdentityService = new Classes.NetworkIdentityService();
+            _networkIdentityService.StateChanged += NetworkIdentityService_StateChanged;
+            _networkIdentityService.Start();
+
+            // Show loading state immediately.
+            UpdateCompactNetworkFooter();
+        }
+
+        /// <summary>
+        /// Called by NetworkIdentityService when any state property changes.
+        /// Safely dispatches the UI update to the UI thread.
+        /// </summary>
+        private void NetworkIdentityService_StateChanged(object sender, EventArgs e)
+        {
+            // Guard: do not touch UI elements after the window has been closed.
+            if (!IsLoaded) return;
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (!IsLoaded || _networkIdentityService == null) return;
+                UpdateCompactNetworkFooter();
+            }));
+        }
+
+        /// <summary>
+        /// Rebuilds the compact network footer text from the current service state
+        /// and writes it to the footer TextBlock.  Must be called on the UI thread.
+        /// </summary>
+        private void UpdateCompactNetworkFooter()
+        {
+            if (CompactNetworkFooterText == null || _networkIdentityService == null)
+                return;
+
+            string text = Classes.NetworkIdentityService.BuildFooterText(
+                _networkIdentityService.LocalIp,
+                _networkIdentityService.PublicIp,
+                _networkIdentityService.CountryCode,
+                _networkIdentityService.Asn,
+                _networkIdentityService.Provider,
+                _networkIdentityService.LastRefresh,
+                _networkIdentityService.IsRefreshing,
+                Properties.Strings.Compact_Footer_Loading,
+                Properties.Strings.Compact_Footer_Updated);
+
+            CompactNetworkFooterText.Text = text;
+        }
 
         /// <summary>
         /// Handles click on either pin button (Normal or Compact mode).
@@ -2652,6 +2733,8 @@ namespace MultiPingMonitor.UI
                 Configuration.Save();
                 NotifyIcon?.Dispose();
                 _trayNativeMenu?.Dispose();
+                _networkIdentityService?.Dispose();
+                _networkIdentityService = null;
             }
         }
 

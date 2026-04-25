@@ -583,6 +583,20 @@
             </Grid>
         </Border>
 
+        <!-- Compact mode: network identity footer — shown below host list in Compact mode -->
+        <Border x:Name="CompactNetworkFooter"
+                DockPanel.Dock="Bottom"
+                Visibility="Collapsed"
+                Style="{DynamicResource Style.CompactNetworkFooter}">
+            <TextBlock x:Name="CompactNetworkFooterText"
+                       FontSize="10"
+                       FontFamily="Consolas"
+                       TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource Theme.Text.Secondary}"/>
+        </Border>
+
         <!-- Items Control -->
         <ItemsControl Name="ProbeItemsControl" IsTabStop="False" Focusable="False" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource Theme.Border}" Margin="{DynamicResource Style.ProbeCardGrid.Margin}">
             <ItemsControl.ItemTemplate>

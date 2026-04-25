@@ -4007,5 +4007,32 @@ namespace MultiPingMonitor.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to loading….
+        /// </summary>
+        public static string Compact_Footer_Loading {
+            get {
+                return ResourceManager.GetString("Compact_Footer_Loading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to upd.
+        /// </summary>
+        public static string Compact_Footer_Updated {
+            get {
+                return ResourceManager.GetString("Compact_Footer_Updated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to refresh.
+        /// </summary>
+        public static string Compact_Footer_Refresh {
+            get {
+                return ResourceManager.GetString("Compact_Footer_Refresh", resourceCulture);
+            }
+        }
+
     }
 }
