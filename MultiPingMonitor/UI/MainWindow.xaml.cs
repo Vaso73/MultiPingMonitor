@@ -810,28 +810,66 @@ namespace MultiPingMonitor.UI
         /// Positions a Compact quick-action dialog near the top of the Compact window,
         /// just below the titlebar/toolbar area, horizontally centered over it.
         /// Clamps the result to the current monitor's working area so the dialog
-        /// never opens off-screen on multi-monitor setups.
+        /// never opens off-screen on multi-monitor or high-DPI setups.
+        ///
+        /// Both dialogs use SizeToContent="Height", so their actual height is not
+        /// resolved until after WPF layout completes.  The initial horizontal clamp
+        /// uses the fixed XAML Width; the final vertical (and right-edge) clamp is
+        /// applied via the dialog's Loaded event once ActualWidth/ActualHeight are
+        /// available.  The work area is converted from physical pixels to WPF
+        /// device-independent pixels so all arithmetic uses the same coordinate space
+        /// as Window.Left / Window.Top.
         /// </summary>
         private void PositionCompactQuickDialog(Window dialog)
         {
             const double topOffset = 60.0;
 
-            // Horizontal: center the dialog over the Compact window.
-            double left = this.Left + (this.ActualWidth - dialog.Width) / 2.0;
-            // Vertical: place just below the titlebar + toolbar, not at vertical center.
-            double top = this.Top + topOffset;
-
-            // Clamp to the working area of the monitor that contains the Compact window.
+            // Identify the monitor that contains the Compact window.
             var screen = System.Windows.Forms.Screen.FromRectangle(
                 new System.Drawing.Rectangle((int)this.Left, (int)this.Top,
                     (int)this.ActualWidth, (int)this.ActualHeight));
             var wa = screen.WorkingArea;
 
-            left = Math.Max(wa.Left, Math.Min(left, wa.Right - dialog.Width));
-            top  = Math.Max(wa.Top,  Math.Min(top,  wa.Bottom - dialog.Height));
+            // Convert the work area from physical pixels to WPF device-independent
+            // pixels (DIPs) so clamping stays in the same coordinate space as
+            // Window.Left / Window.Top.  Falls back to identity (1:1) when no
+            // presentation source is available (e.g. design-time).
+            var ps = PresentationSource.FromVisual(this);
+            System.Windows.Media.Matrix fromDevice =
+                ps?.CompositionTarget?.TransformFromDevice ?? System.Windows.Media.Matrix.Identity;
 
-            dialog.Left = left;
-            dialog.Top  = top;
+            var waTopLeft     = fromDevice.Transform(new Point(wa.Left,  wa.Top));
+            var waBottomRight = fromDevice.Transform(new Point(wa.Right, wa.Bottom));
+            double waLeft   = waTopLeft.X;
+            double waTop    = waTopLeft.Y;
+            double waRight  = waBottomRight.X;
+            double waBottom = waBottomRight.Y;
+
+            // Initial position: center horizontally over the Compact window and
+            // offset vertically below the titlebar + toolbar.
+            // Width is fixed in XAML so horizontal clamping is done now.
+            // Height is SizeToContent="Height" and is not known until after layout;
+            // the bottom-edge clamp is deferred to the Loaded event below.
+            double left = this.Left + (this.ActualWidth - dialog.Width) / 2.0;
+            double top  = this.Top + topOffset;
+
+            dialog.Left = Math.Max(waLeft, Math.Min(left, waRight - dialog.Width));
+            dialog.Top  = Math.Max(waTop, top);
+
+            // After the dialog has been measured and arranged, re-clamp using the
+            // actual rendered dimensions so the dialog never overflows the right or
+            // bottom edge of the monitor work area.  The handler unsubscribes itself
+            // after the first invocation so it does not linger on the dialog instance.
+            RoutedEventHandler loadedHandler = null;
+            loadedHandler = (_, _) =>
+            {
+                dialog.Loaded -= loadedHandler;
+                double w = dialog.ActualWidth;
+                double h = dialog.ActualHeight;
+                dialog.Left = Math.Max(waLeft, Math.Min(dialog.Left, waRight  - w));
+                dialog.Top  = Math.Max(waTop,  Math.Min(dialog.Top,  waBottom - h));
+            };
+            dialog.Loaded += loadedHandler;
         }
 
         /// <summary>
