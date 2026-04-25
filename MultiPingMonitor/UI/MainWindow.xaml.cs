@@ -673,7 +673,6 @@ namespace MultiPingMonitor.UI
         /// </summary>
         private void CompactFooterRefresh_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("NetworkIdentityService: CompactFooterRefresh_Click fired");
             RecreateNetworkIdentityServiceAndRefresh();
         }
 
@@ -709,9 +708,9 @@ namespace MultiPingMonitor.UI
             _networkIdentityService.Start();
 
             // Show the loading state immediately while the new service runs its first lookup.
+            // The synchronous call here ensures the footer reflects the loading state before
+            // returning; the StateChanged event from the new service will drive all subsequent updates.
             UpdateCompactNetworkFooter();
-            Dispatcher.BeginInvoke(new Action(UpdateCompactNetworkFooter),
-                System.Windows.Threading.DispatcherPriority.Background);
         }
 
         /// <summary>
