@@ -601,7 +601,7 @@ namespace MultiPingMonitor.Classes
                 : string.Empty;
         }
 
-        internal static void ParseOrgField(string org, out string asn, out string provider)
+        internal static void ParseOrgField(string? org, out string asn, out string provider)
         {
             asn      = string.Empty;
             provider = string.Empty;

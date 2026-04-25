@@ -68,7 +68,7 @@ namespace MultiPingMonitor.UI
         // Service that polls LAN/WAN identity and raises StateChanged when data
         // changes.  Created lazily on first switch to Compact mode and disposed
         // when the window is closed.
-        private Classes.NetworkIdentityService _networkIdentityService;
+        private Classes.NetworkIdentityService? _networkIdentityService;
 
         // ── Edge snap ─────────────────────────────────────────────────────────
         // Pixels within which a window edge is snapped flush to the working-area
