@@ -150,6 +150,17 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        /// <summary>
+        /// Starts an immediate refresh on demand (e.g., from a manual refresh button).
+        /// The internal overlap guard ensures a second call while a refresh is already
+        /// running is silently ignored.
+        /// </summary>
+        public void RequestRefresh()
+        {
+            if (_disposed) return;
+            _ = RefreshAllAsync();
+        }
+
         // ── Refresh logic ─────────────────────────────────────────────────────────
 
         private async Task RefreshAllAsync()

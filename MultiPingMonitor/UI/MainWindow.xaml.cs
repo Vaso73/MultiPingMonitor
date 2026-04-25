@@ -549,26 +549,93 @@ namespace MultiPingMonitor.UI
         }
 
         /// <summary>
-        /// Rebuilds the compact network footer text from the current service state
-        /// and writes it to the footer TextBlock.  Must be called on the UI thread.
+        /// Rebuilds the compact network footer from the current service state.
+        /// Populates each named element individually so data wraps naturally at narrow widths.
+        /// Must be called on the UI thread.
         /// </summary>
         private void UpdateCompactNetworkFooter()
         {
-            if (CompactNetworkFooterText == null || _networkIdentityService == null)
+            if (CompactFooterLanText == null || _networkIdentityService == null)
                 return;
 
-            string text = Classes.NetworkIdentityService.BuildFooterText(
-                _networkIdentityService.LocalIp,
-                _networkIdentityService.PublicIp,
-                _networkIdentityService.CountryCode,
-                _networkIdentityService.Asn,
-                _networkIdentityService.Provider,
-                _networkIdentityService.LastRefresh,
-                _networkIdentityService.IsRefreshing,
-                Properties.Strings.Compact_Footer_Loading,
-                Properties.Strings.Compact_Footer_Updated);
+            var svc         = _networkIdentityService;
+            var loadingText = Properties.Strings.Compact_Footer_Loading;
 
-            CompactNetworkFooterText.Text = text;
+            // ── LAN row ────────────────────────────────────────────────────────────
+            CompactFooterLanText.Inlines.Clear();
+            CompactFooterLanText.Inlines.Add(
+                new System.Windows.Documents.Run("LAN ")
+                { FontWeight = System.Windows.FontWeights.SemiBold });
+            CompactFooterLanText.Inlines.Add(new System.Windows.Documents.Run(
+                string.IsNullOrEmpty(svc.LocalIp)
+                    ? (svc.IsRefreshing ? loadingText : "—")
+                    : svc.LocalIp));
+
+            // Refresh button: disabled while a refresh is in progress.
+            if (CompactFooterRefreshButton != null)
+                CompactFooterRefreshButton.IsEnabled = !svc.IsRefreshing;
+
+            // ── Country badge ──────────────────────────────────────────────────────
+            bool hasCountry = !string.IsNullOrEmpty(svc.CountryCode);
+            if (CompactFooterCountryBadge != null)
+                CompactFooterCountryBadge.Visibility = hasCountry ? Visibility.Visible : Visibility.Collapsed;
+            if (CompactFooterCountryText != null && hasCountry)
+                CompactFooterCountryText.Text = svc.CountryCode;
+
+            // ── WAN row ────────────────────────────────────────────────────────────
+            if (CompactFooterWanText != null)
+            {
+                CompactFooterWanText.Inlines.Clear();
+                CompactFooterWanText.Inlines.Add(
+                    new System.Windows.Documents.Run("WAN ")
+                    { FontWeight = System.Windows.FontWeights.SemiBold });
+                string wanIp = string.IsNullOrEmpty(svc.PublicIp)
+                    ? (svc.IsRefreshing ? loadingText : "—")
+                    : svc.PublicIp;
+                CompactFooterWanText.Inlines.Add(new System.Windows.Documents.Run(wanIp));
+            }
+
+            // ── Provider / timestamp row ───────────────────────────────────────────
+            if (CompactFooterProviderText != null)
+            {
+                bool hasProvider = !string.IsNullOrEmpty(svc.Asn) || !string.IsNullOrEmpty(svc.Provider);
+                bool hasTime     = svc.LastRefresh.HasValue;
+
+                if (hasProvider || hasTime)
+                {
+                    CompactFooterProviderText.Inlines.Clear();
+
+                    if (hasProvider)
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        if (!string.IsNullOrEmpty(svc.Asn))      sb.Append(svc.Asn);
+                        if (!string.IsNullOrEmpty(svc.Provider)) { if (sb.Length > 0) sb.Append(' '); sb.Append(svc.Provider); }
+                        CompactFooterProviderText.Inlines.Add(new System.Windows.Documents.Run(sb.ToString()));
+                    }
+
+                    if (hasTime)
+                    {
+                        string sep = hasProvider ? " · " : string.Empty;
+                        CompactFooterProviderText.Inlines.Add(new System.Windows.Documents.Run(
+                            $"{sep}{Properties.Strings.Compact_Footer_Updated} {svc.LastRefresh.Value:HH:mm}"));
+                    }
+
+                    CompactFooterProviderText.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    CompactFooterProviderText.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles click on the manual refresh button in the compact network identity footer.
+        /// Delegates to the service, which guards against overlapping refreshes internally.
+        /// </summary>
+        private void CompactFooterRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            _networkIdentityService?.RequestRefresh();
         }
 
         /// <summary>

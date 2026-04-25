@@ -389,6 +389,13 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("ipinfo.io", source);
         }
 
+        [Fact]
+        public void NetworkIdentityService_HasRequestRefreshMethod()
+        {
+            var source = File.ReadAllText(ServiceSourcePath());
+            Assert.Contains("public void RequestRefresh()", source);
+        }
+
         // ── MainWindow integration tests ──────────────────────────────────────────
 
         [Fact]
@@ -399,10 +406,41 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void MainWindow_HasCompactNetworkFooterTextElement()
+        public void MainWindow_HasStructuredFooterElements()
+        {
+            // PR #104 UI revision: single TextBlock replaced with multi-element layout.
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactFooterLanText",      xaml);
+            Assert.Contains("CompactFooterWanText",      xaml);
+            Assert.Contains("CompactFooterCountryBadge", xaml);
+            Assert.Contains("CompactFooterCountryText",  xaml);
+            Assert.Contains("CompactFooterProviderText", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_HasRefreshButton()
         {
             var xaml = File.ReadAllText(MainWindowXamlPath());
-            Assert.Contains("CompactNetworkFooterText", xaml);
+            Assert.Contains("CompactFooterRefreshButton", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_RefreshButton_HasClickHandler()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            Assert.Contains("CompactFooterRefresh_Click", xaml);
+        }
+
+        [Fact]
+        public void MainWindow_FooterLanAndWanUseTextWrapping()
+        {
+            var xaml = File.ReadAllText(MainWindowXamlPath());
+            // Wrap must be present for both text elements so narrow windows don't clip.
+            int wrapCount = System.Text.RegularExpressions.Regex
+                .Matches(xaml, "TextWrapping=\"Wrap\"")
+                .Count;
+            Assert.True(wrapCount >= 2,
+                "Both CompactFooterLanText and CompactFooterWanText should use TextWrapping=Wrap.");
         }
 
         [Fact]
@@ -431,6 +469,41 @@ namespace MultiPingMonitor.Tests
         {
             var source = File.ReadAllText(MainWindowSourcePath());
             Assert.Contains("NetworkIdentityService_StateChanged", source);
+        }
+
+        [Fact]
+        public void MainWindow_RefreshClickHandlerCallsRequestRefresh()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("CompactFooterRefresh_Click", source);
+            Assert.Contains("RequestRefresh()", source);
+        }
+
+        [Fact]
+        public void MainWindow_FooterDisablesRefreshButtonWhileBusy()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            // Button is disabled while IsRefreshing is true.
+            Assert.Contains("IsRefreshing", source);
+            Assert.Contains("IsEnabled", source);
+        }
+
+        [Fact]
+        public void MainWindow_FooterUsesInlinesForBoldLabels()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            // LAN and WAN labels are bolded via Inlines, not plain Text assignment.
+            Assert.Contains("Inlines.Add", source);
+            Assert.Contains("FontWeight = System.Windows.FontWeights.SemiBold", source);
+        }
+
+        [Fact]
+        public void MainWindow_CountryBadgeToggledByVisibility()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("CompactFooterCountryBadge", source);
+            Assert.Contains("Visibility.Visible", source);
+            Assert.Contains("Visibility.Collapsed", source);
         }
 
         // ── Localization tests ────────────────────────────────────────────────────
@@ -463,6 +536,49 @@ namespace MultiPingMonitor.Tests
             var value = ResxValue(SkSkResxPath(), "Compact_Footer_Loading");
             // Slovak translation should contain "zisť" or at minimum not be English "loading"
             Assert.NotEqual("loading…", value);
+        }
+
+        // ── Visual style tests ────────────────────────────────────────────────────
+
+        private static string ModernStylePath() =>
+            Path.Combine(SolutionRoot(), "MultiPingMonitor", "Styles", "VisualStyle.Modern.xaml");
+
+        private static string ClassicStylePath() =>
+            Path.Combine(SolutionRoot(), "MultiPingMonitor", "Styles", "VisualStyle.Classic.xaml");
+
+        [Theory]
+        [InlineData("Style.CompactNetworkFooter")]
+        [InlineData("Style.CompactCountryBadge")]
+        public void ModernStyle_ContainsNewFooterStyles(string styleKey)
+        {
+            var source = File.ReadAllText(ModernStylePath());
+            Assert.Contains(styleKey, source);
+        }
+
+        [Theory]
+        [InlineData("Style.CompactNetworkFooter")]
+        [InlineData("Style.CompactCountryBadge")]
+        public void ClassicStyle_ContainsNewFooterStyles(string styleKey)
+        {
+            var source = File.ReadAllText(ClassicStylePath());
+            Assert.Contains(styleKey, source);
+        }
+
+        [Fact]
+        public void ModernStyle_FooterBackgroundMatchesToolbar()
+        {
+            var source = File.ReadAllText(ModernStylePath());
+            // Both CompactSetToolbar and CompactNetworkFooter should use Theme.Border
+            // so they have matching visual weight as a toolbar/footer pair.
+            Assert.Contains("Theme.Border", source);
+        }
+
+        [Fact]
+        public void ClassicStyle_FooterBackgroundMatchesToolbar()
+        {
+            var source = File.ReadAllText(ClassicStylePath());
+            // Both CompactSetToolbar and CompactNetworkFooter should use Theme.SurfaceAlt.
+            Assert.Contains("Theme.SurfaceAlt", source);
         }
 
         // ── AssemblyInfo unchanged ────────────────────────────────────────────────

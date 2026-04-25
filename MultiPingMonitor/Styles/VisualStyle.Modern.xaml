@@ -465,11 +465,24 @@
     </Style>
 
     <!-- ── Modern Compact Network Identity Footer ───────────────────── -->
+    <!-- Same background weight as Style.CompactSetToolbar so it reads as a
+         matching "header/footer" pair rather than a subtle debug bar. -->
     <Style x:Key="Style.CompactNetworkFooter" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="Background" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
-        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="Padding" Value="6,5" />
+    </Style>
+
+    <!-- ── Modern Compact Country Badge ─────────────────────────────── -->
+    <Style x:Key="Style.CompactCountryBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="4,1" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!-- ── Modern Compact Latency Badge ────────────────────────────── -->

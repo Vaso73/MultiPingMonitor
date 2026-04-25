@@ -432,11 +432,23 @@
     </Style>
 
     <!-- ── Compact Network Identity Footer: Classic ─────────────────────── -->
+    <!-- Same background weight as Style.CompactSetToolbar for visual parity. -->
     <Style x:Key="Style.CompactNetworkFooter" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{DynamicResource Theme.Surface}" />
+        <Setter Property="Background" Value="{DynamicResource Theme.SurfaceAlt}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
         <Setter Property="BorderThickness" Value="0,1,0,0" />
-        <Setter Property="Padding" Value="4,3" />
+        <Setter Property="Padding" Value="5,4" />
+    </Style>
+
+    <!-- ── Classic Compact Country Badge ────────────────────────────────── -->
+    <Style x:Key="Style.CompactCountryBadge" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="3,1" />
+        <Setter Property="Margin" Value="0,0,5,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <!-- ── Compact latency badge: Classic (no decoration) ─────────────── -->
