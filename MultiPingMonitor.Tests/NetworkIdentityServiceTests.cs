@@ -1986,5 +1986,393 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("stale WAN data cleared before lookup", source);
         }
 
+        // ── Diagnostic CLI mode tests ─────────────────────────────────────────────
+
+        // Path helpers for the new diagnostic source files.
+        private static string AppStartupSourcePath() =>
+            Path.Combine(SolutionRoot(), "MultiPingMonitor", "App.xaml.cs");
+
+        private static string DiagnosticsSourcePath() =>
+            Path.Combine(SolutionRoot(), "MultiPingMonitor", "Classes",
+                         "NetworkIdentityDiagnostics.cs");
+
+        // ── CLI: source-structure tests ───────────────────────────────────────────
+
+        [Fact]
+        public void App_Startup_HandlesNetworkIdentityLookupArg()
+        {
+            // App.xaml.cs must intercept --network-identity-lookup before creating MainWindow.
+            var source = File.ReadAllText(AppStartupSourcePath());
+            Assert.Contains("--network-identity-lookup", source);
+        }
+
+        [Fact]
+        public void App_Startup_HandlesNetworkIdentityDiagnoseArg()
+        {
+            // App.xaml.cs must intercept --network-identity-diagnose before creating MainWindow.
+            var source = File.ReadAllText(AppStartupSourcePath());
+            Assert.Contains("--network-identity-diagnose", source);
+        }
+
+        [Fact]
+        public void App_Startup_WritesToStdoutBeforeExit()
+        {
+            // A WriteToStdout helper must be present so WinExe can write to
+            // a redirected stdout handle (Start-Process -RedirectStandardOutput).
+            var source = File.ReadAllText(AppStartupSourcePath());
+            Assert.Contains("WriteToStdout", source);
+            Assert.Contains("OpenStandardOutput", source);
+        }
+
+        [Fact]
+        public void App_Startup_CallsEnvironmentExit_ForDiagnosticArgs()
+        {
+            // After handling a diagnostic arg the app must call Environment.Exit
+            // so no WPF UI is ever created.
+            var source = File.ReadAllText(AppStartupSourcePath());
+            Assert.Contains("Environment.Exit(0)", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityDiagnostics_Exists()
+        {
+            Assert.True(File.Exists(DiagnosticsSourcePath()),
+                "NetworkIdentityDiagnostics.cs should exist in Classes/");
+        }
+
+        [Fact]
+        public void NetworkIdentityDiagnostics_HasRunLookupJsonAsync()
+        {
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("RunLookupJsonAsync", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityDiagnostics_HasRunDiagnoseJsonAsync()
+        {
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("RunDiagnoseJsonAsync", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityDiagnostics_HasParseSelectedIp()
+        {
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("ParseSelectedIp", source);
+        }
+
+        [Fact]
+        public void NetworkIdentityDiagnostics_DoesNotUseCurlExe()
+        {
+            // curl.exe must not be used as fallback — verified to return incorrect IP
+            // on this system.
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.DoesNotContain("curl.exe", source, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("curl", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // ── CLI: ParseSelectedIp unit tests ──────────────────────────────────────
+
+        [Fact]
+        public void Diag_ParseSelectedIp_ExtractsIp()
+        {
+            const string json = @"{""selectedPublicIp"":""45.66.72.254"",""other"":""value""}";
+            var ip = Classes.NetworkIdentityDiagnostics.ParseSelectedIp(json);
+            Assert.Equal("45.66.72.254", ip);
+        }
+
+        [Fact]
+        public void Diag_ParseSelectedIp_ReturnsNull_WhenFieldIsNull()
+        {
+            const string json = @"{""selectedPublicIp"":null}";
+            var ip = Classes.NetworkIdentityDiagnostics.ParseSelectedIp(json);
+            Assert.Null(ip);
+        }
+
+        [Fact]
+        public void Diag_ParseSelectedIp_ReturnsNull_ForEmptyInput()
+        {
+            Assert.Null(Classes.NetworkIdentityDiagnostics.ParseSelectedIp(null));
+            Assert.Null(Classes.NetworkIdentityDiagnostics.ParseSelectedIp(string.Empty));
+            Assert.Null(Classes.NetworkIdentityDiagnostics.ParseSelectedIp("   "));
+        }
+
+        [Fact]
+        public void Diag_ParseSelectedIp_ReturnsNull_ForInvalidJson()
+        {
+            Assert.Null(Classes.NetworkIdentityDiagnostics.ParseSelectedIp("not-json"));
+        }
+
+        // ── CLI: RunLookupJsonAsync behavioral tests (stub HttpClient) ────────────
+
+        [Fact]
+        public async Task Diag_Lookup_FirstProviderSucceeds_ProducesValidJson()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",      "45.66.72.254"),
+                ("https://free.freeipapi.com", @"{""countryCode"":""SK"",""asnNumber"":5578,""asnOrganisation"":""Orange""}"),
+                ("https://api.seeip.org",      null),
+                ("http://ip-api.com",          null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            Assert.False(string.IsNullOrWhiteSpace(json));
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            Assert.True(root.TryGetProperty("timestamp",       out _));
+            Assert.True(root.TryGetProperty("processId",       out _));
+            Assert.True(root.TryGetProperty("ipProviders",     out _));
+            Assert.True(root.TryGetProperty("metaProviders",   out _));
+            Assert.True(root.TryGetProperty("selectedPublicIp", out var ipEl));
+            Assert.Equal("45.66.72.254", ipEl.GetString());
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_AllProvidersFail_SelectedPublicIpIsNull()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",         null),
+                ("https://ipv4.icanhazip.com",    null),
+                ("https://checkip.amazonaws.com", null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            Assert.False(string.IsNullOrWhiteSpace(json));
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            // selectedPublicIp must be null when all providers fail.
+            Assert.True(root.TryGetProperty("selectedPublicIp", out var ipEl));
+            Assert.Equal(System.Text.Json.JsonValueKind.Null, ipEl.ValueKind);
+            // No metadata should have been attempted.
+            Assert.True(root.TryGetProperty("metaProviders", out var metaEl));
+            Assert.Equal(0, metaEl.GetArrayLength());
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_IpProvidersArray_ContainsAllConfiguredProviders()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",         "45.66.72.254"),
+                ("https://free.freeipapi.com",    null),
+                ("https://api.seeip.org",         null),
+                ("http://ip-api.com",             null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            // ipProviders array must contain one entry per configured provider.
+            Assert.True(root.TryGetProperty("ipProviders", out var ipProvEl));
+            Assert.Equal(
+                Classes.NetworkIdentityService.PublicIpProviders.Length,
+                ipProvEl.GetArrayLength());
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_MetaProviders_RecordedIndividually()
+        {
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",      "45.66.72.254"),
+                ("https://free.freeipapi.com", @"{""countryCode"":""SK"",""asnNumber"":5578,""asnOrganisation"":""Orange""}"),
+                ("https://api.seeip.org",      null),
+                ("http://ip-api.com",          null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            // metaProviders array must contain one entry per configured meta provider.
+            Assert.True(root.TryGetProperty("metaProviders", out var metaEl));
+            Assert.Equal(
+                Classes.NetworkIdentityService.MetaProviders.Length,
+                metaEl.GetArrayLength());
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_ErrorField_Present_WhenProviderFails()
+        {
+            // All public IP providers fail (timeout / null).
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",         null),
+                ("https://ipv4.icanhazip.com",    null),
+                ("https://checkip.amazonaws.com", null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            // Every entry in ipProviders must have an error field (timeout or similar).
+            var ipProviders = root.GetProperty("ipProviders");
+            foreach (var entry in ipProviders.EnumerateArray())
+            {
+                Assert.True(entry.TryGetProperty("error", out var errEl),
+                    "Each failed provider entry must have an 'error' field.");
+                Assert.NotEqual(System.Text.Json.JsonValueKind.Null, errEl.ValueKind);
+            }
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_SelectedIp_IsFirstValidProviderResult()
+        {
+            // ipify fails; icanhazip succeeds.
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",         null),
+                ("https://ipv4.icanhazip.com",    "45.66.72.254"),
+                ("https://checkip.amazonaws.com", "9.9.9.9"),   // would be 2nd valid
+                ("https://free.freeipapi.com",    null),
+                ("https://api.seeip.org",         null),
+                ("http://ip-api.com",             null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            // First valid provider (icanhazip) must win; checkip.amazonaws.com's IP is ignored.
+            var ip = Classes.NetworkIdentityDiagnostics.ParseSelectedIp(json);
+            Assert.Equal("45.66.72.254", ip);
+        }
+
+        [Fact]
+        public async Task Diag_Lookup_CountryAndAsn_PopulatedFromMeta()
+        {
+            const string metaJson =
+                @"{""countryCode"":""SK"",""asnNumber"":5578,""asnOrganisation"":""Orange Slovensko""}";
+
+            var handler = new StubHttpMessageHandler(
+                ("https://api.ipify.org",      "45.66.72.254"),
+                ("https://free.freeipapi.com", metaJson),
+                ("https://api.seeip.org",      null),
+                ("http://ip-api.com",          null)
+            );
+            using var http = new HttpClient(handler);
+
+            var json = await Classes.NetworkIdentityDiagnostics
+                .RunLookupJsonAsync(http);
+                
+
+            using var doc  = System.Text.Json.JsonDocument.Parse(json);
+            var       root = doc.RootElement;
+
+            Assert.Equal("SK",              root.GetProperty("countryCode").GetString());
+            Assert.Equal("AS5578",          root.GetProperty("asn").GetString());
+            Assert.Equal("Orange Slovensko", root.GetProperty("provider").GetString());
+        }
+
+        // ── CLI: diagnose JSON structure tests ────────────────────────────────────
+
+        [Fact]
+        public void Diag_Diagnose_Source_ContainsChildProcessSpawn()
+        {
+            // RunDiagnoseJsonAsync must spawn a child process; verify it in source.
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("ProcessStartInfo", source);
+            Assert.Contains("RedirectStandardOutput", source);
+            Assert.Contains("--network-identity-lookup", source);
+        }
+
+        [Fact]
+        public void Diag_Diagnose_Source_ComparesBothResults()
+        {
+            // The diagnose method must compare in-process vs child results.
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("differ", source);
+            Assert.Contains("inProcessIp", source);
+            Assert.Contains("childIp", source);
+        }
+
+        [Fact]
+        public void Diag_Diagnose_Source_IncludesSummaryField()
+        {
+            var source = File.ReadAllText(DiagnosticsSourcePath());
+            Assert.Contains("summary", source);
+        }
+
+        // ── CLI: forced-refresh still clears stale IP (existing contract) ─────────
+        // These tests confirm the existing _forceClearCachedWan contract has not been
+        // broken by the diagnostic additions.  They complement VPN tests 13–14.
+
+        [Fact]
+        public async Task Diag_ForcedRefresh_DoesNotFallBackToStaleCachedIp()
+        {
+            // Mirrors VPN test 13: forced refresh with all providers failing must
+            // clear the old cached IP — it must NOT preserve it.
+            var handler = new SequentialStubHttpMessageHandler(
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "bad" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad",          "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad",          "bad" }),
+                ("https://free.freeipapi.com",    new[] { "bad",          "bad" }),
+                ("https://api.seeip.org",         new[] { "bad",          "bad" }),
+                ("http://ip-api.com",             new[] { "bad",          "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            // First normal refresh: caches the ISP IP.
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            // Forced refresh with all providers failing: old IP must be cleared.
+            await svc.RefreshAllAsync(forceClearCachedWan: true);
+
+            Assert.True(string.IsNullOrEmpty(svc.PublicIp),
+                "Forced refresh failure must clear PublicIp — stale cached IP must not be shown.");
+            Assert.Equal(WanLookupState.Failed, svc.WanState);
+        }
+
+        [Fact]
+        public async Task Diag_NormalScheduledRefresh_PreservesCachedIp_WhenProvidersFail()
+        {
+            // Mirrors VPN test 4: a normal (non-forced) scheduled refresh with all providers
+            // failing must preserve the old cached IP and keep WanState=Succeeded.
+            var handler = new SequentialStubHttpMessageHandler(
+                ("https://api.ipify.org",         new[] { "45.66.72.254", "bad" }),
+                ("https://ipv4.icanhazip.com",    new[] { "bad",          "bad" }),
+                ("https://checkip.amazonaws.com", new[] { "bad",          "bad" }),
+                ("https://free.freeipapi.com",    new[] { "bad",          "bad" }),
+                ("https://api.seeip.org",         new[] { "bad",          "bad" }),
+                ("http://ip-api.com",             new[] { "bad",          "bad" })
+            );
+
+            using var svc = new NetworkIdentityService(handler);
+
+            // First refresh succeeds.
+            await svc.RefreshAllAsync();
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+
+            // Second refresh (normal, NOT forced): cached IP must be preserved.
+            await svc.RefreshAllAsync(forceClearCachedWan: false);
+
+            Assert.Equal("45.66.72.254", svc.PublicIp);
+            Assert.Equal(WanLookupState.Succeeded, svc.WanState);
+            Assert.False(svc.IsRefreshing);
+        }
+
     }
 }

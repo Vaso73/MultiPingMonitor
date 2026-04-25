@@ -20,6 +20,7 @@
        internal members without needing a net8.0-windows project reference. -->
   <ItemGroup>
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityService.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityDiagnostics.cs" />
   </ItemGroup>
 
   <ItemGroup>
