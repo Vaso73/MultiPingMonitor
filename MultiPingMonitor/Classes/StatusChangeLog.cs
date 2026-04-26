@@ -3,6 +3,12 @@ using MultiPingMonitor.Properties;
 
 namespace MultiPingMonitor.Classes
 {
+    public enum StatusChangeEventType
+    {
+        Probe,
+        NetworkIdentity
+    }
+
     public class StatusChangeLog
     {
         public DateTime Timestamp { get; set; }
@@ -10,6 +16,15 @@ namespace MultiPingMonitor.Classes
         public string Alias { get; set; }
         public ProbeStatus Status { get; set; }
         public bool HasStatusBeenCleared { get; set; }
+        public StatusChangeEventType EventType { get; set; } = StatusChangeEventType.Probe;
+
+        public bool IsNetworkIdentityEvent =>
+            EventType == StatusChangeEventType.NetworkIdentity;
+
+        public string EventTypeAsString =>
+            EventType == StatusChangeEventType.NetworkIdentity
+                ? "Network identity"
+                : "Probe status";
 
         /// <summary>
         /// Optional display text for non-probe entries such as LAN/WAN IP changes.

@@ -1058,6 +1058,7 @@ namespace MultiPingMonitor.UI
                 Hostname = label,
                 Alias = string.Empty,
                 Status = ProbeStatus.Up,
+                EventType = StatusChangeEventType.NetworkIdentity,
                 CustomGlyph = "h",
                 CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})"
             };

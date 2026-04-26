@@ -80,48 +80,71 @@ namespace MultiPingMonitor.UI
 
         private bool AddressFilter(object item)
         {
-            bool statusMatch = false;
             var entry = item as StatusChangeLog;
-
-            if (FilterStart.IsChecked == true && entry.Status == ProbeStatus.Start)
-            {
-                statusMatch = true;
-            }
-            if (FilterStop.IsChecked == true && entry.Status == ProbeStatus.Stop)
-            {
-                statusMatch = true;
-            }
-            if (FilterUp.IsChecked == true && entry.Status == ProbeStatus.Up)
-            {
-                statusMatch = true;
-            }
-            if (FilterDown.IsChecked == true && entry.Status == ProbeStatus.Down)
-            {
-                statusMatch = true;
-            }
-
-            if (statusMatch)
-            {
-                var filterText = FilterField.Text.ToUpper();
-                if (!string.IsNullOrEmpty(entry.Alias) && entry.Alias.ToUpper().Contains(filterText))
-                {
-                    return true;
-                }
-                else if (!string.IsNullOrEmpty(entry.Hostname) && entry.Hostname.ToUpper().Contains(filterText))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+            if (entry == null)
                 return false;
-            }
+
+            bool eventTypeMatch =
+                (FilterProbeEvents.IsChecked == true && entry.EventType == StatusChangeEventType.Probe)
+                || (FilterNetworkIdentityEvents.IsChecked == true && entry.EventType == StatusChangeEventType.NetworkIdentity);
+
+            if (!eventTypeMatch)
+                return false;
+
+            bool statusMatch = entry.EventType == StatusChangeEventType.NetworkIdentity
+                ? IsNetworkIdentityFilterMatch(entry)
+                : IsProbeStatusFilterMatch(entry);
+
+            return statusMatch && IsTextFilterMatch(entry);
         }
 
+        private bool IsProbeStatusFilterMatch(StatusChangeLog entry)
+        {
+            if (FilterStart.IsChecked == true && entry.Status == ProbeStatus.Start)
+                return true;
+
+            if (FilterStop.IsChecked == true && entry.Status == ProbeStatus.Stop)
+                return true;
+
+            if (FilterUp.IsChecked == true && entry.Status == ProbeStatus.Up)
+                return true;
+
+            if (FilterDown.IsChecked == true && entry.Status == ProbeStatus.Down)
+                return true;
+
+            return false;
+        }
+
+        private bool IsNetworkIdentityFilterMatch(StatusChangeLog entry)
+        {
+            if (FilterWanIpEvents.IsChecked == true
+                && string.Equals(entry.Hostname, "WAN IP", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (FilterLanIpEvents.IsChecked == true
+                && string.Equals(entry.Hostname, "LAN IP", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        }
+
+        private bool IsTextFilterMatch(StatusChangeLog entry)
+        {
+            var filterText = FilterField.Text;
+            if (string.IsNullOrWhiteSpace(filterText))
+                return true;
+
+            return ContainsIgnoreCase(entry.Alias, filterText)
+                || ContainsIgnoreCase(entry.Hostname, filterText)
+                || ContainsIgnoreCase(entry.StatusAsString, filterText)
+                || ContainsIgnoreCase(entry.EventTypeAsString, filterText);
+        }
+
+        private static bool ContainsIgnoreCase(string value, string filterText)
+        {
+            return !string.IsNullOrEmpty(value)
+                && value.IndexOf(filterText, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
         private void Filter_Click(object sender, RoutedEventArgs e)
         {
             _statusHistoryView.Refresh();
@@ -174,7 +197,7 @@ namespace MultiPingMonitor.UI
             StringBuilder sb = new StringBuilder();
             foreach (StatusChangeLog s in _statusHistoryView)
             {
-                sb.AppendLine($"{s.Timestamp}{delimeter}{s.Hostname}{delimeter}{s.Alias?.Replace(",", "")}{delimeter}{s.StatusAsString}");
+                sb.AppendLine($"{s.Timestamp}{delimeter}{s.EventTypeAsString}{delimeter}{s.Hostname}{delimeter}{s.Alias?.Replace(",", "")}{delimeter}{s.StatusAsString}");
             }
 
             try
