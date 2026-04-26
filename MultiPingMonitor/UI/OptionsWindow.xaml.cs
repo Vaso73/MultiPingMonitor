@@ -161,6 +161,10 @@ namespace MultiPingMonitor.UI
             AudioDownFilePath.Text = ApplicationOptions.AudioDownFilePath;
             IsAudioUpAlertEnabled.IsChecked = ApplicationOptions.IsAudioUpAlertEnabled;
             AudioUpFilePath.Text = ApplicationOptions.AudioUpFilePath;
+            IsAudioNetworkIdentityAlertEnabled.IsChecked = ApplicationOptions.IsAudioNetworkIdentityAlertEnabled;
+            AudioNetworkIdentityFilePath.Text = string.IsNullOrWhiteSpace(ApplicationOptions.AudioNetworkIdentityFilePath)
+                ? Environment.ExpandEnvironmentVariables(Constants.DefaultAudioNetworkIdentityFilePath)
+                : ApplicationOptions.AudioNetworkIdentityFilePath;
         }
 
         private void PopulateLogOutputOptions()
@@ -660,6 +664,30 @@ namespace MultiPingMonitor.UI
             {
                 ApplicationOptions.IsAudioUpAlertEnabled = false;
             }
+            if (IsAudioNetworkIdentityAlertEnabled.IsChecked == true)
+            {
+                try
+                {
+                    if (Path.GetFileName(AudioNetworkIdentityFilePath.Text).IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
+                        !File.Exists(AudioNetworkIdentityFilePath.Text) ||
+                        Path.GetFileName(AudioNetworkIdentityFilePath.Text).Length < 1)
+                    {
+                        throw new Exception();
+                    }
+                }
+                catch
+                {
+                    ShowError(Properties.Strings.Options_Validation_AudioPath, AudioAlertTab, AudioNetworkIdentityFilePath);
+                    return false;
+                }
+                ApplicationOptions.IsAudioNetworkIdentityAlertEnabled = true;
+                ApplicationOptions.AudioNetworkIdentityFilePath = AudioNetworkIdentityFilePath.Text;
+            }
+            else
+            {
+                ApplicationOptions.IsAudioNetworkIdentityAlertEnabled = false;
+                ApplicationOptions.AudioNetworkIdentityFilePath = AudioNetworkIdentityFilePath.Text;
+            }
 
             return true;
         }
@@ -1025,6 +1053,11 @@ namespace MultiPingMonitor.UI
             AudioFileBrowse(AudioUpFilePath);
         }
 
+        private void AudioNetworkIdentityBrowse_Click(object sender, RoutedEventArgs e)
+        {
+            AudioFileBrowse(AudioNetworkIdentityFilePath);
+        }
+
         private void AudioFileBrowse(TextBox tb)
         {
             using (var audiofileDialog = new System.Windows.Forms.OpenFileDialog())
@@ -1052,6 +1085,11 @@ namespace MultiPingMonitor.UI
             AudioFilePlay(AudioUpFilePath.Text);
         }
 
+        private void AudioNetworkIdentityPlay_Click(object sender, RoutedEventArgs e)
+        {
+            AudioFilePlay(AudioNetworkIdentityFilePath.Text);
+        }
+
         private void AudioFilePlay(string path)
         {
             try
@@ -1074,6 +1112,17 @@ namespace MultiPingMonitor.UI
                 if (File.Exists(Environment.ExpandEnvironmentVariables(Constants.DefaultAudioDownFilePath)))
                 {
                     AudioDownFilePath.Text = Environment.ExpandEnvironmentVariables(Constants.DefaultAudioDownFilePath);
+                }
+            }
+        }
+
+        private void IsAudioNetworkIdentityAlertEnabled_Click(object sender, RoutedEventArgs e)
+        {
+            if (AudioNetworkIdentityFilePath.Text.Length == 0)
+            {
+                if (File.Exists(Environment.ExpandEnvironmentVariables(Constants.DefaultAudioNetworkIdentityFilePath)))
+                {
+                    AudioNetworkIdentityFilePath.Text = Environment.ExpandEnvironmentVariables(Constants.DefaultAudioNetworkIdentityFilePath);
                 }
             }
         }

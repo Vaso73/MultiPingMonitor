@@ -479,7 +479,10 @@
   </data>
   <data name="Options_EnableAudioUp" xml:space="preserve">
     <value>Povoliť zvukové upozornenie: hostiteľ dostupný</value>
+  </data>  <data name="Options_EnableAudioNetworkIdentity" xml:space="preserve">
+    <value>Povoliť zvukové upozornenie: zmena WAN/LAN IP</value>
   </data>
+
   <data name="Options_EnableEmailAlerts" xml:space="preserve">
     <value>Povoliť e-mailové upozornenia</value>
   </data>
@@ -847,7 +850,10 @@ Môžete vždy zobrazovať kontextové upozornenia, zobrazovať ich len pri mini
   <data name="Tooltip_LogOutput" xml:space="preserve">
     <value>Ak je táto možnosť povolená, celý výstup pingovania sa zapíše do textového súboru.
 Zadáte základný adresár a MultiPingMonitor vytvorí samostatný súbor záznamu pre každého hostiteľa (hostname.txt).</value>
+  </data>  <data name="Tooltip_AudioNetworkIdentity" xml:space="preserve">
+    <value>Povoliť prehratie zvuku, keď sa zmení WAN alebo LAN IP adresa.</value>
   </data>
+
   <data name="Tooltip_LogStatusChanges" xml:space="preserve">
     <value>Keď je povolená, táto možnosť zapíše všetky zmeny stavu do textového súboru.
 Zmena stavu nastane, keď pingovaný hostiteľ prestane byť dostupný, alebo keď nedostupný hostiteľ opäť začne odpovedať.

@@ -645,6 +645,54 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
+                    <!-- Hidden separator -->
+                    <Separator DockPanel.Dock="Top" Height="1" Background="Transparent" Margin="0,20,0,0"
+                               Visibility="{Binding IsChecked, ElementName=IsAudioUpAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                    <!-- Audio Alert Network Identity: checkbox / tooltip -->
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
+                        <CheckBox Name="IsAudioNetworkIdentityAlertEnabled"
+                                  Click="IsAudioNetworkIdentityAlertEnabled_Click"
+                                  Content="{x:Static resource:Strings.Options_EnableAudioNetworkIdentity}"
+                                  IsChecked="False"/>
+                        <Label Style="{StaticResource LabelToolTip}"
+                               Content="{x:Static resource:Strings.Tooltip_AudioNetworkIdentity}"/>
+                    </StackPanel>
+
+                    <!-- Audio Alert Network Identity: Filepath / play button / browse button -->
+                    <Grid DockPanel.Dock="Top"
+                          Margin="30,10,0,0"
+                          VerticalAlignment="Top"
+                          Visibility="{Binding IsChecked, ElementName=IsAudioNetworkIdentityAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
+                            <TextBox Name="AudioNetworkIdentityFilePath"
+                                     Margin="0,4,0,8"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Button Style="{DynamicResource Style.ButtonStandard}"
+                                        Click="AudioNetworkIdentityBrowse_Click"
+                                        Width="85"
+                                        Content="{x:Static resource:Strings.Options_Browse}"/>
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text.Length, ElementName=AudioNetworkIdentityFilePath}" Value="0">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                                            Click="AudioNetworkIdentityPlay_Click"
+                                            Width="85"
+                                            Margin="10,0,0,0"
+                                            Content="{x:Static resource:Strings.Options_Test}">
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
                 </DockPanel>
                 </Border>
             </TabItem>

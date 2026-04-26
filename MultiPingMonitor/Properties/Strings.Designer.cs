@@ -1486,6 +1486,15 @@ namespace MultiPingMonitor.Properties {
                 return ResourceManager.GetString("Options_EnableAudioUp", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enable audio alert: WAN/LAN IP changed.
+        /// </summary>
+        public static string Options_EnableAudioNetworkIdentity {
+            get {
+                return ResourceManager.GetString("Options_EnableAudioNetworkIdentity", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Enable email alerts.
@@ -2564,6 +2573,15 @@ namespace MultiPingMonitor.Properties {
         public static string Tooltip_AudioUp {
             get {
                 return ResourceManager.GetString("Tooltip_AudioUp", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this option to play a sound when the WAN or LAN IP address changes.
+        /// </summary>
+        public static string Tooltip_AudioNetworkIdentity {
+            get {
+                return ResourceManager.GetString("Tooltip_AudioNetworkIdentity", resourceCulture);
             }
         }
         

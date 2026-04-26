@@ -598,7 +598,10 @@
   </data>
   <data name="Options_EnableAudioUp" xml:space="preserve">
     <value>Enable audio alert: host up</value>
+  </data>  <data name="Options_EnableAudioNetworkIdentity" xml:space="preserve">
+    <value>Enable audio alert: WAN/LAN IP changed</value>
   </data>
+
   <data name="Options_EnableEmailAlerts" xml:space="preserve">
     <value>Enable email alerts</value>
   </data>
@@ -969,7 +972,10 @@ You can always show popup alerts, show only when MultiPingMonitor is minimized, 
   <data name="Tooltip_LogOutput" xml:space="preserve">
     <value>If this option is enabled, all ping output is written to a text file.
 You specify the base directory, and MultiPingMonitor will generate a separate log file for each host (hostname.txt).</value>
+  </data>  <data name="Tooltip_AudioNetworkIdentity" xml:space="preserve">
+    <value>Enable this option to play a sound when the WAN or LAN IP address changes.</value>
   </data>
+
   <data name="Tooltip_LogStatusChanges" xml:space="preserve">
     <value>When enabled, this option writes all status changes to a text file.
 A status change is when a host you are pinging goes down, or a down host comes back up.

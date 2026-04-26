@@ -44,6 +44,7 @@ namespace MultiPingMonitor.Classes
         // Default audio alert file paths.
         public const string DefaultAudioDownFilePath = @"%WINDIR%\Media\Windows Notify Email.wav";
         public const string DefaultAudioUpFilePath = @"%WINDIR%\Media\Windows Unlock.wav";
+        public const string DefaultAudioNetworkIdentityFilePath = @"%WINDIR%\Media\Windows Notify System Generic.wav";
 
         // Key bindings.
         public const Key StatusHistoryKeyBinding = Key.F12;
