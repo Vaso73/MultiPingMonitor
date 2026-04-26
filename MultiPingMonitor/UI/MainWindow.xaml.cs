@@ -70,6 +70,8 @@ namespace MultiPingMonitor.UI
         // when the window is closed.
 #pragma warning disable CS8632
         private Classes.NetworkIdentityService? _networkIdentityService;
+        private System.Windows.Controls.Primitives.Popup _compactNetworkFooterInfoPopup;
+        private System.Windows.Controls.Primitives.Popup _compactNetworkFooterCopyToastPopup;
 #pragma warning restore CS8632
 
 
@@ -676,8 +678,352 @@ namespace MultiPingMonitor.UI
                     CompactFooterProviderText.Visibility = Visibility.Collapsed;
                 }
             }
+            UpdateCompactNetworkFooterToolTip(svc);
         }
 
+        private void CompactFooterInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (_networkIdentityService == null || CompactFooterInfoButton == null)
+                return;
+
+            UpdateCompactNetworkFooterInfoPopup(_networkIdentityService);
+
+            if (_compactNetworkFooterInfoPopup == null)
+                return;
+
+            _compactNetworkFooterInfoPopup.IsOpen = false;
+            _compactNetworkFooterInfoPopup.PlacementTarget = CompactFooterInfoButton;
+            _compactNetworkFooterInfoPopup.Placement = System.Windows.Controls.Primitives.PlacementMode.Top;
+            _compactNetworkFooterInfoPopup.IsOpen = true;
+
+            e.Handled = true;
+        }
+        private void UpdateCompactNetworkFooterToolTip(Classes.NetworkIdentityService svc)
+        {
+            if (_compactNetworkFooterInfoPopup != null && _compactNetworkFooterInfoPopup.IsOpen)
+                UpdateCompactNetworkFooterInfoPopup(svc);
+        }
+
+        private void UpdateCompactNetworkFooterInfoPopup(Classes.NetworkIdentityService svc)
+        {
+            if (CompactFooterInfoButton == null)
+                return;
+
+            var foreground = TryFindResource("Theme.Text.Primary") as System.Windows.Media.Brush
+                             ?? System.Windows.Media.Brushes.White;
+            var secondaryForeground = TryFindResource("Theme.Text.Secondary") as System.Windows.Media.Brush
+                                      ?? foreground;
+            var background = TryFindResource("Theme.Surface") as System.Windows.Media.Brush
+                             ?? System.Windows.Media.Brushes.Black;
+            var accentBrush = TryFindResource("Theme.Accent") as System.Windows.Media.Brush
+                              ?? System.Windows.Media.Brushes.DeepSkyBlue;
+            var borderBrush = accentBrush;
+
+            var content = new StackPanel
+            {
+                MinWidth = 310,
+                MaxWidth = 430,
+                Margin = new Thickness(10, 8, 10, 8),
+            };
+
+            content.Children.Add(new TextBlock
+            {
+                Text = "Sieťová identita",
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = foreground,
+                FontWeight = System.Windows.FontWeights.SemiBold,
+                Margin = new Thickness(0, 0, 0, 5),
+            });
+
+            AddCompactNetworkPopupCopyRow(
+                content,
+                "WAN IP",
+                svc.PublicIp,
+                "WAN IP bola skopírovaná",
+                "WAN IP nie je dostupná",
+                foreground,
+                secondaryForeground,
+                accentBrush);
+
+            AddCompactNetworkPopupStaticRow(content, "Krajina", svc.CountryCode, foreground);
+            AddCompactNetworkPopupStaticRow(content, "Provider", svc.Provider, foreground);
+            AddCompactNetworkPopupStaticRow(content, "ASN", svc.Asn, foreground);
+
+            AddCompactNetworkPopupCopyRow(
+                content,
+                "LAN IP",
+                svc.LocalIp,
+                "LAN IP bola skopírovaná",
+                "LAN IP nie je dostupná",
+                foreground,
+                secondaryForeground,
+                accentBrush);
+
+            content.Children.Add(new Border
+            {
+                Height = 1,
+                Margin = new Thickness(0, 7, 0, 7),
+                Background = accentBrush,
+                Opacity = 0.85,
+            });
+
+            AddCompactNetworkPopupStaticRow(
+                content,
+                "Posledná úspešná WAN kontrola",
+                FormatCompactNetworkTooltipTime(svc.LastRefresh),
+                foreground);
+
+            AddCompactNetworkPopupStaticRow(
+                content,
+                "Ďalšia plánovaná automatická WAN kontrola",
+                FormatCompactNetworkTooltipNextRefresh(svc),
+                foreground);
+
+            AddCompactNetworkPopupStaticRow(
+                content,
+                "Stav poslednej WAN kontroly",
+                FormatCompactNetworkTooltipLookupState(svc.WanState),
+                foreground);
+
+            var panel = new Border
+            {
+                Background = background,
+                BorderBrush = borderBrush,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(6),
+                Child = content,
+                Effect = new System.Windows.Media.Effects.DropShadowEffect
+                {
+                    BlurRadius = 14,
+                    ShadowDepth = 2,
+                    Opacity = 0.35,
+                },
+            };
+
+            if (_compactNetworkFooterInfoPopup == null)
+            {
+                _compactNetworkFooterInfoPopup = new System.Windows.Controls.Primitives.Popup
+                {
+                    PlacementTarget = CompactFooterInfoButton,
+                    Placement = System.Windows.Controls.Primitives.PlacementMode.Top,
+                    StaysOpen = false,
+                    AllowsTransparency = true,
+                    PopupAnimation = System.Windows.Controls.Primitives.PopupAnimation.Fade,
+                };
+            }
+
+            _compactNetworkFooterInfoPopup.Child = panel;
+        }
+
+        private static void AddCompactNetworkPopupStaticRow(
+            StackPanel content,
+            string label,
+            string value,
+            System.Windows.Media.Brush foreground)
+        {
+            content.Children.Add(new TextBlock
+            {
+                Text = $"{label}: {FormatCompactNetworkTooltipValue(value)}",
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = foreground,
+                Margin = new Thickness(0, 1, 0, 1),
+            });
+        }
+
+        private void AddCompactNetworkPopupCopyRow(
+            StackPanel content,
+            string label,
+            string value,
+            string copiedMessage,
+            string unavailableMessage,
+            System.Windows.Media.Brush foreground,
+            System.Windows.Media.Brush secondaryForeground,
+            System.Windows.Media.Brush accentBrush)
+        {
+            var normalizedValue = FormatCompactNetworkTooltipValue(value);
+
+            var rowText = new TextBlock
+            {
+                Text = $"{label}: {normalizedValue}",
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = foreground,
+            };
+
+            var hintText = new TextBlock
+            {
+                Text = "kliknutím skopírovať",
+                FontSize = 10,
+                Foreground = secondaryForeground,
+                Opacity = 0.82,
+                Margin = new Thickness(0, 1, 0, 0),
+            };
+
+            var rowContent = new StackPanel();
+            rowContent.Children.Add(rowText);
+            rowContent.Children.Add(hintText);
+
+            var row = new Border
+            {
+                Child = rowContent,
+                Padding = new Thickness(5, 3, 5, 3),
+                Margin = new Thickness(-5, 2, -5, 2),
+                BorderThickness = new Thickness(0),
+                BorderBrush = accentBrush,
+                CornerRadius = new CornerRadius(4),
+                Background = System.Windows.Media.Brushes.Transparent,
+                Cursor = System.Windows.Input.Cursors.Hand,
+            };
+
+            row.MouseEnter += (s, e) =>
+            {
+                row.BorderThickness = new Thickness(1);
+            };
+
+            row.MouseLeave += (s, e) =>
+            {
+                row.BorderThickness = new Thickness(0);
+            };
+
+            row.MouseLeftButtonUp += (s, e) =>
+            {
+                CopyCompactNetworkValueToClipboard(value, copiedMessage, unavailableMessage);
+                e.Handled = true;
+            };
+
+            content.Children.Add(row);
+        }
+
+        private void CopyCompactNetworkValueToClipboard(string value, string copiedMessage, string unavailableMessage)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                ShowCompactNetworkCopyToast(unavailableMessage);
+                return;
+            }
+
+            try
+            {
+                Clipboard.SetText(value.Trim());
+                ShowCompactNetworkCopyToast(copiedMessage);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"MultiPingMonitor: failed copying compact network value to clipboard: {ex.Message}");
+                ShowCompactNetworkCopyToast("Nepodarilo sa skopírovať IP");
+            }
+        }
+
+        private void ShowCompactNetworkCopyToast(string message)
+        {
+            if (CompactFooterInfoButton == null)
+                return;
+
+            var foreground = TryFindResource("Theme.Text.Primary") as System.Windows.Media.Brush
+                             ?? System.Windows.Media.Brushes.White;
+            var background = TryFindResource("Theme.Surface") as System.Windows.Media.Brush
+                             ?? System.Windows.Media.Brushes.Black;
+            var accentBrush = TryFindResource("Theme.Accent") as System.Windows.Media.Brush
+                              ?? System.Windows.Media.Brushes.DeepSkyBlue;
+
+            var toast = new Border
+            {
+                Background = background,
+                BorderBrush = accentBrush,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(6),
+                Padding = new Thickness(9, 5, 9, 5),
+                Child = new TextBlock
+                {
+                    Text = message,
+                    Foreground = foreground,
+                    FontSize = 11,
+                },
+                Effect = new System.Windows.Media.Effects.DropShadowEffect
+                {
+                    BlurRadius = 10,
+                    ShadowDepth = 1,
+                    Opacity = 0.30,
+                },
+            };
+
+            if (_compactNetworkFooterCopyToastPopup == null)
+            {
+                _compactNetworkFooterCopyToastPopup = new System.Windows.Controls.Primitives.Popup
+                {
+                    PlacementTarget = CompactFooterInfoButton,
+                    Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom,
+                    StaysOpen = false,
+                    AllowsTransparency = true,
+                    PopupAnimation = System.Windows.Controls.Primitives.PopupAnimation.Fade,
+                };
+            }
+
+            _compactNetworkFooterCopyToastPopup.Child = toast;
+            _compactNetworkFooterCopyToastPopup.IsOpen = true;
+
+            var timer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1400),
+            };
+
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                if (_compactNetworkFooterCopyToastPopup != null)
+                    _compactNetworkFooterCopyToastPopup.IsOpen = false;
+            };
+
+            timer.Start();
+        }
+        private static string BuildCompactNetworkFooterToolTipText(Classes.NetworkIdentityService svc)
+        {
+            var sb = new System.Text.StringBuilder();
+
+            sb.AppendLine("Sieťová identita");
+            sb.AppendLine($"WAN IP: {FormatCompactNetworkTooltipValue(svc.PublicIp)}");
+            sb.AppendLine($"Krajina: {FormatCompactNetworkTooltipValue(svc.CountryCode)}");
+            sb.AppendLine($"Provider: {FormatCompactNetworkTooltipValue(svc.Provider)}");
+            sb.AppendLine($"ASN: {FormatCompactNetworkTooltipValue(svc.Asn)}");
+            sb.AppendLine($"LAN IP: {FormatCompactNetworkTooltipValue(svc.LocalIp)}");
+            sb.AppendLine($"Posledná úspešná WAN kontrola: {FormatCompactNetworkTooltipTime(svc.LastRefresh)}");
+            sb.AppendLine($"Ďalšia plánovaná automatická WAN kontrola: {FormatCompactNetworkTooltipNextRefresh(svc)}");
+            sb.AppendLine($"Stav poslednej WAN kontroly: {FormatCompactNetworkTooltipLookupState(svc.WanState)}");
+
+            return sb.ToString().TrimEnd();
+        }
+
+        private static string FormatCompactNetworkTooltipValue(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? "\u2014" : value;
+        }
+
+        private static string FormatCompactNetworkTooltipTime(DateTime? utcTime)
+        {
+            return utcTime.HasValue
+                ? utcTime.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                : "\u2014";
+        }
+
+        private static string FormatCompactNetworkTooltipNextRefresh(Classes.NetworkIdentityService svc)
+        {
+            if (svc.NextScheduledWanRefresh.HasValue)
+                return svc.NextScheduledWanRefresh.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+
+            return svc.IsRefreshing ? "po aktuálnej kontrole" : "\u2014";
+        }
+
+        private static string FormatCompactNetworkTooltipLookupState(WanLookupState state)
+        {
+            return state switch
+            {
+                WanLookupState.NotStarted => "nespustená",
+                WanLookupState.Loading => "prebieha",
+                WanLookupState.Succeeded => "úspešná",
+                WanLookupState.Failed => "zlyhala",
+                _ => state.ToString()
+            };
+        }
         private void HandleNetworkIdentityIpChangeAlerts(Classes.NetworkIdentityService svc)
         {
             TrackNetworkIdentityIpChange("LAN IP", ref _lastObservedLanIpForAlert, svc.LocalIp);

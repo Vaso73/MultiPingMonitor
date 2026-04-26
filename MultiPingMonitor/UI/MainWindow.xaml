@@ -591,7 +591,8 @@
         <Border x:Name="CompactNetworkFooter"
                 DockPanel.Dock="Bottom"
                 Visibility="Collapsed"
-                Style="{DynamicResource Style.CompactNetworkFooter}">
+                Style="{DynamicResource Style.CompactNetworkFooter}"
+                ToolTipService.ShowDuration="20000">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -599,10 +600,11 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Row 0: LAN IP + manual refresh button -->
+                <!-- Row 0: LAN IP + detail button + manual refresh button -->
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <!-- LAN label (bold) + LAN IP value — wraps when narrow -->
@@ -612,13 +614,46 @@
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource Theme.Text.Primary}"/>
-                    <!-- Manual refresh button — disabled while a refresh is running -->
-                    <Button x:Name="CompactFooterRefreshButton"
+
+                    <!-- Detail button — opens one stable LAN/WAN identity tooltip. -->
+                    <Button x:Name="CompactFooterInfoButton"
                             Grid.Column="1"
-                            Click="CompactFooterRefresh_Click"
+                            Click="CompactFooterInfo_Click"
                             MinHeight="0"
                             Width="22" Height="20"
                             Margin="6,0,0,0"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="infoBorder"
+                                        Background="Transparent"
+                                        CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                                        Padding="2,1">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="infoBorder" Property="Background"
+                                                Value="{DynamicResource Theme.Surface}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock Text="ⓘ"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource Theme.Text.Secondary}"/>
+                    </Button>
+
+                    <!-- Manual refresh button — disabled while a refresh is running -->
+                    <Button x:Name="CompactFooterRefreshButton"
+                            Grid.Column="2"
+                            Click="CompactFooterRefresh_Click"
+                            MinHeight="0"
+                            Width="22" Height="20"
+                            Margin="4,0,0,0"
                             Cursor="Hand"
                             ToolTip="{x:Static resource:Strings.Compact_Footer_Refresh}"
                             ToolTipService.InitialShowDelay="800">
@@ -649,7 +684,6 @@
                                    Foreground="{DynamicResource Theme.Text.Secondary}"/>
                     </Button>
                 </Grid>
-
                 <!-- Row 1: WAN IP + country badge (badge follows IP, may wrap to next line) -->
                 <WrapPanel Grid.Row="1" Margin="0,3,0,0">
                     <!-- WAN label (bold) + public IP — no-wrap so the IP stays on one line;
