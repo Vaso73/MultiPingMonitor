@@ -78,7 +78,7 @@ namespace MultiPingMonitor.UI
             switch (StatusHistoryList.Items.Count)
             {
                 case 1:
-                    Height = 95;
+                    Height = 112;
                     break;
                 case 2:
                     Height = 110;
@@ -93,7 +93,7 @@ namespace MultiPingMonitor.UI
                     Height = 172;
                     break;
             }
-            PositionWindow(width: Width);
+            PositionWindow(width: Math.Min(Width, 820));
         }
 
         private void PositionWindow(double width)

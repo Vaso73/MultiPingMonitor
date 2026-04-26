@@ -37,7 +37,29 @@ namespace MultiPingMonitor.Classes
         /// </summary>
         public string CustomGlyph { get; set; }
 
-        public string AliasIfExistOrHostname =>
+
+        public string PopupTitle { get; set; }
+        public string PopupDetailPrimary { get; set; }
+        public string PopupDetailSecondary { get; set; }
+
+        public bool HasPopupDetail =>
+            !string.IsNullOrWhiteSpace(PopupDetailPrimary)
+            || !string.IsNullOrWhiteSpace(PopupDetailSecondary);
+
+        public string PopupTitleOrAddress =>
+            !string.IsNullOrWhiteSpace(PopupTitle)
+                ? PopupTitle
+                : AliasIfExistOrHostname;
+
+        public string PopupStatusText =>
+            HasPopupDetail
+                ? PopupDetailPrimary
+                : StatusAsString;
+
+        public string PopupSecondaryText =>
+            HasPopupDetail
+                ? PopupDetailSecondary
+                : string.Empty;public string AliasIfExistOrHostname =>
             !string.IsNullOrWhiteSpace(Alias) ? Alias : Hostname;
 
         public string StatusAsString

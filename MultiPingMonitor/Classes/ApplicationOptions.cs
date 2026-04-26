@@ -79,8 +79,10 @@ namespace MultiPingMonitor.Classes
         // Audio alerts.
         public static bool IsAudioUpAlertEnabled { get; set; } = false;
         public static bool IsAudioDownAlertEnabled { get; set; } = false;
+        public static bool IsAudioNetworkIdentityAlertEnabled { get; set; } = false;
         public static string AudioUpFilePath { get; set; }
         public static string AudioDownFilePath { get; set; }
+        public static string AudioNetworkIdentityFilePath { get; set; }
 
         // Logging.
         public static bool IsLogOutputEnabled { get; set; } = false;

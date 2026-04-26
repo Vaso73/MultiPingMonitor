@@ -235,6 +235,8 @@ namespace MultiPingMonitor.Classes
                 Node("AudioUpFilePath", ApplicationOptions.AudioUpFilePath),
                 Node("IsAudioDownAlertEnabled", ApplicationOptions.IsAudioDownAlertEnabled),
                 Node("AudioDownFilePath", ApplicationOptions.AudioDownFilePath),
+                Node("IsAudioNetworkIdentityAlertEnabled", ApplicationOptions.IsAudioNetworkIdentityAlertEnabled),
+                Node("AudioNetworkIdentityFilePath", ApplicationOptions.AudioNetworkIdentityFilePath),
                 Node("IsLogOutputEnabled", ApplicationOptions.IsLogOutputEnabled),
                 Node("LogPath", ApplicationOptions.LogPath),
                 Node("IsLogStatusChangesEnabled", ApplicationOptions.IsLogStatusChangesEnabled),
@@ -727,6 +729,14 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("AudioDownFilePath", out optionValue))
             {
                 ApplicationOptions.AudioDownFilePath = optionValue;
+            }
+            if (options.TryGetValue("IsAudioNetworkIdentityAlertEnabled", out optionValue))
+            {
+                ApplicationOptions.IsAudioNetworkIdentityAlertEnabled = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("AudioNetworkIdentityFilePath", out optionValue))
+            {
+                ApplicationOptions.AudioNetworkIdentityFilePath = optionValue;
             }
             if (options.TryGetValue("IsLogOutputEnabled", out optionValue))
             {

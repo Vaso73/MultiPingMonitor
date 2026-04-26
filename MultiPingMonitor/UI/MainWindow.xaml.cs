@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -1060,7 +1061,10 @@ namespace MultiPingMonitor.UI
                 Status = ProbeStatus.Up,
                 EventType = StatusChangeEventType.NetworkIdentity,
                 CustomGlyph = "h",
-                CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})"
+                CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})",
+                PopupTitle = $"{label} zmenená",
+                PopupDetailPrimary = $"Aktuálna: {currentIp}",
+                PopupDetailSecondary = $"Predtým: {previousIp}"
             };
 
             bool shouldPopup = ApplicationOptions.PopupOption == ApplicationOptions.PopupNotificationOption.Always
@@ -1080,12 +1084,38 @@ namespace MultiPingMonitor.UI
 
             WriteNetworkIdentityChangeToStatusLog(entry);
 
-            if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>().Any())
+                        PlayNetworkIdentityIpChangedSound();
+
+if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>().Any())
             {
                 new PopupNotificationWindow(Probe.StatusChangeLog).Show();
             }
         }
 
+        private static void PlayNetworkIdentityIpChangedSound()
+        {
+            if (!ApplicationOptions.IsAudioNetworkIdentityAlertEnabled)
+                return;
+
+            try
+            {
+                string audioPath = ApplicationOptions.AudioNetworkIdentityFilePath;
+                if (string.IsNullOrWhiteSpace(audioPath))
+                    audioPath = Constants.DefaultAudioNetworkIdentityFilePath;
+
+                audioPath = Environment.ExpandEnvironmentVariables(audioPath);
+
+                using (SoundPlayer player = new SoundPlayer(audioPath))
+                {
+                    player.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                ApplicationOptions.IsAudioNetworkIdentityAlertEnabled = false;
+                DialogWindow.ErrorWindow($"Failed to play network identity audio file. Network identity audio alerts have been disabled. Error: {ex.Message}");
+            }
+        }
         private static void WriteNetworkIdentityChangeToStatusLog(StatusChangeLog entry)
         {
             if (!ApplicationOptions.IsLogStatusChangesEnabled || string.IsNullOrEmpty(ApplicationOptions.LogStatusChangesPath))

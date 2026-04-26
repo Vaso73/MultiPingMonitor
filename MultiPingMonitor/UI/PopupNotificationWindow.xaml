@@ -186,10 +186,15 @@
                 </Style>
             </ListBox.Resources>
             <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch" MaxWidth="760" Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
                         <!-- Status glyph -->
-                        <TextBlock DockPanel.Dock="Left"
+                        <TextBlock Grid.Column="0"
                                    Name="StatusIndicator"
                                    Text="{Binding StatusAsGlyph}"
                                    FontSize="18"
@@ -215,40 +220,57 @@
                                         <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_LatencyNormal}">
                                             <Setter Property="Foreground" Value="{DynamicResource Theme.Info}" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                            <Setter Property="Foreground" Value="{DynamicResource Theme.Info}" />
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <!-- Timestamp -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{Binding Timestamp, StringFormat='[{0}]'}"
-                                   FontSize="15"
-                                   Foreground="{DynamicResource Theme.Text.Primary}"
-                                   VerticalAlignment="Center"
-                                   Opacity="0.6"
-                                   Padding="6,0,0,0" />
-                        <!-- Hostname (or alias) -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{Binding AliasIfExistOrHostname}"
-                                   FontSize="17"
-                                   Foreground="{DynamicResource Theme.Text.Primary}"
-                                   VerticalAlignment="Center"
-                                   Padding="9,0,0,0" />
-                        <!-- Arrow symbol -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="🠖"
-                                   FontSize="17"
-                                   Foreground="{DynamicResource Theme.Text.Primary}"
-                                   VerticalAlignment="Center"
-                                   Opacity="0.6"
-                                   Padding="5,0" />
-                        <!-- Status -->
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{Binding StatusAsString}"
-                                   FontSize="17"
-                                   VerticalAlignment="Center"
-                                   Foreground="{Binding ElementName=StatusIndicator, Path=Foreground}"/>
-                    </DockPanel>
+
+                        <StackPanel Grid.Column="1" Margin="8,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Timestamp, StringFormat='[{0}]'}"
+                                           FontSize="15"
+                                           Foreground="{DynamicResource Theme.Text.Primary}"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.6" />
+                                <TextBlock Text="{Binding PopupTitleOrAddress}"
+                                           FontSize="17"
+                                           Foreground="{DynamicResource Theme.Text.Primary}"
+                                           VerticalAlignment="Center"
+                                           Padding="9,0,0,0" />
+                                <TextBlock Text="🠖"
+                                           FontSize="17"
+                                           Foreground="{DynamicResource Theme.Text.Primary}"
+                                           VerticalAlignment="Center"
+                                           Opacity="0.6"
+                                           Padding="5,0" />
+                                <TextBlock Text="{Binding PopupStatusText}"
+                                           FontSize="17"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Foreground="{Binding ElementName=StatusIndicator, Path=Foreground}"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding PopupSecondaryText}"
+                                       FontSize="14"
+                                       Margin="0,2,0,0"
+                                       Opacity="0.75"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource Theme.Text.Secondary}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PopupSecondaryText}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
