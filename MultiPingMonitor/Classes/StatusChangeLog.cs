@@ -6,7 +6,8 @@ namespace MultiPingMonitor.Classes
     public enum StatusChangeEventType
     {
         Probe,
-        NetworkIdentity
+        NetworkIdentity,
+        CompactSet
     }
 
     public class StatusChangeLog
@@ -21,10 +22,24 @@ namespace MultiPingMonitor.Classes
         public bool IsNetworkIdentityEvent =>
             EventType == StatusChangeEventType.NetworkIdentity;
 
-        public string EventTypeAsString =>
-            EventType == StatusChangeEventType.NetworkIdentity
-                ? "Network identity"
-                : "Probe status";
+        public bool IsCompactSetEvent =>
+            EventType == StatusChangeEventType.CompactSet;
+
+        public string EventTypeAsString
+        {
+            get
+            {
+                switch (EventType)
+                {
+                    case StatusChangeEventType.NetworkIdentity:
+                        return "Network identity";
+                    case StatusChangeEventType.CompactSet:
+                        return Strings.ResourceManager.GetString("StatusHistory_EventType_CompactSet") ?? "Compact set";
+                    default:
+                        return "Probe status";
+                }
+            }
+        }
 
         /// <summary>
         /// Optional display text for non-probe entries such as LAN/WAN IP changes.
@@ -59,7 +74,9 @@ namespace MultiPingMonitor.Classes
         public string PopupSecondaryText =>
             HasPopupDetail
                 ? PopupDetailSecondary
-                : string.Empty;public string AliasIfExistOrHostname =>
+                : string.Empty;
+
+        public string AliasIfExistOrHostname =>
             !string.IsNullOrWhiteSpace(Alias) ? Alias : Hostname;
 
         public string StatusAsString

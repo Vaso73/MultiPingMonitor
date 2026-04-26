@@ -1352,4 +1352,28 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Compact_Footer_Refresh" xml:space="preserve">
     <value>obnoviť</value>
   </data>
+  <data name="StatusHistory_EventType_CompactSet" xml:space="preserve">
+    <value>Compact sada</value>
+  </data>
+  <data name="StatusHistory_CompactSet_NameFallback" xml:space="preserve">
+    <value>Compact sada</value>
+  </data>
+  <data name="StatusHistory_CompactSet_None" xml:space="preserve">
+    <value>(žiadna)</value>
+  </data>
+  <data name="StatusHistory_CompactSet_Started" xml:space="preserve">
+    <value>Sada spustená</value>
+  </data>
+  <data name="StatusHistory_CompactSet_Stopped" xml:space="preserve">
+    <value>Sada zastavená</value>
+  </data>
+  <data name="StatusHistory_CompactSet_ActiveChanged" xml:space="preserve">
+    <value>Aktívna sada zmenená z &quot;{0}&quot; na &quot;{1}&quot;</value>
+  </data>
+  <data name="StatusHistory_CompactSet_HostAdded" xml:space="preserve">
+    <value>Hostiteľ &quot;{0}&quot; pridaný</value>
+  </data>
+  <data name="StatusHistory_CompactSet_HostRemoved" xml:space="preserve">
+    <value>Hostiteľ &quot;{0}&quot; odstránený</value>
+  </data>
 </root>

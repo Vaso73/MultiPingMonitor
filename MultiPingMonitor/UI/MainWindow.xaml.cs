@@ -1367,7 +1367,30 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         internal void OpenManageCompactTargets()
         {
             OpenManageCompactSets();
+        }        private static string CompactSetHistoryText(string resourceKey, string fallback, params object[] args)
+        {
+            string format = Strings.ResourceManager.GetString(resourceKey) ?? fallback;
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, format, args);
         }
+
+        private static void TrackCompactSetHistoryEvent(string setName, string statusText)
+        {
+            string displaySetName = string.IsNullOrWhiteSpace(setName)
+                ? CompactSetHistoryText("StatusHistory_CompactSet_NameFallback", "Compact set")
+                : setName;
+
+            Probe.StatusChangeLog.Add(new StatusChangeLog
+            {
+                Timestamp = DateTime.Now,
+                EventType = StatusChangeEventType.CompactSet,
+                Hostname = CompactSetHistoryText("StatusHistory_CompactSet_NameFallback", "Compact set"),
+                Alias = displaySetName,
+                Status = ProbeStatus.Start,
+                CustomStatusText = statusText,
+                CustomGlyph = "h"
+            });
+        }
+
 
         /// <summary>
         /// Switches the active compact set by Id.
@@ -1378,7 +1401,17 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             if (ApplicationOptions.ActiveCompactSetId == setId)
                 return;
 
+            var previousSet = ApplicationOptions.GetActiveCompactSet();
             ApplicationOptions.ActiveCompactSetId = setId;
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+
+            TrackCompactSetHistoryEvent(
+                activeSet?.Name,
+                CompactSetHistoryText(
+                    "StatusHistory_CompactSet_ActiveChanged",
+                    "Active set changed from \"{0}\" to \"{1}\"",
+                    previousSet?.Name ?? CompactSetHistoryText("StatusHistory_CompactSet_None", "(none)"),
+                    activeSet?.Name ?? CompactSetHistoryText("StatusHistory_CompactSet_None", "(none)")));
 
             // If compact mode with custom targets is active, refresh immediately.
             if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets)
@@ -1415,6 +1448,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         internal void StartStopCompactSet()
         {
             ApplicationOptions.IsCompactSetRunning = !ApplicationOptions.IsCompactSetRunning;
+            var activeCompactSet = ApplicationOptions.GetActiveCompactSet();
 
             if (ApplicationOptions.IsCompactSetRunning)
             {
@@ -1436,6 +1470,12 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                         probe.StartStop();
                 }
             }
+
+            TrackCompactSetHistoryEvent(
+                activeCompactSet?.Name,
+                ApplicationOptions.IsCompactSetRunning
+                    ? CompactSetHistoryText("StatusHistory_CompactSet_Started", "Set started")
+                    : CompactSetHistoryText("StatusHistory_CompactSet_Stopped", "Set stopped"));
 
             UpdateCompactStoppedIndicator();
             _trayState = TrayAggregateState.Neutral;
@@ -1612,6 +1652,13 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             activeSet.Entries.Add(entry);
             Configuration.Save();
 
+            TrackCompactSetHistoryEvent(
+                activeSet.Name,
+                CompactSetHistoryText(
+                    "StatusHistory_CompactSet_HostAdded",
+                    "Host \"{0}\" added",
+                    host));
+
             // Add a new probe to the live collection immediately.
             var probe = new Probe();
             probe.Hostname = host;
@@ -1699,6 +1746,13 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             // Remove the entry from the active Compact Set and persist.
             activeSet.Entries.Remove(entry);
             Configuration.Save();
+
+            TrackCompactSetHistoryEvent(
+                activeSet.Name,
+                CompactSetHistoryText(
+                    "StatusHistory_CompactSet_HostRemoved",
+                    "Host \"{0}\" removed",
+                    entry.Target));
 
             // Update the Remove button enabled state (may now be empty).
             UpdateCompactStartStopButton();
