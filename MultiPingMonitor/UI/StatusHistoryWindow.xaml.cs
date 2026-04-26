@@ -86,14 +86,17 @@ namespace MultiPingMonitor.UI
 
             bool eventTypeMatch =
                 (FilterProbeEvents.IsChecked == true && entry.EventType == StatusChangeEventType.Probe)
-                || (FilterNetworkIdentityEvents.IsChecked == true && entry.EventType == StatusChangeEventType.NetworkIdentity);
+                || (FilterNetworkIdentityEvents.IsChecked == true && entry.EventType == StatusChangeEventType.NetworkIdentity)
+                || (FilterCompactSetEvents.IsChecked == true && entry.EventType == StatusChangeEventType.CompactSet);
 
             if (!eventTypeMatch)
                 return false;
 
             bool statusMatch = entry.EventType == StatusChangeEventType.NetworkIdentity
                 ? IsNetworkIdentityFilterMatch(entry)
-                : IsProbeStatusFilterMatch(entry);
+                : entry.EventType == StatusChangeEventType.CompactSet
+                    ? true
+                    : IsProbeStatusFilterMatch(entry);
 
             return statusMatch && IsTextFilterMatch(entry);
         }

@@ -306,9 +306,16 @@
                                           IsChecked="True"
                                           Click="Filter_Click"/>
                             </Grid>
-                            <CheckBox x:Name="FilterNetworkIdentityEvents"
+                            <Grid Width="155">
+                                <CheckBox x:Name="FilterNetworkIdentityEvents"
                                       Style="{StaticResource CheckBoxStyle.Dark}"
                                       Content="Network identity"
+                                      IsChecked="True"
+                                      Click="Filter_Click" />
+                            </Grid>
+                            <CheckBox x:Name="FilterCompactSetEvents"
+                                      Style="{StaticResource CheckBoxStyle.Dark}"
+                                      Content="Compact set"
                                       IsChecked="True"
                                       Click="Filter_Click" />
                         </StackPanel>
