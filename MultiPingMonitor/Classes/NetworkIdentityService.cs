@@ -48,6 +48,7 @@ namespace MultiPingMonitor.Classes
         public string Asn          { get; private set; } = string.Empty;
         public string Provider     { get; private set; } = string.Empty;
         public DateTime? LastRefresh { get; private set; }
+        public DateTime? NextScheduledWanRefresh { get; private set; }
         public bool IsRefreshing   { get; private set; }
 
         /// <summary>
@@ -196,8 +197,14 @@ namespace MultiPingMonitor.Classes
             lock (_timerLock)
             {
                 _wanTimer = new System.Timers.Timer(WanPollIntervalMs) { AutoReset = true };
-                _wanTimer.Elapsed += (s, e) => RequestBackgroundRefresh();
+                _wanTimer.Elapsed += (s, e) =>
+                {
+                    NextScheduledWanRefresh = DateTime.UtcNow.AddMilliseconds(WanPollIntervalMs);
+                    OnStateChanged();
+                    RequestBackgroundRefresh();
+                };
                 _wanTimer.Start();
+                NextScheduledWanRefresh = DateTime.UtcNow.AddMilliseconds(WanPollIntervalMs);
 
                 _lanTimer = new System.Timers.Timer(LanPollIntervalMs) { AutoReset = true };
                 _lanTimer.Elapsed += (s, e) => RefreshLocalIpAndNotify();
