@@ -124,6 +124,16 @@
                         <Setter Property="IsHitTestVisible" Value="False"/>
                     </Style>
                 </DataGrid.CellStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                <Setter Property="Background" Value="#182a38"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
 
                     <!-- Timestamp and status glyph -->
@@ -162,6 +172,12 @@
                                                                 </DataTrigger>
                                                                 <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_Stop}">
                                                                     <Setter Property="Foreground" Value="#ecce51" />
+                                                                </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                        <Setter Property="Foreground" Value="#61b8ff" />
+                                    </DataTrigger>
+                                                                <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#61b8ff" />
                                                                 </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -221,6 +237,12 @@
                                     <DataTrigger Binding="{Binding StatusAsString}" Value="{x:Static resource:Strings.StatusChange_Stop}">
                                         <Setter Property="Foreground" Value="#ecce51" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                        <Setter Property="Foreground" Value="#61b8ff" />
+                                    </DataTrigger>
+                                                                <DataTrigger Binding="{Binding IsNetworkIdentityEvent}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#61b8ff" />
+                                                                </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
@@ -277,7 +299,21 @@
                     <StackPanel Margin="15,0,0,0">
                         <TextBlock Text="Include" Foreground="#ecce51" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal">
-                            <Grid Width="100">
+                            <Grid Width="135">
+                                <CheckBox x:Name="FilterProbeEvents"
+                                          Style="{StaticResource CheckBoxStyle.Dark}"
+                                          Content="Probe status"
+                                          IsChecked="True"
+                                          Click="Filter_Click"/>
+                            </Grid>
+                            <CheckBox x:Name="FilterNetworkIdentityEvents"
+                                      Style="{StaticResource CheckBoxStyle.Dark}"
+                                      Content="Network identity"
+                                      IsChecked="True"
+                                      Click="Filter_Click" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid Width="135">
                                 <CheckBox x:Name="FilterUp"
                                           Style="{StaticResource CheckBoxStyle.Dark}"
                                           Content="Up"
@@ -291,7 +327,7 @@
                                       Click="Filter_Click" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Grid Width="100">
+                            <Grid Width="135">
                                 <CheckBox x:Name="FilterDown"
                                           Style="{StaticResource CheckBoxStyle.Dark}"
                                           Content="Down"
@@ -304,8 +340,21 @@
                                       IsChecked="True"
                                       Click="Filter_Click" />
                         </StackPanel>
-                    </StackPanel>
-                    <!-- Export button -->
+                        <StackPanel Orientation="Horizontal">
+                            <Grid Width="135">
+                                <CheckBox x:Name="FilterWanIpEvents"
+                                          Style="{StaticResource CheckBoxStyle.Dark}"
+                                          Content="WAN IP"
+                                          IsChecked="True"
+                                          Click="Filter_Click"/>
+                            </Grid>
+                            <CheckBox x:Name="FilterLanIpEvents"
+                                      Style="{StaticResource CheckBoxStyle.Dark}"
+                                      Content="LAN IP"
+                                      IsChecked="True"
+                                      Click="Filter_Click" />
+                        </StackPanel>
+                    </StackPanel>                    <!-- Export button -->
                     <StackPanel DockPanel.Dock="Left" Margin="25,0,0,0" HorizontalAlignment="Left">
                         <TextBlock Margin="0,0,0,2"/>
                         <Button Style="{DynamicResource Style.Button}"
