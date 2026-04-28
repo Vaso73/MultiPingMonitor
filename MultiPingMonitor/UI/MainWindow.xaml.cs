@@ -1253,7 +1253,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         }
 
         /// <summary>
-        /// Returns true when Normal/Main probe notifications should be suppressed —
+        /// Returns true when Normal/Main probe side effects should be suppressed —
         /// i.e. when Compact mode is the active context and uses its own custom Compact Set.
         /// Centralizes the condition to avoid duplication across <see cref="ApplyNormalProbeNotificationScope"/>
         /// and <see cref="ProbeCollection_CollectionChanged"/>.
@@ -1263,23 +1263,37 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
 
         /// <summary>
+        /// Returns true when Compact probe side effects should be suppressed.
+        /// Compact probes are allowed to produce popup/sound/status/log side effects only while
+        /// Compact mode is active, uses a custom Compact Set, and that set is running.
+        /// </summary>
+        private static bool ShouldSuppressCompactProbeSideEffects() =>
+            ApplicationOptions.CurrentDisplayMode != ApplicationOptions.DisplayMode.Compact
+            || ApplicationOptions.CompactSource != ApplicationOptions.CompactSourceMode.CustomTargets
+            || !ApplicationOptions.IsCompactSetRunning;
+
+        /// <summary>
         /// Sets <see cref="Probe.SuppressNotifications"/> and <see cref="Probe.SuppressFileLogging"/>
-        /// on every probe in the Normal/Main collection to scope side effects to the active
+        /// on Normal/Main and Compact probe collections to scope side effects to the active
         /// monitoring context.
-        /// Suppression is enabled when Compact mode is active and uses a custom Compact Set;
-        /// in that case all popup, sound, email, status-change-log notifications, and
-        /// per-ping file log writes must come only from the active Compact Set, not also
-        /// from the Normal/Main targets.
-        /// Suppression is cleared as soon as the user returns to Normal mode, or switches
-        /// the Compact source back to Normal Targets.
+        /// In Normal mode, Compact probes keep running in the background but cannot produce
+        /// duplicate popup/sound/status/log side effects. In Compact custom-set mode, Normal/Main
+        /// probes are suppressed so side effects come only from the active Compact Set.
         /// </summary>
         private void ApplyNormalProbeNotificationScope()
         {
-            bool suppress = ShouldSuppressNormalProbeNotifications();
+            bool suppressNormal = ShouldSuppressNormalProbeNotifications();
             foreach (var probe in _ProbeCollection)
             {
-                probe.SuppressNotifications = suppress;
-                probe.SuppressFileLogging = suppress;
+                probe.SuppressNotifications = suppressNormal;
+                probe.SuppressFileLogging = suppressNormal;
+            }
+
+            bool suppressCompact = ShouldSuppressCompactProbeSideEffects();
+            foreach (var probe in _CompactProbeCollection)
+            {
+                probe.SuppressNotifications = suppressCompact;
+                probe.SuppressFileLogging = suppressCompact;
             }
         }
 
@@ -1326,14 +1340,14 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 if (!string.IsNullOrWhiteSpace(entry.Alias))
                     probe.Alias = entry.Alias;
                 _CompactProbeCollection.Add(probe);
+
+                bool suppressCompact = ShouldSuppressCompactProbeSideEffects();
+                probe.SuppressNotifications = suppressCompact;
+                probe.SuppressFileLogging = suppressCompact;
+
                 // Only auto-start if the compact set is currently in the running state.
                 if (ApplicationOptions.IsCompactSetRunning)
                     probe.StartStop();
-                else
-                {
-                    probe.SuppressNotifications = true;
-                    probe.SuppressFileLogging = true;
-                }
             }
         }
 
@@ -1461,10 +1475,11 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             if (ApplicationOptions.IsCompactSetRunning)
             {
                 // Start: resume monitoring for all compact probes.
+                bool suppressCompact = ShouldSuppressCompactProbeSideEffects();
                 foreach (var probe in _CompactProbeCollection)
                 {
-                    probe.SuppressNotifications = false;
-                    probe.SuppressFileLogging = false;
+                    probe.SuppressNotifications = suppressCompact;
+                    probe.SuppressFileLogging = suppressCompact;
                     if (!probe.IsActive)
                         probe.StartStop();
                 }
@@ -1677,16 +1692,14 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
             _CompactProbeCollection.Add(probe);
 
+            bool suppressCompact = ShouldSuppressCompactProbeSideEffects();
+            probe.SuppressNotifications = suppressCompact;
+            probe.SuppressFileLogging = suppressCompact;
+
             if (ApplicationOptions.IsCompactSetRunning)
             {
                 // Set is running: start monitoring the new target immediately.
                 probe.StartStop();
-            }
-            else
-            {
-                // Set is stopped: add the probe but keep it stopped and suppressed.
-                probe.SuppressNotifications = true;
-                probe.SuppressFileLogging = true;
             }
 
             // Update tray to pick up any status change.
@@ -2833,6 +2846,15 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                     {
                         p.SuppressNotifications = true;
                         p.SuppressFileLogging = true;
+                    }
+                }
+                else if (ReferenceEquals(sender, _CompactProbeCollection))
+                {
+                    bool suppressCompact = ShouldSuppressCompactProbeSideEffects();
+                    foreach (Probe p in e.NewItems)
+                    {
+                        p.SuppressNotifications = suppressCompact;
+                        p.SuppressFileLogging = suppressCompact;
                     }
                 }
             }

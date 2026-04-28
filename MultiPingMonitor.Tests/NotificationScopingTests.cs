@@ -275,5 +275,69 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("SuppressFileLogging", body);
         }
 
+        [Fact]
+        public void MainWindow_HasShouldSuppressCompactProbeSideEffectsHelper()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+            Assert.Contains("ShouldSuppressCompactProbeSideEffects", source);
+        }
+
+        [Fact]
+        public void MainWindow_ShouldSuppressCompactProbeSideEffects_ChecksDisplayModeSourceAndRunningState()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int methodStart = source.IndexOf("ShouldSuppressCompactProbeSideEffects()",
+                StringComparison.Ordinal);
+            Assert.True(methodStart >= 0, "ShouldSuppressCompactProbeSideEffects not found");
+
+            int nextSummary = source.IndexOf("/// <summary>", methodStart + 1, StringComparison.Ordinal);
+            if (nextSummary < 0) nextSummary = source.Length;
+            string body = source.Substring(methodStart, nextSummary - methodStart);
+
+            Assert.Contains("DisplayMode.Compact", body);
+            Assert.Contains("CompactSourceMode.CustomTargets", body);
+            Assert.Contains("IsCompactSetRunning", body);
+        }
+
+        [Fact]
+        public void MainWindow_ApplyNormalProbeNotificationScope_ScopesCompactProbeSideEffects()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int methodStart = source.IndexOf("private void ApplyNormalProbeNotificationScope()",
+                StringComparison.Ordinal);
+            Assert.True(methodStart >= 0, "ApplyNormalProbeNotificationScope not found in MainWindow.xaml.cs");
+
+            int nextMethod = source.IndexOf("\n        /// <summary>", methodStart + 1, StringComparison.Ordinal);
+            if (nextMethod < 0) nextMethod = source.Length;
+            string body = source.Substring(methodStart, nextMethod - methodStart);
+
+            Assert.Contains("_CompactProbeCollection", body);
+            Assert.Contains("ShouldSuppressCompactProbeSideEffects", body);
+            Assert.Contains("SuppressNotifications", body);
+            Assert.Contains("SuppressFileLogging", body);
+        }
+
+        [Fact]
+        public void MainWindow_ProbeCollectionChanged_ScopesNewCompactProbes()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int handlerStart = source.IndexOf("private void ProbeCollection_CollectionChanged(",
+                StringComparison.Ordinal);
+            Assert.True(handlerStart >= 0, "ProbeCollection_CollectionChanged not found in MainWindow.xaml.cs");
+
+            int nextMethod = source.IndexOf("\n        private void", handlerStart + 1, StringComparison.Ordinal);
+            if (nextMethod < 0) nextMethod = source.Length;
+            string body = source.Substring(handlerStart, nextMethod - handlerStart);
+
+            Assert.Contains("_CompactProbeCollection", body);
+            Assert.Contains("ShouldSuppressCompactProbeSideEffects", body);
+            Assert.Contains("SuppressNotifications", body);
+            Assert.Contains("SuppressFileLogging", body);
+        }
+
+
     }
 }
