@@ -2,44 +2,72 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <!--
-        Icon: MultiPingMonitor Logo (Simple)
-        Credit: Ryan Smith
+        Icon: MultiPingMonitor pulse logo.
+        Kept under the historical resource key so all existing XAML references update centrally.
     -->
     <DrawingImage x:Key="icon.vmping-logo-simple">
         <DrawingImage.Drawing>
-            <DrawingGroup ClipGeometry="M0,0 V384 H384 V0 H0 Z">
-                <DrawingGroup Opacity="1" Transform="4,0,0,4,3,0">
-                    <DrawingGroup Opacity="1">
-                        <GeometryDrawing>
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF000000" Thickness="12" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                            <GeometryDrawing.Geometry>
-                                <EllipseGeometry RadiusX="33" RadiusY="33" Center="48,48" />
-                            </GeometryDrawing.Geometry>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F0 M384,384z M0,0z M5.25,48L29.25,48">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF000000" Thickness="12" StartLineCap="Square" EndLineCap="Square" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F0 M384,384z M0,0z M65.25,48L89.25,48">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF000000" Thickness="12" StartLineCap="Square" EndLineCap="Square" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F0 M384,384z M0,0z M48,66L48,90">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF000000" Thickness="12" StartLineCap="Square" EndLineCap="Square" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                        <GeometryDrawing Geometry="F0 M384,384z M0,0z M48,6L48,30">
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="#FF000000" Thickness="12" StartLineCap="Square" EndLineCap="Square" LineJoin="Miter" />
-                            </GeometryDrawing.Pen>
-                        </GeometryDrawing>
-                    </DrawingGroup>
-                </DrawingGroup>
+            <DrawingGroup ClipGeometry="M0,0 H64 V64 H0 Z">
+                <!-- transparent canvas -->
+                <GeometryDrawing Brush="#00000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,64,64" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+
+                <!-- soft modern orb -->
+                <GeometryDrawing Brush="#0B1724">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="32,32" RadiusX="27" RadiusY="27" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#2638DDFB">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="32,32" RadiusX="25" RadiusY="25" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#5522D3EE">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="32,32" RadiusX="21" RadiusY="21" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+
+                <!-- radar rings -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FF22D3EE" Thickness="2.4" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="32,32" RadiusX="24" RadiusY="24" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#6638BDF8" Thickness="1.2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="32,32" RadiusX="14" RadiusY="14" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+
+                <!-- pulse line -->
+                <GeometryDrawing Geometry="M 9,34 H 21 L 27,19 L 35,48 L 41,30 L 47,34 H 55">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FFFFFFFF" Thickness="4.2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M 9,34 H 21 L 27,19 L 35,48 L 41,30 L 47,34 H 55">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FF22D3EE" Thickness="2.1" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+
+                <!-- bright endpoint -->
+                <GeometryDrawing Brush="#FFFFFFFF">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="47,34" RadiusX="3.2" RadiusY="3.2" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
