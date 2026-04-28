@@ -194,5 +194,86 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("SuppressNotifications", body);
             Assert.Contains("_ProbeCollection", body);
         }
+
+        [Fact]
+        public void Probe_HasSuppressFileLoggingProperty()
+        {
+            var source = File.ReadAllText(ProbeSourcePath());
+            Assert.Contains("SuppressFileLogging", source);
+        }
+
+        [Fact]
+        public void Probe_SuppressFileLoggingDefaultsFalse()
+        {
+            var source = File.ReadAllText(ProbeSourcePath());
+            Assert.Contains("SuppressFileLogging { get; set; } = false", source);
+        }
+
+        [Fact]
+        public void ProbeUtil_WriteToLog_ChecksSuppressFileLoggingBeforeAppending()
+        {
+            var source = File.ReadAllText(ProbeUtilSourcePath());
+
+            int methodStart = source.IndexOf("private void WriteToLog(", StringComparison.Ordinal);
+            Assert.True(methodStart >= 0, "WriteToLog method not found in Probe-Util.cs");
+
+            int appendIdx = source.IndexOf("File.AppendAllText", methodStart, StringComparison.Ordinal);
+            Assert.True(appendIdx > methodStart, "File.AppendAllText call not found in WriteToLog");
+
+            int guardIdx = source.IndexOf("SuppressFileLogging", methodStart, StringComparison.Ordinal);
+            Assert.True(guardIdx > methodStart && guardIdx < appendIdx,
+                "SuppressFileLogging check must appear before File.AppendAllText in WriteToLog");
+        }
+
+        [Fact]
+        public void ProbeUtil_WriteToLog_ReturnsEarlyWhenFileLoggingSuppressed()
+        {
+            var source = File.ReadAllText(ProbeUtilSourcePath());
+
+            int methodStart = source.IndexOf("private void WriteToLog(", StringComparison.Ordinal);
+            Assert.True(methodStart >= 0);
+
+            int guardIdx = source.IndexOf("SuppressFileLogging", methodStart, StringComparison.Ordinal);
+            Assert.True(guardIdx > methodStart);
+
+            int returnIdx = source.IndexOf("return;", guardIdx, StringComparison.Ordinal);
+            Assert.True(returnIdx > guardIdx && returnIdx - guardIdx < 200,
+                "A return; must follow the SuppressFileLogging guard in WriteToLog");
+        }
+
+        [Fact]
+        public void MainWindow_ApplyNormalProbeNotificationScope_SetsFileLoggingSuppressOnNormalProbes()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int methodStart = source.IndexOf("private void ApplyNormalProbeNotificationScope()",
+                StringComparison.Ordinal);
+            Assert.True(methodStart >= 0, "ApplyNormalProbeNotificationScope not found in MainWindow.xaml.cs");
+
+            int methodEnd = source.IndexOf("\n        }", methodStart, StringComparison.Ordinal);
+            string body = source.Substring(methodStart, methodEnd - methodStart);
+
+            Assert.Contains("_ProbeCollection", body);
+            Assert.Contains("SuppressNotifications", body);
+            Assert.Contains("SuppressFileLogging", body);
+        }
+
+        [Fact]
+        public void MainWindow_ProbeCollectionChanged_ScopesNewNormalProbeFileLogging()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int handlerStart = source.IndexOf("private void ProbeCollection_CollectionChanged(",
+                StringComparison.Ordinal);
+            Assert.True(handlerStart >= 0, "ProbeCollection_CollectionChanged not found in MainWindow.xaml.cs");
+
+            int handlerEnd = source.IndexOf("\n        }", handlerStart, StringComparison.Ordinal);
+            string body = source.Substring(handlerStart, handlerEnd - handlerStart);
+
+            Assert.Contains("_ProbeCollection", body);
+            Assert.Contains("SuppressNotifications", body);
+            Assert.Contains("SuppressFileLogging", body);
+        }
+
     }
 }

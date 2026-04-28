@@ -170,6 +170,11 @@ namespace MultiPingMonitor.Classes
 
         private void WriteToLog(string message)
         {
+            if (SuppressFileLogging)
+            {
+                return;
+            }
+
             if (!ApplicationOptions.IsLogOutputEnabled || string.IsNullOrEmpty(ApplicationOptions.LogPath))
             {
                 return;
