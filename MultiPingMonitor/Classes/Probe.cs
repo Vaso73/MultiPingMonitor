@@ -186,6 +186,13 @@ namespace MultiPingMonitor.Classes
         /// </summary>
         public bool SuppressNotifications { get; set; } = false;
 
+        /// <summary>
+        /// When true, per-ping file logging is suppressed for this probe.  Set by the
+        /// main window together with notification suppression so background Normal/Main
+        /// probes do not compete with the active Compact Set for the same log file.
+        /// </summary>
+        public bool SuppressFileLogging { get; set; } = false;
+
         private bool isActive = false;
         public bool IsActive
         {

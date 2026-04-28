@@ -1263,11 +1263,13 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             && ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets;
 
         /// <summary>
-        /// Sets <see cref="Probe.SuppressNotifications"/> on every probe in the Normal/Main
-        /// collection to scope alerts to the active monitoring context.
+        /// Sets <see cref="Probe.SuppressNotifications"/> and <see cref="Probe.SuppressFileLogging"/>
+        /// on every probe in the Normal/Main collection to scope side effects to the active
+        /// monitoring context.
         /// Suppression is enabled when Compact mode is active and uses a custom Compact Set;
-        /// in that case all popup, sound, email, and status-change-log notifications must
-        /// come only from the active Compact Set, not also from the Normal/Main targets.
+        /// in that case all popup, sound, email, status-change-log notifications, and
+        /// per-ping file log writes must come only from the active Compact Set, not also
+        /// from the Normal/Main targets.
         /// Suppression is cleared as soon as the user returns to Normal mode, or switches
         /// the Compact source back to Normal Targets.
         /// </summary>
@@ -1275,7 +1277,10 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         {
             bool suppress = ShouldSuppressNormalProbeNotifications();
             foreach (var probe in _ProbeCollection)
+            {
                 probe.SuppressNotifications = suppress;
+                probe.SuppressFileLogging = suppress;
+            }
         }
 
         /// <summary>
@@ -1325,7 +1330,10 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 if (ApplicationOptions.IsCompactSetRunning)
                     probe.StartStop();
                 else
+                {
                     probe.SuppressNotifications = true;
+                    probe.SuppressFileLogging = true;
+                }
             }
         }
 
@@ -1456,6 +1464,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 foreach (var probe in _CompactProbeCollection)
                 {
                     probe.SuppressNotifications = false;
+                    probe.SuppressFileLogging = false;
                     if (!probe.IsActive)
                         probe.StartStop();
                 }
@@ -1466,6 +1475,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 foreach (var probe in _CompactProbeCollection)
                 {
                     probe.SuppressNotifications = true;
+                    probe.SuppressFileLogging = true;
                     if (probe.IsActive)
                         probe.StartStop();
                 }
@@ -1676,6 +1686,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             {
                 // Set is stopped: add the probe but keep it stopped and suppressed.
                 probe.SuppressNotifications = true;
+                probe.SuppressFileLogging = true;
             }
 
             // Update tray to pick up any status change.
@@ -2819,7 +2830,10 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 if (ReferenceEquals(sender, _ProbeCollection) && ShouldSuppressNormalProbeNotifications())
                 {
                     foreach (Probe p in e.NewItems)
+                    {
                         p.SuppressNotifications = true;
+                        p.SuppressFileLogging = true;
+                    }
                 }
             }
             if (e.OldItems != null)
