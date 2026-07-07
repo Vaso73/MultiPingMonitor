@@ -16,6 +16,7 @@ VERSION=""
 ZIP_INPUT=""
 EVIDENCE_INPUT=""
 PREFLIGHT_ONLY=0
+RESUME_DRAFT_ID=""
 
 usage() {
   cat <<'EOF'
@@ -25,6 +26,7 @@ Usage:
     --version X.Y.Z \
     --zip /absolute/path/MultiPingMonitor.zip \
     --evidence /absolute/path/release-evidence.json \
+    [--resume-draft-id RELEASE_ID] \
     [--preflight-only]
 EOF
 }
@@ -45,6 +47,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --evidence)
       EVIDENCE_INPUT=${2:-}
+      shift 2
+      ;;
+    --resume-draft-id)
+      RESUME_DRAFT_ID=${2:-}
       shift 2
       ;;
     --preflight-only)
@@ -187,6 +193,20 @@ get_private_release_json() {
   gh api "repos/$PRIVATE_REPO/releases/tags/$TAG"
 }
 
+get_private_release_json_by_id() {
+  gh api "repos/$PRIVATE_REPO/releases/$1"
+}
+
+download_private_release_asset_by_id() {
+  asset_id=$1
+  output_file=$2
+
+  gh api \
+    -H "Accept: application/octet-stream" \
+    "repos/$PRIVATE_REPO/releases/assets/$asset_id" \
+    > "$output_file"
+}
+
 verify_zip_semantics() {
   zip_path=$1
   extract_dir=$2
@@ -327,6 +347,11 @@ preflight() {
   echo "tag=$TAG"
   echo "run_dir=$RUN_DIR"
 
+  if [ -n "$RESUME_DRAFT_ID" ]; then
+    [ "$MODE" = "new" ] || { fail "resume_draft_requires_new_mode"; return 1; }
+    printf '%s\n' "$RESUME_DRAFT_ID" | grep -Eq '^[0-9]+$' || { fail "resume_draft_id_invalid"; return 1; }
+  fi
+
   for cmd in git gh python3 sha256sum unzip cmp base64 realpath awk grep sed tee; do
     require_command "$cmd" || return 1
   done
@@ -441,8 +466,104 @@ preflight() {
   fi
 
   if [ "$MODE" = "new" ]; then
-    [ "$release_count" -eq 0 ] || { fail "new_mode_release_already_exists"; return 1; }
-    [ -z "$private_tag_matches" ] || { fail "new_mode_private_tag_already_exists"; return 1; }
+    if [ -z "$RESUME_DRAFT_ID" ]; then
+      [ "$release_count" -eq 0 ] || { fail "new_mode_release_already_exists"; return 1; }
+      [ -z "$private_tag_matches" ] || { fail "new_mode_private_tag_already_exists"; return 1; }
+    else
+      [ "$release_count" -eq 1 ] || { fail "resume_mode_requires_exactly_one_release"; return 1; }
+      RELEASE_ID=$(printf '%s\n' "$release_ids" | awk 'NF {print; exit}')
+      [ "$RELEASE_ID" = "$RESUME_DRAFT_ID" ] || { fail "resume_draft_id_mismatch"; return 1; }
+
+      get_private_release_json_by_id "$RELEASE_ID" > "$WORK_DIR/resume-draft.json"
+      if [ $? -ne 0 ]; then
+        fail "resume_draft_read_failed"
+        return 1
+      fi
+
+      python3 - "$WORK_DIR/resume-draft.json" "$RELEASE_ID" "$TAG" "$TITLE" "$ASSET_NAME" "$MANIFEST_SIZE" <<'PY'
+import json
+import sys
+
+path, release_id, tag, title, asset_name, expected_size = sys.argv[1:]
+obj = json.load(open(path, encoding="utf-8"))
+assets = obj.get("assets", [])
+
+ok = (
+    str(obj.get("id")) == release_id
+    and obj.get("tag_name") == tag
+    and obj.get("name") == title
+    and obj.get("draft") is True
+    and obj.get("prerelease") is False
+    and len(assets) == 1
+    and assets[0].get("name") == asset_name
+    and assets[0].get("state") == "uploaded"
+    and int(assets[0].get("size", -1)) == int(expected_size)
+)
+
+raise SystemExit(0 if ok else 1)
+PY
+
+      if [ $? -ne 0 ]; then
+        fail "resume_draft_state_invalid"
+        return 1
+      fi
+
+      resume_asset_id=$(python3 - "$WORK_DIR/resume-draft.json" <<'PY_RESUME_ASSET_ID_20260707'
+import json
+import sys
+
+obj = json.load(open(sys.argv[1], encoding="utf-8"))
+assets = obj.get("assets", [])
+print(assets[0].get("id", "") if len(assets) == 1 else "")
+PY_RESUME_ASSET_ID_20260707
+)
+
+      printf '%s\n' "$resume_asset_id" | grep -Eq '^[0-9]+$'
+      if [ $? -ne 0 ]; then
+        fail "resume_draft_asset_id_invalid"
+        return 1
+      fi
+
+      resume_asset_zip="$WORK_DIR/resume-draft-$RELEASE_ID-$ASSET_NAME"
+
+      download_private_release_asset_by_id "$resume_asset_id" "$resume_asset_zip"
+      if [ $? -ne 0 ]; then
+        fail "resume_draft_asset_download_failed"
+        return 1
+      fi
+
+      resume_asset_size=$(wc -c < "$resume_asset_zip" | tr -d '[:space:]')
+      resume_asset_sha=$(sha256sum "$resume_asset_zip" | awk '{print $1}')
+
+      resume_asset_exe_version=$(verify_zip_semantics         "$resume_asset_zip"         "$WORK_DIR/resume-draft-extracted")
+
+      if [ $? -ne 0 ]; then
+        return 1
+      fi
+
+      [ "$resume_asset_size" = "$APPROVED_ZIP_SIZE" ] || {
+        fail "resume_draft_asset_size_mismatch"
+        return 1
+      }
+
+      [ "$resume_asset_sha" = "$APPROVED_ZIP_SHA" ] || {
+        fail "resume_draft_asset_sha_mismatch"
+        return 1
+      }
+
+      cmp -s "$resume_asset_zip" "$APPROVED_ZIP"
+
+      [ $? -eq 0 ] || {
+        fail "resume_draft_asset_not_byte_identical"
+        return 1
+      }
+
+      echo "resume_draft_id=$RELEASE_ID"
+      echo "resume_draft_asset_id=$resume_asset_id"
+      echo "resume_draft_asset_size=$resume_asset_size"
+      echo "resume_draft_asset_sha256=$resume_asset_sha"
+      echo "resume_draft_asset_exe_file_version=$resume_asset_exe_version"
+    fi
   else
     [ "$release_count" -eq 1 ] || { fail "correction_mode_requires_exactly_one_release"; return 1; }
     RELEASE_ID=$(printf '%s\n' "$release_ids" | awk 'NF {print; exit}')
@@ -678,68 +799,88 @@ PY
 publish_new_release() {
   create_release_notes
 
-  create_json="$WORK_DIR/create-release.json"
-  gh api --method POST "repos/$PRIVATE_REPO/releases" \
-    -f tag_name="$TAG" \
-    -f name="$TITLE" \
-    -f body="$(cat "$WORK_DIR/release-notes.md")" \
-    -F draft=true \
-    -F prerelease=false > "$create_json"
-  if [ $? -ne 0 ]; then
-    fail "draft_release_creation_failed"
-    return 1
-  fi
+  if [ -n "$RESUME_DRAFT_ID" ]; then
+    RELEASE_ID="$RESUME_DRAFT_ID"
+    echo "resuming_draft_release_id=$RELEASE_ID"
+  else
+    create_json="$WORK_DIR/create-release.json"
 
-  RELEASE_ID=$(python3 - "$create_json" <<'PY'
+    gh api --method POST "repos/$PRIVATE_REPO/releases" \
+      -f tag_name="$TAG" \
+      -f name="$TITLE" \
+      -f body="$(cat "$WORK_DIR/release-notes.md")" \
+      -F draft=true \
+      -F prerelease=false > "$create_json"
+
+    if [ $? -ne 0 ]; then
+      fail "draft_release_creation_failed"
+      return 1
+    fi
+
+    RELEASE_ID=$(python3 - "$create_json" <<'PY'
 import json
 import sys
+
 print(json.load(open(sys.argv[1], encoding="utf-8"))["id"])
 PY
 )
-  REMOTE_MODIFIED=1
-  echo "created_draft_release_id=$RELEASE_ID"
 
-  gh release upload "$TAG" "$APPROVED_ZIP" --repo "$PRIVATE_REPO"
-  if [ $? -ne 0 ]; then
-    fail "draft_asset_upload_failed"
-    return 1
+    REMOTE_MODIFIED=1
+    echo "created_draft_release_id=$RELEASE_ID"
+
+    gh release upload "$TAG" "$APPROVED_ZIP"       --repo "$PRIVATE_REPO"
+
+    if [ $? -ne 0 ]; then
+      fail "draft_asset_upload_failed"
+      return 1
+    fi
   fi
 
   draft_json="$WORK_DIR/draft-after-upload.json"
-  get_private_release_json > "$draft_json"
+
+  get_private_release_json_by_id "$RELEASE_ID" > "$draft_json"
+
   if [ $? -ne 0 ]; then
     fail "draft_release_verification_read_failed"
     return 1
   fi
 
-  python3 - "$draft_json" "$ASSET_NAME" "$APPROVED_ZIP_SIZE" <<'PY'
+  python3 - "$draft_json" "$RELEASE_ID" "$TAG" "$TITLE" "$ASSET_NAME" "$APPROVED_ZIP_SIZE" <<'PY'
 import json
 import sys
-obj = json.load(open(sys.argv[1], encoding="utf-8"))
+
+path, release_id, tag, title, asset_name, expected_size = sys.argv[1:]
+obj = json.load(open(path, encoding="utf-8"))
 assets = obj.get("assets", [])
+
 ok = (
-    obj.get("draft") is True
+    str(obj.get("id")) == release_id
+    and obj.get("tag_name") == tag
+    and obj.get("name") == title
+    and obj.get("draft") is True
+    and obj.get("prerelease") is False
     and len(assets) == 1
-    and assets[0].get("name") == sys.argv[2]
+    and assets[0].get("name") == asset_name
     and assets[0].get("state") == "uploaded"
-    and int(assets[0].get("size", -1)) == int(sys.argv[3])
+    and int(assets[0].get("size", -1)) == int(expected_size)
 )
+
 raise SystemExit(0 if ok else 1)
 PY
+
   if [ $? -ne 0 ]; then
     fail "draft_release_asset_verification_failed"
     return 1
   fi
 
-  gh api --method PATCH "repos/$PRIVATE_REPO/releases/$RELEASE_ID" \
-    -F draft=false \
-    -F prerelease=false \
-    -f make_latest=true > "$WORK_DIR/published-release.json"
+  gh api --method PATCH     "repos/$PRIVATE_REPO/releases/$RELEASE_ID"     -F draft=false     -F prerelease=false     -f make_latest=true     > "$WORK_DIR/published-release.json"
+
   if [ $? -ne 0 ]; then
     fail "release_publication_failed"
     return 1
   fi
 
+  REMOTE_MODIFIED=1
   echo "release_published=true"
   return 0
 }
