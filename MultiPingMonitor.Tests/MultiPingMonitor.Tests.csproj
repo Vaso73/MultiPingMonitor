@@ -21,6 +21,7 @@
   <ItemGroup>
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityService.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityDiagnostics.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\UpdateCheckService.cs" />
   </ItemGroup>
 
   <ItemGroup>

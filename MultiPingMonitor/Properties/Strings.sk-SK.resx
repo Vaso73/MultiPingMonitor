@@ -141,6 +141,48 @@
   <data name="Menu_Help" xml:space="preserve">
     <value>Pomocník</value>
   </data>
+  <data name="Menu_About" xml:space="preserve">
+    <value>O aplikácii</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>O aplikácii MultiPingMonitor</value>
+  </data>
+  <data name="About_VersionLabel" xml:space="preserve">
+    <value>Verzia</value>
+  </data>
+  <data name="About_EditionLabel" xml:space="preserve">
+    <value>Edícia</value>
+  </data>
+  <data name="About_EditionSponsorPro" xml:space="preserve">
+    <value>Sponsor Pro</value>
+  </data>
+  <data name="About_CheckForUpdates" xml:space="preserve">
+    <value>Skontrolovať aktualizácie</value>
+  </data>
+  <data name="About_OpenReleases" xml:space="preserve">
+    <value>Otvoriť Sponsor Pro vydania</value>
+  </data>
+  <data name="About_Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
+  <data name="About_StatusIdle" xml:space="preserve">
+    <value>Pomocou kontroly aktualizácií porovnáte túto inštaláciu s najnovšou verziou Sponsor Pro.</value>
+  </data>
+  <data name="About_StatusChecking" xml:space="preserve">
+    <value>Kontrolujem aktualizácie...</value>
+  </data>
+  <data name="About_StatusUpToDate" xml:space="preserve">
+    <value>Používate najnovšiu verziu Sponsor Pro.</value>
+  </data>
+  <data name="About_StatusUpdateAvailable" xml:space="preserve">
+    <value>Je dostupná verzia {0}.</value>
+  </data>
+  <data name="About_StatusInvalidResponse" xml:space="preserve">
+    <value>Server vrátil neplatné informácie o aktualizácii.</value>
+  </data>
+  <data name="About_StatusCheckFailed" xml:space="preserve">
+    <value>Kontrolu aktualizácií sa nepodarilo dokončiť. Skontrolujte internetové pripojenie a skúste to znova.</value>
+  </data>
   <data name="Menu_ManageAliases" xml:space="preserve">
     <value>Spravovať aliasy...</value>
   </data>

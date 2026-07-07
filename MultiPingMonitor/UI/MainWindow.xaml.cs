@@ -2214,6 +2214,16 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             }
         }
 
+        private void AboutMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var aboutWindow = new AboutWindow
+            {
+                Owner = this,
+                Topmost = Topmost
+            };
+            aboutWindow.ShowDialog();
+        }
+
         private void NewInstanceExecute(object sender, ExecutedRoutedEventArgs e)
         {
             LaunchNewInstance();
