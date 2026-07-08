@@ -718,6 +718,66 @@ remote_download_verification() {
   return 0
 }
 
+verify_backend_latest_metadata() {
+  backend_latest_url=${MPM_BACKEND_LATEST_URL:-"https://updates.watel.cloud/v1/update/latest"}
+  backend_latest_json="$WORK_DIR/backend-latest.json"
+
+  curl -fsS --max-time 30 "$backend_latest_url" > "$backend_latest_json"
+  if [ $? -ne 0 ]; then
+    fail "backend_latest_request_failed"
+    return 1
+  fi
+
+  python3 - "$backend_latest_json" "$VERSION" "$TAG" "$ASSET_NAME" "$APPROVED_ZIP_SIZE" "$APPROVED_ZIP_SHA" <<'PY_BACKEND_LATEST'
+import json
+import sys
+
+path, version, tag, asset_name, expected_size, expected_sha = sys.argv[1:]
+obj = json.load(open(path, encoding="utf-8"))
+asset = obj.get("asset") or {}
+
+errors = []
+if obj.get("status") != "ok":
+    errors.append("status")
+if obj.get("latestVersion") != version:
+    errors.append("latestVersion")
+if obj.get("tagName") != tag:
+    errors.append("tagName")
+if asset.get("name") != asset_name:
+    errors.append("asset.name")
+try:
+    asset_size = int(asset.get("size") or 0)
+except (TypeError, ValueError):
+    asset_size = 0
+if asset_size != int(expected_size):
+    errors.append("asset.size")
+if str(asset.get("sha256") or "").lower() != expected_sha:
+    errors.append("asset.sha256")
+
+if errors:
+    print("backend_latest_errors=" + ",".join(errors))
+    print("backend_latest_version=" + str(obj.get("latestVersion")))
+    print("backend_latest_tag=" + str(obj.get("tagName")))
+    print("backend_latest_asset_name=" + str(asset.get("name")))
+    print("backend_latest_asset_size=" + str(asset.get("size")))
+    print("backend_latest_asset_sha256=" + str(asset.get("sha256")))
+    raise SystemExit(1)
+PY_BACKEND_LATEST
+
+  if [ $? -ne 0 ]; then
+    fail "backend_latest_mismatch"
+    return 1
+  fi
+
+  echo "backend_latest_url=$backend_latest_url"
+  echo "backend_latest_version=$VERSION"
+  echo "backend_latest_tag=$TAG"
+  echo "backend_latest_asset_name=$ASSET_NAME"
+  echo "backend_latest_asset_size=$APPROVED_ZIP_SIZE"
+  echo "backend_latest_asset_sha256=$APPROVED_ZIP_SHA"
+  return 0
+}
+
 prepare_correction_recovery() {
   get_private_release_json > "$RECOVERY_DIR/release-before.json"
   if [ $? -ne 0 ]; then
@@ -953,6 +1013,14 @@ main() {
   fi
 
   remote_download_verification
+  if [ $? -ne 0 ]; then
+    if [ "$MODE" = "correct" ] && [ "$REMOTE_MODIFIED" -eq 1 ]; then
+      rollback_correction
+    fi
+    return 1
+  fi
+
+  verify_backend_latest_metadata
   if [ $? -ne 0 ]; then
     if [ "$MODE" = "correct" ] && [ "$REMOTE_MODIFIED" -eq 1 ]; then
       rollback_correction
