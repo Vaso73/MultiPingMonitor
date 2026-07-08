@@ -1,9 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Media;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -52,6 +54,10 @@ namespace MultiPingMonitor.UI
         // Set to true once startup content (probes, CLI args) has been initialized.
         // Prevents double-initialization when the window is first shown after a tray-only startup.
         private bool _startupContentInitialized = false;
+
+        // Automatic update check runs once per application process.
+        // It checks availability only; installation is always user initiated.
+        private bool _automaticUpdateCheckStarted = false;
 
         // ── Display mode ──────────────────────────────────────────────────────
         // Saved references to the normal-mode ItemTemplate, ItemsPanel, and Template
@@ -161,6 +167,115 @@ namespace MultiPingMonitor.UI
             ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
         }
 
+
+        private static string ResourceText(string key, string fallback) =>
+            Strings.ResourceManager.GetString(key) ?? fallback;
+
+        private static Version GetCurrentVersionForAutomaticUpdateCheck()
+        {
+            return Assembly.GetEntryAssembly()?.GetName().Version
+                ?? Assembly.GetExecutingAssembly().GetName().Version
+                ?? new Version(0, 0, 0);
+        }
+
+        private void StartAutomaticUpdateCheckIfDue()
+        {
+            if (_automaticUpdateCheckStarted)
+            {
+                return;
+            }
+
+            _automaticUpdateCheckStarted = true;
+
+            if (!ApplicationOptions.AutomaticUpdateCheckEnabled)
+            {
+                return;
+            }
+
+            if (!IsAutomaticUpdateCheckDue(DateTime.Now))
+            {
+                return;
+            }
+
+            _ = RunAutomaticUpdateCheckAsync();
+        }
+
+        internal static bool IsAutomaticUpdateCheckDue(DateTime now)
+        {
+            if (!ApplicationOptions.LastAutomaticUpdateCheckAt.HasValue)
+            {
+                return true;
+            }
+
+            DateTime last = ApplicationOptions.LastAutomaticUpdateCheckAt.Value;
+
+            switch (ApplicationOptions.AutomaticUpdateCheckFrequency)
+            {
+                case ApplicationOptions.AutomaticUpdateFrequency.OnStartup:
+                    return true;
+                case ApplicationOptions.AutomaticUpdateFrequency.Weekly:
+                    return (now - last).TotalDays >= 7;
+                case ApplicationOptions.AutomaticUpdateFrequency.Monthly:
+                    return (now - last).TotalDays >= 30;
+                case ApplicationOptions.AutomaticUpdateFrequency.Daily:
+                default:
+                    return last.Date < now.Date;
+            }
+        }
+
+        private async Task RunAutomaticUpdateCheckAsync()
+        {
+            try
+            {
+                using var service = new UpdateCheckService();
+                UpdateCheckResult result = await service.CheckAsync(
+                    GetCurrentVersionForAutomaticUpdateCheck());
+
+                if (result.Status == UpdateCheckStatus.UpdateAvailable
+                    && result.LatestVersion != null)
+                {
+                    _ = Dispatcher.BeginInvoke(new Action(() =>
+                        ShowAutomaticUpdateAvailableBalloon(result.LatestVersion)));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine(
+                    $"Automatic update check failed: {ex.GetType().Name}: {ex.Message}");
+            }
+            finally
+            {
+                ApplicationOptions.LastAutomaticUpdateCheckAt = DateTime.Now;
+                if (Configuration.Exists())
+                {
+                    Configuration.Save();
+                }
+            }
+        }
+
+        private void ShowAutomaticUpdateAvailableBalloon(Version latestVersion)
+        {
+            if (NotifyIcon == null)
+            {
+                return;
+            }
+
+            NotifyIcon.BalloonTipTitle =
+                ResourceText("AutoUpdate_TrayTitle", "MultiPingMonitor update");
+            NotifyIcon.BalloonTipText = string.Format(
+                ResourceText(
+                    "AutoUpdate_TrayUpdateAvailable",
+                    "A new Sponsor Pro version {0} is available. Click to update."),
+                latestVersion);
+            NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            NotifyIcon.ShowBalloonTip(10000);
+        }
+
+        private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            Dispatcher.BeginInvoke(new Action(() => AboutMenu_Click(null, null)));
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // When StartInTray=true the window is never shown at startup, so
@@ -235,6 +350,7 @@ namespace MultiPingMonitor.UI
             }
 
             RefreshColumnCount();
+            StartAutomaticUpdateCheckIfDue();
         }
 
         private void RefreshGuiState()
@@ -2819,6 +2935,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                     Visible = true
                 };
                 NotifyIcon.MouseUp += NotifyIcon_MouseUp;
+                NotifyIcon.BalloonTipClicked += NotifyIcon_BalloonTipClicked;
 
                 // Subscribe to probe collection changes to track per-probe status.
                 _ProbeCollection.CollectionChanged += ProbeCollection_CollectionChanged;

@@ -49,7 +49,7 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void UpdateInstallService_UsesTemporarySameExeHelperAndBackupFolder()
+        public void UpdateInstallService_UsesTemporarySameExeHelperAndTempOnlySwap()
         {
             string source =
                 File.ReadAllText(SourcePath(
@@ -59,8 +59,12 @@ namespace MultiPingMonitor.Tests
 
             Assert.Contains("--mpm-apply-update", source);
             Assert.Contains("File.Copy(currentExePath, helperPath, true)", source);
-            Assert.Contains("backup", source);
-            Assert.Contains("CopyDirectoryExcludingBackup", source);
+            Assert.Contains("ApplyStagedExecutableWithTempSwap", source);
+            Assert.Contains("CleanupUpdateRootLater(updateRoot)", source);
+            Assert.Contains("ExeName + \".old\"", source);
+            Assert.Contains("Path.GetTempPath()", source);
+            Assert.DoesNotContain("Path.Combine(appDirectory, \"backup\")", source);
+            Assert.DoesNotContain("CopyDirectoryExcludingBackup", source);
             Assert.Contains("Process.Start", source);
         }
 

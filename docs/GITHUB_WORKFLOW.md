@@ -95,8 +95,8 @@ Use this only when the user explicitly asks for GitHub plus release, or when a r
 - The app remains one portable `MultiPingMonitor.exe`.
 - No persistent helper EXE, DLL, service, or installer is allowed.
 - For self-update replacement, a temporary helper may be a temporary copy of the same EXE.
-- Backups go beside the running app under `<appdir>/backup`.
-- The `backup` directory must not be included in its own backup.
+- The updater must not create a persistent EXE backup beside the running app.
+- Self-update replacement may use only a temporary transactional swap under the system temp directory, for example `%TEMP%/MultiPingMonitor/updates/update-*`, and must remove it after a successful update.
 - No silent install: the user must explicitly confirm before installing an update.
 - After a Sponsor Pro release, backend latest metadata must match the newly published release.
 

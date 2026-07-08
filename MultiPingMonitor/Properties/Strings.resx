@@ -1597,4 +1597,37 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="About_UpdateInstallNotReady" xml:space="preserve">
     <value>Update installation will be enabled in the next updater step.</value>
   </data>
+  <data name="Options_Header_Updates" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="Options_AutomaticUpdateCheck" xml:space="preserve">
+    <value>Automatically check for updates</value>
+  </data>
+  <data name="Options_AutomaticUpdateFrequency" xml:space="preserve">
+    <value>Frequency:</value>
+  </data>
+  <data name="Options_AutoUpdateFrequency_OnStartup" xml:space="preserve">
+    <value>At every startup</value>
+  </data>
+  <data name="Options_AutoUpdateFrequency_Daily" xml:space="preserve">
+    <value>Once daily</value>
+  </data>
+  <data name="Options_AutoUpdateFrequency_Weekly" xml:space="preserve">
+    <value>Once weekly</value>
+  </data>
+  <data name="Options_AutoUpdateFrequency_Monthly" xml:space="preserve">
+    <value>Once monthly</value>
+  </data>
+  <data name="Options_LastAutomaticUpdateCheck" xml:space="preserve">
+    <value>Last check:</value>
+  </data>
+  <data name="Options_LastAutomaticUpdateCheckNever" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="AutoUpdate_TrayTitle" xml:space="preserve">
+    <value>MultiPingMonitor update</value>
+  </data>
+  <data name="AutoUpdate_TrayUpdateAvailable" xml:space="preserve">
+    <value>A new Sponsor Pro version {0} is available. Click to update.</value>
+  </data>
 </root>
