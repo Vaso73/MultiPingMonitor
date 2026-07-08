@@ -4,10 +4,10 @@
         Title="MultiPingMonitor"
         UseLayoutRounding="True"
         WindowStyle="None"
-        Width="560"
-        Height="430"
-        MinWidth="520"
-        MinHeight="410"
+        Width="620"
+        Height="500"
+        MinWidth="600"
+        MinHeight="480"
         ResizeMode="NoResize"
         Background="{DynamicResource Theme.Background}"
         WindowStartupLocation="CenterOwner"
@@ -55,17 +55,17 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             Margin="10">
-                    <Button x:Name="OpenReleasesButton"
-                            Style="{DynamicResource Style.ButtonStandard}"
-                            Width="190"
-                            Visibility="Collapsed"
-                            Click="OpenReleasesButton_Click" />
-
                     <Button x:Name="CheckForUpdatesButton"
                             Style="{DynamicResource Style.ButtonStandard}"
-                            Width="170"
-                            Margin="8,0,0,0"
+                            Width="180"
                             Click="CheckForUpdatesButton_Click" />
+
+                    <Button x:Name="InstallUpdateButton"
+                            Style="{DynamicResource Style.ButtonStandard}"
+                            Width="130"
+                            Margin="8,0,0,0"
+                            IsEnabled="False"
+                            Click="InstallUpdateButton_Click" />
 
                     <Button x:Name="CloseButton"
                             Style="{DynamicResource Style.ButtonStandard}"
@@ -78,6 +78,7 @@
 
             <Grid Margin="28,24,28,24">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -106,7 +107,7 @@
                 </StackPanel>
 
                 <Grid Grid.Row="1"
-                      Margin="0,28,0,0"
+                      Margin="0,22,0,0"
                       HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -126,14 +127,70 @@
                                FontWeight="SemiBold" />
                 </Grid>
 
+                <Border x:Name="AccountPanel"
+                        Grid.Row="2"
+                        Margin="24,22,24,0"
+                        Padding="14"
+                        Background="{DynamicResource Theme.Surface}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Width="42"
+                                Height="42"
+                                CornerRadius="21"
+                                Margin="0,0,12,0"
+                                Background="{DynamicResource Theme.Accent}">
+                            <Viewbox Width="22"
+                                     Height="22"
+                                     Stretch="Uniform"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="16"
+                                        Height="16">
+                                    <Path x:Name="AccountGitHubIcon"
+                                          Data="{StaticResource geom.account.github}"
+                                          Fill="#FF000000" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="AccountTitleText"
+                                       Foreground="{DynamicResource Theme.Text.Primary}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold" />
+
+                            <TextBlock x:Name="AccountStatusText"
+                                       Margin="0,3,0,0"
+                                       Foreground="{DynamicResource Theme.Text.Secondary}"
+                                       FontSize="12"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <Button x:Name="SponsorProLoginButton"
+                                Grid.Column="2"
+                                Style="{DynamicResource Style.ButtonStandard}"
+                                Width="170"
+                                Margin="14,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="SponsorProLoginButton_Click" />
+                    </Grid>
+                </Border>
+
                 <ProgressBar x:Name="CheckProgress"
-                             Grid.Row="2"
+                             Grid.Row="3"
                              Height="4"
-                             Margin="24,24,24,0"
+                             Margin="24,18,24,0"
                              IsIndeterminate="True"
                              Visibility="Collapsed" />
 
-                <Border Grid.Row="3"
+                <Border Grid.Row="4"
                         Margin="0,18,0,0"
                         Padding="18"
                         Background="{DynamicResource Theme.Surface}">

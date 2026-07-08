@@ -1418,4 +1418,46 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="StatusHistory_CompactSet_HostRemoved" xml:space="preserve">
     <value>Hostiteľ &quot;{0}&quot; odstránený</value>
   </data>
+  <data name="About_SponsorProLogin" xml:space="preserve">
+    <value>Prihlásiť cez GitHub</value>
+  </data>
+  <data name="About_SponsorProSignInAgain" xml:space="preserve">
+    <value>Prihlásiť znova</value>
+  </data>
+  <data name="About_SponsorProLoginStarting" xml:space="preserve">
+    <value>Otvára sa prihlásenie cez GitHub...</value>
+  </data>
+  <data name="About_SponsorProLoginWaiting" xml:space="preserve">
+    <value>Dokončite prihlásenie cez GitHub v prehliadači. Toto okno sa automaticky aktualizuje.</value>
+  </data>
+  <data name="About_SponsorProSignedInStatus" xml:space="preserve">
+    <value>Prihlásené cez GitHub ako {0}. Sponsor Pro je aktívny.</value>
+  </data>
+  <data name="About_SponsorProLoginFailed" xml:space="preserve">
+    <value>Prihlásenie cez GitHub prebehlo, ale Sponsor Pro prístup nebol potvrdený. {0}</value>
+  </data>
+  <data name="About_SponsorProLoginError" xml:space="preserve">
+    <value>Prihlásenie cez GitHub sa nepodarilo dokončiť. Skontrolujte internetové pripojenie a skúste to znova.</value>
+  </data>
+  <data name="About_Update" xml:space="preserve">
+    <value>Aktualizovať</value>
+  </data>
+  <data name="About_AccountSignedInTitle" xml:space="preserve">
+    <value>GitHub: {0}</value>
+  </data>
+  <data name="About_AccountSponsorActive" xml:space="preserve">
+    <value>Sponsor Pro aktívny</value>
+  </data>
+  <data name="About_AccountNotConnectedTitle" xml:space="preserve">
+    <value>GitHub účet nie je pripojený</value>
+  </data>
+  <data name="About_AccountNotConnectedStatus" xml:space="preserve">
+    <value>Prihláste sa pre Sponsor Pro aktualizácie.</value>
+  </data>
+  <data name="About_StatusSignInRequired" xml:space="preserve">
+    <value>Pred kontrolou Sponsor Pro aktualizácií sa prihláste cez GitHub.</value>
+  </data>
+  <data name="About_UpdateInstallNotReady" xml:space="preserve">
+    <value>Inštalácia aktualizácie bude zapnutá v ďalšom kroku updatera.</value>
+  </data>
 </root>

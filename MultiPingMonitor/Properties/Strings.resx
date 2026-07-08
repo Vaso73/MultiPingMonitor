@@ -1540,4 +1540,46 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="StatusHistory_CompactSet_HostRemoved" xml:space="preserve">
     <value>Host &quot;{0}&quot; removed</value>
   </data>
+  <data name="About_SponsorProLogin" xml:space="preserve">
+    <value>Sign in with GitHub</value>
+  </data>
+  <data name="About_SponsorProSignInAgain" xml:space="preserve">
+    <value>Sign in again</value>
+  </data>
+  <data name="About_SponsorProLoginStarting" xml:space="preserve">
+    <value>Opening GitHub sign-in...</value>
+  </data>
+  <data name="About_SponsorProLoginWaiting" xml:space="preserve">
+    <value>Complete GitHub sign-in in your browser. This window will update automatically.</value>
+  </data>
+  <data name="About_SponsorProSignedInStatus" xml:space="preserve">
+    <value>Signed in with GitHub as {0}. Sponsor Pro is active.</value>
+  </data>
+  <data name="About_SponsorProLoginFailed" xml:space="preserve">
+    <value>GitHub sign-in completed, but Sponsor Pro access was not confirmed. {0}</value>
+  </data>
+  <data name="About_SponsorProLoginError" xml:space="preserve">
+    <value>GitHub sign-in could not be completed. Check your internet connection and try again.</value>
+  </data>
+  <data name="About_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="About_AccountSignedInTitle" xml:space="preserve">
+    <value>GitHub: {0}</value>
+  </data>
+  <data name="About_AccountSponsorActive" xml:space="preserve">
+    <value>Sponsor Pro active</value>
+  </data>
+  <data name="About_AccountNotConnectedTitle" xml:space="preserve">
+    <value>GitHub account not connected</value>
+  </data>
+  <data name="About_AccountNotConnectedStatus" xml:space="preserve">
+    <value>Sign in to enable Sponsor Pro updates.</value>
+  </data>
+  <data name="About_StatusSignInRequired" xml:space="preserve">
+    <value>Sign in with GitHub before checking Sponsor Pro updates.</value>
+  </data>
+  <data name="About_UpdateInstallNotReady" xml:space="preserve">
+    <value>Update installation will be enabled in the next updater step.</value>
+  </data>
 </root>
