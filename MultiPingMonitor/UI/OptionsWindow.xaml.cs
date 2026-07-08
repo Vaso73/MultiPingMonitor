@@ -25,6 +25,9 @@ namespace MultiPingMonitor.UI
         private static string Text(string key, string fallback) =>
             Properties.Strings.ResourceManager.GetString(key) ?? fallback;
 
+        private MainWindow HostMainWindow =>
+            Owner as MainWindow ?? Application.Current?.MainWindow as MainWindow;
+
         public OptionsWindow()
         {
             InitializeComponent();
@@ -358,7 +361,7 @@ namespace MultiPingMonitor.UI
                 if (ApplicationOptions.CompactSource != _originalCompactSource)
                 {
                     ApplicationOptions.CompactSource = _originalCompactSource;
-                    var mainWindow = Owner as MainWindow;
+                    var mainWindow = HostMainWindow;
                     mainWindow?.ApplyCompactDataSource();
                     mainWindow?.UpdateCompactSourceMenuChecks();
                 }
@@ -837,7 +840,7 @@ namespace MultiPingMonitor.UI
 
             // Save compact source mode.
             ApplicationOptions.CompactSource = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
-            var mainWindow = Owner as MainWindow;
+            var mainWindow = HostMainWindow;
             mainWindow?.ApplyCompactDataSource();
             mainWindow?.UpdateCompactSourceMenuChecks();
 
@@ -867,7 +870,7 @@ namespace MultiPingMonitor.UI
             if (DisplayModeComboBox.SelectedIndex < 0) return;
             var mode = (ApplicationOptions.DisplayMode)DisplayModeComboBox.SelectedIndex;
             if (mode == ApplicationOptions.CurrentDisplayMode) return;
-            (Owner as MainWindow)?.SwitchDisplayMode(mode);
+            HostMainWindow?.SwitchDisplayMode(mode);
         }
 
         private void CompactSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -879,12 +882,12 @@ namespace MultiPingMonitor.UI
             var source = (ApplicationOptions.CompactSourceMode)CompactSourceComboBox.SelectedIndex;
             if (source == ApplicationOptions.CompactSource) return;
             ApplicationOptions.CompactSource = source;
-            (Owner as MainWindow)?.ApplyCompactDataSource();
+            HostMainWindow?.ApplyCompactDataSource();
         }
 
         private void ManageCompactTargets_Click(object sender, RoutedEventArgs e)
         {
-            var mainWindow = Owner as MainWindow;
+            var mainWindow = HostMainWindow;
             mainWindow?.OpenManageCompactSets();
         }
 

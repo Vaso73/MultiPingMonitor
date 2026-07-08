@@ -1,8 +1,9 @@
-#nullable disable
+﻿#nullable disable
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -154,6 +155,8 @@ namespace MultiPingMonitor.Classes
                     currentProcess.Id.ToString(
                         System.Globalization.CultureInfo.InvariantCulture));
 
+                WritePendingSuccessMarker(manifest);
+
                 Process helper = Process.Start(startInfo);
                 if (helper == null)
                     throw new InvalidOperationException(
@@ -258,6 +261,134 @@ namespace MultiPingMonitor.Classes
 
                 return 1;
             }
+        }
+
+        public static void WritePendingSuccessMarker(UpdateManifest manifest)
+        {
+            try
+            {
+                if (manifest == null || string.IsNullOrWhiteSpace(manifest.LatestVersion))
+                    return;
+
+                string markerPath = GetUpdateSuccessMarkerPath();
+                Directory.CreateDirectory(Path.GetDirectoryName(markerPath));
+
+                var marker = new PendingUpdateSuccessMarker
+                {
+                    LatestVersion = manifest.LatestVersion,
+                    WrittenAtUtc = DateTime.UtcNow
+                };
+
+                File.WriteAllText(
+                    markerPath,
+                    JsonSerializer.Serialize(marker, JsonOptions),
+                    Encoding.UTF8);
+            }
+            catch
+            {
+                // Success UX marker is non-critical; never block update installation.
+            }
+        }
+
+        public static string ConsumeCompletedUpdateSuccessVersion(Version currentVersion)
+        {
+            string markerPath = GetUpdateSuccessMarkerPath();
+
+            try
+            {
+                if (!File.Exists(markerPath))
+                    return null;
+
+                string json = File.ReadAllText(markerPath, Encoding.UTF8);
+                PendingUpdateSuccessMarker marker =
+                    JsonSerializer.Deserialize<PendingUpdateSuccessMarker>(
+                        json,
+                        JsonOptions);
+
+                if (marker == null
+                    || string.IsNullOrWhiteSpace(marker.LatestVersion)
+                    || !Version.TryParse(marker.LatestVersion, out Version targetVersion))
+                {
+                    DeleteUpdateSuccessMarker(markerPath);
+                    return null;
+                }
+
+                if (marker.WrittenAtUtc != default
+                    && DateTime.UtcNow - marker.WrittenAtUtc > TimeSpan.FromDays(7))
+                {
+                    DeleteUpdateSuccessMarker(markerPath);
+                    return null;
+                }
+
+                if (currentVersion != null
+                    && NormalizeVersion(currentVersion).CompareTo(NormalizeVersion(targetVersion)) >= 0)
+                {
+                    string completedVersion = marker.LatestVersion;
+                    DeleteUpdateSuccessMarker(markerPath);
+                    return completedVersion;
+                }
+            }
+            catch
+            {
+                DeleteUpdateSuccessMarker(markerPath);
+            }
+
+            return null;
+        }
+
+        private static Version NormalizeVersion(Version version)
+        {
+            return new Version(
+                version.Major,
+                version.Minor,
+                Math.Max(version.Build, 0),
+                Math.Max(version.Revision, 0));
+        }
+
+        private static string GetUpdateSuccessMarkerPath()
+        {
+            return Path.Combine(
+                Path.GetTempPath(),
+                "MultiPingMonitor",
+                "post-update-success.json");
+        }
+
+        private static void DeleteUpdateSuccessMarker(string markerPath)
+        {
+            try
+            {
+                if (File.Exists(markerPath))
+                    File.Delete(markerPath);
+            }
+            catch { }
+
+            CleanupEmptyUpdateTempDirectories();
+        }
+
+        private static void CleanupEmptyUpdateTempDirectories()
+        {
+            try
+            {
+                string root =
+                    Path.Combine(
+                        Path.GetTempPath(),
+                        "MultiPingMonitor");
+
+                string updatesRoot = Path.Combine(root, "updates");
+
+                if (Directory.Exists(updatesRoot)
+                    && !Directory.EnumerateFileSystemEntries(updatesRoot).Any())
+                {
+                    Directory.Delete(updatesRoot);
+                }
+
+                if (Directory.Exists(root)
+                    && !Directory.EnumerateFileSystemEntries(root).Any())
+                {
+                    Directory.Delete(root);
+                }
+            }
+            catch { }
         }
 
         private async Task<string> RequestDownloadUrlAsync(
@@ -646,6 +777,12 @@ namespace MultiPingMonitor.Classes
             public string DownloadToken { get; set; }
             public string DownloadUrl { get; set; }
             public int ExpiresIn { get; set; }
+        }
+
+        private sealed class PendingUpdateSuccessMarker
+        {
+            public string LatestVersion { get; set; }
+            public DateTime WrittenAtUtc { get; set; }
         }
     }
 }

@@ -1583,7 +1583,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Install update</value>
   </data>
   <data name="About_UpdateConfirmMessage" xml:space="preserve">
-    <value>MultiPingMonitor will download and install version {0}. The current application folder will be backed up before replacement.</value>
+    <value>MultiPingMonitor will download and install version {0}. The application will restart to complete the update.</value>
   </data>
   <data name="About_StatusPreparingUpdate" xml:space="preserve">
     <value>Preparing update installation...</value>
@@ -1592,7 +1592,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Update is ready. MultiPingMonitor will restart now.</value>
   </data>
   <data name="About_StatusInstallFailed" xml:space="preserve">
-    <value>The update could not be installed. Check your internet connection and try again.</value>
+    <value>The update could not be installed. The application was not changed. Try again or download the latest version manually.</value>
   </data>
   <data name="About_UpdateInstallNotReady" xml:space="preserve">
     <value>Update installation will be enabled in the next updater step.</value>
@@ -1629,5 +1629,11 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   </data>
   <data name="AutoUpdate_TrayUpdateAvailable" xml:space="preserve">
     <value>A new Sponsor Pro version {0} is available. Click to update.</value>
+  </data>
+  <data name="UpdateSuccess_TrayTitle" xml:space="preserve">
+    <value>Update completed</value>
+  </data>
+  <data name="UpdateSuccess_TrayMessage" xml:space="preserve">
+    <value>Update to version {0} completed successfully.</value>
   </data>
 </root>

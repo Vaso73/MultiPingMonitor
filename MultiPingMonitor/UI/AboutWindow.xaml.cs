@@ -279,7 +279,7 @@ namespace MultiPingMonitor.UI
                         CultureInfo.CurrentCulture,
                         Text(
                             "About_UpdateConfirmMessage",
-                            "MultiPingMonitor will download and install version {0}. The current application folder will be backed up before replacement."),
+                            "MultiPingMonitor will download and install version {0}. The application will restart to complete the update."),
                         FormatVersion(_availableVersion)),
                     Text("About_UpdateConfirmTitle", "Install update"),
                     MessageBoxButton.YesNo,
@@ -341,7 +341,7 @@ namespace MultiPingMonitor.UI
                 StatusText.Text =
                     Text(
                         "About_StatusInstallFailed",
-                        "The update could not be installed. Check your internet connection and try again.");
+                        "The update could not be installed. The application was not changed. Try again or download the latest version manually.");
             }
             catch (OperationCanceledException)
             {
@@ -354,7 +354,7 @@ namespace MultiPingMonitor.UI
                 StatusText.Text =
                     Text(
                         "About_StatusInstallFailed",
-                        "The update could not be installed. Check your internet connection and try again.");
+                        "The update could not be installed. The application was not changed. Try again or download the latest version manually.");
             }
             finally
             {

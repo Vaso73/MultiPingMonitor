@@ -171,6 +171,62 @@ namespace MultiPingMonitor.UI
         private static string ResourceText(string key, string fallback) =>
             Strings.ResourceManager.GetString(key) ?? fallback;
 
+        private void ConfigureOwnedDialog(Window dialog)
+        {
+            if (dialog == null)
+                return;
+
+            dialog.Topmost = Topmost;
+
+            if (IsLoaded)
+            {
+                dialog.Owner = this;
+                dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
+            {
+                dialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+        }
+
+        private void ShowCompletedUpdateSuccessIfAny()
+        {
+            string completedVersion =
+                UpdateInstallService.ConsumeCompletedUpdateSuccessVersion(
+                    GetCurrentVersionForAutomaticUpdateCheck());
+
+            if (string.IsNullOrWhiteSpace(completedVersion))
+                return;
+
+            string title =
+                ResourceText(
+                    "UpdateSuccess_TrayTitle",
+                    "Update completed");
+
+            string message =
+                string.Format(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    ResourceText(
+                        "UpdateSuccess_TrayMessage",
+                        "Update to version {0} completed successfully."),
+                    completedVersion);
+
+            if (NotifyIcon != null)
+            {
+                NotifyIcon.BalloonTipTitle = title;
+                NotifyIcon.BalloonTipText = message;
+                NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+                NotifyIcon.ShowBalloonTip(10000);
+                return;
+            }
+
+            MessageBox.Show(
+                message,
+                title,
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
         private static Version GetCurrentVersionForAutomaticUpdateCheck()
         {
             return Assembly.GetEntryAssembly()?.GetName().Version
@@ -350,6 +406,7 @@ namespace MultiPingMonitor.UI
             }
 
             RefreshColumnCount();
+            ShowCompletedUpdateSuccessIfAny();
             StartAutomaticUpdateCheckIfDue();
         }
 
@@ -2365,21 +2422,8 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
         private void AboutMenu_Click(object sender, RoutedEventArgs e)
         {
-            var aboutWindow = new AboutWindow
-            {
-                Topmost = Topmost
-            };
-
-            if (IsLoaded)
-            {
-                aboutWindow.Owner = this;
-                aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            }
-            else
-            {
-                aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            }
-
+            var aboutWindow = new AboutWindow();
+            ConfigureOwnedDialog(aboutWindow);
             aboutWindow.ShowDialog();
         }
 
@@ -2435,10 +2479,8 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         private void OptionsExecute(object sender, ExecutedRoutedEventArgs e)
         {
             // Open the options window.
-            var optionsWnd = new OptionsWindow
-            {
-                Owner = this
-            };
+            var optionsWnd = new OptionsWindow();
+            ConfigureOwnedDialog(optionsWnd);
             if (optionsWnd.ShowDialog() == true)
             {
                 RefreshGuiState();

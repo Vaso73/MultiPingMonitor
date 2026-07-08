@@ -107,10 +107,13 @@ namespace MultiPingMonitor.Tests
                 "UI",
                 "MainWindow.xaml.cs"));
 
+            Assert.Contains("ConfigureOwnedDialog(Window dialog)", source);
             Assert.Contains("if (IsLoaded)", source);
-            Assert.Contains("aboutWindow.Owner = this", source);
+            Assert.Contains("dialog.Owner = this", source);
             Assert.Contains("WindowStartupLocation.CenterOwner", source);
             Assert.Contains("WindowStartupLocation.CenterScreen", source);
+            Assert.Contains("ConfigureOwnedDialog(aboutWindow)", source);
+            Assert.DoesNotContain("aboutWindow.Owner = this", source);
         }
 
         [Fact]

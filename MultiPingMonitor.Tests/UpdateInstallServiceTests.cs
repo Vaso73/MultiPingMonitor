@@ -158,6 +158,66 @@ namespace MultiPingMonitor.Tests
             Assert.DoesNotContain(".Location", source);
         }
 
+
+        [Fact]
+        public void UpdateInstallService_WritesPostRestartSuccessMarkerBeforeStartingHelper()
+        {
+            string source =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "Classes",
+                    "UpdateInstallService.cs"));
+
+            int markerIndex =
+                source.IndexOf("WritePendingSuccessMarker(manifest)", StringComparison.Ordinal);
+            int helperStartIndex =
+                source.IndexOf("Process helper = Process.Start(startInfo)", StringComparison.Ordinal);
+
+            Assert.True(markerIndex > 0);
+            Assert.True(helperStartIndex > markerIndex);
+            Assert.Contains("ConsumeCompletedUpdateSuccessVersion", source);
+            Assert.Contains("post-update-success.json", source);
+        }
+
+        [Fact]
+        public void MainWindow_ShowsCompletedUpdateSuccessNotificationOnStartup()
+        {
+            string source =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "UI",
+                    "MainWindow.xaml.cs"));
+
+            Assert.Contains("ShowCompletedUpdateSuccessIfAny", source);
+            Assert.Contains("ConsumeCompletedUpdateSuccessVersion", source);
+            Assert.Contains("UpdateSuccess_TrayMessage", source);
+            Assert.Contains("NotifyIcon.ShowBalloonTip", source);
+        }
+
+        [Fact]
+        public void Resources_UsePreciseUpdateInstallFailureAndSuccessMessages()
+        {
+            string en =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "Properties",
+                    "Strings.resx"));
+            string sk =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "Properties",
+                    "Strings.sk-SK.resx"));
+
+            Assert.Contains("The application was not changed", en);
+            Assert.Contains("Aplikácia nebola zmenená", sk);
+            Assert.Contains("UpdateSuccess_TrayTitle", en);
+            Assert.Contains("UpdateSuccess_TrayTitle", sk);
+            Assert.Contains("UpdateSuccess_TrayMessage", en);
+            Assert.Contains("UpdateSuccess_TrayMessage", sk);
+            Assert.DoesNotContain("The current application folder will be backed up", en);
+            Assert.DoesNotContain("Aktuálny priečinok aplikácie sa pred výmenou zálohuje", sk);
+        }
+
         [Fact]
         public void Project_DoesNotKeepLegacyNetFrameworkAppConfig()
         {
