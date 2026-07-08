@@ -247,6 +247,12 @@ namespace MultiPingMonitor.Classes
                 Node("IsExitToTrayEnabled", ApplicationOptions.IsExitToTrayEnabled),
                 Node("StartInTray", ApplicationOptions.StartInTray),
                 Node("RememberWindowPosition", ApplicationOptions.RememberWindowPosition),
+                new XComment(" AutomaticUpdateCheckFrequency: [OnStartup, Daily, Weekly, Monthly] "),
+                Node("AutomaticUpdateCheckEnabled", ApplicationOptions.AutomaticUpdateCheckEnabled),
+                Node("AutomaticUpdateCheckFrequency", ApplicationOptions.AutomaticUpdateCheckFrequency),
+                Node("LastAutomaticUpdateCheckAt", ApplicationOptions.LastAutomaticUpdateCheckAt.HasValue
+                    ? ApplicationOptions.LastAutomaticUpdateCheckAt.Value.ToString("o")
+                    : string.Empty),
                 Node("Theme", ApplicationOptions.Theme),
                 new XComment(" VisualStyle: [Classic, Modern] "),
                 Node("VisualStyle", ApplicationOptions.VisualStyle),
@@ -791,6 +797,25 @@ namespace MultiPingMonitor.Classes
             if (options.TryGetValue("RememberWindowPosition", out optionValue))
             {
                 ApplicationOptions.RememberWindowPosition = bool.Parse(optionValue);
+            }
+            if (options.TryGetValue("AutomaticUpdateCheckEnabled", out optionValue)
+                && bool.TryParse(optionValue, out bool automaticUpdateCheckEnabled))
+            {
+                ApplicationOptions.AutomaticUpdateCheckEnabled = automaticUpdateCheckEnabled;
+            }
+            if (options.TryGetValue("AutomaticUpdateCheckFrequency", out optionValue)
+                && Enum.TryParse<ApplicationOptions.AutomaticUpdateFrequency>(
+                    optionValue,
+                    out var automaticUpdateFrequency))
+            {
+                ApplicationOptions.AutomaticUpdateCheckFrequency =
+                    automaticUpdateFrequency;
+            }
+            if (options.TryGetValue("LastAutomaticUpdateCheckAt", out optionValue)
+                && DateTime.TryParse(optionValue, out DateTime lastAutomaticUpdateCheckAt))
+            {
+                ApplicationOptions.LastAutomaticUpdateCheckAt =
+                    lastAutomaticUpdateCheckAt;
             }
             if (options.TryGetValue("Theme", out optionValue))
             {

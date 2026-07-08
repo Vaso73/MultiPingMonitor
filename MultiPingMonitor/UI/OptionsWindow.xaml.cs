@@ -22,6 +22,9 @@ namespace MultiPingMonitor.UI
         // Store original compact source mode so it can be reverted if the user cancels.
         private readonly ApplicationOptions.CompactSourceMode _originalCompactSource;
 
+        private static string Text(string key, string fallback) =>
+            Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+
         public OptionsWindow()
         {
             InitializeComponent();
@@ -37,6 +40,7 @@ namespace MultiPingMonitor.UI
             _originalCompactSource = ApplicationOptions.CompactSource;
 
             PopulateGeneralOptions();
+            PopulateUpdateOptions();
             PopulateNotificationOptions();
             PopulateEmailAlertOptions();
             PopulateAudioAlertOptions();
@@ -120,6 +124,57 @@ namespace MultiPingMonitor.UI
             StartupMode.SelectedIndex = (int)ApplicationOptions.InitialStartMode;
             InitialFavorite.ItemsSource = Favorite.GetTitles();
             InitialFavorite.Text = ApplicationOptions.InitialFavorite ?? string.Empty;
+        }
+
+
+        private void PopulateUpdateOptions()
+        {
+            AutomaticUpdateHeader.Text =
+                Text("Options_Header_Updates", "Updates");
+            AutomaticUpdateCheckEnabled.Content =
+                Text("Options_AutomaticUpdateCheck", "Automatically check for updates");
+            AutomaticUpdateCheckFrequencyLabel.Text =
+                Text("Options_AutomaticUpdateFrequency", "Frequency:");
+            LastAutomaticUpdateCheckLabel.Text =
+                Text("Options_LastAutomaticUpdateCheck", "Last check:");
+
+            AutomaticUpdateCheckEnabled.IsChecked =
+                ApplicationOptions.AutomaticUpdateCheckEnabled;
+
+            AutomaticUpdateCheckFrequency.Items.Clear();
+            AutomaticUpdateCheckFrequency.Items.Add(
+                Text("Options_AutoUpdateFrequency_OnStartup", "At every startup"));
+            AutomaticUpdateCheckFrequency.Items.Add(
+                Text("Options_AutoUpdateFrequency_Daily", "Once daily"));
+            AutomaticUpdateCheckFrequency.Items.Add(
+                Text("Options_AutoUpdateFrequency_Weekly", "Once weekly"));
+            AutomaticUpdateCheckFrequency.Items.Add(
+                Text("Options_AutoUpdateFrequency_Monthly", "Once monthly"));
+            AutomaticUpdateCheckFrequency.SelectedIndex =
+                (int)ApplicationOptions.AutomaticUpdateCheckFrequency;
+
+            LastAutomaticUpdateCheck.Text =
+                ApplicationOptions.LastAutomaticUpdateCheckAt.HasValue
+                    ? ApplicationOptions.LastAutomaticUpdateCheckAt.Value.ToString("g")
+                    : Text("Options_LastAutomaticUpdateCheckNever", "Never");
+        }
+
+        private bool SaveUpdateOptions()
+        {
+            ApplicationOptions.AutomaticUpdateCheckEnabled =
+                AutomaticUpdateCheckEnabled.IsChecked == true;
+
+            if (AutomaticUpdateCheckFrequency.SelectedIndex < 0)
+            {
+                AutomaticUpdateCheckFrequency.SelectedIndex =
+                    (int)ApplicationOptions.AutomaticUpdateFrequency.Daily;
+            }
+
+            ApplicationOptions.AutomaticUpdateCheckFrequency =
+                (ApplicationOptions.AutomaticUpdateFrequency)
+                    AutomaticUpdateCheckFrequency.SelectedIndex;
+
+            return true;
         }
 
         private void PopulateNotificationOptions()
@@ -273,6 +328,7 @@ namespace MultiPingMonitor.UI
         private void OK_Click(object sender, RoutedEventArgs e)
         {
             if (SaveGeneralOptions() == false) return;
+            if (SaveUpdateOptions() == false) return;
             if (SaveNotificationOptions() == false) return;
             if (SaveEmailAlertOptions() == false) return;
             if (SaveAudioAlertOptions() == false) return;

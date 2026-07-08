@@ -221,20 +221,14 @@ namespace MultiPingMonitor.Classes
                 string appDirectory =
                     Path.GetDirectoryName(targetExePath)
                     ?? AppContext.BaseDirectory;
-                string backupRoot =
-                    Path.Combine(appDirectory, "backup");
-                string backupDirectory =
-                    Path.Combine(
-                        backupRoot,
-                        "update-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss"));
+                string updateRoot =
+                    Path.GetDirectoryName(stagedExePath)
+                    ?? Path.GetTempPath();
 
-                Directory.CreateDirectory(backupDirectory);
-                CopyDirectoryExcludingBackup(
-                    appDirectory,
-                    backupDirectory,
-                    backupRoot);
-
-                CopyWithRetry(stagedExePath, targetExePath);
+                ApplyStagedExecutableWithTempSwap(
+                    stagedExePath,
+                    targetExePath,
+                    updateRoot);
 
                 Process.Start(
                     new ProcessStartInfo(targetExePath)
@@ -243,7 +237,9 @@ namespace MultiPingMonitor.Classes
                         WorkingDirectory = appDirectory
                     });
 
-                return 0;
+                CleanupUpdateRootLater(updateRoot);
+
+                  return 0;
             }
             catch (Exception ex)
             {
@@ -460,6 +456,40 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        private static void ApplyStagedExecutableWithTempSwap(
+            string stagedExePath,
+            string targetExePath,
+            string updateRoot)
+        {
+            Directory.CreateDirectory(updateRoot);
+
+            string swapOldPath =
+                Path.Combine(updateRoot, ExeName + ".old");
+
+            DeleteFileWithRetry(swapOldPath);
+            MoveWithRetry(targetExePath, swapOldPath);
+
+            try
+            {
+                CopyWithRetry(stagedExePath, targetExePath);
+                DeleteFileWithRetry(swapOldPath);
+            }
+            catch
+            {
+                try
+                {
+                    DeleteFileWithRetry(targetExePath);
+                    if (File.Exists(swapOldPath))
+                    {
+                        MoveWithRetry(swapOldPath, targetExePath);
+                    }
+                }
+                catch { }
+
+                throw;
+            }
+        }
+
         private static void CopyWithRetry(
             string sourcePath,
             string destinationPath)
@@ -485,59 +515,102 @@ namespace MultiPingMonitor.Classes
                 last);
         }
 
-        private static void CopyDirectoryExcludingBackup(
-            string sourceDirectory,
-            string destinationDirectory,
-            string backupRoot)
+        private static void MoveWithRetry(
+            string sourcePath,
+            string destinationPath)
         {
-            string normalizedBackupRoot =
-                Path.GetFullPath(backupRoot)
-                    .TrimEnd(
-                        Path.DirectorySeparatorChar,
-                        Path.AltDirectorySeparatorChar)
-                + Path.DirectorySeparatorChar;
+            Exception last = null;
 
-            foreach (string directory in Directory.EnumerateDirectories(
-                         sourceDirectory,
-                         "*",
-                         SearchOption.AllDirectories))
+            for (int attempt = 0; attempt < 80; attempt++)
             {
-                string fullDirectory =
-                    Path.GetFullPath(directory)
-                        .TrimEnd(
-                            Path.DirectorySeparatorChar,
-                            Path.AltDirectorySeparatorChar)
-                    + Path.DirectorySeparatorChar;
-
-                if (fullDirectory.StartsWith(
-                        normalizedBackupRoot,
-                        StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    continue;
+                    File.Move(sourcePath, destinationPath, true);
+                    return;
                 }
-
-                string relative = Path.GetRelativePath(sourceDirectory, directory);
-                Directory.CreateDirectory(Path.Combine(destinationDirectory, relative));
+                catch (Exception ex)
+                {
+                    last = ex;
+                    Thread.Sleep(250);
+                }
             }
 
-            foreach (string file in Directory.EnumerateFiles(
-                         sourceDirectory,
-                         "*",
-                         SearchOption.AllDirectories))
+            throw new IOException(
+                "Could not move executable during update.",
+                last);
+        }
+
+        private static void DeleteFileWithRetry(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            Exception last = null;
+
+            for (int attempt = 0; attempt < 20; attempt++)
             {
-                string fullFile = Path.GetFullPath(file);
-                if (fullFile.StartsWith(
-                        normalizedBackupRoot,
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    last = ex;
+                    Thread.Sleep(150);
+                }
+            }
+
+            if (File.Exists(path))
+            {
+                throw new IOException(
+                    "Could not remove temporary update file.",
+                    last);
+            }
+        }
+
+        private static void CleanupUpdateRootLater(string updateRoot)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(updateRoot))
+                    return;
+
+                string fullUpdateRoot = Path.GetFullPath(updateRoot);
+                string allowedRoot =
+                    Path.GetFullPath(
+                        Path.Combine(
+                            Path.GetTempPath(),
+                            "MultiPingMonitor",
+                            "updates"));
+
+                if (!fullUpdateRoot.StartsWith(
+                        allowedRoot,
                         StringComparison.OrdinalIgnoreCase))
                 {
-                    continue;
+                    return;
                 }
 
-                string relative = Path.GetRelativePath(sourceDirectory, file);
-                string destination = Path.Combine(destinationDirectory, relative);
-                Directory.CreateDirectory(Path.GetDirectoryName(destination));
-                File.Copy(file, destination, true);
+                string safePath =
+                    fullUpdateRoot.Replace("\"", string.Empty);
+
+                Process.Start(
+                    new ProcessStartInfo("cmd.exe")
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Arguments =
+                            "/C timeout /T 2 /NOBREAK > NUL & rmdir /S /Q \""
+                            + safePath
+                            + "\""
+                    });
             }
+            catch { }
         }
 
         private static HttpClient CreateDefaultHttpClient()

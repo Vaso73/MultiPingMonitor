@@ -169,6 +169,43 @@
                                    Margin="10,0,0,0"/>
                     </StackPanel>
 
+
+                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
+
+                    <!-- Automatic update check -->
+                    <TextBlock x:Name="AutomaticUpdateHeader"
+                               DockPanel.Dock="Top"
+                               Text="Updates"
+                               Margin="0,10,0,10"
+                               Style="{StaticResource OptionHeaderTextStyle}"/>
+
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,5,0,0">
+                        <CheckBox x:Name="AutomaticUpdateCheckEnabled"
+                                  DockPanel.Dock="Left"
+                                  Content="Automatically check for updates"/>
+                    </DockPanel>
+
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0"
+                                IsEnabled="{Binding IsChecked, ElementName=AutomaticUpdateCheckEnabled}">
+                        <TextBlock x:Name="AutomaticUpdateCheckFrequencyLabel"
+                                   Text="Frequency:"
+                                   Width="200"/>
+                        <ComboBox x:Name="AutomaticUpdateCheckFrequency"
+                                  Width="160"/>
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,10,0,0">
+                        <TextBlock x:Name="LastAutomaticUpdateCheckLabel"
+                                   Text="Last check:"
+                                   Width="200"/>
+                        <TextBlock x:Name="LastAutomaticUpdateCheck"
+                                   Text="Never"
+                                   Foreground="{DynamicResource Theme.Text.Secondary}"/>
+                    </StackPanel>
                     <!-- Startup header -->
                     <TextBlock DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_Header_Startup}"

@@ -177,8 +177,10 @@ access or perform an installation.
 Consequences:
 
 A future updater must be designed and reviewed separately, preserve user
-configuration, create a backup, support restart and rollback, and must not
+configuration, avoid persistent local EXE backups, support restart and a temp-only transactional swap, and must not
 store GitHub credentials in plaintext or in `MultiPingMonitor.xml`.
+
+For self-update replacement, MultiPingMonitor must avoid persistent local EXE backups. The helper may use only a temporary transactional swap under the system temp directory during replacement, and must remove temporary update files after a successful update. Manual rollback remains available by downloading an older GitHub release.
 
 ## D-006 — Local-first development and release preparation
 

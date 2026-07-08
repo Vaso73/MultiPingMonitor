@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows.Media;
@@ -47,6 +48,14 @@ namespace MultiPingMonitor.Classes
             CustomTargets = 1
         }
 
+        public enum AutomaticUpdateFrequency
+        {
+            OnStartup = 0,
+            Daily = 1,
+            Weekly = 2,
+            Monthly = 3
+        }
+
         // Ping & probe options.
         public static int PingInterval { get; set; } = Constants.DefaultInterval;
         public static int PingTimeout { get; set; } = Constants.DefaultTimeout;
@@ -90,6 +99,13 @@ namespace MultiPingMonitor.Classes
         public static bool IsLogStatusChangesEnabled { get; set; } = false;
         public static string LogStatusChangesPath { get; set; }
         
+        // Automatic update check.
+        // Checks only availability. Installation is never automatic.
+        public static bool AutomaticUpdateCheckEnabled { get; set; } = true;
+        public static AutomaticUpdateFrequency AutomaticUpdateCheckFrequency { get; set; } =
+            AutomaticUpdateFrequency.Daily;
+        public static DateTime? LastAutomaticUpdateCheckAt { get; set; } = null;
+
         // Startup options.
         public static StartMode InitialStartMode { get; set; } = StartMode.Blank;
         public static int InitialProbeCount { get; set; } = 2;
