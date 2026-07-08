@@ -5,7 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -445,11 +444,7 @@ namespace MultiPingMonitor.Classes
             }
             catch { }
 
-            string assemblyPath =
-                Assembly.GetEntryAssembly()?.Location
-                ?? Assembly.GetExecutingAssembly().Location;
-
-            return assemblyPath;
+            return Path.Combine(AppContext.BaseDirectory, ExeName);
         }
 
         private static void WaitForParentExit(int parentProcessId)

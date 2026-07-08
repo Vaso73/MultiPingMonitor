@@ -137,6 +137,31 @@ namespace MultiPingMonitor.Tests
             Assert.Contains($"name=\"{key}\"", sk);
         }
 
+
+        [Fact]
+        public void UpdateInstallService_DoesNotUseAssemblyLocationInSingleFileFallback()
+        {
+            string source =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "Classes",
+                    "UpdateInstallService.cs"));
+
+            Assert.Contains("Environment.ProcessPath", source);
+            Assert.Contains("AppContext.BaseDirectory", source);
+            Assert.DoesNotContain("Assembly.GetEntryAssembly", source);
+            Assert.DoesNotContain("Assembly.GetExecutingAssembly", source);
+            Assert.DoesNotContain(".Location", source);
+        }
+
+        [Fact]
+        public void Project_DoesNotKeepLegacyNetFrameworkAppConfig()
+        {
+            Assert.False(
+                File.Exists(SourcePath("MultiPingMonitor", "app.config")),
+                "Legacy app.config creates MultiPingMonitor.dll.config in single-file publish output.");
+        }
+
         [Fact]
         public void WorkflowDocs_RecordOneStepGithubRules()
         {
