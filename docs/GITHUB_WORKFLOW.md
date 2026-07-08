@@ -19,6 +19,29 @@ before proposing GitHub, release, or updater work.
 - Use branch + PR + scope check + merge + sync main.
 - Push/PR/merge/release only after validation gates pass.
 
+## Local-first workflow authority
+
+GitHub is not the default place for every development or release-preparation
+step.
+
+For MultiPingMonitor, the normal workflow is:
+
+1. work locally on LXC DEV;
+2. validate locally;
+3. build/package locally when needed;
+4. test in Windows from the local artifact when runtime behavior is affected;
+5. after user acceptance, push one final branch;
+6. create one pull request;
+7. merge;
+8. publish the private Sponsor Pro release if this is a release slice.
+
+Do not create pull requests for every small intermediate operation. Use GitHub
+only for final accepted work, explicit user requests, collaboration needs, or
+release publication.
+
+This local-first rule supersedes the older one-step GitHub workflow sections
+below whenever the user has not explicitly requested immediate GitHub delivery.
+
 ## Standard one-step GitHub workflow: no release
 
 Use this when the user says equivalent to “daj to na GitHub bez release”.

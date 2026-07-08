@@ -179,3 +179,64 @@ Consequences:
 A future updater must be designed and reviewed separately, preserve user
 configuration, create a backup, support restart and rollback, and must not
 store GitHub credentials in plaintext or in `MultiPingMonitor.xml`.
+
+## D-006 — Local-first development and release preparation
+
+Status: accepted
+
+Decision:
+
+MultiPingMonitor development and release preparation are local-first.
+
+Intermediate work should stay on LXC DEV and should not be pushed to GitHub or
+opened as pull requests merely because a small step was completed.
+
+GitHub is used when:
+
+- the user explicitly asks for GitHub delivery;
+- the local result has been validated and accepted;
+- a final release branch must be pushed and merged for reproducible release
+  history;
+- the private Sponsor Pro release is being published;
+- collaboration or cross-environment transfer requires it.
+
+Rationale:
+
+Repeated push, pull-request, and merge steps slow down the working loop and make
+release preparation noisy. Local-first work keeps iteration fast while still
+requiring the final release to be traceable to a Git commit.
+
+Consequences:
+
+- Use local branches and local commits during preparation.
+- Use one final release pull request after local validation and user approval.
+- Do not create documentation-only checkpoint pull requests unless explicitly
+  approved or required for safety.
+- Private Sponsor Pro release publication still requires strict final GitHub,
+  ZIP, download-back, and backend verification.
+
+## D-007 — Fixed Windows TestRuntime directory
+
+Status: accepted
+
+Decision:
+
+MultiPingMonitor Windows runtime testing must use this fixed directory:
+
+`C:\Users\info\OneDrive\Dokumenty\!!!!_GitHub_!!!!\Projekty\MultiPingMonitor\TestRuntime`
+
+Per-version runtime subdirectories are not used for normal testing.
+
+Rationale:
+
+The fixed `TestRuntime` root contains accepted runtime configuration, logs, and
+support files. Testing from a new per-version subdirectory can accidentally
+remove the executable from the real configuration context and produce misleading
+results.
+
+Consequences:
+
+- Copy test executables and ZIPs directly into the fixed `TestRuntime` root.
+- Preserve existing config files unless the user explicitly approves reset.
+- Provide exact Windows PowerShell `scp` commands for that fixed destination.
+- Do not treat isolated per-version folder tests as normal acceptance tests.

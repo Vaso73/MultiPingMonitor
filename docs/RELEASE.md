@@ -5,6 +5,37 @@ correction, verification, acceptance, and cleanup procedure.
 
 Read `AGENTS.md` and `docs/CURRENT_STATE.md` before using this workflow.
 
+## Local-first release preparation
+
+Sponsor Pro release preparation is local-first.
+
+Do not push, create a pull request, merge, tag, publish, or update backend
+metadata for every intermediate release step. Prepare the release locally first:
+
+1. create a local release branch from synchronized `main`;
+2. update only the approved release files;
+3. run version guards;
+4. run tests;
+5. produce the SingleFile executable;
+6. create and validate the local `MultiPingMonitor.zip`;
+7. copy the artifact to Windows TestRuntime when runtime validation is needed;
+8. wait for user acceptance of the Windows test when relevant.
+
+Only after the local artifact is technically valid and accepted should GitHub be
+used:
+
+1. push the final local release branch;
+2. create one release pull request;
+3. verify scope and mergeability;
+4. merge after approval;
+5. publish the private Sponsor Pro release;
+6. download the private GitHub asset back;
+7. verify ZIP identity, SHA-256, file count, and executable metadata;
+8. verify the backend latest endpoint.
+
+The release remains unaccepted until the user confirms Windows runtime testing
+of the downloaded GitHub asset.
+
 ## 1. Distribution contract
 
 Public source repository:
@@ -541,3 +572,19 @@ Do not:
 - store GitHub credentials in plaintext or in `MultiPingMonitor.xml`;
 - combine development, pull-request merging, publication, and Windows
   acceptance into one monolithic operation.
+
+## Fixed Windows TestRuntime directory for release validation
+
+Release runtime validation must use the fixed Windows directory:
+
+`C:\Users\info\OneDrive\Dokumenty\!!!!_GitHub_!!!!\Projekty\MultiPingMonitor\TestRuntime`
+
+Do not create per-version runtime subdirectories for normal release validation.
+The fixed root directory contains the accepted runtime configuration and logs.
+A local or downloaded release candidate should replace the intended
+`MultiPingMonitor.exe` and, when needed, `MultiPingMonitor.zip` in that root
+directory while preserving the existing configuration files.
+
+A release is not considered Windows-runtime accepted when it was tested only
+from an isolated per-version subdirectory, unless the user explicitly approves
+that special test mode.
