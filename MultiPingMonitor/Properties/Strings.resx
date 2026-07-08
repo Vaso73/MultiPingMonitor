@@ -1579,6 +1579,21 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="About_StatusSignInRequired" xml:space="preserve">
     <value>Sign in with GitHub before checking Sponsor Pro updates.</value>
   </data>
+  <data name="About_UpdateConfirmTitle" xml:space="preserve">
+    <value>Install update</value>
+  </data>
+  <data name="About_UpdateConfirmMessage" xml:space="preserve">
+    <value>MultiPingMonitor will download and install version {0}. The current application folder will be backed up before replacement.</value>
+  </data>
+  <data name="About_StatusPreparingUpdate" xml:space="preserve">
+    <value>Preparing update installation...</value>
+  </data>
+  <data name="About_StatusUpdateRestarting" xml:space="preserve">
+    <value>Update is ready. MultiPingMonitor will restart now.</value>
+  </data>
+  <data name="About_StatusInstallFailed" xml:space="preserve">
+    <value>The update could not be installed. Check your internet connection and try again.</value>
+  </data>
   <data name="About_UpdateInstallNotReady" xml:space="preserve">
     <value>Update installation will be enabled in the next updater step.</value>
   </data>

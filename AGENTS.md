@@ -270,3 +270,19 @@ Do not:
 - silently overwrite authoritative project-memory files;
 - treat `docs/CURRENT_STATE.md` as live truth;
 - include secrets in project documentation or handoffs.
+
+<!-- MPM_GITHUB_WORKFLOW_BEGIN -->
+## MultiPingMonitor GitHub workflow reference
+
+Before GitHub, release, or updater work, read `docs/GITHUB_WORKFLOW.md`.
+That file is the stable workflow source for this project.
+
+Required summary:
+- use one complete CLI workflow when the scope is already approved;
+- do not paste large interactive heredocs into zsh;
+- for larger patches, use a temporary script file or short deterministic commands;
+- keep progress visible with `| STEP |`, `| RUN |`, `| PASS |`, `| FAIL |`, and `RESULT=...`;
+- never push directly to `main`;
+- use branch + PR + scope check + merge + sync main;
+- create a release only in an explicitly approved release slice.
+<!-- MPM_GITHUB_WORKFLOW_END -->

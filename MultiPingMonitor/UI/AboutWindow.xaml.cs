@@ -15,8 +15,10 @@ namespace MultiPingMonitor.UI
         private readonly SponsorProSessionStore _sponsorProSessionStore;
         private SponsorProSession _sponsorProSession;
         private Version _availableVersion;
+        private UpdateManifest _availableUpdateManifest;
         private CancellationTokenSource _checkCancellation;
         private CancellationTokenSource _authCancellation;
+        private CancellationTokenSource _installCancellation;
 
         public AboutWindow()
         {
@@ -89,6 +91,7 @@ namespace MultiPingMonitor.UI
         private void ResetUpdateState()
         {
             _availableVersion = null;
+            _availableUpdateManifest = null;
             InstallUpdateButton.IsEnabled = false;
             StatusText.Text =
                 Text(
@@ -189,6 +192,7 @@ namespace MultiPingMonitor.UI
 
             SetCheckingState(true);
             _availableVersion = null;
+            _availableUpdateManifest = null;
             InstallUpdateButton.IsEnabled = false;
             StatusText.Text =
                 Text("About_StatusChecking", "Checking for updates...");
@@ -206,6 +210,7 @@ namespace MultiPingMonitor.UI
                 {
                     case UpdateCheckStatus.UpdateAvailable:
                         _availableVersion = result.LatestVersion;
+                        _availableUpdateManifest = result.Manifest;
                         InstallUpdateButton.IsEnabled = true;
                         StatusText.Text = string.Format(
                             CultureInfo.CurrentCulture,
@@ -247,27 +252,138 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        private void InstallUpdateButton_Click(
+        private async void InstallUpdateButton_Click(
             object sender,
             RoutedEventArgs e)
         {
-            if (_availableVersion == null)
+            if (_availableVersion == null || _availableUpdateManifest == null)
             {
                 InstallUpdateButton.IsEnabled = false;
                 return;
             }
 
+            if (_sponsorProSession == null || !_sponsorProSession.IsUsable)
+            {
+                StatusText.Text =
+                    Text(
+                        "About_StatusSignInRequired",
+                        "Sign in with GitHub before checking Sponsor Pro updates.");
+                RefreshSponsorProStatus();
+                return;
+            }
+
+            MessageBoxResult confirmation =
+                MessageBox.Show(
+                    this,
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Text(
+                            "About_UpdateConfirmMessage",
+                            "MultiPingMonitor will download and install version {0}. The current application folder will be backed up before replacement."),
+                        FormatVersion(_availableVersion)),
+                    Text("About_UpdateConfirmTitle", "Install update"),
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+            if (confirmation != MessageBoxResult.Yes)
+                return;
+
+            _installCancellation?.Cancel();
+            _installCancellation?.Dispose();
+            _installCancellation = new CancellationTokenSource();
+
+            bool helperStarted = false;
+            SetInstallingState(true);
             StatusText.Text =
                 Text(
-                    "About_UpdateInstallNotReady",
-                    "Update installation will be enabled in the next updater step.");
+                    "About_StatusPreparingUpdate",
+                    "Preparing update installation...");
+
+            try
+            {
+                using var service = new UpdateInstallService();
+
+                UpdateInstallResult result =
+                    await service.InstallAsync(
+                        _availableUpdateManifest,
+                        _sponsorProSession,
+                        _installCancellation.Token);
+
+                if (result.Status == UpdateInstallStatus.HelperStarted)
+                {
+                    helperStarted = true;
+                    StatusText.Text =
+                        Text(
+                            "About_StatusUpdateRestarting",
+                            "Update is ready. MultiPingMonitor will restart now.");
+                    Application.Current.Shutdown();
+                    return;
+                }
+
+                if (result.Status == UpdateInstallStatus.AuthenticationRequired)
+                {
+                    StatusText.Text =
+                        Text(
+                            "About_StatusSignInRequired",
+                            "Sign in with GitHub before checking Sponsor Pro updates.");
+                    return;
+                }
+
+                if (result.Status == UpdateInstallStatus.InvalidManifest)
+                {
+                    StatusText.Text =
+                        Text(
+                            "About_StatusInvalidResponse",
+                            "The update information returned by the server is invalid.");
+                    return;
+                }
+
+                StatusText.Text =
+                    Text(
+                        "About_StatusInstallFailed",
+                        "The update could not be installed. Check your internet connection and try again.");
+            }
+            catch (OperationCanceledException)
+            {
+                // Window closed or a newer install attempt replaced this one.
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(
+                    $"AboutWindow update install: {ex.GetType().Name}: {ex.Message}");
+                StatusText.Text =
+                    Text(
+                        "About_StatusInstallFailed",
+                        "The update could not be installed. Check your internet connection and try again.");
+            }
+            finally
+            {
+                if (!helperStarted)
+                    SetInstallingState(false);
+            }
+        }
+
+        private void SetInstallingState(bool installing)
+        {
+            CheckForUpdatesButton.IsEnabled = !installing;
+            SponsorProLoginButton.IsEnabled = !installing;
+            InstallUpdateButton.IsEnabled =
+                !installing
+                && _availableVersion != null
+                && _availableUpdateManifest != null;
+            CloseButton.IsEnabled = !installing;
+            CheckProgress.Visibility =
+                installing ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void SetCheckingState(bool checking)
         {
             CheckForUpdatesButton.IsEnabled = !checking;
             SponsorProLoginButton.IsEnabled = !checking;
-            InstallUpdateButton.IsEnabled = !checking && _availableVersion != null;
+            InstallUpdateButton.IsEnabled =
+                !checking
+                && _availableVersion != null
+                && _availableUpdateManifest != null;
             CheckProgress.Visibility =
                 checking ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -276,7 +392,10 @@ namespace MultiPingMonitor.UI
         {
             SponsorProLoginButton.IsEnabled = !authenticating;
             CheckForUpdatesButton.IsEnabled = !authenticating;
-            InstallUpdateButton.IsEnabled = !authenticating && _availableVersion != null;
+            InstallUpdateButton.IsEnabled =
+                !authenticating
+                && _availableVersion != null
+                && _availableUpdateManifest != null;
             CheckProgress.Visibility =
                 authenticating ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -294,6 +413,9 @@ namespace MultiPingMonitor.UI
             _authCancellation?.Cancel();
             _authCancellation?.Dispose();
             _authCancellation = null;
+            _installCancellation?.Cancel();
+            _installCancellation?.Dispose();
+            _installCancellation = null;
             base.OnClosed(e);
         }
 
