@@ -1926,6 +1926,28 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             }
         }
 
+
+        private static System.Windows.Shapes.Path CreateMenuPathIcon(
+            string geometryResourceKey)
+        {
+            var path = new System.Windows.Shapes.Path
+            {
+                Width = 14,
+                Height = 14,
+                Stretch = System.Windows.Media.Stretch.Uniform,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            path.SetResourceReference(
+                System.Windows.Shapes.Path.DataProperty,
+                geometryResourceKey);
+            path.SetResourceReference(
+                System.Windows.Shapes.Shape.FillProperty,
+                "Theme.Text.Primary");
+
+            return path;
+        }
+
         private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
         {
             var menu = new ContextMenu();
@@ -2033,6 +2055,17 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
             menu.PlacementTarget = sender as Button;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+
+            menu.Items.Add(new Separator());
+
+            var compactAboutItem = new MenuItem
+            {
+                Header = Strings.Menu_About,
+                Icon = CreateMenuPathIcon("geom.menu.about")
+            };
+            compactAboutItem.Click += AboutMenu_Click;
+            menu.Items.Add(compactAboutItem);
+
             menu.IsOpen = true;
         }
 
@@ -2218,9 +2251,19 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         {
             var aboutWindow = new AboutWindow
             {
-                Owner = this,
                 Topmost = Topmost
             };
+
+            if (IsLoaded)
+            {
+                aboutWindow.Owner = this;
+                aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
+            {
+                aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+
             aboutWindow.ShowDialog();
         }
 
@@ -3027,6 +3070,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       "geom.menu.options"));
             menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
             menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
+            menu.Items.Add(MakeItem(Strings.Menu_About,         () => Dispatcher.Invoke(() => AboutMenu_Click(null, null)),      "geom.menu.about"));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             // ── Visual style submenu ──────────────────────────────────────────
@@ -3789,7 +3833,17 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
                     return null;
 
-                double scale = Math.Min(size / bounds.Width, size / bounds.Height);
+                double targetSize =
+                    string.Equals(
+                        geometryKey,
+                        "geom.menu.about",
+                        StringComparison.Ordinal)
+                        ? size * 0.82
+                        : size;
+
+                double scale = Math.Min(
+                    targetSize / bounds.Width,
+                    targetSize / bounds.Height);
                 double tx = (size - bounds.Width  * scale) / 2 - bounds.X * scale;
                 double ty = (size - bounds.Height * scale) / 2 - bounds.Y * scale;
 

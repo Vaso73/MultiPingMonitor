@@ -165,9 +165,9 @@ namespace MultiPingMonitor.Tests
 
             Assert.Contains("new UpdateCheckService()", source);
             Assert.Contains("CheckAsync", source);
-            Assert.Contains(
-                "Sponsor-Pro-Releases/releases",
-                source);
+            Assert.Contains("InstallUpdateButton", source);
+            Assert.Contains("InstallUpdateButton_Click", source);
+            Assert.Contains("UpdateCheckStatus.UpdateAvailable", source);
         }
 
         private static string Manifest(string version)

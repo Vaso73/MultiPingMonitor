@@ -435,7 +435,12 @@
                 <!-- Menu: About -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_About}"
                           x:Name="AboutMenu"
-                          Click="AboutMenu_Click" />
+                          Click="AboutMenu_Click">
+                    <MenuItem.Icon>
+                        <Path Data="{StaticResource geom.menu.about}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
