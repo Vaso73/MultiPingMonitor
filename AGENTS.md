@@ -139,27 +139,57 @@ Do not use or recreate the deleted Windows source/build repository:
 
 ## 7. Development workflow
 
-Use one dedicated branch for one bounded scope.
+Default workflow is local-first.
 
-Required order:
+Use one dedicated local branch for one bounded scope, but do not push or open a
+pull request for every intermediate operation. Development, release
+preparation, validation, and Windows runtime testing should normally happen on
+the DEV machine first.
+
+Required local order:
 
 1. Perform a fresh targeted read-only audit.
-2. Create a branch from synchronized `main`.
+2. Create a local branch from synchronized `main`.
 3. Implement only the approved scope.
 4. Run targeted tests.
 5. Run the full suite when application behavior changed.
-6. Run the appropriate build or publish validation.
+6. Run the appropriate build, publish, or packaging validation.
 7. Inspect the exact changed-file scope and complete diff.
 8. Confirm a clean diff check.
-9. Commit only approved files.
-10. Push the branch.
-11. Create a dedicated pull request.
-12. Verify pull-request files, checks, and mergeability.
-13. Merge only after explicit approval.
-14. Synchronize and verify local `main`.
-15. Delete stale branches only after verifying the merged state.
+9. Commit only approved files locally.
+10. Produce and validate the local artifact when the slice affects release or
+    runtime behavior.
+11. Run Windows runtime testing from the local artifact when relevant.
+12. Continue locally until the user accepts the result or explicitly asks to
+    publish to GitHub.
 
-Feature work and release-version work must remain separate.
+GitHub is used only when one of these is true:
+
+- the user explicitly asks to push, create a pull request, or publish;
+- the result is accepted and ready to become a final release candidate;
+- a release commit must be pushed so the private Sponsor Pro release is
+  reproducible from Git history;
+- collaboration or cross-environment transfer requires a remote branch;
+- a critical documentation or safety correction is explicitly approved for
+  remote publication.
+
+For release work, prefer one final GitHub transaction:
+
+1. push the final local release branch;
+2. create one release pull request;
+3. verify pull-request file scope and mergeability;
+4. merge after explicit approval;
+5. synchronize local `main`;
+6. publish the private Sponsor Pro release;
+7. download and verify the published asset;
+8. verify the backend latest endpoint.
+
+Do not create pull requests for small intermediate edits merely to keep
+checkpoint documents current. Checkpoint drift should be reported and, when
+safe, corrected locally as part of the current local workflow.
+
+Feature work and release-version work must remain separate unless the user
+explicitly approves a combined local release-candidate slice.
 
 ## 8. Release workflow authority
 
@@ -288,3 +318,21 @@ Required summary:
 - a failed validation gate must not continue to commit, push, PR creation, merge, or release;
 - temporary workflow scripts must not remain as untracked files in the repository root.
 <!-- MPM_GITHUB_WORKFLOW_END -->
+
+## Fixed Windows TestRuntime directory
+
+Windows runtime testing for MultiPingMonitor must use the fixed directory:
+
+`C:\Users\info\OneDrive\Dokumenty\!!!!_GitHub_!!!!\Projekty\MultiPingMonitor\TestRuntime`
+
+Do not create per-version runtime subdirectories for normal Windows testing.
+
+The root `TestRuntime` directory contains the accepted runtime configuration,
+logs, compact-set configuration, and other files that represent the real test
+context. For each test, replace only the intended executable, ZIP, or explicitly
+approved runtime artifact. Preserve existing configuration files unless the user
+explicitly approves a config reset.
+
+When handing off files to Windows, always provide exact PowerShell `scp`
+commands that copy into this fixed root directory unless the user explicitly
+requests a different destination.
