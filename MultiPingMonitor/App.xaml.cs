@@ -23,6 +23,18 @@ namespace MultiPingMonitor
             // stdout is written via Console.OpenStandardOutput() so output is available
             // when the caller uses -RedirectStandardOutput (e.g. Start-Process in PowerShell).
             var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1
+                && string.Equals(
+                    args[1],
+                    Classes.UpdateInstallService.HelperModeArgument,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                int exitCode =
+                    Classes.UpdateInstallService.RunApplyUpdateHelper(args);
+                Environment.Exit(exitCode);
+                return;
+            }
+
             if (args.Length > 1)
             {
                 var cliArg = args[1].ToLowerInvariant();
