@@ -179,7 +179,7 @@ namespace MultiPingMonitor.Tests
                 "\"releaseTag\":\"multipingmonitor/v" + version + "\"," +
                 "\"assetName\":\"MultiPingMonitor.zip\"," +
                 "\"assetSize\":1," +
-                "\"sha256\":\"00\"}";
+                "\"sha256\":\"0000000000000000000000000000000000000000000000000000000000000000\"}";
         }
 
         private static HttpClient ClientWithJson(string json)

@@ -76,3 +76,11 @@ Use this only when the user explicitly asks for GitHub plus release, or when a r
 - The `backup` directory must not be included in its own backup.
 - No silent install: the user must explicitly confirm before installing an update.
 - After a Sponsor Pro release, backend latest metadata must match the newly published release.
+
+## Hard-stop rule for automation scripts
+
+- A failed preflight, scope, diff, test, publish, PR scope, or final sync gate must stop the workflow before commit, push, PR creation, merge, or release.
+- Use an `ok=0` gate and wrap downstream GitHub actions in explicit `if [ "$ok" -eq 1 ]` blocks.
+- Do not use top-level `return ... || true` as a stop mechanism in a script executed with `bash script.sh`; it can continue execution unexpectedly.
+- Temporary workflow scripts must be stored outside the repository root or removed before preflight and scope guard.
+- A local helper script copied into the repo root must never be committed and must not appear in `git status --porcelain=v1 --untracked-files=all`.
