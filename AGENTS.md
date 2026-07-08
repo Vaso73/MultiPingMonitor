@@ -285,4 +285,6 @@ Required summary:
 - never push directly to `main`;
 - use branch + PR + scope check + merge + sync main;
 - create a release only in an explicitly approved release slice.
+- a failed validation gate must not continue to commit, push, PR creation, merge, or release;
+- temporary workflow scripts must not remain as untracked files in the repository root.
 <!-- MPM_GITHUB_WORKFLOW_END -->

@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Tests
     {
         private static string SolutionRoot()
         {
-            string dir = Directory.GetCurrentDirectory();
+            string? dir = Directory.GetCurrentDirectory();
             while (dir != null && !File.Exists(Path.Combine(dir, "MultiPingMonitor.sln")))
                 dir = Directory.GetParent(dir)?.FullName;
             return dir ?? Directory.GetCurrentDirectory();
@@ -86,7 +86,7 @@ namespace MultiPingMonitor.Tests
                     "App.xaml.cs"));
 
             int helperIndex =
-                source.IndexOf("--mpm-apply-update", StringComparison.Ordinal);
+                source.IndexOf("UpdateInstallService.HelperModeArgument", StringComparison.Ordinal);
             int mainWindowIndex =
                 source.IndexOf("new UI.MainWindow", StringComparison.Ordinal);
 
