@@ -2231,9 +2231,123 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             UpdateTrayIcon();
         }
 
+        private MenuItem CreateCompactRightClickAction(
+            string header,
+            string geometryResourceKey,
+            System.Action action)
+        {
+            var item = new MenuItem
+            {
+                Header = header,
+                Icon = Classes.Util.MakeMenuIconPath(geometryResourceKey)
+            };
+            item.Click += (s, args) => action();
+            return item;
+        }
+
+        private void AppendCompactRightClickAppActions(ContextMenu menu)
+        {
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.GetActiveCompactSet() != null)
+            {
+                menu.Items.Add(new Separator());
+
+                bool isRunning = ApplicationOptions.IsCompactSetRunning;
+                menu.Items.Add(
+                    CreateCompactRightClickAction(
+                        isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet,
+                        isRunning ? "geom.menu.stop" : "geom.menu.start",
+                        () => StartStopCompactSet()));
+            }
+
+            menu.Items.Add(new Separator());
+
+            var sourceNormalItem = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_NormalTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets
+            };
+            sourceNormalItem.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+            menu.Items.Add(sourceNormalItem);
+
+            var sourceCustomItem = new MenuItem
+            {
+                Header = Strings.Options_CompactSource_CustomTargets,
+                IsCheckable = true,
+                IsChecked = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+            };
+            sourceCustomItem.Click += (s, args) =>
+                SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
+            menu.Items.Add(sourceCustomItem);
+
+            AppendCompactSetMenuItems(menu.Items);
+
+            menu.Items.Add(new Separator());
+
+            menu.Items.Add(
+                CreateCompactRightClickAction(
+                    Strings.Menu_CompactManageSets,
+                    "geom.menu.edit",
+                    () => OpenManageCompactSets()));
+
+            menu.Items.Add(new Separator());
+
+            var openAllSub = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllLive,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.cascade")
+            };
+
+            var cascadeItem = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllCascade,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.cascade")
+            };
+            cascadeItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: true);
+
+            var tileItem = new MenuItem
+            {
+                Header = Strings.LivePing_OpenAllTile,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.columns-grid")
+            };
+            tileItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: false);
+
+            openAllSub.Items.Add(cascadeItem);
+            openAllSub.Items.Add(tileItem);
+            menu.Items.Add(openAllSub);
+
+            menu.Items.Add(
+                CreateCompactRightClickAction(
+                    Strings.Menu_StatusHistory,
+                    "geom.menu.status-history",
+                    () => StatusHistoryExecute(null, null)));
+
+            menu.Items.Add(new Separator());
+
+            menu.Items.Add(
+                CreateCompactRightClickAction(
+                    Strings.Menu_Options,
+                    "geom.menu.options",
+                    () => OptionsExecute(null, null)));
+
+            menu.Items.Add(
+                CreateCompactRightClickAction(
+                    Strings.Menu_About,
+                    "geom.menu.about",
+                    () => AboutMenu_Click(null, null)));
+        }
+
         private ContextMenu CreateCompactRightClickMenu(Probe selectedProbe)
         {
             var menu = CreateThemedCompactContextMenu();
+
+            menu.Items.Add(
+                CreateCompactRightClickAction(
+                    Strings.Menu_NewLivePing,
+                    "geom.menu.new-live-ping",
+                    () => NewLivePingMenu_Click(null, null)));
 
             var addHostItem = new MenuItem
             {
@@ -2257,6 +2371,8 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 removeHostItem.Click += (s, args) => RemoveCompactHostFromActiveSet(selectedProbe);
                 menu.Items.Add(removeHostItem);
             }
+
+            AppendCompactRightClickAppActions(menu);
 
             return menu;
         }
