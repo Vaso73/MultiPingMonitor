@@ -144,3 +144,12 @@ The script must not bypass the normal GitHub workflow. It must still:
 - stop on any failed gate.
 
 Do not use this model for broad feature development. Feature work still needs its own feature branch, preview validation when needed, tests, PR, merge, and only then a separate release bump/publish flow.
+
+## Command block formatting
+
+- For normal runnable shell commands, use fenced `bash` blocks.
+- Use plain text command blocks only for handoff/copy-block output, non-shell
+  text, or when the user explicitly requests plain text.
+- This formatting rule does not override shell safety rules: no `set -e`, no
+  `set -euo pipefail`, no explicit `exit` in active SSH/session command
+  blocks, no direct push to `main`, and no unsafe large interactive heredocs.

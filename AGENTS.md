@@ -74,6 +74,9 @@ these files and include enough verified context to continue safely.
 - Before every technical step, explain in one short nontechnical sentence what
   will be done.
 - Prefer short, bounded command blocks and minimal relevant output.
+- For normal runnable shell commands, use fenced `bash` blocks. Use plain
+  text command blocks only for handoff/copy-block output, non-shell text, or
+  when the user explicitly requests plain text.
 - Do not conceal uncertainty.
 - Mark unverified or time-variable facts as `unknown / verify live`.
 - Do not require the user to change their standard handoff request.
