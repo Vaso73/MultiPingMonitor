@@ -27,14 +27,14 @@ namespace MultiPingMonitor.Tests
             Assert.Equal("multipingmonitor", LanguagePackKeys.AppId);
             Assert.Equal("MultiPingMonitor", LanguagePackKeys.AppName);
             Assert.Equal(20000, LanguagePackKeys.FirstKey);
-            Assert.Equal(514, LanguagePackKeys.EntryCount);
-            Assert.Equal(514, LanguagePackKeys.ResourceKeys.Count);
+            Assert.Equal(516, LanguagePackKeys.EntryCount);
+            Assert.Equal(516, LanguagePackKeys.ResourceKeys.Count);
             Assert.Equal("About_AccountNotConnectedStatus", LanguagePackKeys.ResourceKeys[20000]);
             var firstKey = LanguagePackKeys.ResourceKeys.Keys.Min();
             var lastKey = LanguagePackKeys.ResourceKeys.Keys.Max();
 
             Assert.Equal(20000, firstKey);
-            Assert.Equal(20513, lastKey);
+            Assert.Equal(20515, lastKey);
             Assert.Equal(LanguagePackKeys.EntryCount, lastKey - firstKey + 1);
             Assert.Contains("Compact_Footer_Refresh", LanguagePackKeys.ResourceKeys.Values);
         }

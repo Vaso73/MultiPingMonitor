@@ -1681,4 +1681,10 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="DialogButton_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Options_LanguageApplyHint" xml:space="preserve">
+    <value>Changes are applied when you click Apply or Save.</value>
+  </data>
 </root>

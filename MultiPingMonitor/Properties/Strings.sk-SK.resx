@@ -1559,4 +1559,10 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
     <value>Podrobnosti</value>
   </data>
+  <data name="DialogButton_Apply" xml:space="preserve">
+    <value>Použiť</value>
+  </data>
+  <data name="Options_LanguageApplyHint" xml:space="preserve">
+    <value>Zmeny sa použijú po kliknutí na Použiť alebo Uložiť.</value>
+  </data>
 </root>

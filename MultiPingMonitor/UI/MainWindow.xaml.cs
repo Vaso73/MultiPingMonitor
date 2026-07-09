@@ -2788,6 +2788,36 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             }
         }
 
+
+        internal void ApplyRuntimeOptionChanges(
+            bool languageChanged,
+            System.Collections.Generic.IReadOnlyDictionary<string, string> oldResources)
+        {
+            RefreshGuiState();
+            RefreshProbeColors();
+            UpdateCompactSourceMenuChecks();
+            UpdateTrayToggleText();
+
+            if (languageChanged)
+            {
+                var newResources = LanguageRuntimeService.CaptureResourceSnapshot();
+                LocalizationRefreshService.Refresh(this, oldResources, newResources);
+
+                if (NotifyIcon != null)
+                {
+                    var oldMenu = _trayNativeMenu;
+                    _trayNativeMenu = BuildNativeTrayMenu();
+                    NotifyIcon.ContextMenuStrip = _trayNativeMenu;
+                    oldMenu?.Dispose();
+                }
+
+                UpdateCompactNetworkFooter();
+            }
+
+            _trayState = (TrayAggregateState)(-1);
+            UpdateTrayIcon();
+        }
+
         /// <summary>
         /// Main-menu click handler for the display-mode toggle item.
         /// Uses the same centralized SwitchDisplayMode() as the tray toggle.

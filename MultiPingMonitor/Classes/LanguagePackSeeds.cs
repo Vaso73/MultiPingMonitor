@@ -538,6 +538,8 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20511, "UpdateAvailable_UpdateButton", "Update", "Aktualizovať"),
                 new LanguagePackSeedEntry(20512, "UpdateSuccess_TrayMessage", "Update to version {0} completed successfully.", "Aktualizácia na verziu {0} bola úspešne dokončená."),
                 new LanguagePackSeedEntry(20513, "UpdateSuccess_TrayTitle", "Update completed", "Aktualizácia dokončená"),
+                new LanguagePackSeedEntry(20514, "DialogButton_Apply", "Apply", "Použiť"),
+                new LanguagePackSeedEntry(20515, "Options_LanguageApplyHint", "Changes are applied when you click Apply or Save.", "Zmeny sa použijú po kliknutí na Použiť alebo Uložiť."),
             };
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Media;
 using System.Text;
@@ -13,17 +14,20 @@ namespace MultiPingMonitor.UI
 {
     public partial class OptionsWindow : Window
     {
-        // Store original theme so it can be reverted if the user cancels.
-        private readonly string _originalTheme;
-        // Store original visual style so it can be reverted if the user cancels.
-        private readonly string _originalVisualStyle;
-        // Store original display mode so it can be reverted if the user cancels.
-        private readonly ApplicationOptions.DisplayMode _originalDisplayMode;
-        // Store original compact source mode so it can be reverted if the user cancels.
-        private readonly ApplicationOptions.CompactSourceMode _originalCompactSource;
+        // Store accepted preview values so they can be reverted if the user cancels.
+        private string _originalTheme;
+        private string _originalVisualStyle;
+        private ApplicationOptions.DisplayMode _originalDisplayMode;
+        private ApplicationOptions.CompactSourceMode _originalCompactSource;
+        private string _originalLanguageCode;
 
-        private static string Text(string key, string fallback) =>
-            Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        private static string Text(string key, string fallback)
+        {
+            var value = Properties.Strings.ResourceManager.GetString(key);
+            return string.IsNullOrEmpty(value) || string.Equals(value, key, StringComparison.Ordinal)
+                ? fallback
+                : value;
+        }
 
         private MainWindow HostMainWindow =>
             Owner as MainWindow ?? Application.Current?.MainWindow as MainWindow;
@@ -41,6 +45,7 @@ namespace MultiPingMonitor.UI
             _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
             // Remember the current compact source mode so we can revert if the user cancels.
             _originalCompactSource = ApplicationOptions.CompactSource;
+            _originalLanguageCode = ApplicationOptions.LanguageCode;
 
             PopulateGeneralOptions();
             PopulateUpdateOptions();
@@ -51,6 +56,7 @@ namespace MultiPingMonitor.UI
             PopulateAdvancedOptions();
             PopulateDisplayOptions();
             PopulateLayoutOptions();
+            RefreshLocalizedText(null, LanguageRuntimeService.CaptureResourceSnapshot());
             Loaded += (_, _) => VisualStyleManager.ApplyNativeWindowCorners(this);
         }
 
@@ -324,21 +330,108 @@ namespace MultiPingMonitor.UI
         }
 
 
-        private void OK_Click(object sender, RoutedEventArgs e)
+        private void Apply_Click(object sender, RoutedEventArgs e)
         {
-            if (SaveGeneralOptions() == false) return;
-            if (SaveUpdateOptions() == false) return;
-            if (SaveNotificationOptions() == false) return;
-            if (SaveEmailAlertOptions() == false) return;
-            if (SaveAudioAlertOptions() == false) return;
-            if (SaveLogOutputOptions() == false) return;
-            if (SaveAdvancedOptions() == false) return;
-            if (SaveLayoutOptions() == false) return;
-            if (SaveDisplayOptions() == false) return;
+            ApplyOptions(closeAfterApply: false);
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyOptions(closeAfterApply: true);
+        }
+
+        private bool ApplyOptions(bool closeAfterApply)
+        {
+            var previousLanguageCode = ApplicationOptions.LanguageCode;
+            var oldResources = LanguageRuntimeService.CaptureResourceSnapshot();
+
+            if (SaveAllOptions() == false)
+                return false;
+
+            bool languageChanged = !string.Equals(
+                previousLanguageCode,
+                ApplicationOptions.LanguageCode,
+                StringComparison.OrdinalIgnoreCase);
+
+            if (languageChanged)
+                LanguageRuntimeService.ApplyLanguage(ApplicationOptions.LanguageCode);
 
             Configuration.Save();
 
-            DialogResult = true;
+            ApplyRuntimeChanges(languageChanged, oldResources);
+            SnapshotAcceptedPreviewState();
+
+            if (closeAfterApply)
+                DialogResult = true;
+
+            return true;
+        }
+
+        private bool SaveAllOptions()
+        {
+            if (SaveGeneralOptions() == false) return false;
+            if (SaveUpdateOptions() == false) return false;
+            if (SaveNotificationOptions() == false) return false;
+            if (SaveEmailAlertOptions() == false) return false;
+            if (SaveAudioAlertOptions() == false) return false;
+            if (SaveLogOutputOptions() == false) return false;
+            if (SaveAdvancedOptions() == false) return false;
+            if (SaveLayoutOptions() == false) return false;
+            if (SaveDisplayOptions() == false) return false;
+
+            return true;
+        }
+
+        private void ApplyRuntimeChanges(
+            bool languageChanged,
+            IReadOnlyDictionary<string, string> oldResources)
+        {
+            var mainWindow = HostMainWindow;
+            mainWindow?.ApplyRuntimeOptionChanges(languageChanged, oldResources);
+
+            if (languageChanged)
+            {
+                var newResources = LanguageRuntimeService.CaptureResourceSnapshot();
+                RefreshLocalizedText(oldResources, newResources);
+            }
+        }
+
+        private void RefreshLocalizedText(
+            IReadOnlyDictionary<string, string> oldResources,
+            IReadOnlyDictionary<string, string> newResources)
+        {
+            if (oldResources != null && newResources != null)
+            {
+                LocalizationRefreshService.Refresh(this, oldResources, newResources);
+
+                if (LanguageComboBox != null)
+                    PopulateLanguageOptions();
+            }
+
+            if (ApplyButton != null)
+                ApplyButton.Content = Text("DialogButton_Apply", "Apply");
+
+            if (SaveButton != null)
+                SaveButton.Content = Text("DialogButton_Save", "Save");
+
+            if (CancelButton != null)
+                CancelButton.Content = Text("DialogButton_Cancel", "Cancel");
+
+            if (LanguageApplyHintText != null)
+            {
+                LanguageApplyHintText.Text = Text(
+                    "Options_LanguageApplyHint",
+                    "Changes are applied when you click Apply or Save.");
+            }
+        }
+
+        private void SnapshotAcceptedPreviewState()
+        {
+            _originalTheme = ApplicationOptions.Theme;
+            _originalVisualStyle = ApplicationOptions.VisualStyle;
+            _originalDisplayMode = ApplicationOptions.CurrentDisplayMode;
+            _originalCompactSource = ApplicationOptions.CompactSource;
+            _originalLanguageCode = ApplicationOptions.LanguageCode;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -367,6 +460,9 @@ namespace MultiPingMonitor.UI
                 {
                     (Owner as MainWindow)?.SwitchDisplayMode(_originalDisplayMode);
                 }
+
+                ApplicationOptions.LanguageCode = _originalLanguageCode;
+                ApplicationOptions.Language = ApplicationOptions.ToLegacyLanguage(_originalLanguageCode);
             }
             base.OnClosing(e);
         }

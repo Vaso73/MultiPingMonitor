@@ -13,6 +13,9 @@ namespace MultiPingMonitor.Classes
         public const string SystemLanguageCode = "System";
         public const string EnglishLanguageCode = "en";
 
+        private static readonly CultureInfo SystemDefaultCulture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo SystemDefaultUICulture = CultureInfo.CurrentUICulture;
+
         public static string NormalizeLanguageCode(string languageCode)
         {
             if (string.IsNullOrWhiteSpace(languageCode))
@@ -41,6 +44,21 @@ namespace MultiPingMonitor.Classes
             return trimmed;
         }
 
+
+        public static IReadOnlyDictionary<string, string> CaptureResourceSnapshot()
+        {
+            var snapshot = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            foreach (var resourceName in LanguagePackKeys.ResourceKeys.Values.Distinct(StringComparer.Ordinal))
+            {
+                var value = MultiPingMonitor.Properties.Strings.ResourceManager.GetString(resourceName);
+                if (!string.IsNullOrEmpty(value))
+                    snapshot[resourceName] = value;
+            }
+
+            return snapshot;
+        }
+
         public static CultureInfo ApplyLanguage(string languageCode)
         {
             LanguagePackService.EnsureSeedLanguagePacks();
@@ -58,12 +76,23 @@ namespace MultiPingMonitor.Classes
             return culture;
         }
 
+        private static CultureInfo GetSystemDefaultCulture()
+        {
+            if (!string.IsNullOrWhiteSpace(SystemDefaultCulture.Name))
+                return new CultureInfo(SystemDefaultCulture.Name);
+
+            if (!string.IsNullOrWhiteSpace(SystemDefaultUICulture.Name))
+                return new CultureInfo(SystemDefaultUICulture.Name);
+
+            return CultureInfo.InvariantCulture;
+        }
+
         public static CultureInfo ResolveCulture(string languageCode)
         {
             var normalizedLanguageCode = NormalizeLanguageCode(languageCode);
 
             if (string.Equals(normalizedLanguageCode, SystemLanguageCode, StringComparison.OrdinalIgnoreCase))
-                return CultureInfo.CurrentCulture;
+                return GetSystemDefaultCulture();
 
             if (string.Equals(normalizedLanguageCode, EnglishLanguageCode, StringComparison.OrdinalIgnoreCase))
                 return new CultureInfo(EnglishLanguageCode);
@@ -104,11 +133,11 @@ namespace MultiPingMonitor.Classes
 
             var currentNames = new[]
                 {
-                    CultureInfo.CurrentUICulture.Name,
-                    CultureInfo.CurrentCulture.Name,
+                    SystemDefaultCulture.Name,
+                    SystemDefaultUICulture.Name,
                     culture.Name,
-                    CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-                    CultureInfo.CurrentCulture.TwoLetterISOLanguageName,
+                    SystemDefaultCulture.TwoLetterISOLanguageName,
+                    SystemDefaultUICulture.TwoLetterISOLanguageName,
                     culture.TwoLetterISOLanguageName,
                 }
                 .Where(name => !string.IsNullOrWhiteSpace(name))
