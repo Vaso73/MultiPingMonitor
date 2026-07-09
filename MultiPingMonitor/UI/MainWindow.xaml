@@ -305,22 +305,26 @@
                 </MenuItem.Icon>
 
                 <!-- Menu: Options -->
-                <MenuItem Name="OptionsMenu"
-                          Header="{x:Static resource:Strings.Menu_Options}"
-                          InputGestureText="F10">
+                <MenuItem Header="{x:Static resource:Strings.Menu_NewLivePing}" x:Name="NewLivePingMenu"
+                          Click="NewLivePingMenu_Click">
                     <MenuItem.Icon>
-                        <Path Data="{StaticResource geom.menu.options}" Fill="{DynamicResource Theme.Text.Primary}"
+                        <Path Data="{StaticResource geom.menu.new-live-ping}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: Switch display mode (Normal ↔ Compact) -->
-                <MenuItem x:Name="ToggleDisplayModeMenu" Click="ToggleDisplayMode_Click">
+                <MenuItem Name="MultiInputMenu" Header="{x:Static resource:Strings.Menu_InputAddresses}" InputGestureText="F2">
                     <MenuItem.Icon>
-                        <Path Data="{StaticResource geom.menu.toggle-display}" Fill="{DynamicResource Theme.Text.Primary}"
+                        <Path Data="{StaticResource geom.menu.input-addresses}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: Compact targets submenu -->
+                <MenuItem Header="{x:Static resource:Strings.Menu_NewInstance}" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
+                    <MenuItem.Icon>
+                        <Path Data="{StaticResource geom.menu.new-instance}" Fill="{DynamicResource Theme.Text.Primary}"
+                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
                 <MenuItem Header="{x:Static resource:Strings.Menu_CompactTargets}" x:Name="CompactTargetsMenu"
                           SubmenuOpened="CompactTargetsMenu_SubmenuOpened">
                     <MenuItem.Icon>
@@ -338,21 +342,12 @@
                     <!-- Dynamic compact set items and Manage Sets are added in code-behind -->
                 </MenuItem>
                 <Separator />
-                <!-- Menu: Status history -->
                 <MenuItem Name="StatusHistoryMenu" Header="{x:Static resource:Strings.Menu_StatusHistory}" InputGestureText="F12">
                     <MenuItem.Icon>
                         <Path Data="{StaticResource geom.menu.status-history}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: Input addresses-->
-                <MenuItem Name="MultiInputMenu" Header="{x:Static resource:Strings.Menu_InputAddresses}" InputGestureText="F2">
-                    <MenuItem.Icon>
-                        <Path Data="{StaticResource geom.menu.input-addresses}" Fill="{DynamicResource Theme.Text.Primary}"
-                              Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <!-- Menu: Popup alerts -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_PopupAlerts}">
                     <MenuItem Name="PopupNever"
                               Header="{x:Static resource:Strings.Notification_Never}"
@@ -367,8 +362,6 @@
                               Click="PopupAlways_Click"
                               IsCheckable="True"/>
                 </MenuItem>
-                <Separator />
-                <!-- Menu: Favorite sets-->
                 <MenuItem Header="{x:Static resource:Strings.Menu_FavoriteSets}" x:Name="FavoritesMenu">
                     <MenuItem Header="{x:Static resource:Strings.Menu_SaveToFavorites}" Click="CreateFavorite_Click">
                         <MenuItem.Icon>
@@ -384,7 +377,6 @@
                     </MenuItem>
                     <Separator />
                 </MenuItem>
-                <!-- Menu: Aliases-->
                 <MenuItem Header="{x:Static resource:Strings.Menu_Aliases}" x:Name="AliasesMenu">
                     <MenuItem Header="{x:Static resource:Strings.Menu_ManageAliases}" Click="ManageAliases_Click">
                         <MenuItem.Icon>
@@ -395,45 +387,40 @@
                     <Separator />
                 </MenuItem>
                 <Separator />
-                <!-- Menu: Traceroute -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_Traceroute}" x:Name="TracerouteMenu" InputGestureText="Ctrl-T">
                     <MenuItem.Icon>
                         <Path Data="{StaticResource geom.menu.traceroute}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: Flood host -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_FloodHost}" x:Name="FloodHostMenu" InputGestureText="Ctrl-F">
                     <MenuItem.Icon>
                         <Path Data="{StaticResource geom.menu.flood-host}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: New Live Ping (manual/direct) -->
-                <MenuItem Header="{x:Static resource:Strings.Menu_NewLivePing}" x:Name="NewLivePingMenu"
-                          Click="NewLivePingMenu_Click">
+                <Separator />
+                <MenuItem Name="OptionsMenu"
+                          Header="{x:Static resource:Strings.Menu_Options}"
+                          InputGestureText="F10">
                     <MenuItem.Icon>
-                        <Path Data="{StaticResource geom.menu.new-live-ping}" Fill="{DynamicResource Theme.Text.Primary}"
+                        <Path Data="{StaticResource geom.menu.options}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <!-- Menu: New instance -->
-                <MenuItem Header="{x:Static resource:Strings.Menu_NewInstance}" x:Name="NewInstanceMenu" InputGestureText="Ctrl-N">
+                <MenuItem x:Name="ToggleDisplayModeMenu" Click="ToggleDisplayMode_Click">
                     <MenuItem.Icon>
-                        <Path Data="{StaticResource geom.menu.new-instance}" Fill="{DynamicResource Theme.Text.Primary}"
+                        <Path Data="{StaticResource geom.menu.toggle-display}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <!-- Menu: Help -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_Help}" x:Name="HelpMenu" InputGestureText="F1">
                     <MenuItem.Icon>
                         <Path Data="{StaticResource geom.menu.help}" Fill="{DynamicResource Theme.Text.Primary}"
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator />
-                <!-- Menu: About -->
                 <MenuItem Header="{x:Static resource:Strings.Menu_About}"
                           x:Name="AboutMenu"
                           Click="AboutMenu_Click">
@@ -442,6 +429,7 @@
                               Width="14" Height="14" Stretch="Uniform" VerticalAlignment="Center"/>
                     </MenuItem.Icon>
                 </MenuItem>
+
             </MenuItem>
         </Menu>
 
