@@ -42,6 +42,25 @@ release publication.
 This local-first rule supersedes the older one-step GitHub workflow sections
 below whenever the user has not explicitly requested immediate GitHub delivery.
 
+## Windows runtime acceptance via self-update
+
+Accepted after Sponsor Pro v1.0.25.
+
+For new MultiPingMonitor versions, final Windows runtime acceptance must be done through the application's own update flow, not by manually copying a local EXE or ZIP into the Windows TestRuntime directory.
+
+Do not use the previous normal workflow of `scp`/PowerShell/manual EXE replacement for release acceptance. Manual copying is allowed only as an explicitly approved exceptional diagnostic or local-debug step, not as the standard acceptance path.
+
+Required acceptance gate for future Sponsor Pro releases:
+
+1. Publish the private Sponsor Pro release asset.
+2. Ensure the intended release is the GitHub Latest release when the backend depends on GitHub Latest metadata.
+3. Verify `https://updates.watel.cloud/v1/update/latest` returns the expected `latestVersion`, `tagName`, asset name, SHA-256, size, and `status=ok`.
+4. Start from the previous accepted Windows runtime version.
+5. Use `About / Check for update` inside MultiPingMonitor and confirm the update in the app.
+6. After restart, verify the displayed version, `FileVersion`, and EXE SHA-256 match the released asset.
+7. Smoke-test the changed feature in the updated EXE.
+8. Accept the release only after the in-app self-update path and runtime smoke test pass.
+
 ## Standard one-step GitHub workflow: no release
 
 Use this when the user says equivalent to “daj to na GitHub bez release”.

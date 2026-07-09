@@ -336,3 +336,12 @@ explicitly approves a config reset.
 When handing off files to Windows, always provide exact PowerShell `scp`
 commands that copy into this fixed root directory unless the user explicitly
 requests a different destination.
+
+<!-- MPM_RUNTIME_UPDATE_TESTING_RULE_START -->
+## MultiPingMonitor runtime acceptance rule
+
+From Sponsor Pro v1.0.25 onward, new MultiPingMonitor versions must be accepted through the app's own self-update workflow. Do not use Windows PowerShell `scp`, manual ZIP extraction, or manual `MultiPingMonitor.exe` replacement as the normal runtime acceptance path. Use manual copying only when the user explicitly approves it as an exceptional diagnostic/local-debug step.
+
+Before telling the user to update from the app, verify that the live update endpoint returns the intended version, tag, asset name, SHA-256, size, and `status=ok`.
+
+<!-- MPM_RUNTIME_UPDATE_TESTING_RULE_END -->
