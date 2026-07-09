@@ -100,21 +100,17 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void AboutWindow_UsesRealUpdateInstallerInsteadOfPlaceholder()
+        public void UpdateAvailableWindow_UsesRealUpdateInstallerInsteadOfPlaceholder()
         {
             string source =
                 File.ReadAllText(SourcePath(
                     "MultiPingMonitor",
                     "UI",
-                    "AboutWindow.xaml.cs"));
+                    "UpdateAvailableWindow.xaml.cs"));
 
             Assert.Contains("new UpdateInstallService()", source);
             Assert.Contains("InstallAsync(", source);
             Assert.Contains("Application.Current.Shutdown()", source);
-            Assert.Contains("About_UpdateConfirmMessage", source);
-            Assert.DoesNotContain(
-                "Update installation will be enabled in the next updater step.",
-                source);
         }
 
         [Theory]
@@ -191,7 +187,7 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("ShowCompletedUpdateSuccessIfAny", source);
             Assert.Contains("ConsumeCompletedUpdateSuccessVersion", source);
             Assert.Contains("UpdateSuccess_TrayMessage", source);
-            Assert.Contains("NotifyIcon.ShowBalloonTip", source);
+            Assert.Contains("DialogWindow.InfoWindow", source);
         }
 
         [Fact]

@@ -1636,4 +1636,49 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="UpdateSuccess_TrayMessage" xml:space="preserve">
     <value>Update to version {0} completed successfully.</value>
   </data>
+  <data name="UpdateAvailable_Title" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="UpdateAvailable_Header" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="UpdateAvailable_CurrentVersion" xml:space="preserve">
+    <value>Current:</value>
+  </data>
+  <data name="UpdateAvailable_LatestVersion" xml:space="preserve">
+    <value>Latest:</value>
+  </data>
+  <data name="UpdateAvailable_Channel" xml:space="preserve">
+    <value>Channel:</value>
+  </data>
+  <data name="UpdateAvailable_Size" xml:space="preserve">
+    <value>Package:</value>
+  </data>
+  <data name="UpdateAvailable_DetailsFallback" xml:space="preserve">
+    <value>This update will be downloaded and installed directly from the Sponsor Pro update service. Detailed release notes are not available from the update endpoint yet.</value>
+  </data>
+  <data name="UpdateAvailable_StatusReady" xml:space="preserve">
+    <value>Ready to install.</value>
+  </data>
+  <data name="UpdateAvailable_StatusPreparing" xml:space="preserve">
+    <value>Preparing update installation...</value>
+  </data>
+  <data name="UpdateAvailable_StatusRestarting" xml:space="preserve">
+    <value>Update is ready. MultiPingMonitor will restart now.</value>
+  </data>
+  <data name="UpdateAvailable_StatusSignInRequired" xml:space="preserve">
+    <value>Sign in with GitHub before installing Sponsor Pro updates.</value>
+  </data>
+  <data name="UpdateAvailable_StatusFailed" xml:space="preserve">
+    <value>The update could not be installed. The application was not changed. Try again or download the latest version manually.</value>
+  </data>
+  <data name="UpdateAvailable_UpdateButton" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="UpdateAvailable_LaterButton" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
+    <value>Details</value>
+  </data>
 </root>

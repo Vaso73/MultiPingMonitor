@@ -58,6 +58,7 @@ namespace MultiPingMonitor.UI
         // Automatic update check runs once per application process.
         // It checks availability only; installation is always user initiated.
         private bool _automaticUpdateCheckStarted = false;
+        private UpdateCheckResult _pendingAutomaticUpdate;
 
         // ── Display mode ──────────────────────────────────────────────────────
         // Saved references to the normal-mode ItemTemplate, ItemsPanel, and Template
@@ -211,20 +212,10 @@ namespace MultiPingMonitor.UI
                         "Update to version {0} completed successfully."),
                     completedVersion);
 
-            if (NotifyIcon != null)
-            {
-                NotifyIcon.BalloonTipTitle = title;
-                NotifyIcon.BalloonTipText = message;
-                NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-                NotifyIcon.ShowBalloonTip(10000);
-                return;
-            }
-
-            MessageBox.Show(
-                message,
-                title,
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            var dialog = DialogWindow.InfoWindow(message);
+            dialog.Title = title;
+            ConfigureOwnedDialog(dialog);
+            dialog.ShowDialog();
         }
 
         private static Version GetCurrentVersionForAutomaticUpdateCheck()
@@ -291,7 +282,7 @@ namespace MultiPingMonitor.UI
                     && result.LatestVersion != null)
                 {
                     _ = Dispatcher.BeginInvoke(new Action(() =>
-                        ShowAutomaticUpdateAvailableBalloon(result.LatestVersion)));
+                        ShowAutomaticUpdateAvailableWindow(result)));
                 }
             }
             catch (Exception ex)
@@ -309,27 +300,60 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        private void ShowAutomaticUpdateAvailableBalloon(Version latestVersion)
+        private void ShowAutomaticUpdateAvailableWindow(UpdateCheckResult result)
         {
-            if (NotifyIcon == null)
+            if (result == null
+                || result.Status != UpdateCheckStatus.UpdateAvailable
+                || result.LatestVersion == null
+                || result.Manifest == null)
             {
                 return;
             }
 
-            NotifyIcon.BalloonTipTitle =
-                ResourceText("AutoUpdate_TrayTitle", "MultiPingMonitor update");
-            NotifyIcon.BalloonTipText = string.Format(
-                ResourceText(
-                    "AutoUpdate_TrayUpdateAvailable",
-                    "A new Sponsor Pro version {0} is available. Click to update."),
-                latestVersion);
-            NotifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            NotifyIcon.ShowBalloonTip(10000);
+            _pendingAutomaticUpdate = result;
+
+            if (Application.Current.Windows.OfType<UpdateAvailableWindow>().Any())
+                return;
+
+            SponsorProSession session = null;
+            try
+            {
+                session = new SponsorProSessionStore().Load();
+            }
+            catch
+            {
+                // Update availability can still be shown; install will require sign-in.
+            }
+
+            var updateWindow =
+                new UpdateAvailableWindow(
+                    GetCurrentVersionForAutomaticUpdateCheck(),
+                    result.LatestVersion,
+                    result.Manifest,
+                    session);
+
+            ConfigureOwnedDialog(updateWindow);
+            updateWindow.Show();
+            updateWindow.Activate();
+        }
+
+        private void ShowPendingAutomaticUpdateOrAboutWindow()
+        {
+            if (_pendingAutomaticUpdate != null
+                && _pendingAutomaticUpdate.Status == UpdateCheckStatus.UpdateAvailable
+                && _pendingAutomaticUpdate.LatestVersion != null
+                && _pendingAutomaticUpdate.Manifest != null)
+            {
+                ShowAutomaticUpdateAvailableWindow(_pendingAutomaticUpdate);
+                return;
+            }
+
+            AboutMenu_Click(null, null);
         }
 
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
         {
-            Dispatcher.BeginInvoke(new Action(() => AboutMenu_Click(null, null)));
+            Dispatcher.BeginInvoke(new Action(ShowPendingAutomaticUpdateOrAboutWindow));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

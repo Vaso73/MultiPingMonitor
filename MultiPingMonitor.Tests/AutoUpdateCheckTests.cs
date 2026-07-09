@@ -69,9 +69,9 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("new UpdateCheckService()", source);
             Assert.Contains("GetCurrentVersionForAutomaticUpdateCheck", source);
             Assert.Contains("service.CheckAsync(", source);
-            Assert.Contains("ShowAutomaticUpdateAvailableBalloon", source);
-            Assert.Contains("NotifyIcon.ShowBalloonTip", source);
-            Assert.Contains("NotifyIcon.BalloonTipClicked", source);
+            Assert.Contains("ShowAutomaticUpdateAvailableWindow", source);
+            Assert.Contains("UpdateAvailableWindow", source);
+            Assert.Contains("ShowPendingAutomaticUpdateOrAboutWindow", source);
             Assert.DoesNotContain("new UpdateInstallService()", source);
         }
 
