@@ -1514,4 +1514,49 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="UpdateSuccess_TrayMessage" xml:space="preserve">
     <value>Aktualizácia na verziu {0} bola úspešne dokončená.</value>
   </data>
+  <data name="UpdateAvailable_Title" xml:space="preserve">
+    <value>Dostupná aktualizácia</value>
+  </data>
+  <data name="UpdateAvailable_Header" xml:space="preserve">
+    <value>Dostupná aktualizácia</value>
+  </data>
+  <data name="UpdateAvailable_CurrentVersion" xml:space="preserve">
+    <value>Aktuálna:</value>
+  </data>
+  <data name="UpdateAvailable_LatestVersion" xml:space="preserve">
+    <value>Najnovšia:</value>
+  </data>
+  <data name="UpdateAvailable_Channel" xml:space="preserve">
+    <value>Kanál:</value>
+  </data>
+  <data name="UpdateAvailable_Size" xml:space="preserve">
+    <value>Balík:</value>
+  </data>
+  <data name="UpdateAvailable_DetailsFallback" xml:space="preserve">
+    <value>Táto aktualizácia sa stiahne a nainštaluje priamo zo služby Sponsor Pro aktualizácií. Detailné poznámky k vydaniu zatiaľ endpoint neposkytuje.</value>
+  </data>
+  <data name="UpdateAvailable_StatusReady" xml:space="preserve">
+    <value>Pripravené na inštaláciu.</value>
+  </data>
+  <data name="UpdateAvailable_StatusPreparing" xml:space="preserve">
+    <value>Pripravuje sa inštalácia aktualizácie...</value>
+  </data>
+  <data name="UpdateAvailable_StatusRestarting" xml:space="preserve">
+    <value>Aktualizácia je pripravená. MultiPingMonitor sa teraz reštartuje.</value>
+  </data>
+  <data name="UpdateAvailable_StatusSignInRequired" xml:space="preserve">
+    <value>Pred inštaláciou Sponsor Pro aktualizácií sa prihláste cez GitHub.</value>
+  </data>
+  <data name="UpdateAvailable_StatusFailed" xml:space="preserve">
+    <value>Aktualizáciu sa nepodarilo nainštalovať. Aplikácia nebola zmenená. Skúste to znova alebo stiahnite najnovšiu verziu manuálne.</value>
+  </data>
+  <data name="UpdateAvailable_UpdateButton" xml:space="preserve">
+    <value>Aktualizovať</value>
+  </data>
+  <data name="UpdateAvailable_LaterButton" xml:space="preserve">
+    <value>Neskôr</value>
+  </data>
+  <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
+    <value>Podrobnosti</value>
+  </data>
 </root>

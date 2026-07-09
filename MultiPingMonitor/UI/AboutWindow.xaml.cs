@@ -252,7 +252,7 @@ namespace MultiPingMonitor.UI
             }
         }
 
-        private async void InstallUpdateButton_Click(
+        private void InstallUpdateButton_Click(
             object sender,
             RoutedEventArgs e)
         {
@@ -272,95 +272,18 @@ namespace MultiPingMonitor.UI
                 return;
             }
 
-            MessageBoxResult confirmation =
-                MessageBox.Show(
-                    this,
-                    string.Format(
-                        CultureInfo.CurrentCulture,
-                        Text(
-                            "About_UpdateConfirmMessage",
-                            "MultiPingMonitor will download and install version {0}. The application will restart to complete the update."),
-                        FormatVersion(_availableVersion)),
-                    Text("About_UpdateConfirmTitle", "Install update"),
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-            if (confirmation != MessageBoxResult.Yes)
-                return;
-
-            _installCancellation?.Cancel();
-            _installCancellation?.Dispose();
-            _installCancellation = new CancellationTokenSource();
-
-            bool helperStarted = false;
-            SetInstallingState(true);
-            StatusText.Text =
-                Text(
-                    "About_StatusPreparingUpdate",
-                    "Preparing update installation...");
-
-            try
-            {
-                using var service = new UpdateInstallService();
-
-                UpdateInstallResult result =
-                    await service.InstallAsync(
-                        _availableUpdateManifest,
-                        _sponsorProSession,
-                        _installCancellation.Token);
-
-                if (result.Status == UpdateInstallStatus.HelperStarted)
+            var updateWindow =
+                new UpdateAvailableWindow(
+                    _currentVersion,
+                    _availableVersion,
+                    _availableUpdateManifest,
+                    _sponsorProSession)
                 {
-                    helperStarted = true;
-                    StatusText.Text =
-                        Text(
-                            "About_StatusUpdateRestarting",
-                            "Update is ready. MultiPingMonitor will restart now.");
-                    Application.Current.Shutdown();
-                    return;
-                }
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
 
-                if (result.Status == UpdateInstallStatus.AuthenticationRequired)
-                {
-                    StatusText.Text =
-                        Text(
-                            "About_StatusSignInRequired",
-                            "Sign in with GitHub before checking Sponsor Pro updates.");
-                    return;
-                }
-
-                if (result.Status == UpdateInstallStatus.InvalidManifest)
-                {
-                    StatusText.Text =
-                        Text(
-                            "About_StatusInvalidResponse",
-                            "The update information returned by the server is invalid.");
-                    return;
-                }
-
-                StatusText.Text =
-                    Text(
-                        "About_StatusInstallFailed",
-                        "The update could not be installed. The application was not changed. Try again or download the latest version manually.");
-            }
-            catch (OperationCanceledException)
-            {
-                // Window closed or a newer install attempt replaced this one.
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(
-                    $"AboutWindow update install: {ex.GetType().Name}: {ex.Message}");
-                StatusText.Text =
-                    Text(
-                        "About_StatusInstallFailed",
-                        "The update could not be installed. The application was not changed. Try again or download the latest version manually.");
-            }
-            finally
-            {
-                if (!helperStarted)
-                    SetInstallingState(false);
-            }
+            updateWindow.ShowDialog();
         }
 
         private void SetInstallingState(bool installing)
