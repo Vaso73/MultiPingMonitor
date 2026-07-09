@@ -113,3 +113,28 @@ Approved file responsibilities:
 The user's standard handoff request remains unchanged.
 
 Status: documentation slice pending complete review.
+
+## 2026-07-09 08:29 UTC - Sponsor Pro v1.0.26 accepted
+
+Sponsor Pro v1.0.26 was released and accepted.
+
+Release facts:
+
+- `main` HEAD: `0e19d6d9f1ad845a83235c3f6274cba8913f887b`
+- Sponsor Pro tag: `multipingmonitor/v1.0.26`
+- ZIP asset: `MultiPingMonitor.zip`
+- ZIP SHA-256: `f957b955e310b9a4a836f057ece6c0a86a27f10ddab81ce2802609a84209c0fd`
+- EXE SHA-256: `cf80e0edabfd8eac9dbd3bcb694a24afed3db05fef7d20c33f2721f4d139e434`
+
+Included changes:
+
+- PR #148 expanded Compact right-click menu with existing app and compact-set actions.
+- PR #149 renamed Slovak user-facing `Možnosti` labels to `Nastavenia`.
+- PR #150 bumped version to v1.0.26.
+
+Validation:
+
+- Full test suite passed.
+- Sponsor Pro ZIP download-back verification passed.
+- Backend latest endpoint returned v1.0.26 and correct asset metadata under `asset.*`.
+- Windows runtime acceptance passed through the in-app updater from official v1.0.25 to v1.0.26.
