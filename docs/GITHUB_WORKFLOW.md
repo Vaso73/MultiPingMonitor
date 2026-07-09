@@ -126,3 +126,21 @@ Use this only when the user explicitly asks for GitHub plus release, or when a r
 - Do not use top-level `return ... || true` as a stop mechanism in a script executed with `bash script.sh`; it can continue execution unexpectedly.
 - Temporary workflow scripts must be stored outside the repository root or removed before preflight and scope guard.
 - A local helper script copied into the repo root must never be committed and must not appear in `git status --porcelain=v1 --untracked-files=all`.
+
+## Guarded one-step release scripts
+
+For release-only work, it is acceptable to use one deterministic guarded script to orchestrate the whole flow, as proven by Sponsor Pro v1.0.27.
+
+The script must not bypass the normal GitHub workflow. It must still:
+
+- start from clean synced `main`;
+- create a release branch;
+- open a PR;
+- verify PR scope;
+- merge through GitHub;
+- sync `main`;
+- publish only after the version bump is merged;
+- verify release artifacts and backend metadata;
+- stop on any failed gate.
+
+Do not use this model for broad feature development. Feature work still needs its own feature branch, preview validation when needed, tests, PR, merge, and only then a separate release bump/publish flow.

@@ -588,3 +588,41 @@ directory while preserving the existing configuration files.
 A release is not considered Windows-runtime accepted when it was tested only
 from an isolated per-version subdirectory, unless the user explicitly approves
 that special test mode.
+
+## Guarded one-step Sponsor Pro release orchestration
+
+A full Sponsor Pro release may be run as one deterministic guarded script, provided it still preserves the repository workflow and all release gates.
+
+Required order:
+
+1. Sync `main` and verify clean working tree.
+2. Verify the current version in `AssemblyInfo.cs`.
+3. Verify the target Sponsor Pro release does not already exist.
+4. Verify no public source tag exists for the Sponsor Pro tag.
+5. Create a release bump branch from `origin/main`.
+6. Change only `MultiPingMonitor/Properties/AssemblyInfo.cs`.
+7. Run full tests and Release build.
+8. Commit the version bump.
+9. Push the release branch.
+10. Create PR.
+11. Verify PR scope is only `AssemblyInfo.cs`.
+12. Merge PR.
+13. Sync local `main`.
+14. Verify `main` is clean, synced, and at the bumped version.
+15. Run pre-publish full tests.
+16. Publish single-file win-x64 self-contained EXE.
+17. Create `MultiPingMonitor.zip` containing exactly one entry: `MultiPingMonitor.exe`.
+18. Create Sponsor Pro release in `Vaso73-Software/Sponsor-Pro-Releases`.
+19. Download the release asset back from GitHub.
+20. Verify downloaded ZIP size, SHA-256, and entries match local ZIP.
+21. Verify backend latest endpoint:
+    - `status == ok`
+    - `latestVersion == target version`
+    - `tagName == multipingmonitor/vX.Y.Z`
+    - `asset.name == MultiPingMonitor.zip`
+    - `asset.sha256 == downloaded ZIP SHA-256`
+    - `asset.size == downloaded ZIP size`
+22. Stop if any gate fails.
+23. Final Windows runtime acceptance must be done through the in-app updater from the previously accepted version.
+
+This is not permission to push directly to `main`. It is only permission to orchestrate the approved branch + PR + merge + release workflow in one fail-closed script.

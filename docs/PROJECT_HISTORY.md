@@ -138,3 +138,34 @@ Validation:
 - Sponsor Pro ZIP download-back verification passed.
 - Backend latest endpoint returned v1.0.26 and correct asset metadata under `asset.*`.
 - Windows runtime acceptance passed through the in-app updater from official v1.0.25 to v1.0.26.
+
+## 2026-07-09 10:50 UTC - Sponsor Pro v1.0.27 accepted
+
+Sponsor Pro v1.0.27 was released and accepted.
+
+Release facts:
+
+- `main` HEAD: `c3c42c2bee0888637d6ae5f1d8566d32879b3f5b`
+- Sponsor Pro tag: `multipingmonitor/v1.0.27`
+- ZIP asset: `MultiPingMonitor.zip`
+- ZIP SHA-256: `e62854c01494e0fa5da56d2253d3e1f5220d7c21f5eb32ea73019093252cd5a0`
+- EXE SHA-256: `298a8fa0b0fafd823dba061f50d165eb0d4ad14de230b5e082c916e393c6d234`
+
+Included changes:
+
+- PR #152 reorganized application menu order.
+- PR #153 bumped version to v1.0.27.
+
+Validation:
+
+- Full test suite passed.
+- Sponsor Pro ZIP download-back verification passed.
+- Backend latest endpoint returned v1.0.27 and correct asset metadata under `asset.*`.
+- Windows runtime acceptance passed through the in-app updater from v1.0.26 to v1.0.27.
+- User confirmed all menu ordering and icons were correct.
+
+Workflow note:
+
+- v1.0.27 used a successful guarded one-step release orchestration script.
+- The script still preserved branch + PR + merge before publishing.
+- Future releases may use this model when all gates are explicit and fail closed.
