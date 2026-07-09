@@ -2145,16 +2145,140 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             return path;
         }
 
-        private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
+
+        private bool CanAddCompactHostToActiveSet()
+        {
+            return ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                   && ApplicationOptions.GetActiveCompactSet() != null;
+        }
+
+        private ContextMenu CreateThemedCompactContextMenu()
         {
             var menu = new ContextMenu();
 
-            // Apply the visual-style-aware Style (same pattern as tray context menu).
             menu.SetResourceReference(FrameworkElement.StyleProperty, "Style.ContextMenu");
             menu.SetResourceReference(Control.ForegroundProperty, "Theme.Text.Primary");
             var menuItemStyle = (Style)Application.Current.FindResource("MenuItemStyle");
             if (menuItemStyle != null)
                 menu.Resources[typeof(MenuItem)] = menuItemStyle;
+
+            return menu;
+        }
+
+        private Probe FindProbeFromRightClickSource(object source)
+        {
+            var current = source as DependencyObject;
+
+            while (current != null)
+            {
+                if (current is FrameworkElement element && element.DataContext is Probe probe)
+                    return probe;
+
+                current = System.Windows.Media.VisualTreeHelper.GetParent(current);
+            }
+
+            return null;
+        }
+
+        private bool CanRemoveCompactHostFromActiveSet(Probe probe)
+        {
+            if (probe == null)
+                return false;
+
+            if (ApplicationOptions.CompactSource != ApplicationOptions.CompactSourceMode.CustomTargets)
+                return false;
+
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            if (activeSet == null || activeSet.Entries.Count == 0)
+                return false;
+
+            return activeSet.Entries.Any(
+                entry => string.Equals(entry.Target, probe.Hostname, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private void RemoveCompactHostFromActiveSet(Probe probe)
+        {
+            if (!CanRemoveCompactHostFromActiveSet(probe))
+                return;
+
+            var activeSet = ApplicationOptions.GetActiveCompactSet();
+            var entry = activeSet.Entries.FirstOrDefault(
+                item => string.Equals(item.Target, probe.Hostname, StringComparison.OrdinalIgnoreCase));
+
+            if (entry == null)
+                return;
+
+            if (probe.IsActive)
+                probe.StartStop();
+
+            if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
+                probe.LivePingMonitorWindow.Close();
+
+            _CompactProbeCollection.Remove(probe);
+            activeSet.Entries.Remove(entry);
+            Configuration.Save();
+
+            TrackCompactSetHistoryEvent(
+                activeSet.Name,
+                CompactSetHistoryText(
+                    "StatusHistory_CompactSet_HostRemoved",
+                    "Host \"{0}\" removed",
+                    entry.Target));
+
+            UpdateCompactStartStopButton();
+
+            _trayState = TrayAggregateState.Neutral;
+            UpdateTrayIcon();
+        }
+
+        private ContextMenu CreateCompactRightClickMenu(Probe selectedProbe)
+        {
+            var menu = CreateThemedCompactContextMenu();
+
+            var addHostItem = new MenuItem
+            {
+                Header = Strings.Compact_AddHost,
+                Icon = Classes.Util.MakeMenuIconPath("geom.menu.add"),
+                IsEnabled = CanAddCompactHostToActiveSet()
+            };
+            addHostItem.Click += (s, args) => CompactAddHostButton_Click(null, null);
+            menu.Items.Add(addHostItem);
+
+            if (selectedProbe != null)
+            {
+                menu.Items.Add(new Separator());
+
+                var removeHostItem = new MenuItem
+                {
+                    Header = Strings.Compact_RemoveHost,
+                    Icon = Classes.Util.MakeMenuIconPath("geom.menu.remove"),
+                    IsEnabled = CanRemoveCompactHostFromActiveSet(selectedProbe)
+                };
+                removeHostItem.Click += (s, args) => RemoveCompactHostFromActiveSet(selectedProbe);
+                menu.Items.Add(removeHostItem);
+            }
+
+            return menu;
+        }
+
+        private void CompactWindow_PreviewMouseRightButtonUp(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            if (CompactTitleBar == null || CompactTitleBar.Visibility != Visibility.Visible)
+                return;
+
+            var selectedProbe = FindProbeFromRightClickSource(e.OriginalSource);
+            var menu = CreateCompactRightClickMenu(selectedProbe);
+            menu.PlacementTarget = this;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
+
+        private void CompactMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = CreateThemedCompactContextMenu();
 
             _compactMenuSourceNormal = new MenuItem
             {

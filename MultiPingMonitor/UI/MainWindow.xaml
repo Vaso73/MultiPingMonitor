@@ -18,7 +18,8 @@
         StateChanged="Window_StateChanged"
         Closing="Window_Closing"
         ContentRendered="Window_ContentRendered"
-        IsVisibleChanged="Window_IsVisibleChanged">
+        IsVisibleChanged="Window_IsVisibleChanged"
+        PreviewMouseRightButtonUp="CompactWindow_PreviewMouseRightButtonUp">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"
                       ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"
