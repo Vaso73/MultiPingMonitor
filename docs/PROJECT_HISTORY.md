@@ -169,3 +169,11 @@ Workflow note:
 - v1.0.27 used a successful guarded one-step release orchestration script.
 - The script still preserved branch + PR + merge before publishing.
 - Future releases may use this model when all gates are explicit and fail closed.
+
+## 2026-07-09 — External language pack foundation local checkpoint
+
+- Local-only branch `feature/external-lang-pack-foundation` reached commit `420282f` / `420282fd0b437cac5f43bdda0fa3c10ed92349c0`.
+- The slice added the external language pack foundation for runtime-generated `lang/sk-SK.lang`.
+- Build, full tests, diff check, publish single-EXE contract, local ZIP contract, and Windows runtime seed generation were validated before this checkpoint.
+- The branch was intentionally not pushed because the foundation does not yet switch the live UI to external `.lang` lookup.
+- The next scope is active external `.lang` runtime localization, still local-only.
