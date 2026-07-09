@@ -1,68 +1,73 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-09 08:29 UTC
+Last updated: 2026-07-09 10:50 UTC
 
 ## Accepted baseline
 
-Sponsor Pro v1.0.26 is the current accepted runtime baseline.
+Sponsor Pro v1.0.27 is the current accepted runtime baseline.
 
-Accepted on Windows after in-app updater validation from official Sponsor Pro v1.0.25 to v1.0.26.
+Accepted on Windows after in-app updater validation from accepted Sponsor Pro v1.0.26 to v1.0.27.
 
 Repository state at acceptance:
 
-- `main` HEAD: `0e19d6d9f1ad845a83235c3f6274cba8913f887b`
-- Version: `1.0.26`
-- Sponsor Pro tag: `multipingmonitor/v1.0.26`
+- `main` HEAD: `c3c42c2bee0888637d6ae5f1d8566d32879b3f5b`
+- Version: `1.0.27`
+- Sponsor Pro tag: `multipingmonitor/v1.0.27`
 - Sponsor Pro ZIP asset: `MultiPingMonitor.zip`
-- ZIP SHA-256: `f957b955e310b9a4a836f057ece6c0a86a27f10ddab81ce2802609a84209c0fd`
-- EXE SHA-256: `cf80e0edabfd8eac9dbd3bcb694a24afed3db05fef7d20c33f2721f4d139e434`
+- ZIP SHA-256: `e62854c01494e0fa5da56d2253d3e1f5220d7c21f5eb32ea73019093252cd5a0`
+- EXE SHA-256: `298a8fa0b0fafd823dba061f50d165eb0d4ad14de230b5e082c916e393c6d234`
 
-Accepted changes since v1.0.25:
+Accepted changes since v1.0.26:
 
-- Compact right-click menu expanded with existing app and compact-set actions.
-- `Nový Live Ping...` moved to the first position in Compact right-click menu.
-- Slovak user-facing `Možnosti` labels renamed to `Nastavenia`.
+- Main hamburger menu, tray menu, Compact menu button, and Compact right-click menu were reorganized.
+- Compact menu button remains global.
+- Host-specific `Odstrániť hostiteľa` remains only in Compact right-click when right-clicking a host.
+- Compact mode switch action now uses the shared toggle-display icon.
+- Menu-order regression tests were added.
 
 Validation summary:
 
+- Menu-order visual preview was accepted by the user.
 - Full test suite passed before release.
 - Sponsor Pro ZIP was downloaded back and verified.
 - ZIP contains exactly one entry: `MultiPingMonitor.exe`.
-- Backend latest endpoint returned `status=ok`, `latestVersion=1.0.26`, `tagName=multipingmonitor/v1.0.26`, and asset metadata under `asset.*`.
-- Windows runtime acceptance passed through the in-app updater.
-- Final Windows EXE `FileVersion` was `1.0.26` and SHA-256 matched the released EXE.
+- Backend latest endpoint returned `status=ok`, `latestVersion=1.0.27`, `tagName=multipingmonitor/v1.0.27`, and matching asset metadata under `asset.*`.
+- Windows runtime acceptance passed through the in-app updater from v1.0.26 to v1.0.27.
+- About window showed Sponsor Pro v1.0.27.
+- User confirmed all menus are correct and as expected.
 
 ## Current repository state
 
 Expected live state after sync:
 
 - Branch: `main`
-- HEAD: `0e19d6d9f1ad845a83235c3f6274cba8913f887b`
+- HEAD: `c3c42c2bee0888637d6ae5f1d8566d32879b3f5b`
 - Working tree: clean
 - Ahead/behind vs `origin/main`: `0 0`
-- Version: `1.0.26`
+- Version: `1.0.27`
 
 Always verify live before writing.
 
+## Release workflow note
+
+The v1.0.27 release proved the preferred guarded one-step orchestration model:
+
+- One deterministic script may orchestrate the full release.
+- It must still use branch + PR + merge for the version bump.
+- It must never push directly to `main`.
+- It must publish Sponsor Pro only after main is synced at the bumped version.
+- It must verify local ZIP, download-back ZIP, and backend latest endpoint.
+- Backend latest endpoint asset metadata must be read from `asset.name`, `asset.sha256`, and `asset.size`.
+- Final Windows acceptance must still be done through the in-app updater.
+
 ## Next planned scope
 
-Next planned development scope is menu-order reorganization across the app.
+No next code scope is selected yet.
 
-Initial UX observation from accepted v1.0.26 runtime:
+Potential next planning topics:
 
-- Compact right-click menu is now functionally accepted.
-- Tray/main/compact menu ordering is still inconsistent.
-- The next slice should first audit all menu builders and current ordering.
-- Then propose a unified ordering model before changing code.
-
-Planned direction for menu organization:
-
-- Put fast creation/opening actions near the top.
-- Keep display-mode switching and Compact targets close together.
-- Keep diagnostic tools such as Traceroute and Flood Host grouped together.
-- Keep Settings/History/Help/About in a predictable support section.
-- Keep Exit at the bottom.
-- Do not rename internal `Options*` identifiers unless separately approved.
+- minor UI polish only if user identifies remaining UX friction;
+- otherwise keep v1.0.27 as the stable accepted Sponsor Pro baseline.
 
 ## Hard rules for next session
 
@@ -70,4 +75,4 @@ Planned direction for menu organization:
 - Read `AGENTS.md` and this file before writes.
 - Do not push directly to `main`.
 - Use branch + PR + scope check + merge + sync main.
-- Final release acceptance for future versions must use the in-app updater, not manual EXE replacement.
+- Future release acceptance must use the in-app updater, not manual EXE replacement.
