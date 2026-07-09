@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Resources;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -114,6 +116,29 @@ namespace MultiPingMonitor.Tests
             finally
             {
                 File.WriteAllText(file, original);
+            }
+        }
+
+        [Fact]
+        public void ExternalLanguageResourceManager_UsesExternalTranslationAndEnglishFallback()
+        {
+            var fallback = new TestResourceManager();
+            var manager = new ExternalLanguageResourceManager(
+                fallback,
+                new Dictionary<int, string>
+                {
+                    [20034] = "Externý ping",
+                });
+
+            Assert.Equal("Externý ping", manager.GetString("Button_Ping", new CultureInfo("sk-SK")));
+            Assert.Equal("fallback:Button_Stop", manager.GetString("Button_Stop", new CultureInfo("sk-SK")));
+        }
+
+        private sealed class TestResourceManager : ResourceManager
+        {
+            public override string GetString(string name, CultureInfo? culture)
+            {
+                return "fallback:" + name;
             }
         }
 

@@ -1,101 +1,85 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-09 19:17 UTC
+Last updated: 2026-07-09 19:54 UTC
 
 ## Accepted baseline
 
-Sponsor Pro v1.0.28 is the current accepted runtime baseline before the local external-language-pack work.
+Sponsor Pro v1.0.28 remains the current accepted released runtime baseline.
 
-Acceptance context:
-
-- Windows runtime test launched MultiPingMonitor successfully.
-- About window showed version 1.0.28.
-- Sponsor Pro state was visible.
-- The user accepted v1.0.28 as the baseline before continuing with external `.lang` localization work.
+The current branch contains additional local-only development work for external `.lang` localization. This branch is not pushed and is not released.
 
 ## Current repository state
 
-Verified live before this checkpoint update:
+Expected live state after the next local commit:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD: `420282fd0b437cac5f43bdda0fa3c10ed92349c0`
-- HEAD subject: `Add external language pack foundation`
-- Working tree before this docs-only update: clean
-- Ahead/behind vs `origin/main`: `0 1`
+- Base before runtime lookup commit: `8e6aaf7bc5713945d56723efbf9d53186e1d7709`
+- Working tree before commit: contains the external `.lang` runtime lookup slice
 - Push state: local-only branch, not pushed
 - PR state: no PR created
 - Release state: no tag, no release, no Sponsor Pro publish for this branch
 
-The branch must remain local-only until full external `.lang` runtime localization is implemented, Windows runtime-tested, and explicitly approved for push.
+Always verify live state before writing.
 
-## Current local development baseline
+## Current local development status
 
-Commit `420282f` added the external language pack foundation.
+External language pack foundation is implemented and the first runtime integration slice is validated locally.
 
-Files added by the foundation slice:
+Implemented in the runtime lookup slice:
 
-- `MultiPingMonitor/Classes/LanguagePackKeys.cs`
-- `MultiPingMonitor/Classes/LanguagePackSeeds.cs`
-- `MultiPingMonitor/Classes/LanguagePackService.cs`
-- `MultiPingMonitor.Tests/LanguagePackServiceTests.cs`
+- Added `ExternalLanguageResourceManager`.
+- Added `LanguageRuntimeService`.
+- Existing `Properties.Strings.*` C# lookups and XAML `x:Static resource:Strings.*` lookups now resolve through an injected `ResourceManager`.
+- `Strings.Designer.cs` was not hand-edited.
+- `App.xaml.cs` now applies language by language code before creating windows.
+- `ApplicationOptions` keeps the legacy language enum but adds authoritative `LanguageCode`.
+- `Configuration` persists `Language` as `System`, `en`, or an external language code such as `sk-SK`.
+- Old config values `System`, `English`, and `Slovak` remain backward-compatible.
+- Options language ComboBox is populated from built-in choices plus discovered `lang/*.lang` packs.
+- `Slovenčina (sk-SK)` is discovered from `lang/sk-SK.lang`.
+- The test project compiles the external resource manager and adds fallback lookup coverage.
 
-Files modified by the foundation slice:
+Validated:
 
-- `MultiPingMonitor/App.xaml.cs`
-- `MultiPingMonitor.Tests/MultiPingMonitor.Tests.csproj`
-
-Foundation behavior:
-
-- Creates runtime `lang/sk-SK.lang` beside the EXE.
-- Uses Vaso Language Pack Format v1 style entries.
-- Uses stable numeric keys in range `20000–20513`.
-- Preserves existing user-edited `TEXT` entries.
-- Does not package `.lang` files into the release ZIP.
-- Keeps the Sponsor Pro ZIP contract as exactly one entry: `MultiPingMonitor.exe`.
-
-Validated foundation state from the previous local slice:
-
-- `dotnet build MultiPingMonitor.sln -c Release` passed.
-- `dotnet test MultiPingMonitor.sln -c Release --no-build` passed: 430 total, 0 failed.
 - `git diff --check` passed.
-- Local publish produced only `MultiPingMonitor.exe`.
-- Local ZIP contract contained exactly `MultiPingMonitor.exe`.
-- Windows runtime test generated `lang/sk-SK.lang`.
-- Windows runtime language file had 514 entries.
-- UTF-8 read checks passed for Slovak strings.
+- `dotnet build MultiPingMonitor.sln -c Release` passed without warnings after cleanup.
+- `dotnet test MultiPingMonitor.sln -c Release --no-build` passed: 431 total, 0 failed.
+- Single-file publish passed.
+- Publish output contained exactly one file: `MultiPingMonitor.exe`.
+- `LANG_OUTPUT_COUNT=0`; `.lang` files are not packaged.
+- Published EXE SHA-256 used for Windows runtime test:
+  `fc62f04e73ff6209433b7c219e2ee2d7781c158cc050eb1376be2fba0f228304`.
+- Windows runtime test showed Options language choices:
+  `System`, `English`, `Slovenčina (sk-SK)`.
+- Windows runtime test showed Slovak UI after selecting `Slovenčina (sk-SK)` and restarting.
 
-## Latest read-only audit
+Known limitation after this slice:
 
-The latest read-only audit confirmed:
-
-- `AGENTS.md` exists and remains the stable workflow authority.
-- `docs/CURRENT_STATE.md` existed but was stale before this docs-only update.
-- Live branch is `feature/external-lang-pack-foundation`.
-- Live HEAD is `420282f`.
-- Live working tree was clean.
-- Ahead/behind vs `origin/main` was `0 1`.
-- `Strings.Designer.cs` is auto-generated and must not be manually edited as a casual implementation path.
-- `Properties.Strings` C# usage count: 110.
-- XAML `x:Static resource:Strings` usage count: 302.
-- Options language UI still uses fixed System / English / Slovak items.
-- Options save logic still maps `LanguageComboBox.SelectedIndex` to `ApplicationOptions.AppLanguage`.
-- Configuration still stores and loads `Language` as the old enum.
+- Language changes are not yet live-applied inside already-open windows.
+- Some UI text still updates only after restart or window recreation because many XAML strings use static resource evaluation.
+- Options still has `OK` / `Cancel`; `Apply` / `Použiť` and `Uložiť` are not implemented yet.
 
 ## Current scope
 
-Implement real external `.lang` runtime localization locally only.
+Continue locally only.
 
-In scope:
+Next approved scope:
 
-- Use the local foundation commit `420282f` as the base.
-- Discover `lang/*.lang` files.
-- Use `sk-SK.lang` as the actual Slovak runtime localization source.
-- Support arbitrary external localization packs in Vaso Language Pack Format v1.
-- Keep built-in English fallback.
-- Preserve user-edited `TEXT` entries.
-- Keep release ZIP as exactly one EXE.
-- Keep branch local until user-facing localization works and Windows runtime testing passes.
+Implement live Options apply/save behavior.
+
+Required UX target:
+
+- Replace `OK` with `Uložiť`.
+- Add `Použiť`.
+- Keep `Zrušiť`.
+- `Použiť` validates, saves and applies changes immediately while keeping Options open.
+- `Uložiť` validates, saves, applies changes immediately and closes Options.
+- `Zrušiť` closes without saving changes that were not already applied.
+- Language changes must become visible without restarting the app after `Použiť`.
+- Language changes must also apply when pressing `Uložiť` directly.
+- Settings that can be applied live should apply on first `Použiť` / `Uložiť`.
+- Startup-only settings, such as `Start application in tray`, should remain clearly documented as next-start behavior.
 
 Out of scope until explicitly approved:
 
@@ -108,21 +92,24 @@ Out of scope until explicitly approved:
 - Sponsor Pro publish.
 - Backend latest metadata update.
 - Updater release test.
-- Unrelated menu polish.
-- Unrelated app features.
+- Unrelated features.
 
 ## Immediate next action
 
-Implement one narrow local write slice for active external `.lang` runtime lookup.
+After committing the runtime lookup slice locally, run a read-only audit for Options live apply/save implementation.
 
-Preferred implementation direction from the audit:
+Audit focus:
 
-- Do not hand-edit generated `Strings.Designer.cs`.
-- Prefer a central `ResourceManager`-compatible lookup mechanism or safe resource-manager injection so existing C# and XAML `Properties.Strings.*` lookups can resolve through external `.lang` files.
-- Replace Options language selection logic so it is not based on `SelectedIndex -> AppLanguage enum`.
-- Add backward-compatible handling for old `Language=System`, `Language=English`, and `Language=Slovak`.
-- Add tests for lookup fallback, discovered language packs, and non-overwrite behavior.
-- Validate with build, tests, diff check, publish contract, and Windows runtime test before any push.
+- `OptionsWindow.xaml`
+- `OptionsWindow.xaml.cs`
+- `MainWindow` localization refresh/rebuild methods
+- tray menu creation/rebuild flow
+- compact menu/context menu creation/rebuild flow
+- theme/style apply flow
+- display mode apply flow
+- configuration save/load flow
+
+Do not start the live-apply write slice before reviewing that audit.
 
 ## Hard rules
 

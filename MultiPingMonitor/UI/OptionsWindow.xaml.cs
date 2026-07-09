@@ -289,11 +289,7 @@ namespace MultiPingMonitor.UI
             CompactSourceComboBox.SelectedIndex = (int)ApplicationOptions.CompactSource;
             UpdateCompactTargetsButtonVisibility();
 
-            // Populate language ComboBox.
-            LanguageComboBox.Items.Add(Properties.Strings.Language_System);
-            LanguageComboBox.Items.Add(Properties.Strings.Language_English);
-            LanguageComboBox.Items.Add(Properties.Strings.Language_Slovak);
-            LanguageComboBox.SelectedIndex = (int)ApplicationOptions.Language;
+            PopulateLanguageOptions();
 
             // Font sizes.
             FontSizeProbe.Text = ApplicationOptions.FontSize_Probe.ToString();
@@ -813,6 +809,60 @@ namespace MultiPingMonitor.UI
             return true;
         }
 
+        private void PopulateLanguageOptions()
+        {
+            LanguageComboBox.Items.Clear();
+
+            AddLanguageOption(LanguageRuntimeService.SystemLanguageCode, Properties.Strings.Language_System);
+            AddLanguageOption(LanguageRuntimeService.EnglishLanguageCode, Properties.Strings.Language_English);
+
+            foreach (var pack in LanguagePackService.DiscoverLanguagePacks())
+            {
+                AddLanguageOption(pack.LanguageCode, pack.ToString());
+            }
+
+            SelectLanguageOption(ApplicationOptions.LanguageCode);
+            if (LanguageComboBox.SelectedIndex < 0)
+                SelectLanguageOption(LanguageRuntimeService.SystemLanguageCode);
+        }
+
+        private void AddLanguageOption(string languageCode, string displayName)
+        {
+            var normalizedLanguageCode = LanguageRuntimeService.NormalizeLanguageCode(languageCode);
+
+            foreach (var existingItem in LanguageComboBox.Items)
+            {
+                if (existingItem is System.Windows.Controls.ComboBoxItem existingComboBoxItem
+                    && existingComboBoxItem.Tag is string existingLanguageCode
+                    && string.Equals(existingLanguageCode, normalizedLanguageCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+            }
+
+            LanguageComboBox.Items.Add(new System.Windows.Controls.ComboBoxItem
+            {
+                Content = displayName,
+                Tag = normalizedLanguageCode,
+            });
+        }
+
+        private void SelectLanguageOption(string languageCode)
+        {
+            var normalizedLanguageCode = LanguageRuntimeService.NormalizeLanguageCode(languageCode);
+
+            foreach (var item in LanguageComboBox.Items)
+            {
+                if (item is System.Windows.Controls.ComboBoxItem comboBoxItem
+                    && comboBoxItem.Tag is string itemLanguageCode
+                    && string.Equals(itemLanguageCode, normalizedLanguageCode, StringComparison.OrdinalIgnoreCase))
+                {
+                    LanguageComboBox.SelectedItem = comboBoxItem;
+                    return;
+                }
+            }
+        }
+
         private bool SaveDisplayOptions()
         {
             ApplicationOptions.IsAlwaysOnTopEnabled = IsAlwaysOnTopEnabled.IsChecked == true;
@@ -822,7 +872,17 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.RememberWindowPosition = RememberWindowPosition.IsChecked == true;
 
             // Save language selection.
-            ApplicationOptions.Language = (ApplicationOptions.AppLanguage)LanguageComboBox.SelectedIndex;
+            if (LanguageComboBox.SelectedItem is System.Windows.Controls.ComboBoxItem selectedLanguageItem
+                && selectedLanguageItem.Tag is string selectedLanguageCode)
+            {
+                ApplicationOptions.LanguageCode = LanguageRuntimeService.NormalizeLanguageCode(selectedLanguageCode);
+            }
+            else
+            {
+                ApplicationOptions.LanguageCode = LanguageRuntimeService.SystemLanguageCode;
+            }
+
+            ApplicationOptions.Language = ApplicationOptions.ToLegacyLanguage(ApplicationOptions.LanguageCode);
 
             // Validate and save font sizes.
             if (!int.TryParse(FontSizeProbe.Text, out int fontSizeProbe) || fontSizeProbe < 6 || fontSizeProbe > 72)

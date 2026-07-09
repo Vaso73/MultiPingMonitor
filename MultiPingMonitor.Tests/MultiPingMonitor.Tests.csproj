@@ -25,6 +25,7 @@
     <Compile Include="..\MultiPingMonitor\Classes\LanguagePackKeys.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\LanguagePackSeeds.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\LanguagePackService.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\ExternalLanguageResourceManager.cs" />
   </ItemGroup>
 
   <ItemGroup>

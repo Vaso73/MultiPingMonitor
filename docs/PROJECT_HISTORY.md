@@ -177,3 +177,11 @@ Workflow note:
 - Build, full tests, diff check, publish single-EXE contract, local ZIP contract, and Windows runtime seed generation were validated before this checkpoint.
 - The branch was intentionally not pushed because the foundation does not yet switch the live UI to external `.lang` lookup.
 - The next scope is active external `.lang` runtime localization, still local-only.
+
+## 2026-07-09 — External language runtime lookup local validation
+
+- Local-only branch `feature/external-lang-pack-foundation` added runtime external `.lang` lookup on top of the language pack foundation.
+- The implementation uses a custom `ResourceManager` bridge and does not hand-edit generated `Strings.Designer.cs`.
+- Options language choices now include discovered external packs such as `Slovenčina (sk-SK)`.
+- Build, full tests, diff check, single-file publish contract, and Windows runtime validation passed.
+- The branch remains local-only and is not pushed because the next approved slice is live Options apply/save behavior.
