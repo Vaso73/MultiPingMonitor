@@ -178,5 +178,28 @@ namespace MultiPingMonitor.Tests
                 "new System.Windows.Forms.ToolStripMenuItem(\"Visual style\")",
                 source);
         }
+        [Theory]
+        [InlineData("Menu_Options", "Nastavenia")]
+        [InlineData("Tray_Options", "Nastavenia")]
+        [InlineData("Options_Title", "Nastavenia")]
+        [InlineData("Help_Nav_Options", "Nastavenia")]
+        [InlineData("Help_Options_Header", "Nastavenia")]
+        [InlineData("Options_Header_AdvancedICMP", "Rozšírené nastavenia ICMP")]
+        [InlineData("Options_Header_DisplayOptions", "Nastavenia zobrazenia")]
+        [InlineData("Options_Header_ProbeOptions", "Nastavenia sondovania")]
+        public void SlovakOptionsUserFacingLabelsUseSettingsTerminology(string key, string expected)
+        {
+            Assert.Equal(expected, ResxValue(SkSkResxPath(), key));
+        }
+
+        [Fact]
+        public void SlovakTrayHelpTextUsesSettingsTerminology()
+        {
+            string value = ResxValue(SkSkResxPath(), "Help_Options_TrayBehavior_Text");
+
+            Assert.Contains("Nastavenia", value);
+            Assert.DoesNotContain("prístup k možnostiam", value);
+        }
+
     }
 }
