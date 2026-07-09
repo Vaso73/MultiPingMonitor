@@ -22,6 +22,9 @@
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityService.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityDiagnostics.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\UpdateCheckService.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\LanguagePackKeys.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\LanguagePackSeeds.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\LanguagePackService.cs" />
   </ItemGroup>
 
   <ItemGroup>

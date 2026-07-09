@@ -90,6 +90,9 @@ namespace MultiPingMonitor
             // Load only the language setting early, before any window is created.
             Classes.Configuration.LoadLanguageSetting();
 
+            // Ensure external community language packs exist before any window is created.
+            Classes.LanguagePackService.EnsureSeedLanguagePacks();
+
             // Apply language setting before any window is created.
             ApplyLanguage(Classes.ApplicationOptions.Language);
 
