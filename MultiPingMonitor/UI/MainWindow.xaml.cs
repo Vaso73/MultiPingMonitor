@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -2245,6 +2245,19 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             return item;
         }
 
+        private MenuItem CreateCompactToggleDisplayModeMenuItem()
+        {
+            var item = new MenuItem
+            {
+                Header = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                    ? Strings.Tray_SwitchToNormal
+                    : Strings.Tray_SwitchToCompact,
+                Icon = CreateMenuPathIcon("geom.menu.toggle-display")
+            };
+            item.Click += (s, args) => ToggleDisplayMode_Click(null, null);
+            return item;
+        }
+
         private void AppendCompactRightClickAppActions(ContextMenu menu)
         {
             if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
@@ -2332,6 +2345,10 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                     "geom.menu.options",
                     () => OptionsExecute(null, null)));
 
+            menu.Items.Add(CreateCompactToggleDisplayModeMenuItem());
+
+            menu.Items.Add(new Separator());
+
             menu.Items.Add(
                 CreateCompactRightClickAction(
                     Strings.Menu_About,
@@ -2396,6 +2413,40 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         {
             var menu = CreateThemedCompactContextMenu();
 
+            var newLivePingItem = new MenuItem
+            {
+                Header = Strings.Menu_NewLivePing,
+                Icon = CreateMenuPathIcon("geom.menu.new-live-ping")
+            };
+            newLivePingItem.Click += (s, args) => NewLivePingMenu_Click(null, null);
+            menu.Items.Add(newLivePingItem);
+
+            var addHostItem = new MenuItem
+            {
+                Header = Strings.Compact_AddHost,
+                Icon = CreateMenuPathIcon("geom.menu.add"),
+                IsEnabled = CanAddCompactHostToActiveSet()
+            };
+            addHostItem.Click += (s, args) => CompactAddHostButton_Click(null, null);
+            menu.Items.Add(addHostItem);
+
+            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
+                && ApplicationOptions.GetActiveCompactSet() != null)
+            {
+                menu.Items.Add(new Separator());
+
+                bool isRunning = ApplicationOptions.IsCompactSetRunning;
+                var startStopItem = new MenuItem
+                {
+                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet,
+                    Icon = CreateMenuPathIcon(isRunning ? "geom.menu.stop" : "geom.menu.start")
+                };
+                startStopItem.Click += (s, args) => StartStopCompactSet();
+                menu.Items.Add(startStopItem);
+            }
+
+            menu.Items.Add(new Separator());
+
             _compactMenuSourceNormal = new MenuItem
             {
                 Header = Strings.Options_CompactSource_NormalTargets,
@@ -2404,6 +2455,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             };
             _compactMenuSourceNormal.Click += (s, args) =>
                 SetCompactSource(ApplicationOptions.CompactSourceMode.NormalTargets);
+            menu.Items.Add(_compactMenuSourceNormal);
 
             _compactMenuSourceCustom = new MenuItem
             {
@@ -2413,85 +2465,65 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             };
             _compactMenuSourceCustom.Click += (s, args) =>
                 SetCompactSource(ApplicationOptions.CompactSourceMode.CustomTargets);
-
-            menu.Items.Add(_compactMenuSourceNormal);
             menu.Items.Add(_compactMenuSourceCustom);
 
-            // Compact set selection items.
             AppendCompactSetMenuItems(menu.Items);
-
-            // Start/Stop set item — only meaningful when using a custom compact set.
-            if (ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.CustomTargets
-                && ApplicationOptions.GetActiveCompactSet() != null)
-            {
-                menu.Items.Add(new Separator());
-                bool isRunning = ApplicationOptions.IsCompactSetRunning;
-                var startStopItem = new MenuItem
-                {
-                    Header = isRunning ? Strings.Compact_StopSet : Strings.Compact_StartSet,
-                    Icon = Classes.Util.MakeMenuIconPath(isRunning ? "geom.menu.stop" : "geom.menu.start")
-                };
-                startStopItem.Click += (s, args) => StartStopCompactSet();
-                menu.Items.Add(startStopItem);
-            }
 
             menu.Items.Add(new Separator());
 
-            // "Open All Live Windows" submenu with Cascade and Tile options.
+            var manageItem = new MenuItem
+            {
+                Header = Strings.Menu_CompactManageSets,
+                Icon = CreateMenuPathIcon("geom.menu.edit")
+            };
+            manageItem.Click += (s, args) => OpenManageCompactSets();
+            menu.Items.Add(manageItem);
+
+            menu.Items.Add(new Separator());
+
             var openAllSub = new MenuItem
             {
                 Header = Strings.LivePing_OpenAllLive,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.cascade")
+                Icon = CreateMenuPathIcon("geom.menu.cascade")
             };
+
             var cascadeItem = new MenuItem
             {
                 Header = Strings.LivePing_OpenAllCascade,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.cascade")
+                Icon = CreateMenuPathIcon("geom.menu.cascade")
             };
             cascadeItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: true);
+
             var tileItem = new MenuItem
             {
                 Header = Strings.LivePing_OpenAllTile,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.columns-grid")
+                Icon = CreateMenuPathIcon("geom.menu.columns-grid")
             };
             tileItem.Click += (s, args) => OpenAllLiveWindowsAndArrange(cascade: false);
+
             openAllSub.Items.Add(cascadeItem);
             openAllSub.Items.Add(tileItem);
             menu.Items.Add(openAllSub);
 
-            menu.Items.Add(new Separator());
-
             var statusHistoryItem = new MenuItem
             {
                 Header = Strings.Menu_StatusHistory,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.status-history")
+                Icon = CreateMenuPathIcon("geom.menu.status-history")
             };
             statusHistoryItem.Click += (s, args) => StatusHistoryExecute(null, null);
             menu.Items.Add(statusHistoryItem);
 
             menu.Items.Add(new Separator());
-            var manageItem = new MenuItem
+
+            var optionsItem = new MenuItem
             {
-                Header = Strings.Menu_CompactManageSets,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.edit")
+                Header = Strings.Menu_Options,
+                Icon = CreateMenuPathIcon("geom.menu.options")
             };
-            manageItem.Click += (s, args) => OpenManageCompactSets();
+            optionsItem.Click += (s, args) => OptionsExecute(null, null);
+            menu.Items.Add(optionsItem);
 
-            menu.Items.Add(manageItem);
-
-            menu.Items.Add(new Separator());
-
-            var newLivePingItem = new MenuItem
-            {
-                Header = Strings.Menu_NewLivePing,
-                Icon = Classes.Util.MakeMenuIconPath("geom.menu.new-live-ping")
-            };
-            newLivePingItem.Click += (s, args) => NewLivePingMenu_Click(null, null);
-
-            menu.Items.Add(newLivePingItem);
-
-            menu.PlacementTarget = sender as Button;
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.Items.Add(CreateCompactToggleDisplayModeMenuItem());
 
             menu.Items.Add(new Separator());
 
@@ -2503,6 +2535,8 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             compactAboutItem.Click += AboutMenu_Click;
             menu.Items.Add(compactAboutItem);
 
+            menu.PlacementTarget = CompactMenuButton;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             menu.IsOpen = true;
         }
 
@@ -3482,7 +3516,6 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
 
             menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), "geom.menu.new-live-ping"));
-            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -3490,13 +3523,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             menu.Items.Add(MakeItem(Strings.Menu_Traceroute,    () => Dispatcher.Invoke(() => TracerouteExecute(null, null)),    TrayIcon.Traceroute));
             menu.Items.Add(MakeItem(Strings.Menu_FloodHost,     () => Dispatcher.Invoke(() => FloodHostExecute(null, null)),     TrayIcon.FloodHost));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       "geom.menu.options"));
-            menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
-            menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
-            menu.Items.Add(MakeItem(Strings.Menu_About,         () => Dispatcher.Invoke(() => AboutMenu_Click(null, null)),      "geom.menu.about"));
-            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
-            // ── Visual style submenu ──────────────────────────────────────────
             var styleParent = new System.Windows.Forms.ToolStripMenuItem(Strings.Tray_VisualStyle)
             {
                 Image = MakeTrayMenuBitmap(TrayIcon.VisualStyle),
@@ -3542,24 +3569,23 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             styleParent.DropDown.Opened += (s, e) => ApplyTrayPopupRegion(styleParent.DropDown);
             styleParent.DropDown.Resize += (s, e) => ApplyTrayPopupRegion(styleParent.DropDown);
 
-            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            menu.Items.Add(MakeItem(Strings.Tray_Options,       () => Dispatcher.Invoke(() => OptionsExecute(null, null)),       "geom.menu.options"));
+            menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
+            menu.Items.Add(styleParent);
 
-            // ── Display mode quick toggle ─────────────────────────────────────
             _trayNativeToggleItem = MakeItem(
                 ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
                     ? Strings.Tray_SwitchToNormal
                     : Strings.Tray_SwitchToCompact,
-                () => Dispatcher.Invoke(() =>
-                {
-                    var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                        ? ApplicationOptions.DisplayMode.Normal
-                        : ApplicationOptions.DisplayMode.Compact;
-                    SwitchDisplayMode(target);
-                }),
+                () => Dispatcher.Invoke(() => ToggleDisplayMode_Click(null, null)),
                 TrayIcon.ToggleDisplay);
-            _trayNativeToggleItem.Font = new System.Drawing.Font(
-                "Segoe UI", 9f, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             menu.Items.Add(_trayNativeToggleItem);
+
+            menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+
+            menu.Items.Add(MakeItem(Strings.Menu_Help,          () => Dispatcher.Invoke(() => HelpExecute(null, null)),          TrayIcon.Help));
+            menu.Items.Add(MakeItem(Strings.Menu_About,         () => Dispatcher.Invoke(() => AboutMenu_Click(null, null)),      "geom.menu.about"));
+
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 
             menu.Items.Add(MakeItem(Strings.Tray_Exit, () => Dispatcher.Invoke(() =>
@@ -3568,7 +3594,6 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 Application.Current.Shutdown();
             }), TrayIcon.Exit));
 
-            // Apply dark theme immediately so the first open already looks correct.
             ApplyTrayMenuTheme();
 
             return menu;
