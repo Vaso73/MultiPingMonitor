@@ -201,5 +201,43 @@ namespace MultiPingMonitor.Tests
             Assert.DoesNotContain("prístup k možnostiam", value);
         }
 
+        [Fact]
+        public void MainMenuNewInstance_Default_MatchesTrayActionLabel()
+        {
+            string mainMenuValue =
+                ResxValue(DefaultResxPath(), "Menu_NewInstance");
+            string trayValue =
+                ResxValue(DefaultResxPath(), "Tray_NewInstance");
+
+            Assert.Equal("New MultiPingMonitor instance", mainMenuValue);
+            Assert.Equal(trayValue, mainMenuValue);
+        }
+
+        [Fact]
+        public void MainMenuNewInstance_SkSk_MatchesTrayActionLabel()
+        {
+            string mainMenuValue =
+                ResxValue(SkSkResxPath(), "Menu_NewInstance");
+            string trayValue =
+                ResxValue(SkSkResxPath(), "Tray_NewInstance");
+
+            Assert.Equal(
+                "Nová inštancia MultiPingMonitor",
+                mainMenuValue);
+            Assert.Equal(trayValue, mainMenuValue);
+        }
+
+        [Fact]
+        public void EnglishTrayHelpTextUsesSettingsTerminology()
+        {
+            string value = ResxValue(
+                DefaultResxPath(),
+                "Help_Options_TrayBehavior_Text");
+
+            Assert.Contains("Settings", value);
+            Assert.DoesNotContain("Options", value);
+            Assert.DoesNotContain("options", value);
+        }
+
     }
 }

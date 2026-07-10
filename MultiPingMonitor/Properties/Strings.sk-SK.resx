@@ -466,7 +466,7 @@
     <value>Zadať adresy...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
-    <value>MultiPingMonitor</value>
+    <value>Nová inštancia MultiPingMonitor</value>
   </data>
   <data name="Options_AlertThreshold" xml:space="preserve">
     <value>Prah upozornenia:</value>

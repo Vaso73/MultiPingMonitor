@@ -576,7 +576,7 @@
     <value>Input Addresses...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
-    <value>MultiPingMonitor</value>
+    <value>New MultiPingMonitor instance</value>
   </data>
   <data name="Options_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>
@@ -1253,7 +1253,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>System tray</value>
   </data>
   <data name="Help_Options_TrayBehavior_Text" xml:space="preserve">
-    <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access options such as Open, New Instance, Status History, Options, and Exit.</value>
+    <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access menu items such as Open, New Instance, Status History, Settings, and Exit.</value>
   </data>
   <data name="Menu_CompactManageSets" xml:space="preserve">
     <value>Manage Compact Sets...</value>
