@@ -610,6 +610,8 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20583, "Probe_LogWriteError", "Failed writing to log file. Logging has been disabled. Error: {0}", "Zápis do súboru záznamu zlyhal. Zaznamenávanie bolo vypnuté. Chyba: {0}"),
                 new LanguagePackSeedEntry(20584, "Probe_AudioPlaybackError", "Failed to play audio file. Audio alerts have been disabled. Error: {0}", "Prehratie zvukového súboru zlyhalo. Zvukové upozornenia boli vypnuté. Chyba: {0}"),
                 new LanguagePackSeedEntry(20585, "LivePing_AddToSet_CompactDestination", "Compact", "Kompaktné"),
+                new LanguagePackSeedEntry(20586, "NewFavorite_Error_InvalidColumns", "Please enter a valid number of columns (between 1 and 10).", "Zadajte platný počet stĺpcov (od 1 do 10)."),
+                new LanguagePackSeedEntry(20587, "NewFavorite_Error_NoHosts", "You have not entered any hosts. Provide at least one host for this favorite set.", "Nezadali ste žiadnych hostiteľov. Zadajte aspoň jedného hostiteľa pre túto obľúbenú sadu."),
             };
     }
 }

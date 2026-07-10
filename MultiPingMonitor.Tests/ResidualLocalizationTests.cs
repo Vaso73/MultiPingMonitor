@@ -77,6 +77,17 @@ namespace MultiPingMonitor.Tests
                     ["LivePing_AddToSet_CompactDestination"] = (
                         "Compact",
                         "Kompaktné"),
+                    ["NewFavorite_Error_InvalidColumns"] = (
+                        "Please enter a valid number of columns "
+                            + "(between 1 and 10).",
+                        "Zadajte platný počet stĺpcov "
+                            + "(od 1 do 10)."),
+                    ["NewFavorite_Error_NoHosts"] = (
+                        "You have not entered any hosts. "
+                            + "Provide at least one host for this favorite set.",
+                        "Nezadali ste žiadnych hostiteľov. "
+                            + "Zadajte aspoň jedného hostiteľa "
+                            + "pre túto obľúbenú sadu."),
                 };
 
         [Fact]
@@ -213,6 +224,10 @@ namespace MultiPingMonitor.Tests
                 "ShowError($\"Failed to play audio file.",
                 "Content=\"Compact\"",
                 "Target:  {_target}",
+                "DialogWindow.ErrorWindow(\"Please enter a valid "
+                    + "number of columns",
+                "DialogWindow.ErrorWindow(\"You have not entered "
+                    + "any hosts.",
             };
 
             foreach (string literal in forbidden)

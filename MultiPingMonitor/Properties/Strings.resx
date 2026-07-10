@@ -1900,4 +1900,10 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_AddToSet_CompactDestination" xml:space="preserve">
     <value>Compact</value>
   </data>
+  <data name="NewFavorite_Error_InvalidColumns" xml:space="preserve">
+    <value>Please enter a valid number of columns (between 1 and 10).</value>
+  </data>
+  <data name="NewFavorite_Error_NoHosts" xml:space="preserve">
+    <value>You have not entered any hosts. Provide at least one host for this favorite set.</value>
+  </data>
 </root>

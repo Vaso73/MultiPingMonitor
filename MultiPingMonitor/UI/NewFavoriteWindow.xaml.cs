@@ -59,7 +59,11 @@ namespace MultiPingMonitor.UI
             // Validate column count.
             if (int.TryParse(MyColumnCount.Text, out ColumnCount) == false || ColumnCount < 1 || ColumnCount > 10)
             {
-                var errorWindow = DialogWindow.ErrorWindow("Please enter a valid number of columns (between 1 and 10).");
+                var errorWindow = DialogWindow.ErrorWindow(
+                    MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                        "NewFavorite_Error_InvalidColumns")
+                    ?? "Please enter a valid number of columns "
+                        + "(between 1 and 10).");
                 errorWindow.Owner = this;
                 errorWindow.ShowDialog();
                 MyColumnCount.Focus();
@@ -82,7 +86,11 @@ namespace MultiPingMonitor.UI
             HostList = MyHosts.Text.Trim().Split(new char[] { ',', '\n' }).Select(host => host.Trim()).ToList();
             if (HostList.All(x => string.IsNullOrWhiteSpace(x)))
             {
-                var errorWindow = DialogWindow.ErrorWindow("You have not entered any hosts. Provide at least one host for this favorite set.");
+                var errorWindow = DialogWindow.ErrorWindow(
+                    MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                        "NewFavorite_Error_NoHosts")
+                    ?? "You have not entered any hosts. "
+                        + "Provide at least one host for this favorite set.");
                 errorWindow.Owner = this;
                 errorWindow.ShowDialog();
                 MyHosts.Focus();
