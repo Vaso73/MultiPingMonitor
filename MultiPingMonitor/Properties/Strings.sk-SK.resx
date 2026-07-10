@@ -1343,6 +1343,24 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitorovanie prebieha. Zastaviť a zmeniť cieľ?</value>
   </data>
+  <data name="LivePing_Title" xml:space="preserve">
+    <value>Live Ping Monitor</value>
+  </data>
+  <data name="LivePing_Clear" xml:space="preserve">
+    <value>Vymazať</value>
+  </data>
+  <data name="LivePing_Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
+  <data name="LivePing_StatsSent" xml:space="preserve">
+    <value>Odosl.</value>
+  </data>
+  <data name="LivePing_StatsReceivedShort" xml:space="preserve">
+    <value>Prij.</value>
+  </data>
+  <data name="LivePing_StatsLost" xml:space="preserve">
+    <value>Strat.</value>
+  </data>
   <data name="Compact_StartSet" xml:space="preserve">
     <value>Spustiť sadu</value>
   </data>

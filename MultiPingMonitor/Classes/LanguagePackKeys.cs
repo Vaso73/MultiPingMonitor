@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Classes
         public const string AppId = "multipingmonitor";
         public const string AppName = "MultiPingMonitor";
         public const int FirstKey = 20000;
-        public const int EntryCount = 516;
+        public const int EntryCount = 522;
 
         public static IReadOnlyDictionary<int, string> ResourceKeys { get; } =
             new Dictionary<int, string>
@@ -529,6 +529,12 @@ namespace MultiPingMonitor.Classes
                 [20513] = "UpdateSuccess_TrayTitle",
                 [20514] = "DialogButton_Apply",
                 [20515] = "Options_LanguageApplyHint",
+                [20516] = "LivePing_Title",
+                [20517] = "LivePing_Clear",
+                [20518] = "LivePing_Close",
+                [20519] = "LivePing_StatsSent",
+                [20520] = "LivePing_StatsReceivedShort",
+                [20521] = "LivePing_StatsLost",
             };
     }
 }

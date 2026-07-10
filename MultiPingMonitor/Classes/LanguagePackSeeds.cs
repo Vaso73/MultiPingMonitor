@@ -540,6 +540,12 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20513, "UpdateSuccess_TrayTitle", "Update completed", "Aktualizácia dokončená"),
                 new LanguagePackSeedEntry(20514, "DialogButton_Apply", "Apply", "Použiť"),
                 new LanguagePackSeedEntry(20515, "Options_LanguageApplyHint", "Changes are applied when you click Apply or Save.", "Zmeny sa použijú po kliknutí na Použiť alebo Uložiť."),
+                new LanguagePackSeedEntry(20516, "LivePing_Title", "Live Ping Monitor", "Live Ping Monitor"),
+                new LanguagePackSeedEntry(20517, "LivePing_Clear", "Clear", "Vymazať"),
+                new LanguagePackSeedEntry(20518, "LivePing_Close", "Close", "Zavrieť"),
+                new LanguagePackSeedEntry(20519, "LivePing_StatsSent", "Sent", "Odosl."),
+                new LanguagePackSeedEntry(20520, "LivePing_StatsReceivedShort", "Recv", "Prij."),
+                new LanguagePackSeedEntry(20521, "LivePing_StatsLost", "Lost", "Strat."),
             };
     }
 }

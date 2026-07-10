@@ -87,10 +87,17 @@ namespace MultiPingMonitor.UI
             HeaderTarget.Visibility = Visibility.Collapsed;
             HeaderStatus.Text = string.Empty;
             HeaderLatency.Text = "—";
-            Title = "Live Ping Monitor";
+            Title = Text("LivePing_Title", "Live Ping Monitor");
 
+            TitleText.Text = Text("LivePing_Title", "Live Ping Monitor");
+            ArrangeMenuButton.ToolTip = Properties.Strings.LivePing_Arrange;
             StartPingText.Text = Properties.Strings.LivePing_StartPing;
             AddToSetText.Text = Properties.Strings.LivePing_AddToSet;
+            ClearButton.Content = Text("LivePing_Clear", "Clear");
+            CloseFooterButton.Content = Text("LivePing_Close", "Close");
+            StatsSentLabel.Text = Text("LivePing_StatsSent", "Sent");
+            StatsReceivedLabel.Text = Text("LivePing_StatsReceivedShort", "Recv");
+            StatsLostLabel.Text = Text("LivePing_StatsLost", "Lost");
 
             // Focus target input on load.
             Loaded += (_, _) => ManualTargetBox.Focus();
@@ -414,7 +421,7 @@ namespace MultiPingMonitor.UI
             }
 
             // Window title.
-            Title = $"{displayName} - Live Ping Monitor";
+            Title = $"{displayName} - {Text("LivePing_Title", "Live Ping Monitor")}";
         }
 
         private void UpdateStatusIndicator()
@@ -546,6 +553,11 @@ namespace MultiPingMonitor.UI
             }
 
             return null;
+        }
+
+        private static string Text(string key, string fallback)
+        {
+            return Properties.Strings.ResourceManager.GetString(key) ?? fallback;
         }
 
         // ── Stop / Resume ──

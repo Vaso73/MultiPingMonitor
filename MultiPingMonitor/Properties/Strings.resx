@@ -1465,6 +1465,24 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitoring is active. Stop monitoring and change the target?</value>
   </data>
+  <data name="LivePing_Title" xml:space="preserve">
+    <value>Live Ping Monitor</value>
+  </data>
+  <data name="LivePing_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="LivePing_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="LivePing_StatsSent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="LivePing_StatsReceivedShort" xml:space="preserve">
+    <value>Recv</value>
+  </data>
+  <data name="LivePing_StatsLost" xml:space="preserve">
+    <value>Lost</value>
+  </data>
   <data name="Compact_StartSet" xml:space="preserve">
     <value>Start set</value>
   </data>
