@@ -1,85 +1,228 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-09 19:54 UTC
+Last updated: 2026-07-10 04:10 UTC
 
 ## Accepted baseline
 
 Sponsor Pro v1.0.28 remains the current accepted released runtime baseline.
 
-The current branch contains additional local-only development work for external `.lang` localization. This branch is not pushed and is not released.
+The current branch contains additional local-only development work for external `.lang` localization. This branch is not pushed, not released, and has no pull request.
 
 ## Current repository state
 
-Expected live state after the next local commit:
+Verified live state before this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- Base before runtime lookup commit: `8e6aaf7bc5713945d56723efbf9d53186e1d7709`
-- Working tree before commit: contains the external `.lang` runtime lookup slice
+- HEAD before checkpoint update: `b38cfda17e671b941cf353e17b5aeae85351d6bb`
+- HEAD label: `b38cfda` — `Document fail-fast command workflow`
+- Upstream for the local branch: none configured
+- Comparison with `origin/main`: `0 5`
+- Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
 - Release state: no tag, no release, no Sponsor Pro publish for this branch
+- Backend latest metadata: not changed
 
 Always verify live state before writing.
 
 ## Current local development status
 
-External language pack foundation is implemented and the first runtime integration slice is validated locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, and fail-fast workflow documentation are implemented and committed locally.
 
-Implemented in the runtime lookup slice:
+Recent local commit chain:
+
+- `b38cfda` — `Document fail-fast command workflow`
+- `7e426a9` — `Add live apply behavior for options localization`
+- `de8755b` — `Use external language packs at runtime`
+- `8e6aaf7` — `Update current localization branch checkpoint`
+- `420282f` — `Add external language pack foundation`
+- `716099b` — `Merge pull request #156 from Vaso73/release/bump-version-to-1-0-28`
+
+Current accepted local development state:
+
+- External `.lang` foundation is implemented.
+- Runtime lookup through external language packs is implemented.
+- Built-in English fallback remains required.
+- External `lang/*.lang` files may exist beside the EXE at runtime.
+- Generated/user-edited external language-pack `TEXT` values must not be overwritten.
+- `.lang` files must not be packaged into Sponsor Pro publish output.
+- The app remains a single portable `MultiPingMonitor.exe`.
+
+## Completed slice: external language-pack foundation
+
+Commit:
+
+- `420282f` — `Add external language pack foundation`
+
+Implemented:
+
+- Added `LanguagePackKeys`.
+- Added `LanguagePackSeeds`.
+- Added `LanguagePackService`.
+- Added tests for stable language-pack generation and preservation behavior.
+- Runtime seed generation for `lang/sk-SK.lang`.
+- User-edited language-pack `TEXT` entries are preserved.
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+## Completed slice: runtime use of external language packs
+
+Commit:
+
+- `de8755b` — `Use external language packs at runtime`
+
+Implemented:
 
 - Added `ExternalLanguageResourceManager`.
 - Added `LanguageRuntimeService`.
-- Existing `Properties.Strings.*` C# lookups and XAML `x:Static resource:Strings.*` lookups now resolve through an injected `ResourceManager`.
+- Existing `Properties.Strings.*` C# lookups and many XAML `x:Static resource:Strings.*` lookups now resolve through an injected `ResourceManager`.
 - `Strings.Designer.cs` was not hand-edited.
-- `App.xaml.cs` now applies language by language code before creating windows.
-- `ApplicationOptions` keeps the legacy language enum but adds authoritative `LanguageCode`.
+- `App.xaml.cs` applies language by language code before creating windows.
+- `ApplicationOptions` keeps legacy language enum compatibility and adds authoritative `LanguageCode`.
 - `Configuration` persists `Language` as `System`, `en`, or an external language code such as `sk-SK`.
 - Old config values `System`, `English`, and `Slovak` remain backward-compatible.
 - Options language ComboBox is populated from built-in choices plus discovered `lang/*.lang` packs.
 - `Slovenčina (sk-SK)` is discovered from `lang/sk-SK.lang`.
-- The test project compiles the external resource manager and adds fallback lookup coverage.
 
-Validated:
+Validation:
 
-- `git diff --check` passed.
-- `dotnet build MultiPingMonitor.sln -c Release` passed without warnings after cleanup.
-- `dotnet test MultiPingMonitor.sln -c Release --no-build` passed: 431 total, 0 failed.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- `dotnet test MultiPingMonitor.sln -c Release --no-build`: passed, 431 total, 0 failed.
 - Single-file publish passed.
 - Publish output contained exactly one file: `MultiPingMonitor.exe`.
-- `LANG_OUTPUT_COUNT=0`; `.lang` files are not packaged.
-- Published EXE SHA-256 used for Windows runtime test:
-  `fc62f04e73ff6209433b7c219e2ee2d7781c158cc050eb1376be2fba0f228304`.
-- Windows runtime test showed Options language choices:
-  `System`, `English`, `Slovenčina (sk-SK)`.
-- Windows runtime test showed Slovak UI after selecting `Slovenčina (sk-SK)` and restarting.
+- `LANG_OUTPUT_COUNT=0`; `.lang` files were not packaged.
+- Windows runtime showed Options language choices: `System`, `English`, `Slovenčina (sk-SK)`.
+- Windows runtime showed Slovak UI after selecting `Slovenčina (sk-SK)` and restarting.
 
-Known limitation after this slice:
+Status:
 
-- Language changes are not yet live-applied inside already-open windows.
-- Some UI text still updates only after restart or window recreation because many XAML strings use static resource evaluation.
-- Options still has `OK` / `Cancel`; `Apply` / `Použiť` and `Uložiť` are not implemented yet.
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+## Completed slice: Options live apply/save behavior
+
+Commit:
+
+- `7e426a9` — `Add live apply behavior for options localization`
+
+Implemented:
+
+- Added `LocalizationRefreshService`.
+- Added `LanguageRuntimeService.CaptureResourceSnapshot()`.
+- Added `Common_Apply`.
+- Added `Options_LanguageApplyHint`.
+- Extended stable language-pack key set:
+  - `EntryCount=516`
+  - `ResourceKeys.Count=516`
+  - last key `20515`
+- Changed Options footer buttons:
+  - `Použiť` / `Apply`
+  - `Uložiť` / `Save`
+  - `Zrušiť` / `Cancel`
+- Added/reworked Options flow:
+  - `Apply_Click`
+  - `Save_Click`
+  - `ApplyOptions(closeAfterApply)`
+  - `SaveAllOptions`
+  - `RefreshLocalizedText`
+- Added accepted preview snapshot update after Apply/Save.
+- Added `MainWindow.ApplyRuntimeOptionChanges(...)`.
+- Fixed `System OS default` language behavior by using the original system default culture instead of the currently applied thread culture.
+- Refreshes `LanguageComboBox` after Apply so selected language display updates immediately.
+
+Preserved behavior:
+
+- Existing live behavior for Theme / VisualStyle / DisplayMode / CompactSource was intentionally preserved.
+- No version bump.
+- No release.
+- No push or PR.
+- Publish contract remains single EXE with no packaged `.lang`.
+
+Validation:
+
+- Initial targeted stable-key tests caught expected count/key failures and the workflow stopped for correction.
+- Stable key count and last key were corrected.
+- Targeted language-pack stable test passed.
+- Final validation after user Windows acceptance:
+  - `git diff --check`: passed
+  - `dotnet build MultiPingMonitor.sln -c Release`: passed
+  - `dotnet test MultiPingMonitor.sln -c Release --no-build`: passed
+    - total: 431
+    - failed: 0
+    - succeeded: 431
+    - skipped: 0
+  - single-file publish passed
+  - publish output contained exactly one top-level file: `MultiPingMonitor.exe`
+  - `LANG_OUTPUT_COUNT=0`
+  - final published local EXE SHA-256:
+    `a8724d1b023dabd983bc360a3795bcb2b60d6b764aea611d9322f68a6064ca22`
+
+Windows runtime acceptance:
+
+- User visually confirmed the local runtime behavior as functionally correct.
+- Options/Nastavenia shows buttons `Použiť`, `Uložiť`, `Zrušiť`.
+- English to Apply works without restart.
+- Slovenčina / `sk-SK` to Apply works without restart.
+- Language ComboBox refreshes correctly after Apply.
+- `System OS default` behaves correctly according to OS language.
+
+Status:
+
+- Closed and accepted locally.
+- Committed locally.
+- Not pushed.
+
+## Completed slice: fail-fast workflow documentation
+
+Commit:
+
+- `b38cfda` — `Document fail-fast command workflow`
+
+Implemented in `docs/GITHUB_WORKFLOW.md`:
+
+- Added `Fail-fast command workflow` section.
+- Documents that `status` must not be used as a zsh shell variable.
+- Uses safe names such as `git_status_short`, `branch_name`, and `head_sha`.
+- Adds explicit `STOP_*` gates.
+- Requires stopping after patch/build/test/publish failures.
+- Prohibits continuing to long tests after failed patch/build.
+- Prohibits publish after failed tests.
+- Prohibits handing a runtime EXE to the user after failed tests or failed publish-contract validation.
+- Recommends two-stage validation for risky patches:
+  1. patch + diff check + build + targeted tests;
+  2. full tests + single-file publish contract after stage 1 passes.
+
+Validation:
+
+- Precheck passed.
+- `AGENTS.md` and `docs/GITHUB_WORKFLOW.md` were read before write.
+- Patch passed.
+- `git diff --check` passed.
+- Docs-only staged diff check passed.
+- Local docs commit created.
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
 
 ## Current scope
 
 Continue locally only.
 
-Next approved scope:
+Currently approved scope:
 
-Implement live Options apply/save behavior.
-
-Required UX target:
-
-- Replace `OK` with `Uložiť`.
-- Add `Použiť`.
-- Keep `Zrušiť`.
-- `Použiť` validates, saves and applies changes immediately while keeping Options open.
-- `Uložiť` validates, saves, applies changes immediately and closes Options.
-- `Zrušiť` closes without saving changes that were not already applied.
-- Language changes must become visible without restarting the app after `Použiť`.
-- Language changes must also apply when pressing `Uložiť` directly.
-- Settings that can be applied live should apply on first `Použiť` / `Uložiť`.
-- Startup-only settings, such as `Start application in tray`, should remain clearly documented as next-start behavior.
+- Update `docs/CURRENT_STATE.md` to reflect live state after commits `7e426a9` and `b38cfda`.
+- This checkpoint update is docs-only.
+- No source-code change is included in this checkpoint update.
 
 Out of scope until explicitly approved:
 
@@ -93,30 +236,79 @@ Out of scope until explicitly approved:
 - Backend latest metadata update.
 - Updater release test.
 - Unrelated features.
+- Changes outside MultiPingMonitor.
 
 ## Immediate next action
 
-After committing the runtime lookup slice locally, run a read-only audit for Options live apply/save implementation.
+After this docs-only checkpoint update, review the resulting diff and commit only `docs/CURRENT_STATE.md` locally.
 
-Audit focus:
+Do not push this branch, create a PR, tag, release, publish Sponsor Pro artifacts, or update backend latest metadata without explicit user approval.
 
-- `OptionsWindow.xaml`
-- `OptionsWindow.xaml.cs`
-- `MainWindow` localization refresh/rebuild methods
-- tray menu creation/rebuild flow
-- compact menu/context menu creation/rebuild flow
-- theme/style apply flow
-- display mode apply flow
-- configuration save/load flow
+Recommended next development discussion after checkpoint commit:
 
-Do not start the live-apply write slice before reviewing that audit.
+- Decide whether to continue localization coverage by adding already-existing menu/UI strings into the external language-pack set.
+- User mentioned candidate areas:
+  - About / `O aplikácii`
+  - Options should be renamed app-wide to Settings / `Nastavenia`
+  - New Live Ping
+  - Stop set
+  - Start set
+  - other already-existing menu items still using built-in/static strings
+
+Before any next write slice, run a fresh targeted read-only audit of the specific menu/UI areas to be changed.
+
+## Known risks and regression prevention
+
+Known shell/workflow risk:
+
+- A previous shell block used zsh read-only variable `status`.
+- A patch failed but long tests/publish still continued.
+- Prevention is now documented in `docs/GITHUB_WORKFLOW.md`.
+- Use explicit `STOP_*` gates.
+- Do not continue to full tests after failed patch/build/targeted test.
+- Do not publish after failed tests.
+
+Known runtime bug fixed:
+
+- `System OS default` incorrectly used current thread culture after switching language.
+- This made System behave like the language most recently applied to the thread.
+- Fixed by storing original system default culture/UICulture in `LanguageRuntimeService`.
+
+Regression tests for future localization/UI work:
+
+- Slovak to English to Apply.
+- English to Slovak to Apply.
+- System OS default to Apply.
+- ComboBox display immediately after Apply.
+- Save applies language directly and closes Options.
+- Cancel does not save changes that were not already applied.
+- User-edited external language-pack `TEXT` entries remain preserved.
+- Publish output remains exactly one EXE and no `.lang` files.
+
+Do not blindly overwrite:
+
+- `MultiPingMonitor/Classes/LanguagePackKeys.cs`
+- `MultiPingMonitor/Classes/LanguagePackSeeds.cs`
+- generated external `.lang` user `TEXT` values
+- `MultiPingMonitor/Properties/Strings.Designer.cs`
+- runtime `lang/*.lang` files beside the EXE
+
+Do not package:
+
+- `lang/`
+- `*.lang`
+
+Runtime validation requirement:
+
+- Future localization UI changes require visual Windows runtime validation because WPF static localization/live refresh cannot be fully proven by unit tests alone.
 
 ## Hard rules
 
 - Communicate only in Slovak.
-- Read `AGENTS.md` and this file before writes.
-- Fresh live audit must control time-variable facts.
-- Stop writes if live state differs materially from this checkpoint.
+- At the beginning of each new project chat, provide a block for audit and loading project working files.
+- Read `AGENTS.md` and `docs/CURRENT_STATE.md` before writes.
+- Fresh live audit controls time-variable facts.
+- Stop writes if live state differs materially from checkpoint memory or handoff.
 - Do not push directly to `main`.
 - Do not push this branch without explicit approval.
 - Do not create a PR without explicit approval.
@@ -124,7 +316,8 @@ Do not start the live-apply write slice before reviewing that audit.
 - Do not publish Sponsor Pro artifacts without explicit approval.
 - Keep Sponsor Pro ZIP exactly one entry: `MultiPingMonitor.exe`.
 - Keep the application as one portable EXE.
+- Do not add persistent helper EXE/DLL/service/installer.
 - Do not package `lang/*.lang` files into release ZIP.
-- Do not overwrite user-edited language pack `TEXT` entries.
+- Do not overwrite user-edited language-pack `TEXT` entries.
 - Before any future push, real local Windows runtime test must pass.
-- Final released-version acceptance remains through the in-app updater.
+- Final released-version acceptance remains through the in-app updater unless the user explicitly approves a local diagnostic exception.
