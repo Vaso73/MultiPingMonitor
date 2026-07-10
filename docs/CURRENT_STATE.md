@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 07:54 UTC
+Last updated: 2026-07-10 08:19 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `025c624`
-- HEAD label: `025c624` — `Localize command line usage descriptions`
+- HEAD before checkpoint update: `eb6f0ac`
+- HEAD label: `eb6f0ac` — `Align menu instance and settings terminology`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 33`
+- Comparison with `origin/main`: `0 35`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -990,29 +990,76 @@ Status:
 - Not pushed.
 - Windows visual validation remains pending as part of the branch-wide localization runtime test.
 
+## Completed slice: Menu instance and settings terminology
+
+Commit:
+
+- `eb6f0ac` — `Align menu instance and settings terminology`
+
+Implemented:
+
+- Corrected `Menu_NewInstance` so the main menu clearly identifies the action:
+  - English: `New MultiPingMonitor instance`
+  - Slovak: `Nová inštancia MultiPingMonitor`
+- Aligned `Menu_NewInstance` with the existing `Tray_NewInstance` value.
+- Updated the English `Help_Options_TrayBehavior_Text`:
+  - replaced the obsolete user-facing `Options` label with `Settings`;
+  - replaced the ambiguous phrase `access options such as` with `access menu items such as`.
+- Preserved the already-correct Slovak help terminology using `Nastavenia`.
+- Added regression tests covering:
+  - English main-menu and tray new-instance label parity;
+  - Slovak main-menu and tray new-instance label parity;
+  - English tray-help use of `Settings`;
+  - absence of user-facing `Options` terminology in the corrected help text.
+- Reused existing language-pack keys and IDs.
+- No new language-pack entry was added.
+- Language-pack entry count remains 568.
+- Language-pack IDs remain contiguous through `20567`.
+
+Validation:
+
+- Structured resource and seed validation: passed.
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted `MenuLocalizationTests`: passed, 39 total, 0 failed.
+- Targeted `MenuOrderTests`: passed, 5 total, 0 failed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite: passed, 437 total, 0 failed.
+
+Status:
+
+- Closed technically and committed locally.
+- Not pushed.
+- Windows visual validation remains pending as part of the branch-wide localization runtime test.
+
 ## Current scope
 
-Continue localization work locally only on `feature/external-lang-pack-foundation`.
+Continue localization completion work locally only on `feature/external-lang-pack-foundation`.
 
-Current state:
+Current verified state:
 
+- English is the built-in fallback language.
 - Slovak resource parity is complete.
+- Runtime language switching works without restarting the application.
 - Alias and favorite action buttons are localized.
-- Popup status-history tooltip and accessibility name are localized.
+- Popup status-history controls are localized.
 - Status History columns, headings, and filter labels are localized.
 - Usage window explanatory headings and descriptions are localized.
 - Usage window technical commands and examples remain unchanged.
+- Main-menu, tray-menu, and compact-menu target actions are resource-backed.
+- User-facing application terminology uses `Settings` / `Nastavenia`.
+- Main-menu and tray-menu new-instance labels are aligned.
 - Language-pack entry count is 568.
 - Language-pack IDs are contiguous through `20567`.
-- Remaining localization work must continue as independent bounded slices.
 - No bulk replacement of XAML literals is approved.
 
-Remaining candidate areas:
+Remaining work before any push:
 
-- Existing main-menu labels.
-- Tray context-menu labels.
-- Compact-mode context-menu labels.
-- Other already-existing user-facing UI strings selected after targeted source audit.
+- Run one final application-wide read-only localization coverage audit.
+- Resolve only confirmed remaining user-facing localization gaps, if any.
+- Confirm arbitrary external `.lang` file loading behavior.
+- Produce and test the real Windows portable executable locally.
+- Complete branch-wide visual and functional Windows runtime validation.
 
 Out of scope until explicitly approved:
 
@@ -1028,41 +1075,39 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Run exactly one targeted read-only audit of the existing application menu surfaces.
+Run exactly one final application-wide read-only localization coverage audit.
 
-The audit must inspect:
+The audit must inspect all application-owned user-facing surfaces, including:
 
-- the main application menu;
-- the tray context menu;
-- the compact-mode context menu;
-- menu items created dynamically in code;
-- existing menu-localization helper methods;
-- existing resource keys and tests.
+- XAML windows, dialogs, controls, menus, tooltips, headers, labels, buttons, and accessibility names;
+- visible strings created or assigned dynamically in C#;
+- WPF and WinForms tray-menu items;
+- help content;
+- popup notifications;
+- validation and error dialogs;
+- language-selection UI;
+- existing localization helper methods;
+- existing localization and language-pack tests.
 
-The audit must specifically classify these already-existing actions:
+Every discovered visible literal must be classified as one of:
 
-- About;
-- Settings;
-- New Live Ping;
-- Start set;
-- Stop set;
-- New instance;
-- Status History;
-- Exit.
+- already resource-backed;
+- runtime-localized;
+- technical text that must remain unchanged;
+- product name, protocol name, file name, executable name, command, argument, path, URL, placeholder, or example that must remain unchanged;
+- confirmed user-facing localization gap;
+- uncertain and requiring a separate narrow audit before modification.
 
-The audit must also determine:
+The audit must also verify:
 
-- which labels are already fully resource-backed;
-- which labels still contain hardcoded English;
-- whether user-facing `Options` terminology remains anywhere that should use `Settings`;
-- whether accessibility names or tooltips require the same localization;
-- whether existing keys can be reused without changing their meaning;
-- which new language-pack keys, if any, would be required;
-- the current language-pack tail beginning at ID `20567`.
+- no unintended user-facing `Options` terminology remains outside command-line documentation;
+- English fallback and Slovak resources remain in parity;
+- language-pack count remains 568;
+- IDs remain contiguous through `20567`;
+- external language-pack loading has no known source-level blocker;
+- current tests adequately cover the completed localization surfaces.
 
-Command-line `Options` terminology in `UsageWindow` is not part of this terminology cleanup and must remain `Options` in English and `Parametre` in Slovak.
-
-Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during the audit.
+Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during this audit.
 ## Known risks and regression prevention
 
 Known shell/workflow risk:
