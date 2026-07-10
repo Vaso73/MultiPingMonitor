@@ -129,6 +129,7 @@ namespace MultiPingMonitor.UI
         public MainWindow()
         {
             InitializeComponent();
+            RefreshWindowChromeLocalization();
             InitializeApplication();
             InitializeTrayIcon();
             // Start LAN/WAN identity monitoring for footer auto-refresh and IP-change alerts.
@@ -349,6 +350,22 @@ namespace MultiPingMonitor.UI
             }
 
             AboutMenu_Click(null, null);
+        }
+
+
+        private void RefreshWindowChromeLocalization()
+        {
+            SetTitleBarButtonText(minimizeButton, "Tooltip_Minimize", "Minimize");
+            SetTitleBarButtonText(maximizeButton, "Tooltip_Maximize", "Maximize");
+            SetTitleBarButtonText(restoreButton, "Tooltip_RestoreDown", "Restore Down");
+            SetTitleBarButtonText(closeButton, "Tooltip_Close", "Close");
+        }
+
+        private void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = ResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
         }
 
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
@@ -2793,6 +2810,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             bool languageChanged,
             System.Collections.Generic.IReadOnlyDictionary<string, string> oldResources)
         {
+            RefreshWindowChromeLocalization();
             RefreshGuiState();
             RefreshProbeColors();
             UpdateCompactSourceMenuChecks();

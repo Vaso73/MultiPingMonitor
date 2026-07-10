@@ -381,6 +381,15 @@
   <data name="Tooltip_Close" xml:space="preserve">
     <value>Zavrieť</value>
   </data>
+  <data name="Tooltip_Minimize" xml:space="preserve">
+    <value>Minimalizovať</value>
+  </data>
+  <data name="Tooltip_Maximize" xml:space="preserve">
+    <value>Maximalizovať</value>
+  </data>
+  <data name="Tooltip_RestoreDown" xml:space="preserve">
+    <value>Obnoviť nadol</value>
+  </data>
   <data name="Tooltip_EditAlias" xml:space="preserve">
     <value>Upraviť alias</value>
   </data>

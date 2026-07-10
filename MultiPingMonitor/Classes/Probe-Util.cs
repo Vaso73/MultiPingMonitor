@@ -218,7 +218,7 @@ namespace MultiPingMonitor.Classes
 
         private void DisplayStatistics()
         {
-            StatisticsText = $"Sent: {Statistics.Sent} Received: {Statistics.Received} Lost: {Statistics.Lost}";
+            StatisticsText = $"{MultiPingMonitor.Properties.Strings.Probe_Stat_Sent} {Statistics.Sent} {MultiPingMonitor.Properties.Strings.Probe_Stat_Received} {Statistics.Received} {MultiPingMonitor.Properties.Strings.Probe_Stat_Lost} {Statistics.Lost}";
         }
 
         private void OnStatusChange(ProbeStatus newStatus, string alertType)

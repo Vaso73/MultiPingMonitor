@@ -546,6 +546,9 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20519, "LivePing_StatsSent", "Sent", "Odosl."),
                 new LanguagePackSeedEntry(20520, "LivePing_StatsReceivedShort", "Recv", "Prij."),
                 new LanguagePackSeedEntry(20521, "LivePing_StatsLost", "Lost", "Strat."),
+                new LanguagePackSeedEntry(20522, "Tooltip_Minimize", "Minimize", "Minimalizovať"),
+                new LanguagePackSeedEntry(20523, "Tooltip_Maximize", "Maximize", "Maximalizovať"),
+                new LanguagePackSeedEntry(20524, "Tooltip_RestoreDown", "Restore Down", "Obnoviť nadol"),
             };
     }
 }
