@@ -22,6 +22,7 @@ namespace MultiPingMonitor.UI
         public StatusHistoryWindow(ObservableCollection<StatusChangeLog> statusChangeLog)
         {
             InitializeComponent();
+            RefreshStatusHistoryLabelLocalization();
             RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "StatusHistoryWindow");
 
@@ -164,7 +165,7 @@ namespace MultiPingMonitor.UI
         {
             using (System.Windows.Forms.SaveFileDialog exportDialog = new System.Windows.Forms.SaveFileDialog())
             {
-                exportDialog.Title = "Export";
+                exportDialog.Title = StatusHistoryResourceText("StatusHistory_Export", "Export");
                 exportDialog.RestoreDirectory = true;
                 exportDialog.OverwritePrompt = true;
                 exportDialog.AddExtension = true;
@@ -376,6 +377,20 @@ namespace MultiPingMonitor.UI
             string text = TitleBarResourceText(key, fallback);
             button.ToolTip = text;
             System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
+
+        private void RefreshStatusHistoryLabelLocalization()
+        {
+            FilterStart.Content = StatusHistoryResourceText("StatusHistory_FilterStart", "Start");
+            FilterStop.Content = StatusHistoryResourceText("StatusHistory_FilterStop", "Stop");
+            ExportButton.Content = StatusHistoryResourceText("StatusHistory_Export", "Export");
+        }
+
+        private static string StatusHistoryResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
         }
 
 

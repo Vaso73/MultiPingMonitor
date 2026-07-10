@@ -84,8 +84,9 @@
             <DockPanel Margin="0,5,0,0">
                 <TextBlock Style="{StaticResource Arg}"
                            Text="-minimized"/>
-                <TextBlock Style="{StaticResource Desc}"
-                           Text="Start the application in a minimized state."/>
+                <TextBlock x:Name="StartMinimizedDescriptionText"
+                           Style="{StaticResource Desc}"
+                           Text=""/>
             </DockPanel>
             <DockPanel Margin="0,5,0,0">
                 <TextBlock Style="{StaticResource Arg}"

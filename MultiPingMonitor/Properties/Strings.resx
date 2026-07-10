@@ -1714,4 +1714,17 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Options_LanguageApplyHint" xml:space="preserve">
     <value>Changes are applied when you click Apply or Save.</value>
   </data>
+
+  <data name="StatusHistory_FilterStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StatusHistory_FilterStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="StatusHistory_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Usage_StartMinimizedDescription" xml:space="preserve">
+    <value>Start the application in a minimized state.</value>
+  </data>
 </root>

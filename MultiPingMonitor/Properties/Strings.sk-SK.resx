@@ -1592,4 +1592,17 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Options_LanguageApplyHint" xml:space="preserve">
     <value>Zmeny sa použijú po kliknutí na Použiť alebo Uložiť.</value>
   </data>
+
+  <data name="StatusHistory_FilterStart" xml:space="preserve">
+    <value>Spustenie</value>
+  </data>
+  <data name="StatusHistory_FilterStop" xml:space="preserve">
+    <value>Zastavenie</value>
+  </data>
+  <data name="StatusHistory_Export" xml:space="preserve">
+    <value>Exportovať</value>
+  </data>
+  <data name="Usage_StartMinimizedDescription" xml:space="preserve">
+    <value>Spustiť aplikáciu minimalizovanú.</value>
+  </data>
 </root>

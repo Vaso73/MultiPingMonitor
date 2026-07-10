@@ -549,6 +549,10 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20522, "Tooltip_Minimize", "Minimize", "Minimalizovať"),
                 new LanguagePackSeedEntry(20523, "Tooltip_Maximize", "Maximize", "Maximalizovať"),
                 new LanguagePackSeedEntry(20524, "Tooltip_RestoreDown", "Restore Down", "Obnoviť nadol"),
+                new LanguagePackSeedEntry(20525, "StatusHistory_FilterStart", "Start", "Spustenie"),
+                new LanguagePackSeedEntry(20526, "StatusHistory_FilterStop", "Stop", "Zastavenie"),
+                new LanguagePackSeedEntry(20527, "StatusHistory_Export", "Export", "Exportovať"),
+                new LanguagePackSeedEntry(20528, "Usage_StartMinimizedDescription", "Start the application in a minimized state.", "Spustiť aplikáciu minimalizovanú."),
             };
     }
 }

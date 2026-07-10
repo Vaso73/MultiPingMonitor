@@ -329,7 +329,7 @@
                             </Grid>
                             <CheckBox x:Name="FilterStart"
                                       Style="{StaticResource CheckBoxStyle.Dark}"
-                                      Content="Start"
+                                      Content=""
                                       IsChecked="True"
                                       Click="Filter_Click" />
                         </StackPanel>
@@ -343,7 +343,7 @@
                             </Grid>
                             <CheckBox x:Name="FilterStop"
                                       Style="{StaticResource CheckBoxStyle.Dark}"
-                                      Content="Stop"
+                                      Content=""
                                       IsChecked="True"
                                       Click="Filter_Click" />
                         </StackPanel>
@@ -364,8 +364,9 @@
                     </StackPanel>                    <!-- Export button -->
                     <StackPanel DockPanel.Dock="Left" Margin="25,0,0,0" HorizontalAlignment="Left">
                         <TextBlock Margin="0,0,0,2"/>
-                        <Button Style="{DynamicResource Style.Button}"
-                                Content="Export"
+                        <Button x:Name="ExportButton"
+                                Style="{DynamicResource Style.Button}"
+                                Content=""
                                 Click="Export_Click"
                                 Width="100"/>
                     </StackPanel>
