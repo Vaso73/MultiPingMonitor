@@ -52,12 +52,14 @@
                                Opacity="0.5"/>
                 </StackPanel>
             </StackPanel>
-            <TextBlock Margin="0,20,0,0"
+            <TextBlock x:Name="CommandLineUsageHeader"
+                       Margin="0,20,0,0"
                        Text="Command line usage:"
                        FontSize="14"
                        FontWeight="SemiBold"/>
             <TextBlock Text="MultiPingMonitor [OPTIONS] [HOSTNAME...] [FILE...]"/>
-            <TextBlock Margin="0,20,0,0"
+            <TextBlock x:Name="OptionsHeader"
+                       Margin="0,20,0,0"
                        Text="Options:"
                        FontSize="14"
                        FontWeight="SemiBold"/>
@@ -65,9 +67,11 @@
                 <TextBlock Style="{StaticResource Arg}"
                            Text="-i &lt;interval>"/>
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="IntervalDescriptionText"
+                               Style="{StaticResource Desc}"
                                Text="Specifies the interval, in seconds, between pings."/>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="IntervalRangeText"
+                               Style="{StaticResource Desc}"
                                Text="Valid range: 1 to 86400 (1 second to 24 hours)."/>
                 </StackPanel>
             </DockPanel>
@@ -75,9 +79,11 @@
                 <TextBlock Style="{StaticResource Arg}"
                            Text="-w &lt;timeout>"/>
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="TimeoutDescriptionText"
+                               Style="{StaticResource Desc}"
                                Text="Set the timeout, in seconds, for each ping request."/>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="TimeoutRangeText"
+                               Style="{StaticResource Desc}"
                                Text="Valid range: 1 to 60 seconds."/>
                 </StackPanel>
             </DockPanel>
@@ -92,19 +98,23 @@
                 <TextBlock Style="{StaticResource Arg}"
                            Text="&lt;hostname>"/>
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="HostnameDescriptionText"
+                               Style="{StaticResource Desc}"
                                Text="A hostname or IP address to ping."/>
-                    <TextBlock Style="{StaticResource Desc}"
+                    <TextBlock x:Name="MultipleHostnamesDescriptionText"
+                               Style="{StaticResource Desc}"
                                Text="You can provide multiple hostnames."/>
                 </StackPanel>
             </DockPanel>
             <DockPanel Margin="0,5,0,0">
                 <TextBlock Style="{StaticResource Arg}"
                            Text="&lt;file>"/>
-                <TextBlock Style="{StaticResource Desc}"
+                <TextBlock x:Name="FileDescriptionText"
+                           Style="{StaticResource Desc}"
                            Text="The path to a text file containing hostnames or IP addresses to ping. Wrap the path in quotes if it contains spaces. You can provide multiple files."/>
             </DockPanel>
-            <TextBlock Margin="0,20,0,0"
+            <TextBlock x:Name="ExamplesHeader"
+                       Margin="0,20,0,0"
                        Text="Examples:"
                        FontSize="14"
                        FontWeight="SemiBold"/>

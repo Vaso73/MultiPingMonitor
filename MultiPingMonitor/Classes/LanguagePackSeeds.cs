@@ -583,6 +583,15 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20556, "StatusHistory_FilterProbeStatus", "Probe status", "Stav sondy"),
                 new LanguagePackSeedEntry(20557, "StatusHistory_FilterUp", "Up", "Dostupný"),
                 new LanguagePackSeedEntry(20558, "StatusHistory_FilterDown", "Down", "Nedostupný"),
+                new LanguagePackSeedEntry(20559, "Usage_OptionsHeader", "Options", "Parametre"),
+                new LanguagePackSeedEntry(20560, "Usage_IntervalDescription", "Specifies the interval, in seconds, between pings.", "Určuje interval v sekundách medzi jednotlivými pingmi."),
+                new LanguagePackSeedEntry(20561, "Usage_IntervalRange", "Valid range: 1 to 86400 (1 second to 24 hours).", "Platný rozsah: 1 až 86400 (1 sekunda až 24 hodín)."),
+                new LanguagePackSeedEntry(20562, "Usage_TimeoutDescription", "Set the timeout, in seconds, for each ping request.", "Nastaví časový limit v sekundách pre každú požiadavku ping."),
+                new LanguagePackSeedEntry(20563, "Usage_TimeoutRange", "Valid range: 1 to 60 seconds.", "Platný rozsah: 1 až 60 sekúnd."),
+                new LanguagePackSeedEntry(20564, "Usage_HostnameDescription", "A hostname or IP address to ping.", "Názov hostiteľa alebo IP adresa na pingovanie."),
+                new LanguagePackSeedEntry(20565, "Usage_MultipleHostnamesDescription", "You can provide multiple hostnames.", "Môžete zadať viacero názvov hostiteľov."),
+                new LanguagePackSeedEntry(20566, "Usage_FileDescription", "The path to a text file containing hostnames or IP addresses to ping. Wrap the path in quotes if it contains spaces. You can provide multiple files.", "Cesta k textovému súboru obsahujúcemu názvy hostiteľov alebo IP adresy na pingovanie. Ak cesta obsahuje medzery, uzavrite ju do úvodzoviek. Môžete zadať viacero súborov."),
+                new LanguagePackSeedEntry(20567, "Usage_ExamplesHeader", "Examples", "Príklady"),
             };
     }
 }

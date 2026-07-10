@@ -1709,4 +1709,31 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="StatusHistory_FilterDown" xml:space="preserve">
     <value>Nedostupný</value>
   </data>
+  <data name="Usage_OptionsHeader" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="Usage_IntervalDescription" xml:space="preserve">
+    <value>Určuje interval v sekundách medzi jednotlivými pingmi.</value>
+  </data>
+  <data name="Usage_IntervalRange" xml:space="preserve">
+    <value>Platný rozsah: 1 až 86400 (1 sekunda až 24 hodín).</value>
+  </data>
+  <data name="Usage_TimeoutDescription" xml:space="preserve">
+    <value>Nastaví časový limit v sekundách pre každú požiadavku ping.</value>
+  </data>
+  <data name="Usage_TimeoutRange" xml:space="preserve">
+    <value>Platný rozsah: 1 až 60 sekúnd.</value>
+  </data>
+  <data name="Usage_HostnameDescription" xml:space="preserve">
+    <value>Názov hostiteľa alebo IP adresa na pingovanie.</value>
+  </data>
+  <data name="Usage_MultipleHostnamesDescription" xml:space="preserve">
+    <value>Môžete zadať viacero názvov hostiteľov.</value>
+  </data>
+  <data name="Usage_FileDescription" xml:space="preserve">
+    <value>Cesta k textovému súboru obsahujúcemu názvy hostiteľov alebo IP adresy na pingovanie. Ak cesta obsahuje medzery, uzavrite ju do úvodzoviek. Môžete zadať viacero súborov.</value>
+  </data>
+  <data name="Usage_ExamplesHeader" xml:space="preserve">
+    <value>Príklady</value>
+  </data>
 </root>

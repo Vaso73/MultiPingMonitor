@@ -1819,4 +1819,31 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="StatusHistory_FilterDown" xml:space="preserve">
     <value>Down</value>
   </data>
+  <data name="Usage_OptionsHeader" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Usage_IntervalDescription" xml:space="preserve">
+    <value>Specifies the interval, in seconds, between pings.</value>
+  </data>
+  <data name="Usage_IntervalRange" xml:space="preserve">
+    <value>Valid range: 1 to 86400 (1 second to 24 hours).</value>
+  </data>
+  <data name="Usage_TimeoutDescription" xml:space="preserve">
+    <value>Set the timeout, in seconds, for each ping request.</value>
+  </data>
+  <data name="Usage_TimeoutRange" xml:space="preserve">
+    <value>Valid range: 1 to 60 seconds.</value>
+  </data>
+  <data name="Usage_HostnameDescription" xml:space="preserve">
+    <value>A hostname or IP address to ping.</value>
+  </data>
+  <data name="Usage_MultipleHostnamesDescription" xml:space="preserve">
+    <value>You can provide multiple hostnames.</value>
+  </data>
+  <data name="Usage_FileDescription" xml:space="preserve">
+    <value>The path to a text file containing hostnames or IP addresses to ping. Wrap the path in quotes if it contains spaces. You can provide multiple files.</value>
+  </data>
+  <data name="Usage_ExamplesHeader" xml:space="preserve">
+    <value>Examples</value>
+  </data>
 </root>
