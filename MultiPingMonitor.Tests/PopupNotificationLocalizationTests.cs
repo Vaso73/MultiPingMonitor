@@ -18,7 +18,7 @@ namespace MultiPingMonitor.Tests
                     return dir;
                 }
 
-                DirectoryInfo parent = Directory.GetParent(dir);
+                DirectoryInfo? parent = Directory.GetParent(dir);
 
                 if (parent == null)
                 {
