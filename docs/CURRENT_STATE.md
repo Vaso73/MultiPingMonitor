@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 09:34 UTC
+Last updated: 2026-07-10 11:40 UTC
 
 ## Accepted baseline
 
@@ -14,23 +14,31 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `70fe3c3`
-- HEAD label: `70fe3c3` — `Localize final favorite validation messages`
+- HEAD before checkpoint update: `3eb356b807d0f85c0f359d26f66cb1970a96a808`
+- HEAD label: `3eb356b` — `Fix system language and tray dialog ownership`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 40`
+- Comparison with `origin/main`: `0 42`
 - Working tree before checkpoint update: clean
 - Language-pack entry count: 588
 - Language-pack ID range: `20000–20587`
-- Full automated test suite: 443 passed, 0 failed
-- Warning-free Release build: passed
-- Final read-only residual localization audit: completed
-- Confirmed unresolved user-facing localization gaps: none
-- Push state: local-only branch, not pushed
+- Full automated test suite: 446 passed, 0 failed
+- Warning-free Release build with `-warnaserror`: passed
+- Targeted language and tray-dialog tests: 12 passed, 0 failed
+- Local Windows x64 single-file publish: passed
+- Published local EXE SHA-256: `37a5f964f00946ca462e69089c41bc91aa0b44f92bfe8554b9fe16484e10d125`
+- Published local EXE size: `163500148` bytes
+- Publish output: exactly one `MultiPingMonitor.exe`
+- Packaged `.lang` files: 0
+- Real Windows runtime validation: accepted by the user
+- Live `English` to `System (OS default)` on Slovak Windows: passed without restart
+- Settings and tray localization refresh after Apply: passed
+- `Manage Compact Sets` opened repeatedly from Settings launched through tray: passed without exception or application crash
+- Push state: no push performed
 - PR state: no PR created
-- Release state: no tag, no release, no Sponsor Pro publish for this branch
-- Backend latest metadata: not changed
+- Release state: no tag, release, version bump, Sponsor Pro publish, or backend metadata change
 
-This section reflects the latest verified live state. Older checkpoint sections below may describe previous intermediate states.
+This section reflects the latest verified live state. Older checkpoint sections below are historical and may describe previous intermediate states.
+
 ## Current repository state
 
 Verified live state before this checkpoint update:
@@ -51,36 +59,37 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, compact close tooltip localization, status history/usage label localization, network identity label localization, and WAN status label localization are implemented and committed locally.
+The external language-pack implementation, complete application localization, final residual localization cleanup,
+Windows system-language correction, and safe tray-dialog ownership handling are implemented and committed locally.
 
-Recent local commit chain:
+Latest local commit chain:
 
-- `8c4a090` — `Localize WAN status labels`
-- `5062062` — `Localize network identity labels`
-- `920c9bd` — `Localize status history and usage labels`
-- `93f2685` — `Localize compact close tooltip`
-- `9c8f77e` — `Localize existing-key dialog and ping labels`
-- `e715b11` — `Localize remaining window chrome tooltips`
-- `ba4e23d` — `Localize main window chrome and probe stats`
-- `365697e` — `Localize Live Ping window chrome`
-- `076cb8b` — `Rename options text to settings`
-- `6a23119` — `Update current localization checkpoint`
+- `3eb356b` — `Fix system language and tray dialog ownership`
+- `52cf4af` — `Update current state after localization completion`
+- `70fe3c3` — `Localize final favorite validation messages`
+- `e336dbb` — `Localize remaining user-facing literals`
+- `e3cddd7` — `Localize Live Ping technical status labels`
 - `b38cfda` — `Document fail-fast command workflow`
 - `7e426a9` — `Add live apply behavior for options localization`
 - `de8755b` — `Use external language packs at runtime`
-- `8e6aaf7` — `Update current localization branch checkpoint`
 - `420282f` — `Add external language pack foundation`
 - `716099b` — `Merge pull request #156 from Vaso73/release/bump-version-to-1-0-28`
 
 Current accepted local development state:
 
-- External `.lang` foundation is implemented.
-- Runtime lookup through external language packs is implemented.
+- External `.lang` foundation and runtime lookup are implemented.
 - Built-in English fallback remains required.
-- External `lang/*.lang` files may exist beside the EXE at runtime.
-- Generated/user-edited external language-pack `TEXT` values must not be overwritten.
-- `.lang` files must not be packaged into Sponsor Pro publish output.
-- The app remains a single portable `MultiPingMonitor.exe`.
+- Arbitrary valid external `lang/*.lang` packs are discoverable by language code.
+- User-edited existing language-pack `TEXT` values are preserved.
+- The default Slovak pack contains 588 contiguous entries with IDs `20000–20587`.
+- Confirmed application-owned user-facing localization gaps are resolved.
+- Technical status defaults remain `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`, `INDETERMINATE`, and `INACTIVE`.
+- `System (OS default)` resolves the Windows user UI language instead of a previously applied process language.
+- Dialogs opened through tray-safe paths no longer assign an unshown `MainWindow` as WPF owner.
+- `.lang` files are not packaged into publish output.
+- The application remains one portable `MultiPingMonitor.exe`.
+- The branch-wide real Windows runtime gate has passed.
+- The branch remains local-only and no GitHub operation has been authorized by this checkpoint.
 
 ## Completed slice: external language-pack foundation
 
@@ -1153,41 +1162,76 @@ Status:
 - No push, PR, merge, tag, release, version bump, Sponsor Pro publish, or backend metadata change has occurred.
 - Mandatory real local Windows portable runtime validation remains pending.
 
+## Completed slice: system language and tray dialog ownership
+
+Commit:
+
+- `3eb356b` — `Fix system language and tray dialog ownership`
+
+Implemented:
+
+- Replaced process-culture-dependent `System (OS default)` resolution with the Windows user default UI language from
+  `GetUserDefaultUILanguage()`.
+- Retained startup UI culture and startup culture as deterministic fallback values.
+- Added behavioral regression coverage for Windows user UI language precedence and non-Windows fallback behavior.
+- Fixed `Manage Compact Sets` opening from Settings when the application started directly in tray.
+- Separated the functional `MainWindow` host reference from the visible WPF dialog owner.
+- Settings now passes its visible window as the preferred dialog owner.
+- The dialog falls back to the loaded `MainWindow` or screen-centered operation when no safe visible owner exists.
+- Removed `Owner as MainWindow` callback coupling from `ManageCompactSetsWindow`.
+- Added tray-start dialog ownership regression assertions.
+
+Validation:
+
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted language, language-pack, and tray-dialog tests: 12 passed, 0 failed.
+- Full automated test suite: 446 passed, 0 failed.
+- Windows x64 self-contained single-file publish: passed.
+- Publish output contained exactly one file: `MultiPingMonitor.exe`.
+- Packaged `.lang` files: 0.
+- Published local EXE SHA-256:
+  `37a5f964f00946ca462e69089c41bc91aa0b44f92bfe8554b9fe16484e10d125`
+- Published local EXE size: 163500148 bytes.
+
+Windows runtime acceptance:
+
+- User confirmed all requested behavior as functional.
+- `English` to `System (OS default)` switched immediately to Slovak without application restart.
+- Open Settings and tray text refreshed to Slovak after Apply.
+- `Manage Compact Sets` opened from Settings launched through tray without an exception.
+- Reopening the same dialog also passed without an application crash.
+
+Status:
+
+- Closed and accepted locally.
+- Committed locally.
+- Not pushed.
+- No PR, merge, tag, release, version bump, Sponsor Pro publish, or backend metadata change.
+
 ## Current scope
 
-Complete the branch-wide real Windows portable runtime validation locally before any GitHub action.
+The branch-wide external language-pack and localization implementation is source-complete, committed locally, and
+accepted through real Windows runtime testing.
 
-Current verified source state:
+Current verified state:
 
-- English is the built-in fallback language.
-- Slovak resource parity is complete.
-- Runtime language switching is implemented without application restart.
-- Arbitrary valid external `.lang` files are discovered by language code.
-- User-edited existing `.lang` entries are preserved during seed merging.
-- Application-owned confirmed user-facing localization gaps are resolved.
-- Main-menu, tray-menu, compact-menu, dialogs, status history, usage help, Live Ping statuses, validation messages, and error messages are resource-backed where required.
-- User-facing application terminology uses `Settings` / `Nastavenia`.
-- Technical status defaults intentionally remain in English.
+- HEAD before this documentation checkpoint: `3eb356b`.
+- Working tree is clean.
 - Language-pack entry count is 588.
 - Language-pack IDs are contiguous through `20587`.
-- Full automated test suite has 443 passing tests.
+- Full automated test suite has 446 passing tests.
 - Warning-free Release build passes.
-- Final residual localization audit found no unresolved confirmed localization gap.
+- The portable publish contract is exactly one `MultiPingMonitor.exe`.
+- No `.lang`, DLL, PDB, helper executable, installer, or service is part of the publish output.
+- Runtime language switching works without restart.
+- `System (OS default)` correctly follows the Slovak Windows user UI language.
+- Settings and tray localization refresh correctly after Apply.
+- Tray-start `Manage Compact Sets` ownership is safe and no longer crashes the application.
+- The final residual localization audit found no unresolved confirmed application-owned localization gap.
+- Real local Windows runtime validation has passed.
 
-Mandatory remaining gate before any push:
-
-- Build the real Windows portable single-file `MultiPingMonitor.exe`.
-- Copy the exact artifact to the fixed local Windows runtime-test location.
-- Verify the artifact hash before testing.
-- Perform a real Windows runtime test.
-- Verify English and Slovenčina switching through Apply without restart.
-- Verify the generated and loaded `sk-SK.lang`.
-- Verify at least one deliberately edited Slovak `TEXT` value is honored and not overwritten.
-- Verify an additional arbitrary valid external `.lang` file is discovered and usable.
-- Check the newly localized dialogs, validation messages, technical statuses, menus, and settings terminology.
-- Confirm the portable output remains one `MultiPingMonitor.exe`.
-
-Out of scope until the Windows runtime test is explicitly accepted:
+Still out of scope without a new explicit approval:
 
 - GitHub push.
 - Pull request.
@@ -1197,56 +1241,64 @@ Out of scope until the Windows runtime test is explicitly accepted:
 - Version bump.
 - Sponsor Pro publish.
 - Backend latest metadata update.
-- Updater release test.
+- Updater release acceptance.
 - Changes outside MultiPingMonitor.
+
 ## Immediate next action
 
-Prepare the exact portable Windows runtime-test artifact locally from the current branch.
+Stop after creating this local documentation checkpoint.
 
-Requirements:
+The next repository-changing step requires a new explicit approval and must begin with a fresh live audit. The expected
+next workflow is:
 
-- Precheck branch `feature/external-lang-pack-foundation`.
-- Precheck clean working tree.
-- Precheck HEAD from the final localization checkpoint.
-- Run warning-free Release build and the full automated test suite.
-- Publish Windows x64 as a self-contained single-file executable.
-- Do not change the application version.
-- Do not create a tag or release.
-- Do not push or open a PR.
-- Verify the publish directory contains exactly one permanent application artifact:
-  - `MultiPingMonitor.exe`.
-- Verify no `.dll`, `.pdb`, `.config`, `.lang`, or helper executable is included.
-- Calculate and report SHA-256 and file size.
-- Prepare the exact Windows PowerShell `scp` command for copying the artifact from LXC DEV.
-- Use the existing fixed local Windows runtime-test location established for this project.
-- Stop after artifact preparation and wait for the user to perform the real Windows runtime test.
+- verify clean branch state and current HEAD;
+- compare the complete branch against `origin/main`;
+- run final pre-push scope and regression checks;
+- only after explicit approval, push the feature branch;
+- create a pull request rather than pushing directly to `main`.
+
+No push, PR, merge, tag, release, version bump, Sponsor Pro publish, or backend change is authorized by this checkpoint.
+
 ## Known risks and regression prevention
 
-Known shell/workflow risk:
+Known shell/workflow risks:
 
-- A previous shell block used zsh read-only variable `status`.
-- A patch failed but long tests/publish still continued.
-- Prevention is now documented in `docs/GITHUB_WORKFLOW.md`.
-- Use explicit `STOP_*` gates.
-- Do not continue to full tests after failed patch/build/targeted test.
-- Do not publish after failed tests.
+- zsh reserves names such as `status` and `path`.
+- A failed patch must stop the workflow before long tests or publish.
+- Use explicit `STOP_*` gates and verify scope before staging or committing.
+- Do not hand off a runtime EXE after a failed build, test, or publish-contract check.
+- Risky patches should use two-stage validation:
+  1. patch, diff check, build, and targeted tests;
+  2. full tests and single-file publish only after stage 1 passes.
 
-Known runtime bug fixed:
+Resolved runtime language risk:
 
-- `System OS default` incorrectly used current thread culture after switching language.
-- This made System behave like the language most recently applied to the thread.
-- Fixed by storing original system default culture/UICulture in `LanguageRuntimeService`.
+- A live `English` to `System (OS default)` switch could resolve back to English because process/startup culture state
+  was not a reliable representation of the Windows user UI language.
+- `LanguageRuntimeService` now uses `GetUserDefaultUILanguage()` on Windows and retains startup cultures only as fallback.
+- Regression tests cover Windows user UI language precedence and fallback behavior.
 
-Regression tests for future localization/UI work:
+Resolved tray-dialog ownership risk:
 
-- Slovak to English to Apply.
-- English to Slovak to Apply.
-- System OS default to Apply.
-- ComboBox display immediately after Apply.
-- Save applies language directly and closes Options.
+- When the application started directly in tray, `MainWindow` had never been shown.
+- `OpenManageCompactSets()` previously assigned that unshown window as WPF owner, causing
+  `InvalidOperationException: Cannot set Owner property to a Window that has not been shown previously`.
+- The dialog now receives a separate functional `MainWindow` host and only uses a loaded visible window as WPF owner.
+- Settings passes itself as the preferred owner when it opens the dialog.
+
+Regression checks for future localization and UI work:
+
+- Slovenčina to English through Apply.
+- English to Slovenčina through Apply.
+- English to System on Slovak Windows through Apply.
+- Settings and tray text refresh after language Apply.
+- Language ComboBox display immediately after Apply.
+- Save applies language directly and closes Settings.
 - Cancel does not save changes that were not already applied.
+- Start in tray, open Settings, and open `Manage Compact Sets` repeatedly without an exception.
 - User-edited external language-pack `TEXT` entries remain preserved.
-- Publish output remains exactly one EXE and no `.lang` files.
+- Arbitrary valid external `.lang` packs remain discoverable.
+- Publish output remains exactly one EXE with no `.lang` files.
 
 Do not blindly overwrite:
 
@@ -1263,7 +1315,8 @@ Do not package:
 
 Runtime validation requirement:
 
-- Future localization UI changes require visual Windows runtime validation because WPF static localization/live refresh cannot be fully proven by unit tests alone.
+- Future localization or WPF ownership changes require real Windows visual/runtime validation before any push because
+  static tests cannot fully prove WPF refresh, tray lifecycle, or owner-window behavior.
 
 ## Hard rules
 
