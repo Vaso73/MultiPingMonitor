@@ -225,8 +225,7 @@
                                  IsChecked="True"
                                  Checked="DestType_Changed"
                                  Margin="0,0,16,0" VerticalContentAlignment="Center"/>
-                    <RadioButton x:Name="RadioCompact" GroupName="DestType"
-                                 Content="Compact" FontSize="12"
+                    <RadioButton x:Name="RadioCompact" GroupName="DestType" FontSize="12"
                                  Foreground="{DynamicResource Theme.Text.Primary}"
                                  Checked="DestType_Changed"
                                  VerticalContentAlignment="Center"/>

@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Classes
         public const string AppId = "multipingmonitor";
         public const string AppName = "MultiPingMonitor";
         public const int FirstKey = 20000;
-        public const int EntryCount = 574;
+        public const int EntryCount = 586;
 
         public static IReadOnlyDictionary<int, string> ResourceKeys { get; } =
             new Dictionary<int, string>
@@ -587,6 +587,18 @@ namespace MultiPingMonitor.Classes
                 [20571] = "LivePing_Status_HighLatency",
                 [20572] = "LivePing_Status_Indeterminate",
                 [20573] = "LivePing_Status_Inactive",
+                [20574] = "MultiInput_Instructions",
+                [20575] = "NewFavorite_Instructions",
+                [20576] = "Common_DropSingleFileOnly",
+                [20577] = "Common_FileTooLargeWithPath",
+                [20578] = "Common_FileOpenErrorWithDetails",
+                [20579] = "Common_FileTooLarge",
+                [20580] = "Common_FileOpenPlainText",
+                [20581] = "CommandLine_FileParseError",
+                [20582] = "Favorite_NotFound",
+                [20583] = "Probe_LogWriteError",
+                [20584] = "Probe_AudioPlaybackError",
+                [20585] = "LivePing_AddToSet_CompactDestination",
             };
     }
 }

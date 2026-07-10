@@ -598,6 +598,18 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20571, "LivePing_Status_HighLatency", "HIGH LATENCY", "HIGH LATENCY"),
                 new LanguagePackSeedEntry(20572, "LivePing_Status_Indeterminate", "INDETERMINATE", "INDETERMINATE"),
                 new LanguagePackSeedEntry(20573, "LivePing_Status_Inactive", "INACTIVE", "INACTIVE"),
+                new LanguagePackSeedEntry(20574, "MultiInput_Instructions", "Type a list of addresses to ping.\nEnter one per line or comma separated.\n\nIf you have a text file containing hosts,\ndrag and drop it here.", "Zadajte zoznam adries na pingovanie.\nKaždú zadajte na samostatný riadok alebo ich oddeľte čiarkami.\n\nAk máte textový súbor obsahujúci hostiteľov,\npresuňte ho sem."),
+                new LanguagePackSeedEntry(20575, "NewFavorite_Instructions", "Type a list of addresses to include in this favorite set.\nEnter either one per line or comma separated.\n\nIf you have a text file containing hosts, drag and drop it here.", "Zadajte zoznam adries, ktoré chcete zahrnúť do tejto obľúbenej sady.\nKaždú zadajte na samostatný riadok alebo ich oddeľte čiarkami.\n\nAk máte textový súbor obsahujúci hostiteľov, presuňte ho sem."),
+                new LanguagePackSeedEntry(20576, "Common_DropSingleFileOnly", "Please drop only one file at a time.", "Presuňte naraz iba jeden súbor."),
+                new LanguagePackSeedEntry(20577, "Common_FileTooLargeWithPath", "\"{0}\" is too large. The maximum file size is {1} KB.", "Súbor „{0}“ je príliš veľký. Maximálna veľkosť súboru je {1} KB."),
+                new LanguagePackSeedEntry(20578, "Common_FileOpenErrorWithDetails", "File could not be opened: {0}", "Súbor sa nepodarilo otvoriť: {0}"),
+                new LanguagePackSeedEntry(20579, "Common_FileTooLarge", "The file is too large and cannot be opened. The maximum file size is {0} KB.", "Súbor je príliš veľký a nemožno ho otvoriť. Maximálna veľkosť súboru je {0} KB."),
+                new LanguagePackSeedEntry(20580, "Common_FileOpenPlainText", "File could not be opened. Make sure the file is a plain text file.", "Súbor sa nepodarilo otvoriť. Uistite sa, že ide o obyčajný textový súbor."),
+                new LanguagePackSeedEntry(20581, "CommandLine_FileParseError", "Unable to parse \"{0}\": {1}", "Nepodarilo sa spracovať „{0}“: {1}"),
+                new LanguagePackSeedEntry(20582, "Favorite_NotFound", "The requested favorite was not found: {0}", "Požadovaná obľúbená sada sa nenašla: {0}"),
+                new LanguagePackSeedEntry(20583, "Probe_LogWriteError", "Failed writing to log file. Logging has been disabled. Error: {0}", "Zápis do súboru záznamu zlyhal. Zaznamenávanie bolo vypnuté. Chyba: {0}"),
+                new LanguagePackSeedEntry(20584, "Probe_AudioPlaybackError", "Failed to play audio file. Audio alerts have been disabled. Error: {0}", "Prehratie zvukového súboru zlyhalo. Zvukové upozornenia boli vypnuté. Chyba: {0}"),
+                new LanguagePackSeedEntry(20585, "LivePing_AddToSet_CompactDestination", "Compact", "Kompaktné"),
             };
     }
 }

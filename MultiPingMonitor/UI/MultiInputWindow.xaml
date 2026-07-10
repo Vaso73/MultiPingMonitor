@@ -101,11 +101,7 @@
                        Text="{x:Static resource:Strings.MultiInput_Header}"
                        Style="{StaticResource OptionHeaderTextStyle}" />
             <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}" MaxWidth="250">
-                <TextBlock>
-                    Type a list of addresses to ping.<LineBreak/>
-                    Enter one per line or comma separated.<LineBreak/><LineBreak/>
-                    If you have a text file containing hosts,<LineBreak/>drag and drop it here.
-                </TextBlock>
+                <TextBlock x:Name="InstructionsText" TextWrapping="Wrap"/>
             </Label>
         </DockPanel>
 

@@ -1864,4 +1864,40 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_Status_Inactive" xml:space="preserve">
     <value>INACTIVE</value>
   </data>
+  <data name="MultiInput_Instructions" xml:space="preserve">
+    <value>Type a list of addresses to ping.&#xA;Enter one per line or comma separated.&#xA;&#xA;If you have a text file containing hosts,&#xA;drag and drop it here.</value>
+  </data>
+  <data name="NewFavorite_Instructions" xml:space="preserve">
+    <value>Type a list of addresses to include in this favorite set.&#xA;Enter either one per line or comma separated.&#xA;&#xA;If you have a text file containing hosts, drag and drop it here.</value>
+  </data>
+  <data name="Common_DropSingleFileOnly" xml:space="preserve">
+    <value>Please drop only one file at a time.</value>
+  </data>
+  <data name="Common_FileTooLargeWithPath" xml:space="preserve">
+    <value>"{0}" is too large. The maximum file size is {1} KB.</value>
+  </data>
+  <data name="Common_FileOpenErrorWithDetails" xml:space="preserve">
+    <value>File could not be opened: {0}</value>
+  </data>
+  <data name="Common_FileTooLarge" xml:space="preserve">
+    <value>The file is too large and cannot be opened. The maximum file size is {0} KB.</value>
+  </data>
+  <data name="Common_FileOpenPlainText" xml:space="preserve">
+    <value>File could not be opened. Make sure the file is a plain text file.</value>
+  </data>
+  <data name="CommandLine_FileParseError" xml:space="preserve">
+    <value>Unable to parse "{0}": {1}</value>
+  </data>
+  <data name="Favorite_NotFound" xml:space="preserve">
+    <value>The requested favorite was not found: {0}</value>
+  </data>
+  <data name="Probe_LogWriteError" xml:space="preserve">
+    <value>Failed writing to log file. Logging has been disabled. Error: {0}</value>
+  </data>
+  <data name="Probe_AudioPlaybackError" xml:space="preserve">
+    <value>Failed to play audio file. Audio alerts have been disabled. Error: {0}</value>
+  </data>
+  <data name="LivePing_AddToSet_CompactDestination" xml:space="preserve">
+    <value>Compact</value>
+  </data>
 </root>

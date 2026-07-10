@@ -191,7 +191,14 @@ namespace MultiPingMonitor.Classes
             catch (Exception ex)
             {
                 ApplicationOptions.IsLogOutputEnabled = false;
-                ShowError($"Failed writing to log file. Logging has been disabled. Error: {ex.Message}");
+                ShowError(
+                    string.Format(
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "Probe_LogWriteError")
+                        ?? "Failed writing to log file. "
+                            + "Logging has been disabled. Error: {0}",
+                        ex.Message));
             }
         }
 
@@ -212,7 +219,14 @@ namespace MultiPingMonitor.Classes
             catch (Exception ex)
             {
                 ApplicationOptions.IsLogStatusChangesEnabled = false;
-                ShowError($"Failed writing to log file. Logging has been disabled. Error: {ex.Message}");
+                ShowError(
+                    string.Format(
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "Probe_LogWriteError")
+                        ?? "Failed writing to log file. "
+                            + "Logging has been disabled. Error: {0}",
+                        ex.Message));
             }
         }
 
@@ -291,7 +305,14 @@ namespace MultiPingMonitor.Classes
                 catch (Exception ex)
                 {
                     ApplicationOptions.IsAudioDownAlertEnabled = false;
-                    ShowError($"Failed to play audio file. Audio alerts have been disabled. Error: {ex.Message}");
+                    ShowError(
+                        string.Format(
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                                "Probe_AudioPlaybackError")
+                            ?? "Failed to play audio file. "
+                                + "Audio alerts have been disabled. Error: {0}",
+                            ex.Message));
                 }
             }
             else if ((ApplicationOptions.IsAudioUpAlertEnabled) && (status.Status == ProbeStatus.Up))
@@ -306,7 +327,14 @@ namespace MultiPingMonitor.Classes
                 catch (Exception ex)
                 {
                     ApplicationOptions.IsAudioUpAlertEnabled = false;
-                    ShowError($"Failed to play audio file. Audio alerts have been disabled. Error: {ex.Message}");
+                    ShowError(
+                        string.Format(
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                                "Probe_AudioPlaybackError")
+                            ?? "Failed to play audio file. "
+                                + "Audio alerts have been disabled. Error: {0}",
+                            ex.Message));
                 }
             }
         }
