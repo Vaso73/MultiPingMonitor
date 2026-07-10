@@ -27,6 +27,9 @@
   <data name="DialogButton_New" xml:space="preserve">
     <value>Nový</value>
   </data>
+  <data name="DialogButton_No" xml:space="preserve">
+    <value>Nie</value>
+  </data>
   <data name="DialogButton_OK" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -39,11 +42,20 @@
   <data name="DialogButton_Save" xml:space="preserve">
     <value>Uložiť</value>
   </data>
+  <data name="DialogButton_Yes" xml:space="preserve">
+    <value>Áno</value>
+  </data>
+  <data name="DialogTitle_Confirm" xml:space="preserve">
+    <value>Potvrdenie</value>
+  </data>
   <data name="DialogTitle_ConfirmDelete" xml:space="preserve">
     <value>Potvrdiť vymazanie</value>
   </data>
   <data name="DialogTitle_Error" xml:space="preserve">
     <value>Chyba</value>
+  </data>
+  <data name="DialogTitle_Information" xml:space="preserve">
+    <value>Informácia</value>
   </data>
   <data name="DialogTitle_Warning" xml:space="preserve">
     <value>Upozornenie</value>
