@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 06:54 UTC
+Last updated: 2026-07-10 07:03 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `742e3e9`
-- HEAD label: `742e3e9` — `Complete Slovak dialog resource parity`
+- HEAD before checkpoint update: `1268a3d`
+- HEAD label: `1268a3d` — `Localize alias and favorite action buttons`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 24`
+- Comparison with `origin/main`: `0 26`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -784,15 +784,64 @@ Status:
 - Not pushed.
 - Windows visual localization validation remains pending as part of the branch-wide runtime test.
 
+## Completed slice: alias and favorite action button localization
+
+Commit:
+
+- `1268a3d` — `Localize alias and favorite action buttons`
+
+Implemented:
+
+- Localized the `New`, `Edit`, and `Remove` action buttons in:
+  - `ManageAliasesWindow`
+  - `ManageFavoritesWindow`
+- Added explicit XAML names for the six action buttons.
+- Added `RefreshActionButtonLocalization()` to both code-behind files.
+- Localization is applied immediately after `InitializeComponent()`.
+- Reused existing language-pack/resource keys:
+  - `DialogButton_New`
+  - `DialogButton_Edit`
+  - `DialogButton_Remove`
+- Preserved keyboard-access underscore prefixes.
+- Did not add or renumber language-pack IDs.
+- Did not modify resource files, seeds, packaging, release metadata, or runtime `.lang` files.
+
+Validation:
+
+- Changed-file scope contained exactly:
+  - `MultiPingMonitor/UI/ManageAliasesWindow.xaml`
+  - `MultiPingMonitor/UI/ManageAliasesWindow.xaml.cs`
+  - `MultiPingMonitor/UI/ManageFavoritesWindow.xaml`
+  - `MultiPingMonitor/UI/ManageFavoritesWindow.xaml.cs`
+- `git diff --check`: passed.
+- Targeted source validation: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite: passed, 431 total, 0 failed.
+
+Status:
+
+- Closed technically and committed locally.
+- Not pushed.
+- Windows visual validation remains pending as part of the branch-wide localization runtime test.
+
 ## Current scope
 
 Continue localization work locally only on `feature/external-lang-pack-foundation`.
 
 Current state:
 
-- Slovak dialog resource parity is complete and committed locally.
-- Remaining XAML literal findings require selective classification before any additional write slice.
+- Slovak resource parity is complete.
+- Alias and favorite action buttons are localized using existing keys.
+- Options update-section XAML literals are confirmed runtime fallbacks and already localized by code-behind.
+- Remaining localization areas must continue as independent bounded slices.
 - No bulk replacement of XAML literals is approved.
+
+Remaining candidate areas:
+
+- Popup Notification status-history tooltip.
+- Status History columns, section labels, and filters.
+- Usage window explanatory headings and descriptions.
 
 Out of scope until explicitly approved:
 
@@ -808,24 +857,24 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Run exactly one fresh read-only source-context audit to classify the remaining XAML literal findings.
+Run exactly one fresh targeted read-only audit for the Popup Notification status-history tooltip.
 
-The audit must distinguish:
+The audit must verify:
 
-- product names and technical examples that should remain unchanged;
-- literals already replaced at runtime by code-behind localization;
-- real visible UI labels with an existing resource key;
-- real visible UI labels that require a new language-pack key.
+- the exact XAML button and surrounding structure;
+- whether the button can safely receive an `x:Name`;
+- constructor and localization initialization order;
+- existing code-behind resource helper methods;
+- absence of an existing exact resource key;
+- current language-pack tail and integrity;
+- tests that inspect `PopupNotificationWindow` source or tooltip behavior.
 
-Priority areas:
+Expected future scope, only after reviewing the audit:
 
-- Manage Aliases and Manage Favorites buttons;
-- Options update section;
-- Popup Notification status-history tooltip;
-- Status History columns and filters;
-- remaining Usage window labels.
+- add one dedicated external language-pack key for `Open status history window`;
+- localize only that tooltip and its accessibility name if appropriate.
 
-Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during that audit.
+Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during the audit.
 ## Known risks and regression prevention
 
 Known shell/workflow risk:
