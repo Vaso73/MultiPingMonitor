@@ -50,9 +50,9 @@
                    Source="{StaticResource icon.vmping-logo-simple}" />
             <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-            <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
-                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+            <Button x:Name="titleBarCloseButton" Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name=""
+                    ToolTip="" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
             </Button>

@@ -18,6 +18,7 @@ namespace MultiPingMonitor.UI
         public CompactSetInputDialog(string title, string prompt, string defaultValue)
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
             Title = title;
             Prompt1Text.Text = prompt;
             Field1.Text = defaultValue ?? string.Empty;
@@ -61,5 +62,24 @@ namespace MultiPingMonitor.UI
         {
             Close();
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

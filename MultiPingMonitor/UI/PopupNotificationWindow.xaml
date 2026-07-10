@@ -102,13 +102,13 @@
             </Button>
 
             <!-- Button: Close -->
-            <Button Grid.Column="1"
+            <Button x:Name="titleBarCloseButton" Grid.Column="1"
                     Padding="6"
                     Margin="0,1,3,0"
                     Background="Transparent"
                     HorizontalAlignment="Right"
                     IsTabStop="False"
-                    ToolTip="Close"
+                    ToolTip=""
                     ToolTipService.InitialShowDelay="1500"
                     ToolTipService.ShowDuration="2000"
                     Click="Close_Click">

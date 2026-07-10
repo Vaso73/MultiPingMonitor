@@ -22,6 +22,7 @@ namespace MultiPingMonitor.UI
         public StatusHistoryWindow(ObservableCollection<StatusChangeLog> statusChangeLog)
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "StatusHistoryWindow");
 
             RefreshMaximizeRestoreButton();
@@ -356,5 +357,27 @@ namespace MultiPingMonitor.UI
         private void Window_Closed(object sender, EventArgs e)
         {
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarMinimizeButton, "Tooltip_Minimize", "Minimize");
+            SetTitleBarButtonText(maximizeButton, "Tooltip_Maximize", "Maximize");
+            SetTitleBarButtonText(restoreButton, "Tooltip_RestoreDown", "Restore Down");
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

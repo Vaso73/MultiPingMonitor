@@ -21,6 +21,7 @@ namespace MultiPingMonitor.UI
         public NewFavoriteWindow(List<string> hostList, int columnCount, bool isEditExisting = false, string title = "")
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "NewFavoriteWindow");
 
             HostList = hostList;
@@ -179,5 +180,24 @@ namespace MultiPingMonitor.UI
             e.Effects = DragDropEffects.Copy;
             e.Handled = true;
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }
