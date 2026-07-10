@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 06:33 UTC
+Last updated: 2026-07-10 06:54 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `8c4a090`
-- HEAD label: `8c4a090` — `Localize WAN status labels`
+- HEAD before checkpoint update: `742e3e9`
+- HEAD label: `742e3e9` — `Complete Slovak dialog resource parity`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 22`
+- Comparison with `origin/main`: `0 24`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -25,8 +25,6 @@ Verified live state for this checkpoint update:
 - Backend latest metadata: not changed
 
 This section reflects the latest verified live state. Older checkpoint sections below may describe previous intermediate states.
-
-
 ## Current repository state
 
 Verified live state before this checkpoint update:
@@ -752,15 +750,49 @@ Status:
 - Not pushed.
 
 
+## Completed slice: Slovak dialog resource parity
+
+Commit:
+
+- `742e3e9` — `Complete Slovak dialog resource parity`
+
+Implemented:
+
+- Added the four missing entries to `Strings.sk-SK.resx`:
+  - `DialogButton_No` — `Nie`
+  - `DialogButton_Yes` — `Áno`
+  - `DialogTitle_Confirm` — `Potvrdenie`
+  - `DialogTitle_Information` — `Informácia`
+- Restored complete parity between the 549 stable language-pack keys and the Slovak RESX.
+- Did not add or renumber language-pack IDs.
+- Did not modify language-pack seeds, runtime `.lang` files, application logic, packaging, or release metadata.
+
+Validation:
+
+- Changed-file scope: only `MultiPingMonitor/Properties/Strings.sk-SK.resx`.
+- `git diff --check`: passed.
+- Resource parity: passed, 549 language-pack keys and no missing Slovak entries.
+- Duplicate Slovak RESX names: none.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite: passed, 431 total, 0 failed.
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+- Windows visual localization validation remains pending as part of the branch-wide runtime test.
+
 ## Current scope
 
-Continue locally only.
+Continue localization work locally only on `feature/external-lang-pack-foundation`.
 
-Currently approved scope:
+Current state:
 
-- Update `docs/CURRENT_STATE.md` to reflect live state after commits `7e426a9` and `b38cfda`.
-- This checkpoint update is docs-only.
-- No source-code change is included in this checkpoint update.
+- Slovak dialog resource parity is complete and committed locally.
+- Remaining XAML literal findings require selective classification before any additional write slice.
+- No bulk replacement of XAML literals is approved.
 
 Out of scope until explicitly approved:
 
@@ -773,28 +805,27 @@ Out of scope until explicitly approved:
 - Sponsor Pro publish.
 - Backend latest metadata update.
 - Updater release test.
-- Unrelated features.
 - Changes outside MultiPingMonitor.
-
 ## Immediate next action
 
-After this docs-only checkpoint update, review the resulting diff and commit only `docs/CURRENT_STATE.md` locally.
+Run exactly one fresh read-only source-context audit to classify the remaining XAML literal findings.
 
-Do not push this branch, create a PR, tag, release, publish Sponsor Pro artifacts, or update backend latest metadata without explicit user approval.
+The audit must distinguish:
 
-Recommended next development discussion after checkpoint commit:
+- product names and technical examples that should remain unchanged;
+- literals already replaced at runtime by code-behind localization;
+- real visible UI labels with an existing resource key;
+- real visible UI labels that require a new language-pack key.
 
-- Decide whether to continue localization coverage by adding already-existing menu/UI strings into the external language-pack set.
-- User mentioned candidate areas:
-  - About / `O aplikácii`
-  - Options should be renamed app-wide to Settings / `Nastavenia`
-  - New Live Ping
-  - Stop set
-  - Start set
-  - other already-existing menu items still using built-in/static strings
+Priority areas:
 
-Before any next write slice, run a fresh targeted read-only audit of the specific menu/UI areas to be changed.
+- Manage Aliases and Manage Favorites buttons;
+- Options update section;
+- Popup Notification status-history tooltip;
+- Status History columns and filters;
+- remaining Usage window labels.
 
+Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during that audit.
 ## Known risks and regression prevention
 
 Known shell/workflow risk:
