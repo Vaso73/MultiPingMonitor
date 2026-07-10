@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 07:03 UTC
+Last updated: 2026-07-10 07:22 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `1268a3d`
-- HEAD label: `1268a3d` — `Localize alias and favorite action buttons`
+- HEAD before checkpoint update: `ea63b72`
+- HEAD label: `ea63b72` — `Fix popup localization test nullable warning`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 26`
+- Comparison with `origin/main`: `0 29`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -825,6 +825,48 @@ Status:
 - Not pushed.
 - Windows visual validation remains pending as part of the branch-wide localization runtime test.
 
+## Completed slice: popup status-history tooltip localization
+
+Commits:
+
+- `56a3ef1` — `Localize popup status history tooltip`
+- `ea63b72` — `Fix popup localization test nullable warning`
+
+Implemented:
+
+- Added language-pack key `20549`:
+  - `PopupNotification_OpenStatusHistory`
+- Added English value:
+  - `Open status history window`
+- Added Slovak value:
+  - `Otvoriť okno histórie stavov`
+- Increased the language-pack entry count from 549 to 550.
+- Preserved contiguous IDs `20000–20549`.
+- Added `x:Name="OpenStatusHistoryButton"` to the popup button.
+- Removed the static XAML tooltip.
+- Reused `SetTitleBarButtonText()` to set:
+  - localized tooltip text;
+  - localized `AutomationProperties.Name`.
+- Added `PopupNotificationLocalizationTests`.
+- Corrected the nullable declaration in the new test so the Release build is warning-free.
+
+Validation:
+
+- Language-pack keys, seeds, English RESX, and Slovak RESX all contain 550 entries.
+- No duplicate IDs or keys.
+- No missing seeds or RESX entries.
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Targeted popup localization test: passed, 1 total, 0 failed.
+- Full test suite: passed, 432 total, 0 failed.
+
+Status:
+
+- Closed technically and committed locally.
+- Not pushed.
+- Windows visual and tooltip validation remains pending as part of the branch-wide runtime test.
+
 ## Current scope
 
 Continue localization work locally only on `feature/external-lang-pack-foundation`.
@@ -832,16 +874,18 @@ Continue localization work locally only on `feature/external-lang-pack-foundatio
 Current state:
 
 - Slovak resource parity is complete.
-- Alias and favorite action buttons are localized using existing keys.
-- Options update-section XAML literals are confirmed runtime fallbacks and already localized by code-behind.
-- Remaining localization areas must continue as independent bounded slices.
+- Alias and favorite action buttons are localized.
+- Popup status-history tooltip and accessibility name are localized.
+- Language-pack IDs are contiguous through `20549`.
+- Language-pack entry count is 550.
+- Remaining localization work must continue as independent bounded slices.
 - No bulk replacement of XAML literals is approved.
 
 Remaining candidate areas:
 
-- Popup Notification status-history tooltip.
 - Status History columns, section labels, and filters.
 - Usage window explanatory headings and descriptions.
+- Other already-existing menu and UI strings selected after targeted audit.
 
 Out of scope until explicitly approved:
 
@@ -857,22 +901,25 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Run exactly one fresh targeted read-only audit for the Popup Notification status-history tooltip.
+Run exactly one targeted read-only audit of `StatusHistoryWindow`.
 
-The audit must verify:
+The audit must classify:
 
-- the exact XAML button and surrounding structure;
-- whether the button can safely receive an `x:Name`;
-- constructor and localization initialization order;
-- existing code-behind resource helper methods;
-- absence of an existing exact resource key;
-- current language-pack tail and integrity;
-- tests that inspect `PopupNotificationWindow` source or tooltip behavior.
+- column headers;
+- `Filter` and `Include` section labels;
+- event-type filter labels;
+- probe-state filter labels;
+- WAN IP and LAN IP labels;
+- literals already localized by `RefreshStatusHistoryLabelLocalization()`;
+- existing suitable resource keys;
+- new resource keys that would be required.
 
-Expected future scope, only after reviewing the audit:
+The audit must also inspect:
 
-- add one dedicated external language-pack key for `Open status history window`;
-- localize only that tooltip and its accessibility name if appropriate.
+- DataGrid column naming and whether headers can be assigned safely from code-behind;
+- constructor localization order;
+- existing source-based tests for Status History;
+- the current language-pack tail beginning at ID `20549`.
 
 Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during the audit.
 ## Known risks and regression prevention
