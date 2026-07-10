@@ -1,6 +1,7 @@
 ﻿<Window x:Class="MultiPingMonitor.UI.IsolatedPingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
         Title="{Binding Hostname, StringFormat='{}{0} - MultiPingMonitor'}"
         UseLayoutRounding="True"
         WindowStyle="None"
@@ -89,7 +90,7 @@
                                 <Path Width="10" Height="11" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M4,0 L4,1 1,1 1,11 9,11 9,4 10,4 10,12 0,12 0,0 Z M3,0 L3,8 11,8 11,0 Z M4,1 L10,1 10,7 4,7 Z" />
-                                <TextBlock x:Name="CopyTargetText" Text="Copy Target" Margin="4,0,0,0"
+                                <TextBlock x:Name="CopyTargetText" Text="" Margin="4,0,0,0"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
@@ -116,7 +117,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Sent" FontSize="11"
+                                <TextBlock x:Name="StatsSentLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock FontSize="12" FontWeight="Bold"
@@ -139,7 +140,7 @@
                         </Border>
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Recv" FontSize="11"
+                                <TextBlock x:Name="StatsReceivedLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock FontSize="12" FontWeight="Bold"
@@ -162,7 +163,7 @@
                         </Border>
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Lost" FontSize="11"
+                                <TextBlock x:Name="StatsLostLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock FontSize="12" FontWeight="Bold"

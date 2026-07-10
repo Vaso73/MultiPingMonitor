@@ -13,6 +13,7 @@ namespace MultiPingMonitor.UI
         public IsolatedPingWindow(Probe pingItem)
         {
             InitializeComponent();
+            RefreshIsolatedPingLocalization();
             WindowPlacementService.Attach(this, "IsolatedPingWindow");
             Topmost = ApplicationOptions.IsAlwaysOnTopEnabled;
             pingItem.IsolatedWindow = this;
@@ -93,5 +94,20 @@ namespace MultiPingMonitor.UI
                 try { Clipboard.SetText(target); } catch { }
             }
         }
+
+        private void RefreshIsolatedPingLocalization()
+        {
+            CopyTargetText.Text = ResourceText("LivePing_CopyTarget", "Copy Target");
+            StatsSentLabel.Text = ResourceText("LivePing_StatsSent", "Sent");
+            StatsReceivedLabel.Text = ResourceText("LivePing_StatsReceivedShort", "Recv");
+            StatsLostLabel.Text = ResourceText("LivePing_StatsLost", "Lost");
+        }
+
+        private static string ResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+
     }
 }
