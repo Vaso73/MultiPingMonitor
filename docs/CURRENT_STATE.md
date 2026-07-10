@@ -1,12 +1,30 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 04:10 UTC
+Last updated: 2026-07-10 04:33 UTC
 
 ## Accepted baseline
 
 Sponsor Pro v1.0.28 remains the current accepted released runtime baseline.
 
 The current branch contains additional local-only development work for external `.lang` localization. This branch is not pushed, not released, and has no pull request.
+
+## Current live checkpoint
+
+Verified live state for this checkpoint update:
+
+- Repository: `/home/vaio/projects/MultiPingMonitor`
+- Branch: `feature/external-lang-pack-foundation`
+- HEAD before checkpoint update: `365697eac7d4a046c07a6d98e2954b6b2bfc3051`
+- HEAD label: `365697e` — `Localize Live Ping window chrome`
+- Upstream for the local branch: none configured
+- Comparison with `origin/main`: `0 8`
+- Working tree before checkpoint update: clean
+- Push state: local-only branch, not pushed
+- PR state: no PR created
+- Release state: no tag, no release, no Sponsor Pro publish for this branch
+- Backend latest metadata: not changed
+
+This section reflects the latest verified live state. Older checkpoint sections below may describe previous intermediate states.
 
 ## Current repository state
 
@@ -28,10 +46,13 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, and fail-fast workflow documentation are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, and Live Ping window chrome localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `365697e` — `Localize Live Ping window chrome`
+- `076cb8b` — `Rename options text to settings`
+- `6a23119` — `Update current localization checkpoint`
 - `b38cfda` — `Document fail-fast command workflow`
 - `7e426a9` — `Add live apply behavior for options localization`
 - `de8755b` — `Use external language packs at runtime`
@@ -213,6 +234,114 @@ Status:
 - Closed locally.
 - Committed locally.
 - Not pushed.
+
+## Completed slice: user-facing Options to Settings text cleanup
+
+Commit:
+
+- `076cb8b` — `Rename options text to settings`
+
+Implemented:
+
+- User-facing English text was changed from `Options` to `Settings` where appropriate.
+- Slovak user-facing text remains `Nastavenia`.
+- Existing resource key names were intentionally preserved, including `Menu_Options`, `Options_Title`, and `Tray_Options`, to minimize compatibility risk and avoid unnecessary API/key churn.
+- Updated related help text to reflect external language packs and live Apply/Save behavior.
+- No source-code logic was changed.
+
+Validation:
+
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+## Completed slice: Live Ping window chrome localization
+
+Commit:
+
+- `365697e` — `Localize Live Ping window chrome`
+
+Implemented:
+
+- Localized Live Ping window chrome/user-facing labels:
+  - window title `Live Ping Monitor`
+  - arrange tooltip
+  - start button
+  - always-on-top label
+  - copy target/address labels
+  - add-to-set label
+  - paused banner
+  - stop/resume button
+  - clear/close footer buttons
+  - stats labels `Sent`, `Recv`, `Lost`
+- Reused existing Live Ping resource keys where available.
+- Added new resource keys:
+  - `LivePing_Title`
+  - `LivePing_Clear`
+  - `LivePing_Close`
+  - `LivePing_StatsSent`
+  - `LivePing_StatsReceivedShort`
+  - `LivePing_StatsLost`
+- Extended stable language-pack key set:
+  - `EntryCount=522`
+  - `ResourceKeys.Count=522`
+  - last key `20521`
+- Updated `LanguagePackSeeds`.
+- Updated `LanguagePackServiceTests` expectations.
+- Avoided `x:Static resource:Strings.LivePing_*` in `LivePingMonitorWindow.xaml` after WPF build failure; Live Ping chrome text is now set via code-behind to match the runtime localization model used in this slice.
+
+Validation:
+
+- Initial patch correctly stopped at build failure:
+  - `LivePingMonitorWindow.xaml(47,25): error MC2000`
+  - root cause: problematic `x:Static resource:Strings.LivePing_Arrange` usage in this window.
+- Recovery patch removed LivePing `x:Static` references from `LivePingMonitorWindow.xaml`.
+- `STATIC_REFERENCES=NONE` for `x:Static resource:Strings.LivePing_*` in `LivePingMonitorWindow.xaml`.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+## Recommended next localization audit
+
+Continue with a fresh read-only audit for the next remaining hardcoded UI area.
+
+Already completed or covered in this branch:
+
+- About / `O aplikácii` resource coverage was already present before this checkpoint.
+- User-facing Options to Settings / `Nastavenia` cleanup is committed.
+- New Live Ping menu key already exists.
+- Live Ping window chrome localization is committed.
+- Compact start/stop set keys already exist.
+
+Candidate next areas:
+
+- main window title-bar tooltips such as minimize/maximize/restore/close
+- probe card stat labels such as `Sent`, `Received`, `Lost`
+- Help window title-bar tooltips
+- Update window close tooltip
+- Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
+
+Runtime validation note:
+
+- Live Ping window must be visually checked on Windows in English and Slovenčina because text is set via code-behind and window reopen/apply behavior matters.
+
 
 ## Current scope
 
