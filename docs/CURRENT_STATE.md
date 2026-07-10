@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 09:04 UTC
+Last updated: 2026-07-10 09:34 UTC
 
 ## Accepted baseline
 
@@ -14,14 +14,17 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `e3cddd7`
-- HEAD label: `e3cddd7` — `Localize Live Ping technical status labels`
+- HEAD before checkpoint update: `70fe3c3`
+- HEAD label: `70fe3c3` — `Localize final favorite validation messages`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 37`
+- Comparison with `origin/main`: `0 40`
 - Working tree before checkpoint update: clean
-- Language-pack entry count: 574
-- Language-pack ID range: `20000–20573`
-- Full automated test suite: 440 passed, 0 failed
+- Language-pack entry count: 588
+- Language-pack ID range: `20000–20587`
+- Full automated test suite: 443 passed, 0 failed
+- Warning-free Release build: passed
+- Final read-only residual localization audit: completed
+- Confirmed unresolved user-facing localization gaps: none
 - Push state: local-only branch, not pushed
 - PR state: no PR created
 - Release state: no tag, no release, no Sponsor Pro publish for this branch
@@ -1085,43 +1088,106 @@ Status:
 - Not pushed.
 - Windows visual validation remains pending as part of the branch-wide localization runtime test.
 
+## Completed slice: final residual localization completion
+
+Commits:
+
+- `e336dbb` — `Localize remaining user-facing literals`
+- `70fe3c3` — `Localize final favorite validation messages`
+
+Implemented:
+
+- Localized remaining instructional text in:
+  - `MultiInputWindow`;
+  - `NewFavoriteWindow`.
+- Localized drag-and-drop validation and file-open errors.
+- Localized file-too-large messages while preserving file paths, sizes, units, and placeholders.
+- Localized command-line file parsing errors.
+- Reused the existing localized configuration-read resource in legacy favorite operations.
+- Localized the favorite-not-found error.
+- Localized ping log-write and audio-playback errors.
+- Localized the destination type and target label in `AddToSetDialog`.
+- Localized the final two favorite validation messages:
+  - invalid column count;
+  - missing hosts.
+- Preserved all technical status defaults:
+  - `UP`;
+  - `DOWN`;
+  - `ERROR`;
+  - `HIGH LATENCY`;
+  - `INDETERMINATE`;
+  - `INACTIVE`.
+- Language-pack entry count increased from 574 to 588.
+- Language-pack IDs remain contiguous through `20587`.
+
+Final audit classification:
+
+- Previously confirmed hardcoded localization gaps: none remaining.
+- XAML candidates were classified as:
+  - technical geometry or symbols;
+  - command-line syntax and examples;
+  - placeholders or sample paths;
+  - initialization values overwritten by runtime localization.
+- Remaining direct C# candidates were classified as:
+  - localized text combined with presentation symbols;
+  - the two final favorite validation messages, now resolved.
+- Generic external `.lang` discovery remains source-verified through `*.lang` enumeration and `language-code` matching.
+- Existing user-edited external language-pack values remain preserved by missing-entry-only seed merging.
+
+Validation:
+
+- Structured key, seed, RESX, ID, and placeholder validation: passed.
+- English and Slovak resource parity: passed.
+- Technical-status default validation: passed.
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted residual localization tests: passed, 3 total, 0 failed.
+- Targeted language-pack tests: passed, 7 total, 0 failed.
+- Full test suite: passed, 443 total, 0 failed.
+- Final read-only residual localization audit: completed.
+- Working tree after each commit: clean.
+
+Status:
+
+- Localization implementation is source-complete and committed locally.
+- No push, PR, merge, tag, release, version bump, Sponsor Pro publish, or backend metadata change has occurred.
+- Mandatory real local Windows portable runtime validation remains pending.
+
 ## Current scope
 
-Continue localization completion work locally only on `feature/external-lang-pack-foundation`.
+Complete the branch-wide real Windows portable runtime validation locally before any GitHub action.
 
-Current verified state:
+Current verified source state:
 
 - English is the built-in fallback language.
 - Slovak resource parity is complete.
-- Runtime language switching works without restarting the application.
+- Runtime language switching is implemented without application restart.
 - Arbitrary valid external `.lang` files are discovered by language code.
 - User-edited existing `.lang` entries are preserved during seed merging.
-- Alias and favorite action buttons are localized.
-- Popup status-history controls are localized.
-- Status History columns, headings, and filters are localized.
-- Usage window explanatory headings and descriptions are localized.
-- Usage window technical commands and examples remain unchanged.
-- Main-menu, tray-menu, and compact-menu target actions are resource-backed.
+- Application-owned confirmed user-facing localization gaps are resolved.
+- Main-menu, tray-menu, compact-menu, dialogs, status history, usage help, Live Ping statuses, validation messages, and error messages are resource-backed where required.
 - User-facing application terminology uses `Settings` / `Nastavenia`.
-- Main-menu and tray-menu new-instance labels are aligned.
-- Live Ping technical status names are language-pack backed.
-- Default Slovak technical status values intentionally remain in English.
-- Language-pack entry count is 574.
-- Language-pack IDs are contiguous through `20573`.
-- Full automated test suite currently has 440 passing tests.
-- No bulk replacement of XAML literals is approved.
+- Technical status defaults intentionally remain in English.
+- Language-pack entry count is 588.
+- Language-pack IDs are contiguous through `20587`.
+- Full automated test suite has 443 passing tests.
+- Warning-free Release build passes.
+- Final residual localization audit found no unresolved confirmed localization gap.
 
-Remaining localization work before the final Windows runtime test:
+Mandatory remaining gate before any push:
 
-- Localize confirmed instructional text in the multi-address and favorite-set input windows.
-- Localize confirmed drag-and-drop file validation and file-open errors.
-- Localize confirmed legacy favorite configuration errors.
-- Localize confirmed ping log and audio playback errors.
-- Replace the remaining hardcoded user-facing `Compact` label where an appropriate resource binding is required.
-- Re-run the final application-wide residual literal audit.
-- Confirm the completed result with a real local Windows portable runtime test.
+- Build the real Windows portable single-file `MultiPingMonitor.exe`.
+- Copy the exact artifact to the fixed local Windows runtime-test location.
+- Verify the artifact hash before testing.
+- Perform a real Windows runtime test.
+- Verify English and Slovenčina switching through Apply without restart.
+- Verify the generated and loaded `sk-SK.lang`.
+- Verify at least one deliberately edited Slovak `TEXT` value is honored and not overwritten.
+- Verify an additional arbitrary valid external `.lang` file is discovered and usable.
+- Check the newly localized dialogs, validation messages, technical statuses, menus, and settings terminology.
+- Confirm the portable output remains one `MultiPingMonitor.exe`.
 
-Out of scope until explicitly approved:
+Out of scope until the Windows runtime test is explicitly accepted:
 
 - GitHub push.
 - Pull request.
@@ -1135,37 +1201,25 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Implement one bounded localization slice for the remaining confirmed nontechnical user-facing literals.
-
-The slice should include:
-
-- instructional text in `MultiInputWindow`;
-- instructional text in `NewFavoriteWindow`;
-- shared drag-and-drop validation messages;
-- file-too-large and file-open error messages;
-- legacy favorite configuration errors;
-- ping log-write and audio-playback errors;
-- the remaining hardcoded `Compact` destination label.
+Prepare the exact portable Windows runtime-test artifact locally from the current branch.
 
 Requirements:
 
-- Do not translate or change technical status defaults:
-  - `UP`
-  - `DOWN`
-  - `ERROR`
-  - `HIGH LATENCY`
-  - `INDETERMINATE`
-  - `INACTIVE`
-- Reuse existing resource keys where their semantics match exactly.
-- Add new language-pack entries only where no correct key exists.
-- Use the next contiguous language-pack ID beginning at `20574`.
-- Keep English as the built-in fallback.
-- Add complete Slovak values for ordinary user-facing messages.
-- Preserve filenames, paths, exception messages, numeric values, units, and placeholders.
-- Add focused regression tests.
-- Run a warning-free Release build, targeted tests, and the complete test suite.
-- Commit locally only.
-- Do not push, open a PR, create a release, change a version, or update backend metadata.
+- Precheck branch `feature/external-lang-pack-foundation`.
+- Precheck clean working tree.
+- Precheck HEAD from the final localization checkpoint.
+- Run warning-free Release build and the full automated test suite.
+- Publish Windows x64 as a self-contained single-file executable.
+- Do not change the application version.
+- Do not create a tag or release.
+- Do not push or open a PR.
+- Verify the publish directory contains exactly one permanent application artifact:
+  - `MultiPingMonitor.exe`.
+- Verify no `.dll`, `.pdb`, `.config`, `.lang`, or helper executable is included.
+- Calculate and report SHA-256 and file size.
+- Prepare the exact Windows PowerShell `scp` command for copying the artifact from LXC DEV.
+- Use the existing fixed local Windows runtime-test location established for this project.
+- Stop after artifact preparation and wait for the user to perform the real Windows runtime test.
 ## Known risks and regression prevention
 
 Known shell/workflow risk:
