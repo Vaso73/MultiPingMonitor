@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 06:14 UTC
+Last updated: 2026-07-10 06:33 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `5062062`
-- HEAD label: `5062062` — `Localize network identity labels`
+- HEAD before checkpoint update: `8c4a090`
+- HEAD label: `8c4a090` — `Localize WAN status labels`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 20`
+- Comparison with `origin/main`: `0 22`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -47,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, compact close tooltip localization, status history/usage label localization, and network identity label localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, compact close tooltip localization, status history/usage label localization, network identity label localization, and WAN status label localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `8c4a090` — `Localize WAN status labels`
 - `5062062` — `Localize network identity labels`
 - `920c9bd` — `Localize status history and usage labels`
 - `93f2685` — `Localize compact close tooltip`
@@ -344,6 +345,8 @@ Candidate next areas:
 - Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
 
 Runtime validation note:
+
+- WAN/Network Identity status texts, lookup-state labels, and IP-changed popup title/detail/status must be visually checked on Windows in English and Slovenčina because these labels now use newly added language-pack keys.
 
 - Network Identity popup, footer tooltip, WAN/LAN copy messages, unavailable messages, and copy-failed toast must be visually checked on Windows in English and Slovenčina because these labels now use newly added language-pack keys.
 
@@ -682,6 +685,65 @@ Validation:
   - skipped: 0
 - Network Identity hardcoded check passed:
   - no remaining hardcoded Slovak Network Identity strings in `MainWindow.xaml.cs`.
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+
+## Completed slice: WAN status label localization
+
+Commit:
+
+- `8c4a090` — `Localize WAN status labels`
+
+Implemented:
+
+- Added nine new language-pack/resource keys:
+  - `20540` — `NetworkIdentity_AfterCurrentCheck`
+  - `20541` — `NetworkIdentity_StateNotStarted`
+  - `20542` — `NetworkIdentity_StateInProgress`
+  - `20543` — `NetworkIdentity_StateSucceeded`
+  - `20544` — `NetworkIdentity_StateFailed`
+  - `20545` — `NetworkIdentity_IpChangedStatus`
+  - `20546` — `NetworkIdentity_IpChangedTitle`
+  - `20547` — `NetworkIdentity_CurrentIp`
+  - `20548` — `NetworkIdentity_PreviousIp`
+- Updated language-pack metadata:
+  - `EntryCount`: `540` → `549`
+  - last key: `20539` → `20548`
+- Updated `LanguagePackKeys.cs`.
+- Updated `LanguagePackSeeds.cs`.
+- Updated `Strings.resx`.
+- Updated `Strings.sk-SK.resx`.
+- Updated `LanguagePackServiceTests` expected count and last key.
+- Updated `NetworkIdentityPopupPolishTests` to assert localization keys instead of hardcoded Slovak source snippets.
+- Localized remaining WAN/Network Identity status text in `MainWindow.xaml.cs`:
+  - next-check fallback `after current check`
+  - WAN lookup states `not started`, `in progress`, `successful`, `failed`
+  - IP changed status text
+  - IP changed popup title
+  - current IP popup detail
+  - previous IP popup detail
+- Added `NetworkIdentityFormat(...)` helper using current culture and existing `NetworkIdentityText(...)` resource lookup.
+
+Validation:
+
+- Initial full test suite correctly stopped because `NetworkIdentityPopupPolishTests` still expected hardcoded Slovak source snippets.
+- Recovery updated the test to validate the new `NetworkIdentity_*` localization keys.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Targeted Network Identity tests: passed, 13 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+- WAN status hardcoded check passed:
+  - no remaining hardcoded WAN/Network Identity status strings in `MainWindow.xaml.cs`.
 
 Status:
 
