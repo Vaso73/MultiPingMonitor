@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 04:47 UTC
+Last updated: 2026-07-10 05:10 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `ba4e23d`
-- HEAD label: `ba4e23d` — `Localize main window chrome and probe stats`
+- HEAD before checkpoint update: `e715b11`
+- HEAD label: `e715b11` — `Localize remaining window chrome tooltips`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 10`
+- Comparison with `origin/main`: `0 12`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -47,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, and MainWindow chrome/probe stats localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, and remaining window chrome tooltip localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `e715b11` — `Localize remaining window chrome tooltips`
 - `ba4e23d` — `Localize main window chrome and probe stats`
 - `365697e` — `Localize Live Ping window chrome`
 - `076cb8b` — `Rename options text to settings`
@@ -334,12 +335,14 @@ Already completed or covered in this branch:
 
 Candidate next areas:
 
-- remaining title-bar close/minimize/maximize/restore tooltips in other windows
+- remaining dialog/body/button labels such as `OK`, `Cancel`, `Start`, `Stop`, `Copy Target`, `Sent`, and `Lost`
 - Help window title-bar tooltips
 - Update window close tooltip
 - Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
 
 Runtime validation note:
+
+- Remaining window chrome tooltip localization must be visually checked on Windows in English and Slovenčina because tooltip/accessibility text is now set through code-behind helpers in multiple windows.
 
 - Live Ping window must be visually checked on Windows in English and Slovenčina because text is set via code-behind and window reopen/apply behavior matters.
 
@@ -389,6 +392,58 @@ Validation:
   - failed: 0
   - succeeded: 431
   - skipped: 0
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+
+## Completed slice: remaining window chrome tooltip localization
+
+Commit:
+
+- `e715b11` — `Localize remaining window chrome tooltips`
+
+Implemented:
+
+- Localized remaining title-bar/window chrome tooltip and accessibility text outside `MainWindow.xaml`.
+- Covered 32 title-bar/close buttons across 23 windows.
+- Updated 46 UI files:
+  - 23 XAML files
+  - 23 matching code-behind files
+- Avoided unsafe WPF `x:Static` title-bar tooltip bindings after parser failures in `AboutWindow.xaml` and `UpdateAvailableWindow.xaml`.
+- Used code-behind localization via `MultiPingMonitor.Properties.Strings.ResourceManager.GetString(...)`.
+- Added per-window `RefreshTitleBarChromeLocalization()` helpers.
+- Set tooltip and `AutomationProperties.Name` at runtime through `SetTitleBarButtonText(...)`.
+- Reused existing language-pack/resource keys only:
+  - `Tooltip_Close`
+  - `Tooltip_Minimize`
+  - `Tooltip_Maximize`
+  - `Tooltip_RestoreDown`
+- Did not change language-pack key count.
+- Did not change `LanguagePackKeys.cs`.
+- Did not change `LanguagePackSeeds.cs`.
+- Did not change `.resx` resource content.
+
+Validation:
+
+- Initial XAML-only patch correctly stopped at build failure caused by WPF parser errors in `AboutWindow.xaml` and `UpdateAvailableWindow.xaml`.
+- Recovery moved title-bar tooltip localization to code-behind pattern.
+- Duplicate `x:Name` + `Name` WPF collisions were detected and fixed.
+- `PopupNotificationWindow` close button reference was corrected.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+- Post-patch hardcoded title-bar check passed:
+  - no remaining hardcoded `Minimize`, `Maximize`, `Restore Down`, `Restore`, or `Close` title-bar tooltip/accessibility text outside `MainWindow.xaml`
+  - no unsafe `x:Static resource:Strings.Tooltip_*` title-bar tooltip/accessibility bindings outside `MainWindow.xaml`
 
 Status:
 
