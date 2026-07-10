@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Classes
         public const string AppId = "multipingmonitor";
         public const string AppName = "MultiPingMonitor";
         public const int FirstKey = 20000;
-        public const int EntryCount = 529;
+        public const int EntryCount = 540;
 
         public static IReadOnlyDictionary<int, string> ResourceKeys { get; } =
             new Dictionary<int, string>
@@ -542,6 +542,17 @@ namespace MultiPingMonitor.Classes
                 [20526] = "StatusHistory_FilterStop",
                 [20527] = "StatusHistory_Export",
                 [20528] = "Usage_StartMinimizedDescription",
+                [20529] = "NetworkIdentity_Title",
+                [20530] = "NetworkIdentity_Country",
+                [20531] = "NetworkIdentity_LastWanCheck",
+                [20532] = "NetworkIdentity_NextWanCheck",
+                [20533] = "NetworkIdentity_LastWanState",
+                [20534] = "NetworkIdentity_ClickToCopy",
+                [20535] = "NetworkIdentity_WanCopied",
+                [20536] = "NetworkIdentity_WanUnavailable",
+                [20537] = "NetworkIdentity_LanCopied",
+                [20538] = "NetworkIdentity_LanUnavailable",
+                [20539] = "NetworkIdentity_CopyFailed",
             };
     }
 }

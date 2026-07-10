@@ -1605,4 +1605,38 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Usage_StartMinimizedDescription" xml:space="preserve">
     <value>Spustiť aplikáciu minimalizovanú.</value>
   </data>
+
+  <data name="NetworkIdentity_Title" xml:space="preserve">
+    <value>Sieťová identita</value>
+  </data>
+  <data name="NetworkIdentity_Country" xml:space="preserve">
+    <value>Krajina</value>
+  </data>
+  <data name="NetworkIdentity_LastWanCheck" xml:space="preserve">
+    <value>Posledná úspešná WAN kontrola</value>
+  </data>
+  <data name="NetworkIdentity_NextWanCheck" xml:space="preserve">
+    <value>Ďalšia plánovaná automatická WAN kontrola</value>
+  </data>
+  <data name="NetworkIdentity_LastWanState" xml:space="preserve">
+    <value>Stav poslednej WAN kontroly</value>
+  </data>
+  <data name="NetworkIdentity_ClickToCopy" xml:space="preserve">
+    <value>kliknutím skopírovať</value>
+  </data>
+  <data name="NetworkIdentity_WanCopied" xml:space="preserve">
+    <value>WAN IP bola skopírovaná</value>
+  </data>
+  <data name="NetworkIdentity_WanUnavailable" xml:space="preserve">
+    <value>WAN IP nie je dostupná</value>
+  </data>
+  <data name="NetworkIdentity_LanCopied" xml:space="preserve">
+    <value>LAN IP bola skopírovaná</value>
+  </data>
+  <data name="NetworkIdentity_LanUnavailable" xml:space="preserve">
+    <value>LAN IP nie je dostupná</value>
+  </data>
+  <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
+    <value>Nepodarilo sa skopírovať IP</value>
+  </data>
 </root>

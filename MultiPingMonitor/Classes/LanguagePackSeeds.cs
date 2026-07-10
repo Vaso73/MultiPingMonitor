@@ -553,6 +553,17 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20526, "StatusHistory_FilterStop", "Stop", "Zastavenie"),
                 new LanguagePackSeedEntry(20527, "StatusHistory_Export", "Export", "Exportovať"),
                 new LanguagePackSeedEntry(20528, "Usage_StartMinimizedDescription", "Start the application in a minimized state.", "Spustiť aplikáciu minimalizovanú."),
+                new LanguagePackSeedEntry(20529, "NetworkIdentity_Title", "Network identity", "Sieťová identita"),
+                new LanguagePackSeedEntry(20530, "NetworkIdentity_Country", "Country", "Krajina"),
+                new LanguagePackSeedEntry(20531, "NetworkIdentity_LastWanCheck", "Last successful WAN check", "Posledná úspešná WAN kontrola"),
+                new LanguagePackSeedEntry(20532, "NetworkIdentity_NextWanCheck", "Next scheduled automatic WAN check", "Ďalšia plánovaná automatická WAN kontrola"),
+                new LanguagePackSeedEntry(20533, "NetworkIdentity_LastWanState", "Last WAN check status", "Stav poslednej WAN kontroly"),
+                new LanguagePackSeedEntry(20534, "NetworkIdentity_ClickToCopy", "click to copy", "kliknutím skopírovať"),
+                new LanguagePackSeedEntry(20535, "NetworkIdentity_WanCopied", "WAN IP copied", "WAN IP bola skopírovaná"),
+                new LanguagePackSeedEntry(20536, "NetworkIdentity_WanUnavailable", "WAN IP unavailable", "WAN IP nie je dostupná"),
+                new LanguagePackSeedEntry(20537, "NetworkIdentity_LanCopied", "LAN IP copied", "LAN IP bola skopírovaná"),
+                new LanguagePackSeedEntry(20538, "NetworkIdentity_LanUnavailable", "LAN IP unavailable", "LAN IP nie je dostupná"),
+                new LanguagePackSeedEntry(20539, "NetworkIdentity_CopyFailed", "Failed to copy IP", "Nepodarilo sa skopírovať IP"),
             };
     }
 }

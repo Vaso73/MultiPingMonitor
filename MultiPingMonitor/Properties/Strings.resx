@@ -1727,4 +1727,38 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="Usage_StartMinimizedDescription" xml:space="preserve">
     <value>Start the application in a minimized state.</value>
   </data>
+
+  <data name="NetworkIdentity_Title" xml:space="preserve">
+    <value>Network identity</value>
+  </data>
+  <data name="NetworkIdentity_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="NetworkIdentity_LastWanCheck" xml:space="preserve">
+    <value>Last successful WAN check</value>
+  </data>
+  <data name="NetworkIdentity_NextWanCheck" xml:space="preserve">
+    <value>Next scheduled automatic WAN check</value>
+  </data>
+  <data name="NetworkIdentity_LastWanState" xml:space="preserve">
+    <value>Last WAN check status</value>
+  </data>
+  <data name="NetworkIdentity_ClickToCopy" xml:space="preserve">
+    <value>click to copy</value>
+  </data>
+  <data name="NetworkIdentity_WanCopied" xml:space="preserve">
+    <value>WAN IP copied</value>
+  </data>
+  <data name="NetworkIdentity_WanUnavailable" xml:space="preserve">
+    <value>WAN IP unavailable</value>
+  </data>
+  <data name="NetworkIdentity_LanCopied" xml:space="preserve">
+    <value>LAN IP copied</value>
+  </data>
+  <data name="NetworkIdentity_LanUnavailable" xml:space="preserve">
+    <value>LAN IP unavailable</value>
+  </data>
+  <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
+    <value>Failed to copy IP</value>
+  </data>
 </root>
