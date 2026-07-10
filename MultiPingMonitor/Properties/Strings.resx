@@ -1789,4 +1789,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="NetworkIdentity_PreviousIp" xml:space="preserve">
     <value>Previous: {0}</value>
   </data>
+  <data name="PopupNotification_OpenStatusHistory" xml:space="preserve">
+    <value>Open status history window</value>
+  </data>
 </root>

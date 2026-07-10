@@ -148,6 +148,10 @@ namespace MultiPingMonitor.UI
 
         private void RefreshTitleBarChromeLocalization()
         {
+            SetTitleBarButtonText(
+                OpenStatusHistoryButton,
+                "PopupNotification_OpenStatusHistory",
+                "Open status history window");
             SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
         }
 

@@ -573,6 +573,7 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20546, "NetworkIdentity_IpChangedTitle", "{0} changed", "{0} zmenená"),
                 new LanguagePackSeedEntry(20547, "NetworkIdentity_CurrentIp", "Current: {0}", "Aktuálna: {0}"),
                 new LanguagePackSeedEntry(20548, "NetworkIdentity_PreviousIp", "Previous: {0}", "Predtým: {0}"),
+                new LanguagePackSeedEntry(20549, "PopupNotification_OpenStatusHistory", "Open status history window", "Otvoriť okno histórie stavov"),
             };
     }
 }
