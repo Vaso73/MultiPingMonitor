@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 05:10 UTC
+Last updated: 2026-07-10 05:29 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `e715b11`
-- HEAD label: `e715b11` — `Localize remaining window chrome tooltips`
+- HEAD before checkpoint update: `9c8f77e`
+- HEAD label: `9c8f77e` — `Localize existing-key dialog and ping labels`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 12`
+- Comparison with `origin/main`: `0 14`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -47,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, and remaining window chrome tooltip localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, and existing-key dialog/ping label localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `9c8f77e` — `Localize existing-key dialog and ping labels`
 - `e715b11` — `Localize remaining window chrome tooltips`
 - `ba4e23d` — `Localize main window chrome and probe stats`
 - `365697e` — `Localize Live Ping window chrome`
@@ -335,12 +336,14 @@ Already completed or covered in this branch:
 
 Candidate next areas:
 
-- remaining dialog/body/button labels such as `OK`, `Cancel`, `Start`, `Stop`, `Copy Target`, `Sent`, and `Lost`
+- remaining dialog/body/button labels such as `Start`, `Stop`, `Export`, and the UsageWindow startup sentence
 - Help window title-bar tooltips
 - Update window close tooltip
 - Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
 
 Runtime validation note:
+
+- Existing-key dialog and ping labels must be visually checked on Windows in English and Slovenčina, especially `IsolatedPingWindow`, `ManageCompactTargetsWindow`, `MultiInputWindow`, and `UsageWindow`.
 
 - Remaining window chrome tooltip localization must be visually checked on Windows in English and Slovenčina because tooltip/accessibility text is now set through code-behind helpers in multiple windows.
 
@@ -444,6 +447,64 @@ Validation:
 - Post-patch hardcoded title-bar check passed:
   - no remaining hardcoded `Minimize`, `Maximize`, `Restore Down`, `Restore`, or `Close` title-bar tooltip/accessibility text outside `MainWindow.xaml`
   - no unsafe `x:Static resource:Strings.Tooltip_*` title-bar tooltip/accessibility bindings outside `MainWindow.xaml`
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+
+## Completed slice: existing-key dialog and ping label localization
+
+Commit:
+
+- `9c8f77e` — `Localize existing-key dialog and ping labels`
+
+Implemented:
+
+- Localized existing-key dialog and ping labels without adding new language-pack entries.
+- Updated `IsolatedPingWindow` labels:
+  - `Copy Target`
+  - `Sent`
+  - `Recv`
+  - `Lost`
+- Updated `ManageCompactTargetsWindow` dialog buttons:
+  - `OK`
+  - `Cancel`
+- Updated `MultiInputWindow` dialog buttons:
+  - `OK`
+  - `Cancel`
+- Updated `UsageWindow` dialog button:
+  - `OK`
+- Used existing language-pack/resource keys only:
+  - `LivePing_CopyTarget`
+  - `LivePing_StatsSent`
+  - `LivePing_StatsReceivedShort`
+  - `LivePing_StatsLost`
+  - `DialogButton_OK`
+  - `DialogButton_Cancel`
+- Recovered `IsolatedPingWindow` labels to code-behind localization because newer Live Ping language-pack keys are available through `ResourceManager.GetString(...)`, not typed `Strings.*` designer properties.
+- Did not change language-pack key count.
+- Did not change `LanguagePackKeys.cs`.
+- Did not change `LanguagePackSeeds.cs`.
+- Did not change `.resx` resource content.
+
+Validation:
+
+- Initial XAML `x:Static` attempt correctly stopped at build failure for typed `Strings.LivePing_StatsSent`.
+- Recovery moved `IsolatedPingWindow` labels to code-behind `ResourceManager.GetString(...)` pattern.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+- Targeted hardcoded check passed:
+  - no remaining targeted `Copy Target`, `Sent`, `Recv`, `Lost`, `OK`, or `Cancel` hardcoded labels in the patched files
+  - no unsafe `Strings.LivePing_*` typed XAML references in `IsolatedPingWindow.xaml`
 
 Status:
 
