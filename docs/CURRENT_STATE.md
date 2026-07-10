@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 07:35 UTC
+Last updated: 2026-07-10 07:54 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `ae23734`
-- HEAD label: `ae23734` — `Localize status history columns and filters`
+- HEAD before checkpoint update: `025c624`
+- HEAD label: `025c624` — `Localize command line usage descriptions`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 31`
+- Comparison with `origin/main`: `0 33`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -928,6 +928,68 @@ Status:
 - Not pushed.
 - Windows visual validation remains pending as part of the branch-wide localization runtime test.
 
+## Completed slice: Usage window description localization
+
+Commit:
+
+- `025c624` — `Localize command line usage descriptions`
+
+Implemented:
+
+- Added nine language-pack entries:
+  - `20559` — `Usage_OptionsHeader`
+  - `20560` — `Usage_IntervalDescription`
+  - `20561` — `Usage_IntervalRange`
+  - `20562` — `Usage_TimeoutDescription`
+  - `20563` — `Usage_TimeoutRange`
+  - `20564` — `Usage_HostnameDescription`
+  - `20565` — `Usage_MultipleHostnamesDescription`
+  - `20566` — `Usage_FileDescription`
+  - `20567` — `Usage_ExamplesHeader`
+- Increased the language-pack entry count from 559 to 568.
+- Preserved contiguous language-pack IDs `20000–20567`.
+- Reused existing `Help_CommandLine_Header` for the command-line usage heading.
+- Preserved existing `Usage_StartMinimizedDescription`.
+- Localized:
+  - command-line usage heading;
+  - parameters heading;
+  - interval description and valid range;
+  - timeout description and valid range;
+  - hostname description;
+  - multiple-hostname description;
+  - input-file description;
+  - examples heading.
+- Preserved all technical command-line content unchanged:
+  - application and executable names;
+  - `[OPTIONS]`, `[HOSTNAME...]`, and `[FILE...]`;
+  - `-i <interval>`;
+  - `-w <timeout>`;
+  - `-minimized`;
+  - `<hostname>`;
+  - `<file>`;
+  - IP addresses, hostnames, paths, and all three command examples.
+- Preserved the existing localized OK button.
+- Added `UsageWindowLocalizationTests`.
+
+Validation:
+
+- Language-pack keys, seeds, English RESX, and Slovak RESX contain 568 entries.
+- No duplicate IDs or resource keys.
+- No missing seed or RESX entries.
+- Language-pack IDs are contiguous through `20567`.
+- Structured validation confirmed that technical commands and examples remain unchanged.
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Targeted Usage window localization test: passed, 1 total, 0 failed.
+- Full test suite: passed, 434 total, 0 failed.
+
+Status:
+
+- Closed technically and committed locally.
+- Not pushed.
+- Windows visual validation remains pending as part of the branch-wide localization runtime test.
+
 ## Current scope
 
 Continue localization work locally only on `feature/external-lang-pack-foundation`.
@@ -938,15 +1000,19 @@ Current state:
 - Alias and favorite action buttons are localized.
 - Popup status-history tooltip and accessibility name are localized.
 - Status History columns, headings, and filter labels are localized.
-- Language-pack entry count is 559.
-- Language-pack IDs are contiguous through `20558`.
+- Usage window explanatory headings and descriptions are localized.
+- Usage window technical commands and examples remain unchanged.
+- Language-pack entry count is 568.
+- Language-pack IDs are contiguous through `20567`.
 - Remaining localization work must continue as independent bounded slices.
 - No bulk replacement of XAML literals is approved.
 
 Remaining candidate areas:
 
-- Usage window explanatory headings and descriptions.
-- Other already-existing menu and UI strings selected after targeted source audit.
+- Existing main-menu labels.
+- Tray context-menu labels.
+- Compact-mode context-menu labels.
+- Other already-existing user-facing UI strings selected after targeted source audit.
 
 Out of scope until explicitly approved:
 
@@ -962,24 +1028,39 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Run exactly one targeted read-only audit of `UsageWindow`.
-
-The audit must classify every visible English literal as one of:
-
-- explanatory heading or description requiring localization;
-- technical command, argument, executable name, file name, URL, placeholder, or example that must remain unchanged;
-- literal already localized at runtime;
-- literal with an existing suitable resource key;
-- literal requiring a new language-pack key.
+Run exactly one targeted read-only audit of the existing application menu surfaces.
 
 The audit must inspect:
 
-- complete XAML structure and visible text;
-- code-behind initialization and any runtime text assignments;
-- copy buttons, command examples, and accessibility text;
-- existing Usage-related resource keys;
-- existing source-based tests;
-- the current language-pack tail beginning at ID `20558`.
+- the main application menu;
+- the tray context menu;
+- the compact-mode context menu;
+- menu items created dynamically in code;
+- existing menu-localization helper methods;
+- existing resource keys and tests.
+
+The audit must specifically classify these already-existing actions:
+
+- About;
+- Settings;
+- New Live Ping;
+- Start set;
+- Stop set;
+- New instance;
+- Status History;
+- Exit.
+
+The audit must also determine:
+
+- which labels are already fully resource-backed;
+- which labels still contain hardcoded English;
+- whether user-facing `Options` terminology remains anywhere that should use `Settings`;
+- whether accessibility names or tooltips require the same localization;
+- whether existing keys can be reused without changing their meaning;
+- which new language-pack keys, if any, would be required;
+- the current language-pack tail beginning at ID `20567`.
+
+Command-line `Options` terminology in `UsageWindow` is not part of this terminology cleanup and must remain `Options` in English and `Parametre` in Slovak.
 
 Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during the audit.
 ## Known risks and regression prevention
