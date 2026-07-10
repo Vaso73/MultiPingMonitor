@@ -27,6 +27,9 @@
   <data name="DialogButton_New" xml:space="preserve">
     <value>Nový</value>
   </data>
+  <data name="DialogButton_No" xml:space="preserve">
+    <value>Nie</value>
+  </data>
   <data name="DialogButton_OK" xml:space="preserve">
     <value>OK</value>
   </data>
@@ -39,11 +42,20 @@
   <data name="DialogButton_Save" xml:space="preserve">
     <value>Uložiť</value>
   </data>
+  <data name="DialogButton_Yes" xml:space="preserve">
+    <value>Áno</value>
+  </data>
+  <data name="DialogTitle_Confirm" xml:space="preserve">
+    <value>Potvrdenie</value>
+  </data>
   <data name="DialogTitle_ConfirmDelete" xml:space="preserve">
     <value>Potvrdiť vymazanie</value>
   </data>
   <data name="DialogTitle_Error" xml:space="preserve">
     <value>Chyba</value>
+  </data>
+  <data name="DialogTitle_Information" xml:space="preserve">
+    <value>Informácia</value>
   </data>
   <data name="DialogTitle_Warning" xml:space="preserve">
     <value>Upozornenie</value>
@@ -381,6 +393,15 @@
   <data name="Tooltip_Close" xml:space="preserve">
     <value>Zavrieť</value>
   </data>
+  <data name="Tooltip_Minimize" xml:space="preserve">
+    <value>Minimalizovať</value>
+  </data>
+  <data name="Tooltip_Maximize" xml:space="preserve">
+    <value>Maximalizovať</value>
+  </data>
+  <data name="Tooltip_RestoreDown" xml:space="preserve">
+    <value>Obnoviť nadol</value>
+  </data>
   <data name="Tooltip_EditAlias" xml:space="preserve">
     <value>Upraviť alias</value>
   </data>
@@ -445,7 +466,7 @@
     <value>Zadať adresy...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
-    <value>MultiPingMonitor</value>
+    <value>Nová inštancia MultiPingMonitor</value>
   </data>
   <data name="Options_AlertThreshold" xml:space="preserve">
     <value>Prah upozornenia:</value>
@@ -607,7 +628,7 @@
     <value>Jazyk:</value>
   </data>
   <data name="Options_LanguageRestart" xml:space="preserve">
-    <value>(Zmena jazyka sa prejaví pri ďalšom spustení)</value>
+    <value>(Zmeny jazyka sa použijú po kliknutí na Použiť alebo Uložiť)</value>
   </data>
   <data name="Options_LatencyTriggers" xml:space="preserve">
     <value>Počet spúšťačov:</value>
@@ -1110,7 +1131,7 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
     <value>Jazyk</value>
   </data>
   <data name="Help_Options_Language_Text" xml:space="preserve">
-    <value>MultiPingMonitor podporuje angličtinu a slovenčinu. Jazyk je možné zmeniť v Nastaveniach. Zmena sa prejaví po reštarte aplikácie.</value>
+    <value>MultiPingMonitor podporuje vstavanú angličtinu a externé jazykové balíky. Jazyk je možné zmeniť v Nastaveniach. Zmeny sa použijú po kliknutí na Použiť alebo Uložiť.</value>
   </data>
   <data name="Help_Options_PortableConfig_Sub" xml:space="preserve">
     <value>Prenosná konfigurácia</value>
@@ -1343,6 +1364,24 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitorovanie prebieha. Zastaviť a zmeniť cieľ?</value>
   </data>
+  <data name="LivePing_Title" xml:space="preserve">
+    <value>Live Ping Monitor</value>
+  </data>
+  <data name="LivePing_Clear" xml:space="preserve">
+    <value>Vymazať</value>
+  </data>
+  <data name="LivePing_Close" xml:space="preserve">
+    <value>Zavrieť</value>
+  </data>
+  <data name="LivePing_StatsSent" xml:space="preserve">
+    <value>Odosl.</value>
+  </data>
+  <data name="LivePing_StatsReceivedShort" xml:space="preserve">
+    <value>Prij.</value>
+  </data>
+  <data name="LivePing_StatsLost" xml:space="preserve">
+    <value>Strat.</value>
+  </data>
   <data name="Compact_StartSet" xml:space="preserve">
     <value>Spustiť sadu</value>
   </data>
@@ -1558,5 +1597,203 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   </data>
   <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
     <value>Podrobnosti</value>
+  </data>
+  <data name="DialogButton_Apply" xml:space="preserve">
+    <value>Použiť</value>
+  </data>
+  <data name="Options_LanguageApplyHint" xml:space="preserve">
+    <value>Zmeny sa použijú po kliknutí na Použiť alebo Uložiť.</value>
+  </data>
+
+  <data name="StatusHistory_FilterStart" xml:space="preserve">
+    <value>Spustenie</value>
+  </data>
+  <data name="StatusHistory_FilterStop" xml:space="preserve">
+    <value>Zastavenie</value>
+  </data>
+  <data name="StatusHistory_Export" xml:space="preserve">
+    <value>Exportovať</value>
+  </data>
+  <data name="Usage_StartMinimizedDescription" xml:space="preserve">
+    <value>Spustiť aplikáciu minimalizovanú.</value>
+  </data>
+
+  <data name="NetworkIdentity_Title" xml:space="preserve">
+    <value>Sieťová identita</value>
+  </data>
+  <data name="NetworkIdentity_Country" xml:space="preserve">
+    <value>Krajina</value>
+  </data>
+  <data name="NetworkIdentity_LastWanCheck" xml:space="preserve">
+    <value>Posledná úspešná WAN kontrola</value>
+  </data>
+  <data name="NetworkIdentity_NextWanCheck" xml:space="preserve">
+    <value>Ďalšia plánovaná automatická WAN kontrola</value>
+  </data>
+  <data name="NetworkIdentity_LastWanState" xml:space="preserve">
+    <value>Stav poslednej WAN kontroly</value>
+  </data>
+  <data name="NetworkIdentity_ClickToCopy" xml:space="preserve">
+    <value>kliknutím skopírovať</value>
+  </data>
+  <data name="NetworkIdentity_WanCopied" xml:space="preserve">
+    <value>WAN IP bola skopírovaná</value>
+  </data>
+  <data name="NetworkIdentity_WanUnavailable" xml:space="preserve">
+    <value>WAN IP nie je dostupná</value>
+  </data>
+  <data name="NetworkIdentity_LanCopied" xml:space="preserve">
+    <value>LAN IP bola skopírovaná</value>
+  </data>
+  <data name="NetworkIdentity_LanUnavailable" xml:space="preserve">
+    <value>LAN IP nie je dostupná</value>
+  </data>
+  <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
+    <value>Nepodarilo sa skopírovať IP</value>
+  </data>
+
+  <data name="NetworkIdentity_AfterCurrentCheck" xml:space="preserve">
+    <value>po aktuálnej kontrole</value>
+  </data>
+  <data name="NetworkIdentity_StateNotStarted" xml:space="preserve">
+    <value>nespustená</value>
+  </data>
+  <data name="NetworkIdentity_StateInProgress" xml:space="preserve">
+    <value>prebieha</value>
+  </data>
+  <data name="NetworkIdentity_StateSucceeded" xml:space="preserve">
+    <value>úspešná</value>
+  </data>
+  <data name="NetworkIdentity_StateFailed" xml:space="preserve">
+    <value>zlyhala</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedStatus" xml:space="preserve">
+    <value>bola zmenená, aktuálna IP je {0} (predtým {1})</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedTitle" xml:space="preserve">
+    <value>{0} zmenená</value>
+  </data>
+  <data name="NetworkIdentity_CurrentIp" xml:space="preserve">
+    <value>Aktuálna: {0}</value>
+  </data>
+  <data name="NetworkIdentity_PreviousIp" xml:space="preserve">
+    <value>Predtým: {0}</value>
+  </data>
+  <data name="PopupNotification_OpenStatusHistory" xml:space="preserve">
+    <value>Otvoriť okno histórie stavov</value>
+  </data>
+  <data name="StatusHistory_ColumnTimestamp" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="StatusHistory_ColumnAddress" xml:space="preserve">
+    <value>Adresa</value>
+  </data>
+  <data name="StatusHistory_ColumnAlias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="StatusHistory_ColumnStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="StatusHistory_FilterLabel" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="StatusHistory_IncludeLabel" xml:space="preserve">
+    <value>Zahrnúť</value>
+  </data>
+  <data name="StatusHistory_FilterProbeStatus" xml:space="preserve">
+    <value>Stav sondy</value>
+  </data>
+  <data name="StatusHistory_FilterUp" xml:space="preserve">
+    <value>Dostupný</value>
+  </data>
+  <data name="StatusHistory_FilterDown" xml:space="preserve">
+    <value>Nedostupný</value>
+  </data>
+  <data name="Usage_OptionsHeader" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="Usage_IntervalDescription" xml:space="preserve">
+    <value>Určuje interval v sekundách medzi jednotlivými pingmi.</value>
+  </data>
+  <data name="Usage_IntervalRange" xml:space="preserve">
+    <value>Platný rozsah: 1 až 86400 (1 sekunda až 24 hodín).</value>
+  </data>
+  <data name="Usage_TimeoutDescription" xml:space="preserve">
+    <value>Nastaví časový limit v sekundách pre každú požiadavku ping.</value>
+  </data>
+  <data name="Usage_TimeoutRange" xml:space="preserve">
+    <value>Platný rozsah: 1 až 60 sekúnd.</value>
+  </data>
+  <data name="Usage_HostnameDescription" xml:space="preserve">
+    <value>Názov hostiteľa alebo IP adresa na pingovanie.</value>
+  </data>
+  <data name="Usage_MultipleHostnamesDescription" xml:space="preserve">
+    <value>Môžete zadať viacero názvov hostiteľov.</value>
+  </data>
+  <data name="Usage_FileDescription" xml:space="preserve">
+    <value>Cesta k textovému súboru obsahujúcemu názvy hostiteľov alebo IP adresy na pingovanie. Ak cesta obsahuje medzery, uzavrite ju do úvodzoviek. Môžete zadať viacero súborov.</value>
+  </data>
+  <data name="Usage_ExamplesHeader" xml:space="preserve">
+    <value>Príklady</value>
+  </data>
+  <data name="LivePing_Status_Up" xml:space="preserve">
+    <value>UP</value>
+  </data>
+  <data name="LivePing_Status_Down" xml:space="preserve">
+    <value>DOWN</value>
+  </data>
+  <data name="LivePing_Status_Error" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="LivePing_Status_HighLatency" xml:space="preserve">
+    <value>HIGH LATENCY</value>
+  </data>
+  <data name="LivePing_Status_Indeterminate" xml:space="preserve">
+    <value>INDETERMINATE</value>
+  </data>
+  <data name="LivePing_Status_Inactive" xml:space="preserve">
+    <value>INACTIVE</value>
+  </data>
+  <data name="MultiInput_Instructions" xml:space="preserve">
+    <value>Zadajte zoznam adries na pingovanie.&#xA;Každú zadajte na samostatný riadok alebo ich oddeľte čiarkami.&#xA;&#xA;Ak máte textový súbor obsahujúci hostiteľov,&#xA;presuňte ho sem.</value>
+  </data>
+  <data name="NewFavorite_Instructions" xml:space="preserve">
+    <value>Zadajte zoznam adries, ktoré chcete zahrnúť do tejto obľúbenej sady.&#xA;Každú zadajte na samostatný riadok alebo ich oddeľte čiarkami.&#xA;&#xA;Ak máte textový súbor obsahujúci hostiteľov, presuňte ho sem.</value>
+  </data>
+  <data name="Common_DropSingleFileOnly" xml:space="preserve">
+    <value>Presuňte naraz iba jeden súbor.</value>
+  </data>
+  <data name="Common_FileTooLargeWithPath" xml:space="preserve">
+    <value>Súbor „{0}“ je príliš veľký. Maximálna veľkosť súboru je {1} KB.</value>
+  </data>
+  <data name="Common_FileOpenErrorWithDetails" xml:space="preserve">
+    <value>Súbor sa nepodarilo otvoriť: {0}</value>
+  </data>
+  <data name="Common_FileTooLarge" xml:space="preserve">
+    <value>Súbor je príliš veľký a nemožno ho otvoriť. Maximálna veľkosť súboru je {0} KB.</value>
+  </data>
+  <data name="Common_FileOpenPlainText" xml:space="preserve">
+    <value>Súbor sa nepodarilo otvoriť. Uistite sa, že ide o obyčajný textový súbor.</value>
+  </data>
+  <data name="CommandLine_FileParseError" xml:space="preserve">
+    <value>Nepodarilo sa spracovať „{0}“: {1}</value>
+  </data>
+  <data name="Favorite_NotFound" xml:space="preserve">
+    <value>Požadovaná obľúbená sada sa nenašla: {0}</value>
+  </data>
+  <data name="Probe_LogWriteError" xml:space="preserve">
+    <value>Zápis do súboru záznamu zlyhal. Zaznamenávanie bolo vypnuté. Chyba: {0}</value>
+  </data>
+  <data name="Probe_AudioPlaybackError" xml:space="preserve">
+    <value>Prehratie zvukového súboru zlyhalo. Zvukové upozornenia boli vypnuté. Chyba: {0}</value>
+  </data>
+  <data name="LivePing_AddToSet_CompactDestination" xml:space="preserve">
+    <value>Kompaktné</value>
+  </data>
+  <data name="NewFavorite_Error_InvalidColumns" xml:space="preserve">
+    <value>Zadajte platný počet stĺpcov (od 1 do 10).</value>
+  </data>
+  <data name="NewFavorite_Error_NoHosts" xml:space="preserve">
+    <value>Nezadali ste žiadnych hostiteľov. Zadajte aspoň jedného hostiteľa pre túto obľúbenú sadu.</value>
   </data>
 </root>

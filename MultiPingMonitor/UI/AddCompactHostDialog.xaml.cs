@@ -21,6 +21,7 @@ namespace MultiPingMonitor.UI
         public AddCompactHostDialog()
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
 
             Loaded += (s, e) =>
             {
@@ -47,5 +48,24 @@ namespace MultiPingMonitor.UI
         {
             Close();
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

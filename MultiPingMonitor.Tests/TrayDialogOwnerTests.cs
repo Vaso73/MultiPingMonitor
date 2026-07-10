@@ -54,5 +54,64 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("HostMainWindow?.ApplyCompactDataSource()", source);
             Assert.Contains("var mainWindow = HostMainWindow;", source);
         }
+
+        [Fact]
+        public void ManageCompactSets_UsesSafeVisibleOwnerWhenStartedInTray()
+        {
+            string mainWindowSource =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "UI",
+                    "MainWindow.xaml.cs"));
+
+            string optionsWindowSource =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "UI",
+                    "OptionsWindow.xaml.cs"));
+
+            string manageWindowSource =
+                File.ReadAllText(SourcePath(
+                    "MultiPingMonitor",
+                    "UI",
+                    "ManageCompactSetsWindow.xaml.cs"));
+
+            Assert.Contains(
+                "internal void OpenManageCompactSets(Window preferredOwner = null)",
+                mainWindowSource);
+            Assert.Contains(
+                "preferredOwner != null && preferredOwner.IsLoaded",
+                mainWindowSource);
+            Assert.Contains(
+                "var window = new ManageCompactSetsWindow(this);",
+                mainWindowSource);
+            Assert.Contains(
+                "window.Owner = dialogOwner;",
+                mainWindowSource);
+            Assert.Contains(
+                "WindowStartupLocation.CenterScreen",
+                mainWindowSource);
+
+            Assert.Contains(
+                "mainWindow?.OpenManageCompactSets(this);",
+                optionsWindowSource);
+
+            Assert.Contains(
+                "private readonly MainWindow _hostMainWindow;",
+                manageWindowSource);
+            Assert.Contains(
+                "public ManageCompactSetsWindow(MainWindow hostMainWindow)",
+                manageWindowSource);
+            Assert.DoesNotContain(
+                "(Owner as MainWindow)?.",
+                manageWindowSource);
+
+            Assert.DoesNotContain(
+                "var window = new ManageCompactSetsWindow();",
+                mainWindowSource);
+            Assert.DoesNotContain(
+                "window.Owner = this;\n            window.ShowDialog();",
+                mainWindowSource.Replace("\r\n", "\n"));
+        }
     }
 }

@@ -144,3 +144,95 @@ The script must not bypass the normal GitHub workflow. It must still:
 - stop on any failed gate.
 
 Do not use this model for broad feature development. Feature work still needs its own feature branch, preview validation when needed, tests, PR, merge, and only then a separate release bump/publish flow.
+
+## Fail-fast command workflow
+
+For shell-driven development, validation, publish, and release-preparation steps, use an explicit fail-fast workflow.
+
+Required rules:
+
+- Do not use `status` as a shell variable name because it is read-only in zsh.
+- Use safe names such as `git_status_short`, `branch_name`, and `head_sha`.
+- Every critical phase must have an explicit stop gate.
+- Stop immediately on precheck, patch, diff, build, targeted-test, full-test, publish, or publish-contract failure.
+- Do not continue to long-running tests after a patch or build failure.
+- Do not publish after failed tests.
+- Do not provide a Windows runtime-test EXE after failed tests or failed publish-contract validation.
+- Prefer a two-stage validation for risky patches:
+  1. patch + diff check + build + targeted tests;
+  2. full tests + single-file publish contract only after stage 1 passes.
+- Use subshell blocks with `exit 1` gates for multi-step commands.
+
+Canonical pattern:
+
+    (
+    cd /home/vaio/projects/MultiPingMonitor || exit 1
+    export GIT_PAGER=cat
+    export PAGER=cat
+
+    echo "===== PRECHECK ====="
+    branch_name="$(git branch --show-current)"
+    head_sha="$(git rev-parse HEAD)"
+    git_status_short="$(git status --short)"
+
+    echo "BRANCH=$branch_name"
+    echo "HEAD=$head_sha"
+    echo "STATUS_SHORT_BEGIN"
+    printf '%s\n' "$git_status_short"
+    echo "STATUS_SHORT_END"
+
+    if [ "$branch_name" != "expected-branch-name" ]; then
+      echo "STOP_UNEXPECTED_BRANCH"
+      exit 1
+    fi
+
+    echo "===== PATCH ====="
+    python3 /tmp/safe-project-patch.py || { echo "STOP_PATCH_FAILED"; exit 1; }
+
+    echo "===== DIFF CHECK ====="
+    git diff --check || { echo "STOP_DIFF_CHECK_FAILED"; exit 1; }
+
+    echo "===== BUILD ====="
+    dotnet build MultiPingMonitor.sln -c Release || { echo "STOP_BUILD_FAILED"; exit 1; }
+
+    echo "===== TARGETED TESTS ====="
+    dotnet test MultiPingMonitor.sln -c Release --no-build --filter "FullyQualifiedName~RelevantTestName" || { echo "STOP_TARGETED_TEST_FAILED"; exit 1; }
+
+    echo "RESULT=READY_FOR_FULL_VALIDATION"
+    )
+
+Full validation must be a separate later block unless the change is trivial and the previous stages already passed:
+
+    (
+    cd /home/vaio/projects/MultiPingMonitor || exit 1
+    export GIT_PAGER=cat
+    export PAGER=cat
+
+    git diff --check || { echo "STOP_DIFF_CHECK_FAILED"; exit 1; }
+    dotnet build MultiPingMonitor.sln -c Release || { echo "STOP_BUILD_FAILED"; exit 1; }
+    dotnet test MultiPingMonitor.sln -c Release --no-build || { echo "STOP_FULL_TESTS_FAILED"; exit 1; }
+
+    outdir="/tmp/multipingmonitor-validation"
+    rm -rf "$outdir"
+    mkdir -p "$outdir"
+    dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -p:PublishProfile=SingleFile -o "$outdir" || { echo "STOP_PUBLISH_FAILED"; exit 1; }
+
+    exe_count="$(find "$outdir" -maxdepth 1 -type f -name 'MultiPingMonitor.exe' | wc -l)"
+    top_level_file_count="$(find "$outdir" -maxdepth 1 -type f | wc -l)"
+    lang_output_count="$(find "$outdir" -maxdepth 2 \( -type f -name '*.lang' -o -type d -name 'lang' \) | wc -l)"
+
+    echo "EXE_COUNT=$exe_count"
+    echo "TOP_LEVEL_FILE_COUNT=$top_level_file_count"
+    echo "LANG_OUTPUT_COUNT=$lang_output_count"
+
+    if [ "$exe_count" != "1" ] || [ "$top_level_file_count" != "1" ] || [ "$lang_output_count" != "0" ]; then
+      echo "STOP_PUBLISH_CONTRACT_FAILED"
+      exit 1
+    fi
+
+    sha256sum "$outdir/MultiPingMonitor.exe" || { echo "STOP_SHA_FAILED"; exit 1; }
+
+    echo "RESULT=FULL_VALIDATION_PASS"
+    )
+
+This fail-fast workflow is mandatory before handing a runtime EXE to the user for Windows testing.

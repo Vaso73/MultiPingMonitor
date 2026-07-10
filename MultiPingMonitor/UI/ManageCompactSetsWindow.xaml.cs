@@ -11,9 +11,13 @@ namespace MultiPingMonitor.UI
 {
     public partial class ManageCompactSetsWindow : Window
     {
-        public ManageCompactSetsWindow()
+        private readonly MainWindow _hostMainWindow;
+
+        public ManageCompactSetsWindow(MainWindow hostMainWindow)
         {
+            _hostMainWindow = hostMainWindow;
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
 
             // If a saved placement exists, switch to Manual so that
             // WindowStartupLocation="CenterOwner" does not override the
@@ -190,7 +194,7 @@ namespace MultiPingMonitor.UI
             RefreshSetsList();
 
             if (wasActive)
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         private void SetActive_Click(object sender, RoutedEventArgs e)
@@ -200,7 +204,7 @@ namespace MultiPingMonitor.UI
 
             // Delegate to MainWindow.SetActiveCompactSet – the exact same code path
             // used by the main menu and compact title bar menu active-set switching.
-            (Owner as MainWindow)?.SetActiveCompactSet(set.Id);
+            _hostMainWindow?.SetActiveCompactSet(set.Id);
             RefreshSetsList();
         }
 
@@ -370,7 +374,7 @@ namespace MultiPingMonitor.UI
 
                 // Live refresh if active set was replaced or compact mode is active.
                 if (activeSetAffected)
-                    (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                    _hostMainWindow?.RefreshActiveCompactSetData();
 
                 ShowInfo(string.Format(Strings.CompactSets_ImportSuccess, importedCount));
             }
@@ -450,7 +454,7 @@ namespace MultiPingMonitor.UI
             RefreshTargetsList();
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         private void EditTarget_Click(object sender, RoutedEventArgs e)
@@ -471,7 +475,7 @@ namespace MultiPingMonitor.UI
             TargetsListBox.SelectedIndex = idx;
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         private void RemoveTarget_Click(object sender, RoutedEventArgs e)
@@ -487,7 +491,7 @@ namespace MultiPingMonitor.UI
             RefreshTargetsList();
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         private void MoveTargetUp_Click(object sender, RoutedEventArgs e)
@@ -507,7 +511,7 @@ namespace MultiPingMonitor.UI
             TargetsListBox.SelectedIndex = idx - 1;
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         private void MoveTargetDown_Click(object sender, RoutedEventArgs e)
@@ -527,7 +531,7 @@ namespace MultiPingMonitor.UI
             TargetsListBox.SelectedIndex = idx + 1;
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────
@@ -704,7 +708,7 @@ namespace MultiPingMonitor.UI
             TargetsListBox.SelectedIndex = toIndex;
 
             if (IsActiveSet(set))
-                (Owner as MainWindow)?.RefreshActiveCompactSetData();
+                _hostMainWindow?.RefreshActiveCompactSetData();
         }
 
         // ── Drag-and-drop helpers ──────────────────────────────────────────────
@@ -752,5 +756,24 @@ namespace MultiPingMonitor.UI
                 Close();
             }
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

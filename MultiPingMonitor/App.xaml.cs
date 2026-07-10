@@ -90,8 +90,11 @@ namespace MultiPingMonitor
             // Load only the language setting early, before any window is created.
             Classes.Configuration.LoadLanguageSetting();
 
+            // Ensure external community language packs exist before any window is created.
+            Classes.LanguagePackService.EnsureSeedLanguagePacks();
+
             // Apply language setting before any window is created.
-            ApplyLanguage(Classes.ApplicationOptions.Language);
+            ApplyLanguage(Classes.ApplicationOptions.LanguageCode);
 
             // Now create main window.
             var mainWindow = new UI.MainWindow();
@@ -108,24 +111,9 @@ namespace MultiPingMonitor
             }
         }
 
-        private static void ApplyLanguage(Classes.ApplicationOptions.AppLanguage language)
+        private static void ApplyLanguage(string languageCode)
         {
-            CultureInfo culture;
-            switch (language)
-            {
-                case Classes.ApplicationOptions.AppLanguage.English:
-                    culture = new CultureInfo("en");
-                    break;
-                case Classes.ApplicationOptions.AppLanguage.Slovak:
-                    culture = new CultureInfo("sk-SK");
-                    break;
-                default: // System
-                    culture = CultureInfo.CurrentCulture;
-                    break;
-            }
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-            MultiPingMonitor.Properties.Strings.Culture = culture;
+            var culture = Classes.LanguageRuntimeService.ApplyLanguage(languageCode);
 
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),

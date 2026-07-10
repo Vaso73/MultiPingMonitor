@@ -23,6 +23,7 @@ namespace MultiPingMonitor.UI
         public AboutWindow()
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
 
             _sponsorProSessionStore = new SponsorProSessionStore();
             _sponsorProSession = _sponsorProSessionStore.Load();
@@ -355,5 +356,24 @@ namespace MultiPingMonitor.UI
             int build = version.Build < 0 ? 0 : version.Build;
             return $"{version.Major}.{version.Minor}.{build}";
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

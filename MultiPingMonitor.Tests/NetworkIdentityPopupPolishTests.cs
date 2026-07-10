@@ -51,10 +51,10 @@ namespace MultiPingMonitor.Tests
         {
             var source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"));
 
-            Assert.Contains("PopupTitle = $\"{label} zmenená\"", source);
-            Assert.Contains("PopupDetailPrimary = $\"Aktuálna: {currentIp}\"", source);
-            Assert.Contains("PopupDetailSecondary = $\"Predtým: {previousIp}\"", source);
-            Assert.Contains("CustomStatusText = $\"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})\"", source);
+            Assert.Contains("NetworkIdentity_IpChangedTitle", source);
+            Assert.Contains("NetworkIdentity_CurrentIp", source);
+            Assert.Contains("NetworkIdentity_PreviousIp", source);
+            Assert.Contains("NetworkIdentity_IpChangedStatus", source);
         }
 
         [Fact]

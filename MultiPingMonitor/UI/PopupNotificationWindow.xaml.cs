@@ -18,6 +18,7 @@ namespace MultiPingMonitor.UI
         public PopupNotificationWindow(ObservableCollection<StatusChangeLog> statusChangeLog)
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
 
             ICollectionView filteredChangeLog = new CollectionViewSource { Source = statusChangeLog }.View;
             filteredChangeLog.Filter = item =>
@@ -144,5 +145,28 @@ namespace MultiPingMonitor.UI
         {
             PositionWindow(width: e.NewSize.Width);
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(
+                OpenStatusHistoryButton,
+                "PopupNotification_OpenStatusHistory",
+                "Open status history window");
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

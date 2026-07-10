@@ -13,6 +13,8 @@ namespace MultiPingMonitor.UI
         public ManageAliasesWindow()
         {
             InitializeComponent();
+            RefreshActionButtonLocalization();
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "ManageAliasesWindow");
             RefreshAliasList();
         }
@@ -101,5 +103,39 @@ namespace MultiPingMonitor.UI
                 Close();
             }
         }
+        private void RefreshActionButtonLocalization()
+        {
+            AliasNewButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_New") ?? "New");
+
+            AliasEditButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Edit") ?? "Edit");
+
+            AliasRemoveButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Remove") ?? "Remove");
+        }
+
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

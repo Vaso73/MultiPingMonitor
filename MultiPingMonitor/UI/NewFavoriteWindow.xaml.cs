@@ -21,6 +21,15 @@ namespace MultiPingMonitor.UI
         public NewFavoriteWindow(List<string> hostList, int columnCount, bool isEditExisting = false, string title = "")
         {
             InitializeComponent();
+
+            FavoriteInstructionsText.Text =
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "NewFavorite_Instructions")
+                ?? "Type a list of addresses to include in this favorite set.\n"
+                    + "Enter either one per line or comma separated.\n\n"
+                    + "If you have a text file containing hosts, "
+                    + "drag and drop it here.";
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "NewFavoriteWindow");
 
             HostList = hostList;
@@ -50,7 +59,11 @@ namespace MultiPingMonitor.UI
             // Validate column count.
             if (int.TryParse(MyColumnCount.Text, out ColumnCount) == false || ColumnCount < 1 || ColumnCount > 10)
             {
-                var errorWindow = DialogWindow.ErrorWindow("Please enter a valid number of columns (between 1 and 10).");
+                var errorWindow = DialogWindow.ErrorWindow(
+                    MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                        "NewFavorite_Error_InvalidColumns")
+                    ?? "Please enter a valid number of columns "
+                        + "(between 1 and 10).");
                 errorWindow.Owner = this;
                 errorWindow.ShowDialog();
                 MyColumnCount.Focus();
@@ -73,7 +86,11 @@ namespace MultiPingMonitor.UI
             HostList = MyHosts.Text.Trim().Split(new char[] { ',', '\n' }).Select(host => host.Trim()).ToList();
             if (HostList.All(x => string.IsNullOrWhiteSpace(x)))
             {
-                var errorWindow = DialogWindow.ErrorWindow("You have not entered any hosts. Provide at least one host for this favorite set.");
+                var errorWindow = DialogWindow.ErrorWindow(
+                    MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                        "NewFavorite_Error_NoHosts")
+                    ?? "You have not entered any hosts. "
+                        + "Provide at least one host for this favorite set.");
                 errorWindow.Owner = this;
                 errorWindow.ShowDialog();
                 MyHosts.Focus();
@@ -161,13 +178,23 @@ namespace MultiPingMonitor.UI
                 catch (FileFormatException)
                 {
                     var dialog = DialogWindow.ErrorWindow(
-                        $"The file is too large and cannot be opened. The maximum file size is {MaxSizeInBytes / 1024} kb.");
+                        string.Format(
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                                "Common_FileTooLarge")
+                            ?? "The file is too large and cannot be opened. "
+                                + "The maximum file size is {0} KB.",
+                            MaxSizeInBytes / 1024));
                     dialog.Owner = this;
                     dialog.ShowDialog();
                 }
                 catch
                 {
-                    var dialog = DialogWindow.ErrorWindow("File could not be opened. Make sure the file is a plain text file.");
+                    var dialog = DialogWindow.ErrorWindow(
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "Common_FileOpenPlainText")
+                        ?? "File could not be opened. "
+                            + "Make sure the file is a plain text file.");
                     dialog.Owner = this;
                     dialog.ShowDialog();
                 }
@@ -179,5 +206,24 @@ namespace MultiPingMonitor.UI
             e.Effects = DragDropEffects.Copy;
             e.Handled = true;
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

@@ -36,13 +36,14 @@ public class CompactNetworkFooterTooltipTests
         string source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"));
 
         Assert.Contains("WAN IP:", source);
-        Assert.Contains("Krajina:", source);
+        Assert.Contains("NetworkIdentity_Title", source);
+        Assert.Contains("NetworkIdentity_Country", source);
         Assert.Contains("Provider:", source);
         Assert.Contains("ASN:", source);
         Assert.Contains("LAN IP:", source);
-        Assert.Contains("Posledná úspešná WAN kontrola:", source);
-        Assert.Contains("Ďalšia plánovaná automatická WAN kontrola:", source);
-        Assert.Contains("Stav poslednej WAN kontroly:", source);
+        Assert.Contains("NetworkIdentity_LastWanCheck", source);
+        Assert.Contains("NetworkIdentity_NextWanCheck", source);
+        Assert.Contains("NetworkIdentity_LastWanState", source);
     }
 
     [Fact]
@@ -71,11 +72,13 @@ public class CompactNetworkFooterTooltipTests
 
         Assert.Contains("AddCompactNetworkPopupCopyRow(", source);
         Assert.Contains("CopyCompactNetworkValueToClipboard", source);
+        Assert.Contains("NetworkIdentity_ClickToCopy", source);
+        Assert.Contains("NetworkIdentity_CopyFailed", source);
         Assert.Contains("Clipboard.SetText(value.Trim())", source);
-        Assert.Contains("WAN IP bola skopírovaná", source);
-        Assert.Contains("LAN IP bola skopírovaná", source);
-        Assert.Contains("WAN IP nie je dostupná", source);
-        Assert.Contains("LAN IP nie je dostupná", source);
+        Assert.Contains("NetworkIdentity_WanCopied", source);
+        Assert.Contains("NetworkIdentity_LanCopied", source);
+        Assert.Contains("NetworkIdentity_WanUnavailable", source);
+        Assert.Contains("NetworkIdentity_LanUnavailable", source);
         Assert.Contains("_compactNetworkFooterCopyToastPopup", source);
         Assert.Contains("Interval = TimeSpan.FromMilliseconds(1400)", source);
     }

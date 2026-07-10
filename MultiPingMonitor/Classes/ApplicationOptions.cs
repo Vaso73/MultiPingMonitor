@@ -147,7 +147,23 @@ namespace MultiPingMonitor.Classes
         public static string VisualStyle { get; set; } = "Classic";
 
         // Language.
+        // Legacy enum is kept for backward compatibility with older config values.
+        // LanguageCode is the authoritative persisted value for external lang/*.lang packs.
         public static AppLanguage Language { get; set; } = AppLanguage.System;
+        public static string LanguageCode { get; set; } = "System";
+
+        public static AppLanguage ToLegacyLanguage(string languageCode)
+        {
+            var normalized = LanguageRuntimeService.NormalizeLanguageCode(languageCode);
+
+            if (string.Equals(normalized, LanguageRuntimeService.EnglishLanguageCode, StringComparison.OrdinalIgnoreCase))
+                return AppLanguage.English;
+
+            if (string.Equals(normalized, LanguagePackService.DefaultExternalLanguageCode, StringComparison.OrdinalIgnoreCase))
+                return AppLanguage.Slovak;
+
+            return AppLanguage.System;
+        }
 
         // Fonts.
         public static int FontSize_Probe { get; set; } = 11;

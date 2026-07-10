@@ -129,6 +129,7 @@ namespace MultiPingMonitor.UI
         public MainWindow()
         {
             InitializeComponent();
+            RefreshWindowChromeLocalization();
             InitializeApplication();
             InitializeTrayIcon();
             // Start LAN/WAN identity monitoring for footer auto-refresh and IP-change alerts.
@@ -349,6 +350,23 @@ namespace MultiPingMonitor.UI
             }
 
             AboutMenu_Click(null, null);
+        }
+
+
+        private void RefreshWindowChromeLocalization()
+        {
+            SetTitleBarButtonText(minimizeButton, "Tooltip_Minimize", "Minimize");
+            SetTitleBarButtonText(maximizeButton, "Tooltip_Maximize", "Maximize");
+            SetTitleBarButtonText(restoreButton, "Tooltip_RestoreDown", "Restore Down");
+            SetTitleBarButtonText(closeButton, "Tooltip_Close", "Close");
+            SetTitleBarButtonText(compactCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = ResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
         }
 
         private void NotifyIcon_BalloonTipClicked(object sender, EventArgs e)
@@ -926,7 +944,7 @@ namespace MultiPingMonitor.UI
 
             content.Children.Add(new TextBlock
             {
-                Text = "Sieťová identita",
+                Text = NetworkIdentityText("NetworkIdentity_Title", "Network identity"),
                 TextWrapping = TextWrapping.Wrap,
                 Foreground = foreground,
                 FontWeight = System.Windows.FontWeights.SemiBold,
@@ -937,13 +955,13 @@ namespace MultiPingMonitor.UI
                 content,
                 "WAN IP",
                 svc.PublicIp,
-                "WAN IP bola skopírovaná",
-                "WAN IP nie je dostupná",
+                NetworkIdentityText("NetworkIdentity_WanCopied", "WAN IP copied"),
+                NetworkIdentityText("NetworkIdentity_WanUnavailable", "WAN IP unavailable"),
                 foreground,
                 secondaryForeground,
                 accentBrush);
 
-            AddCompactNetworkPopupStaticRow(content, "Krajina", svc.CountryCode, foreground);
+            AddCompactNetworkPopupStaticRow(content, NetworkIdentityText("NetworkIdentity_Country", "Country"), svc.CountryCode, foreground);
             AddCompactNetworkPopupStaticRow(content, "Provider", svc.Provider, foreground);
             AddCompactNetworkPopupStaticRow(content, "ASN", svc.Asn, foreground);
 
@@ -951,8 +969,8 @@ namespace MultiPingMonitor.UI
                 content,
                 "LAN IP",
                 svc.LocalIp,
-                "LAN IP bola skopírovaná",
-                "LAN IP nie je dostupná",
+                NetworkIdentityText("NetworkIdentity_LanCopied", "LAN IP copied"),
+                NetworkIdentityText("NetworkIdentity_LanUnavailable", "LAN IP unavailable"),
                 foreground,
                 secondaryForeground,
                 accentBrush);
@@ -967,19 +985,19 @@ namespace MultiPingMonitor.UI
 
             AddCompactNetworkPopupStaticRow(
                 content,
-                "Posledná úspešná WAN kontrola",
+                NetworkIdentityText("NetworkIdentity_LastWanCheck", "Last successful WAN check"),
                 FormatCompactNetworkTooltipTime(svc.LastRefresh),
                 foreground);
 
             AddCompactNetworkPopupStaticRow(
                 content,
-                "Ďalšia plánovaná automatická WAN kontrola",
+                NetworkIdentityText("NetworkIdentity_NextWanCheck", "Next scheduled automatic WAN check"),
                 FormatCompactNetworkTooltipNextRefresh(svc),
                 foreground);
 
             AddCompactNetworkPopupStaticRow(
                 content,
-                "Stav poslednej WAN kontroly",
+                NetworkIdentityText("NetworkIdentity_LastWanState", "Last WAN check status"),
                 FormatCompactNetworkTooltipLookupState(svc.WanState),
                 foreground);
 
@@ -1049,7 +1067,7 @@ namespace MultiPingMonitor.UI
 
             var hintText = new TextBlock
             {
-                Text = "kliknutím skopírovať",
+                Text = NetworkIdentityText("NetworkIdentity_ClickToCopy", "click to copy"),
                 FontSize = 10,
                 Foreground = secondaryForeground,
                 Opacity = 0.82,
@@ -1108,7 +1126,7 @@ namespace MultiPingMonitor.UI
             {
                 System.Diagnostics.Trace.WriteLine(
                     $"MultiPingMonitor: failed copying compact network value to clipboard: {ex.Message}");
-                ShowCompactNetworkCopyToast("Nepodarilo sa skopírovať IP");
+                ShowCompactNetworkCopyToast(NetworkIdentityText("NetworkIdentity_CopyFailed", "Failed to copy IP"));
             }
         }
 
@@ -1174,19 +1192,30 @@ namespace MultiPingMonitor.UI
 
             timer.Start();
         }
+
+        private static string NetworkIdentityText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static string NetworkIdentityFormat(string key, string fallback, params object[] args)
+        {
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, NetworkIdentityText(key, fallback), args);
+        }
+
         private static string BuildCompactNetworkFooterToolTipText(Classes.NetworkIdentityService svc)
         {
             var sb = new System.Text.StringBuilder();
 
-            sb.AppendLine("Sieťová identita");
+            sb.AppendLine(NetworkIdentityText("NetworkIdentity_Title", "Network identity"));
             sb.AppendLine($"WAN IP: {FormatCompactNetworkTooltipValue(svc.PublicIp)}");
-            sb.AppendLine($"Krajina: {FormatCompactNetworkTooltipValue(svc.CountryCode)}");
+            sb.AppendLine($"{NetworkIdentityText("NetworkIdentity_Country", "Country")}: {FormatCompactNetworkTooltipValue(svc.CountryCode)}");
             sb.AppendLine($"Provider: {FormatCompactNetworkTooltipValue(svc.Provider)}");
             sb.AppendLine($"ASN: {FormatCompactNetworkTooltipValue(svc.Asn)}");
             sb.AppendLine($"LAN IP: {FormatCompactNetworkTooltipValue(svc.LocalIp)}");
-            sb.AppendLine($"Posledná úspešná WAN kontrola: {FormatCompactNetworkTooltipTime(svc.LastRefresh)}");
-            sb.AppendLine($"Ďalšia plánovaná automatická WAN kontrola: {FormatCompactNetworkTooltipNextRefresh(svc)}");
-            sb.AppendLine($"Stav poslednej WAN kontroly: {FormatCompactNetworkTooltipLookupState(svc.WanState)}");
+            sb.AppendLine($"{NetworkIdentityText("NetworkIdentity_LastWanCheck", "Last successful WAN check")}: {FormatCompactNetworkTooltipTime(svc.LastRefresh)}");
+            sb.AppendLine($"{NetworkIdentityText("NetworkIdentity_NextWanCheck", "Next scheduled automatic WAN check")}: {FormatCompactNetworkTooltipNextRefresh(svc)}");
+            sb.AppendLine($"{NetworkIdentityText("NetworkIdentity_LastWanState", "Last WAN check status")}: {FormatCompactNetworkTooltipLookupState(svc.WanState)}");
 
             return sb.ToString().TrimEnd();
         }
@@ -1208,17 +1237,17 @@ namespace MultiPingMonitor.UI
             if (svc.NextScheduledWanRefresh.HasValue)
                 return svc.NextScheduledWanRefresh.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
-            return svc.IsRefreshing ? "po aktuálnej kontrole" : "\u2014";
+            return svc.IsRefreshing ? NetworkIdentityText("NetworkIdentity_AfterCurrentCheck", "after current check") : "\u2014";
         }
 
         private static string FormatCompactNetworkTooltipLookupState(WanLookupState state)
         {
             return state switch
             {
-                WanLookupState.NotStarted => "nespustená",
-                WanLookupState.Loading => "prebieha",
-                WanLookupState.Succeeded => "úspešná",
-                WanLookupState.Failed => "zlyhala",
+                WanLookupState.NotStarted => NetworkIdentityText("NetworkIdentity_StateNotStarted", "not started"),
+                WanLookupState.Loading => NetworkIdentityText("NetworkIdentity_StateInProgress", "in progress"),
+                WanLookupState.Succeeded => NetworkIdentityText("NetworkIdentity_StateSucceeded", "successful"),
+                WanLookupState.Failed => NetworkIdentityText("NetworkIdentity_StateFailed", "failed"),
                 _ => state.ToString()
             };
         }
@@ -1258,10 +1287,10 @@ namespace MultiPingMonitor.UI
                 Status = ProbeStatus.Up,
                 EventType = StatusChangeEventType.NetworkIdentity,
                 CustomGlyph = "h",
-                CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})",
-                PopupTitle = $"{label} zmenená",
-                PopupDetailPrimary = $"Aktuálna: {currentIp}",
-                PopupDetailSecondary = $"Predtým: {previousIp}"
+                CustomStatusText = NetworkIdentityFormat("NetworkIdentity_IpChangedStatus", "changed, current IP is {0} (previously {1})", currentIp, previousIp),
+                PopupTitle = NetworkIdentityFormat("NetworkIdentity_IpChangedTitle", "{0} changed", label),
+                PopupDetailPrimary = NetworkIdentityFormat("NetworkIdentity_CurrentIp", "Current: {0}", currentIp),
+                PopupDetailSecondary = NetworkIdentityFormat("NetworkIdentity_PreviousIp", "Previous: {0}", previousIp)
             };
 
             bool shouldPopup = ApplicationOptions.PopupOption == ApplicationOptions.PopupNotificationOption.Always
@@ -1988,10 +2017,31 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// Live changes are applied immediately via Owner-cast calls back into MainWindow.
         /// After the user closes it, does a final safety refresh.
         /// </summary>
-        internal void OpenManageCompactSets()
+        internal void OpenManageCompactSets(Window preferredOwner = null)
         {
-            var window = new ManageCompactSetsWindow();
-            window.Owner = this;
+            var window = new ManageCompactSetsWindow(this);
+
+            Window dialogOwner =
+                preferredOwner != null && preferredOwner.IsLoaded
+                    ? preferredOwner
+                    : IsLoaded
+                        ? this
+                        : null;
+
+            window.Topmost = dialogOwner?.Topmost ?? Topmost;
+
+            if (dialogOwner != null)
+            {
+                window.Owner = dialogOwner;
+            }
+            else if (
+                window.WindowStartupLocation
+                == WindowStartupLocation.CenterOwner)
+            {
+                window.WindowStartupLocation =
+                    WindowStartupLocation.CenterScreen;
+            }
+
             window.ShowDialog();
 
             // Final safety refresh after dialog closes: catches any edge cases
@@ -2786,6 +2836,37 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                 // Display mode is already applied live via SwitchDisplayMode() during
                 // Options preview, so no additional ApplyDisplayMode() is needed here.
             }
+        }
+
+
+        internal void ApplyRuntimeOptionChanges(
+            bool languageChanged,
+            System.Collections.Generic.IReadOnlyDictionary<string, string> oldResources)
+        {
+            RefreshWindowChromeLocalization();
+            RefreshGuiState();
+            RefreshProbeColors();
+            UpdateCompactSourceMenuChecks();
+            UpdateTrayToggleText();
+
+            if (languageChanged)
+            {
+                var newResources = LanguageRuntimeService.CaptureResourceSnapshot();
+                LocalizationRefreshService.Refresh(this, oldResources, newResources);
+
+                if (NotifyIcon != null)
+                {
+                    var oldMenu = _trayNativeMenu;
+                    _trayNativeMenu = BuildNativeTrayMenu();
+                    NotifyIcon.ContextMenuStrip = _trayNativeMenu;
+                    oldMenu?.Dispose();
+                }
+
+                UpdateCompactNetworkFooter();
+            }
+
+            _trayState = (TrayAggregateState)(-1);
+            UpdateTrayIcon();
         }
 
         /// <summary>

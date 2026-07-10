@@ -15,6 +15,7 @@ namespace MultiPingMonitor.UI
         public ManageCompactTargetsWindow(List<string> existingTargets = null)
         {
             InitializeComponent();
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "ManageCompactTargetsWindow");
 
             // Set initial keyboard focus to text box.
@@ -65,14 +66,25 @@ namespace MultiPingMonitor.UI
 
                 if (paths.Length > 1)
                 {
-                    ShowError("Please drop only one file at a time.");
+                    ShowError(
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "Common_DropSingleFileOnly")
+                        ?? "Please drop only one file at a time.");
                     return;
                 }
 
                 var fileInfo = new FileInfo(paths[0]);
                 if (fileInfo.Length > MaxSizeInBytes)
                 {
-                    ShowError($"\"{paths[0]}\" is too large. The maximum file size is {MaxSizeInBytes / 1024} KB.");
+                    ShowError(
+                        string.Format(
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                                "Common_FileTooLargeWithPath")
+                            ?? "\"{0}\" is too large. "
+                                + "The maximum file size is {1} KB.",
+                            paths[0],
+                            MaxSizeInBytes / 1024));
                     return;
                 }
 
@@ -85,7 +97,13 @@ namespace MultiPingMonitor.UI
             }
             catch (Exception ex)
             {
-                ShowError($"File could not be opened: {ex.Message}");
+                ShowError(
+                    string.Format(
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "Common_FileOpenErrorWithDetails")
+                        ?? "File could not be opened: {0}",
+                        ex.Message));
             }
         }
 
@@ -100,5 +118,24 @@ namespace MultiPingMonitor.UI
             dialog.Owner = this;
             dialog.ShowDialog();
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

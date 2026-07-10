@@ -78,9 +78,9 @@
                    Source="{StaticResource icon.input-addresses}" />
             <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-            <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
-                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+            <Button x:Name="titleBarCloseButton" Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name=""
+                    ToolTip="" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
             </Button>
@@ -101,11 +101,7 @@
                        Text="{x:Static resource:Strings.MultiInput_Header}"
                        Style="{StaticResource OptionHeaderTextStyle}" />
             <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}" MaxWidth="250">
-                <TextBlock>
-                    Type a list of addresses to ping.<LineBreak/>
-                    Enter one per line or comma separated.<LineBreak/><LineBreak/>
-                    If you have a text file containing hosts,<LineBreak/>drag and drop it here.
-                </TextBlock>
+                <TextBlock x:Name="InstructionsText" TextWrapping="Wrap"/>
             </Label>
         </DockPanel>
 
@@ -125,11 +121,11 @@
         <!-- Buttons section -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,9,0,0">
             <Button Style="{DynamicResource Style.ButtonStandard}"
-                    Content="OK"
+                    Content="{x:Static resource:Strings.DialogButton_OK}"
                     Width="85"
                     Click="OK_Click"/>
             <Button Style="{DynamicResource Style.ButtonStandard}"
-                    Content="Cancel"
+                    Content="{x:Static resource:Strings.DialogButton_Cancel}"
                     Width="85"
                     Margin="9,0,0,0"
                     IsCancel="True"/>

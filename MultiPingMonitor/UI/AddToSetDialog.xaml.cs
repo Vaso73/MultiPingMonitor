@@ -16,7 +16,7 @@ namespace MultiPingMonitor.UI
         private readonly string _target;
         private readonly List<CompactTargetSet> _compactSets;
 
-        public string TargetDisplayText => $"Target:  {_target}";
+        public string TargetDisplayText => $"{Properties.Strings.CompactSets_Target}  {_target}";
 
         public AddToSetDialog(string target, Window owner)
         {
@@ -24,6 +24,12 @@ namespace MultiPingMonitor.UI
             _compactSets = ApplicationOptions.CompactSets.ToList();
 
             InitializeComponent();
+
+            RadioCompact.Content =
+                Properties.Strings.ResourceManager.GetString(
+                    "LivePing_AddToSet_CompactDestination")
+                ?? "Compact";
+            RefreshTitleBarChromeLocalization();
             DataContext = this;
             Owner = owner;
 
@@ -74,5 +80,24 @@ namespace MultiPingMonitor.UI
         {
             Close();
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
     }
 }

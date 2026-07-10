@@ -1,4 +1,4 @@
-﻿<Window x:Class="MultiPingMonitor.UI.OptionsWindow"
+<Window x:Class="MultiPingMonitor.UI.OptionsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:resource="clr-namespace:MultiPingMonitor.Properties"
@@ -50,9 +50,9 @@
                    Source="{StaticResource icon.vmping-logo-simple}" />
             <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
                        Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-            <Button Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name="Close"
-                    ToolTip="Close" ToolTipService.InitialShowDelay="1000">
+            <Button x:Name="titleBarCloseButton" Grid.Column="2" Click="OnCloseButtonClick"
+                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name=""
+                    ToolTip="" ToolTipService.InitialShowDelay="1000">
                 <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
             </Button>
@@ -919,7 +919,8 @@
                         <TextBlock Text="{x:Static resource:Strings.Options_Language}" Width="120"/>
                         <ComboBox x:Name="LanguageComboBox" Width="160"/>
                     </StackPanel>
-                    <TextBlock DockPanel.Dock="Top"
+                    <TextBlock x:Name="LanguageApplyHintText"
+                               DockPanel.Dock="Top"
                                Text="{x:Static resource:Strings.Options_LanguageRestart}"
                                Foreground="{DynamicResource Theme.Text.Secondary}" FontSize="12" Margin="122,3,0,0"/>
 
@@ -1152,13 +1153,21 @@
         <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
             <DockPanel HorizontalAlignment="Right">
                 <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
-                    <Button Style="{DynamicResource Style.ButtonStandard}"
-                            Click="OK_Click"
+                    <Button x:Name="ApplyButton"
+                            Style="{DynamicResource Style.ButtonStandard}"
+                            Click="Apply_Click"
+                            Margin="0,0,9,0"
+                            Width="85"
+                            Content="Apply"/>
+                    <Button x:Name="SaveButton"
+                            Style="{DynamicResource Style.ButtonStandard}"
+                            Click="Save_Click"
                             Margin="0,0,9,0"
                             IsDefault="True"
                             Width="85"
-                            Content="{x:Static resource:Strings.DialogButton_OK}"/>
-                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                            Content="{x:Static resource:Strings.DialogButton_Save}"/>
+                    <Button x:Name="CancelButton"
+                            Style="{DynamicResource Style.ButtonStandard}"
                             IsCancel="True"
                             Width="85"
                             Content="{x:Static resource:Strings.DialogButton_Cancel}"/>

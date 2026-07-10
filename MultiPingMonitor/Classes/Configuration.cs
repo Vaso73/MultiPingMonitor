@@ -258,8 +258,8 @@ namespace MultiPingMonitor.Classes
                 Node("VisualStyle", ApplicationOptions.VisualStyle),
                 Node("FontSize_Probe", ApplicationOptions.FontSize_Probe),
                 Node("FontSize_Scanner", ApplicationOptions.FontSize_Scanner),
-                new XComment(" Language: [System, English, Slovak] "),
-                Node("Language", ApplicationOptions.Language),
+                new XComment(" Language: System, en, or external language-code such as sk-SK "),
+                Node("Language", ApplicationOptions.LanguageCode),
                 new XComment(" DisplayMode: [Normal, Compact] "),
                 Node("DisplayMode", ApplicationOptions.CurrentDisplayMode),
                 new XComment(" CompactSourceMode: [NormalTargets, CustomTargets] "),
@@ -835,8 +835,7 @@ namespace MultiPingMonitor.Classes
             }
             if (options.TryGetValue("Language", out optionValue))
             {
-                if (Enum.TryParse<ApplicationOptions.AppLanguage>(optionValue, out var lang))
-                    ApplicationOptions.Language = lang;
+                ApplyLanguageOption(optionValue);
             }
             if (options.TryGetValue("DisplayMode", out optionValue))
             {
@@ -856,6 +855,13 @@ namespace MultiPingMonitor.Classes
             }
         }
 
+        private static void ApplyLanguageOption(string value)
+        {
+            var normalized = LanguageRuntimeService.NormalizeLanguageCode(value);
+            ApplicationOptions.LanguageCode = normalized;
+            ApplicationOptions.Language = ApplicationOptions.ToLegacyLanguage(normalized);
+        }
+
         public static void LoadLanguageSetting()
         {
             if (!Exists()) return;
@@ -870,8 +876,7 @@ namespace MultiPingMonitor.Classes
                     .ToDictionary(n => n.Attributes["name"].Value, n => n.InnerText);
                 if (options.TryGetValue("Language", out var val))
                 {
-                    if (Enum.TryParse<ApplicationOptions.AppLanguage>(val, out var lang))
-                        ApplicationOptions.Language = lang;
+                    ApplyLanguageOption(val);
                 }
             }
             catch { /* Ignore */ }

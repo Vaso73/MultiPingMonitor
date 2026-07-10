@@ -311,7 +311,7 @@
     <value>Manage Favorites...</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Menu_PopupAlerts" xml:space="preserve">
     <value>Popup Alerts</value>
@@ -503,6 +503,15 @@
   <data name="Tooltip_Close" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="Tooltip_Minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="Tooltip_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="Tooltip_RestoreDown" xml:space="preserve">
+    <value>Restore Down</value>
+  </data>
   <data name="Tooltip_EditAlias" xml:space="preserve">
     <value>Edit alias</value>
   </data>
@@ -546,7 +555,7 @@
     <value>Intro</value>
   </data>
   <data name="Help_Nav_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Help_Title" xml:space="preserve">
     <value>MultiPingMonitor Help</value>
@@ -567,7 +576,7 @@
     <value>Input Addresses...</value>
   </data>
   <data name="Menu_NewInstance" xml:space="preserve">
-    <value>MultiPingMonitor</value>
+    <value>New MultiPingMonitor instance</value>
   </data>
   <data name="Options_AlwaysOnTop" xml:space="preserve">
     <value>Always on top</value>
@@ -660,7 +669,7 @@
     <value>From address</value>
   </data>
   <data name="Options_Header_AdvancedICMP" xml:space="preserve">
-    <value>Advanced ICMP Options</value>
+    <value>Advanced ICMP Settings</value>
   </data>
   <data name="Options_Header_AliasForeground" xml:space="preserve">
     <value>Alias Foreground</value>
@@ -672,7 +681,7 @@
     <value>Colors</value>
   </data>
   <data name="Options_Header_DisplayOptions" xml:space="preserve">
-    <value>Display Options</value>
+    <value>Display Settings</value>
   </data>
   <data name="Options_Header_EmailAddresses" xml:space="preserve">
     <value>Email Addresses</value>
@@ -699,7 +708,7 @@
     <value>Probe Foreground</value>
   </data>
   <data name="Options_Header_ProbeOptions" xml:space="preserve">
-    <value>Probe Options</value>
+    <value>Probe Settings</value>
   </data>
   <data name="Options_Header_Scanner" xml:space="preserve">
     <value>Scanner</value>
@@ -726,7 +735,7 @@
     <value>Language:</value>
   </data>
   <data name="Options_LanguageRestart" xml:space="preserve">
-    <value>(Language change takes effect on next start)</value>
+    <value>(Language changes apply when you click Apply or Save)</value>
   </data>
   <data name="Options_LatencyTriggers" xml:space="preserve">
     <value>Latency triggers:</value>
@@ -963,7 +972,7 @@
     <value>Open MultiPingMonitor</value>
   </data>
   <data name="Tray_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Tray_StatusHistory" xml:space="preserve">
     <value>Status History</value>
@@ -987,7 +996,7 @@
     <value>Visual style</value>
   </data>
   <data name="Options_Title" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Tooltip_DontFragment" xml:space="preserve">
     <value>The don't fragment flag instructs routers to discard the packet if it is too big.
@@ -1184,7 +1193,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>The Flood Host utility generates a significant amount of ICMP packets. To limit the flow, it waits until a reply is received before sending the next packet. Access it from the menu (Ctrl-F).</value>
   </data>
   <data name="Help_Options_Header" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Help_Options_PingInterval_Sub" xml:space="preserve">
     <value>Ping interval</value>
@@ -1226,13 +1235,13 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Start in tray</value>
   </data>
   <data name="Help_Options_StartInTray_Text" xml:space="preserve">
-    <value>When enabled in Options, MultiPingMonitor starts minimized to the system tray instead of showing the main window. Pinging begins immediately in the background. Double-click the tray icon to restore the window.</value>
+    <value>When enabled in Settings, MultiPingMonitor starts minimized to the system tray instead of showing the main window. Pinging begins immediately in the background. Double-click the tray icon to restore the window.</value>
   </data>
   <data name="Help_Options_Language_Sub" xml:space="preserve">
     <value>Language</value>
   </data>
   <data name="Help_Options_Language_Text" xml:space="preserve">
-    <value>MultiPingMonitor supports English and Slovak. The language can be changed in Options. The change takes effect after restarting the application.</value>
+    <value>MultiPingMonitor supports built-in English and external language packs. The language can be changed in Settings. Changes apply when you click Apply or Save.</value>
   </data>
   <data name="Help_Options_PortableConfig_Sub" xml:space="preserve">
     <value>Portable configuration</value>
@@ -1244,7 +1253,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>System tray</value>
   </data>
   <data name="Help_Options_TrayBehavior_Text" xml:space="preserve">
-    <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access options such as Open, New Instance, Status History, Options, and Exit.</value>
+    <value>When the main window is closed, MultiPingMonitor minimizes to the system tray and continues pinging in the background. Right-click the tray icon to access menu items such as Open, New Instance, Status History, Settings, and Exit.</value>
   </data>
   <data name="Menu_CompactManageSets" xml:space="preserve">
     <value>Manage Compact Sets...</value>
@@ -1465,6 +1474,24 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="LivePing_ChangeTargetConfirm" xml:space="preserve">
     <value>Monitoring is active. Stop monitoring and change the target?</value>
   </data>
+  <data name="LivePing_Title" xml:space="preserve">
+    <value>Live Ping Monitor</value>
+  </data>
+  <data name="LivePing_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="LivePing_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="LivePing_StatsSent" xml:space="preserve">
+    <value>Sent</value>
+  </data>
+  <data name="LivePing_StatsReceivedShort" xml:space="preserve">
+    <value>Recv</value>
+  </data>
+  <data name="LivePing_StatsLost" xml:space="preserve">
+    <value>Lost</value>
+  </data>
   <data name="Compact_StartSet" xml:space="preserve">
     <value>Start set</value>
   </data>
@@ -1680,5 +1707,203 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   </data>
   <data name="UpdateAvailable_DetailsLabel" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="DialogButton_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Options_LanguageApplyHint" xml:space="preserve">
+    <value>Changes are applied when you click Apply or Save.</value>
+  </data>
+
+  <data name="StatusHistory_FilterStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StatusHistory_FilterStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="StatusHistory_Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Usage_StartMinimizedDescription" xml:space="preserve">
+    <value>Start the application in a minimized state.</value>
+  </data>
+
+  <data name="NetworkIdentity_Title" xml:space="preserve">
+    <value>Network identity</value>
+  </data>
+  <data name="NetworkIdentity_Country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="NetworkIdentity_LastWanCheck" xml:space="preserve">
+    <value>Last successful WAN check</value>
+  </data>
+  <data name="NetworkIdentity_NextWanCheck" xml:space="preserve">
+    <value>Next scheduled automatic WAN check</value>
+  </data>
+  <data name="NetworkIdentity_LastWanState" xml:space="preserve">
+    <value>Last WAN check status</value>
+  </data>
+  <data name="NetworkIdentity_ClickToCopy" xml:space="preserve">
+    <value>click to copy</value>
+  </data>
+  <data name="NetworkIdentity_WanCopied" xml:space="preserve">
+    <value>WAN IP copied</value>
+  </data>
+  <data name="NetworkIdentity_WanUnavailable" xml:space="preserve">
+    <value>WAN IP unavailable</value>
+  </data>
+  <data name="NetworkIdentity_LanCopied" xml:space="preserve">
+    <value>LAN IP copied</value>
+  </data>
+  <data name="NetworkIdentity_LanUnavailable" xml:space="preserve">
+    <value>LAN IP unavailable</value>
+  </data>
+  <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
+    <value>Failed to copy IP</value>
+  </data>
+
+  <data name="NetworkIdentity_AfterCurrentCheck" xml:space="preserve">
+    <value>after current check</value>
+  </data>
+  <data name="NetworkIdentity_StateNotStarted" xml:space="preserve">
+    <value>not started</value>
+  </data>
+  <data name="NetworkIdentity_StateInProgress" xml:space="preserve">
+    <value>in progress</value>
+  </data>
+  <data name="NetworkIdentity_StateSucceeded" xml:space="preserve">
+    <value>successful</value>
+  </data>
+  <data name="NetworkIdentity_StateFailed" xml:space="preserve">
+    <value>failed</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedStatus" xml:space="preserve">
+    <value>changed, current IP is {0} (previously {1})</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedTitle" xml:space="preserve">
+    <value>{0} changed</value>
+  </data>
+  <data name="NetworkIdentity_CurrentIp" xml:space="preserve">
+    <value>Current: {0}</value>
+  </data>
+  <data name="NetworkIdentity_PreviousIp" xml:space="preserve">
+    <value>Previous: {0}</value>
+  </data>
+  <data name="PopupNotification_OpenStatusHistory" xml:space="preserve">
+    <value>Open status history window</value>
+  </data>
+  <data name="StatusHistory_ColumnTimestamp" xml:space="preserve">
+    <value>Timestamp</value>
+  </data>
+  <data name="StatusHistory_ColumnAddress" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="StatusHistory_ColumnAlias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="StatusHistory_ColumnStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="StatusHistory_FilterLabel" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="StatusHistory_IncludeLabel" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="StatusHistory_FilterProbeStatus" xml:space="preserve">
+    <value>Probe status</value>
+  </data>
+  <data name="StatusHistory_FilterUp" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="StatusHistory_FilterDown" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="Usage_OptionsHeader" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Usage_IntervalDescription" xml:space="preserve">
+    <value>Specifies the interval, in seconds, between pings.</value>
+  </data>
+  <data name="Usage_IntervalRange" xml:space="preserve">
+    <value>Valid range: 1 to 86400 (1 second to 24 hours).</value>
+  </data>
+  <data name="Usage_TimeoutDescription" xml:space="preserve">
+    <value>Set the timeout, in seconds, for each ping request.</value>
+  </data>
+  <data name="Usage_TimeoutRange" xml:space="preserve">
+    <value>Valid range: 1 to 60 seconds.</value>
+  </data>
+  <data name="Usage_HostnameDescription" xml:space="preserve">
+    <value>A hostname or IP address to ping.</value>
+  </data>
+  <data name="Usage_MultipleHostnamesDescription" xml:space="preserve">
+    <value>You can provide multiple hostnames.</value>
+  </data>
+  <data name="Usage_FileDescription" xml:space="preserve">
+    <value>The path to a text file containing hostnames or IP addresses to ping. Wrap the path in quotes if it contains spaces. You can provide multiple files.</value>
+  </data>
+  <data name="Usage_ExamplesHeader" xml:space="preserve">
+    <value>Examples</value>
+  </data>
+  <data name="LivePing_Status_Up" xml:space="preserve">
+    <value>UP</value>
+  </data>
+  <data name="LivePing_Status_Down" xml:space="preserve">
+    <value>DOWN</value>
+  </data>
+  <data name="LivePing_Status_Error" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="LivePing_Status_HighLatency" xml:space="preserve">
+    <value>HIGH LATENCY</value>
+  </data>
+  <data name="LivePing_Status_Indeterminate" xml:space="preserve">
+    <value>INDETERMINATE</value>
+  </data>
+  <data name="LivePing_Status_Inactive" xml:space="preserve">
+    <value>INACTIVE</value>
+  </data>
+  <data name="MultiInput_Instructions" xml:space="preserve">
+    <value>Type a list of addresses to ping.&#xA;Enter one per line or comma separated.&#xA;&#xA;If you have a text file containing hosts,&#xA;drag and drop it here.</value>
+  </data>
+  <data name="NewFavorite_Instructions" xml:space="preserve">
+    <value>Type a list of addresses to include in this favorite set.&#xA;Enter either one per line or comma separated.&#xA;&#xA;If you have a text file containing hosts, drag and drop it here.</value>
+  </data>
+  <data name="Common_DropSingleFileOnly" xml:space="preserve">
+    <value>Please drop only one file at a time.</value>
+  </data>
+  <data name="Common_FileTooLargeWithPath" xml:space="preserve">
+    <value>"{0}" is too large. The maximum file size is {1} KB.</value>
+  </data>
+  <data name="Common_FileOpenErrorWithDetails" xml:space="preserve">
+    <value>File could not be opened: {0}</value>
+  </data>
+  <data name="Common_FileTooLarge" xml:space="preserve">
+    <value>The file is too large and cannot be opened. The maximum file size is {0} KB.</value>
+  </data>
+  <data name="Common_FileOpenPlainText" xml:space="preserve">
+    <value>File could not be opened. Make sure the file is a plain text file.</value>
+  </data>
+  <data name="CommandLine_FileParseError" xml:space="preserve">
+    <value>Unable to parse "{0}": {1}</value>
+  </data>
+  <data name="Favorite_NotFound" xml:space="preserve">
+    <value>The requested favorite was not found: {0}</value>
+  </data>
+  <data name="Probe_LogWriteError" xml:space="preserve">
+    <value>Failed writing to log file. Logging has been disabled. Error: {0}</value>
+  </data>
+  <data name="Probe_AudioPlaybackError" xml:space="preserve">
+    <value>Failed to play audio file. Audio alerts have been disabled. Error: {0}</value>
+  </data>
+  <data name="LivePing_AddToSet_CompactDestination" xml:space="preserve">
+    <value>Compact</value>
+  </data>
+  <data name="NewFavorite_Error_InvalidColumns" xml:space="preserve">
+    <value>Please enter a valid number of columns (between 1 and 10).</value>
+  </data>
+  <data name="NewFavorite_Error_NoHosts" xml:space="preserve">
+    <value>You have not entered any hosts. Provide at least one host for this favorite set.</value>
   </data>
 </root>

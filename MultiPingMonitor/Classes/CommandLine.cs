@@ -101,7 +101,15 @@ namespace MultiPingMonitor.Classes
                 long length = new FileInfo(path).Length;
                 if (length > MaxHostFileSize)
                 {
-                    ShowErrorDialog($"\"{path}\" is too large. The maximum file size is {MaxHostFileSize / 1024} KB.");
+                    ShowErrorDialog(
+                        string.Format(
+                            System.Globalization.CultureInfo.CurrentCulture,
+                            MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                                "Common_FileTooLargeWithPath")
+                            ?? "\"{0}\" is too large. "
+                                + "The maximum file size is {1} KB.",
+                            path,
+                            MaxHostFileSize / 1024));
                     Application.Current.Shutdown();
                     return new List<string>();
                 }
@@ -119,7 +127,14 @@ namespace MultiPingMonitor.Classes
             }
             catch (Exception ex)
             {
-                ShowErrorDialog($"Unable to parse \"{path}\": {ex.Message}");
+                ShowErrorDialog(
+                    string.Format(
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                            "CommandLine_FileParseError")
+                        ?? "Unable to parse \"{0}\": {1}",
+                        path,
+                        ex.Message));
                 Application.Current.Shutdown();
                 return new List<string>();
             }

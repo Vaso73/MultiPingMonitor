@@ -31,7 +31,7 @@ namespace MultiPingMonitor.Classes
             }
             catch (Exception ex)
             {
-                Util.ShowError($"Failed to read configuration file. {ex.Message}");
+                Util.ShowError($"{Strings.Error_ReadConfig} {ex.Message}");
                 return false;
             }
         }
@@ -70,7 +70,7 @@ namespace MultiPingMonitor.Classes
 
             catch (Exception ex)
             {
-                Util.ShowError($"Failed to read configuration file. {ex.Message}");
+                Util.ShowError($"{Strings.Error_ReadConfig} {ex.Message}");
             }
 
             return titles;
@@ -117,7 +117,13 @@ namespace MultiPingMonitor.Classes
             }
             catch (KeyNotFoundException)
             {
-                Util.ShowError($"The requested favorite was not found: {title}");
+                Util.ShowError(
+                    string.Format(
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        Strings.ResourceManager.GetString(
+                            "Favorite_NotFound")
+                        ?? "The requested favorite was not found: {0}",
+                        title));
             }
             catch (Exception ex)
             {

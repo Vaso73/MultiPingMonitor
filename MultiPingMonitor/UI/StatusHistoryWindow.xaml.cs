@@ -22,6 +22,8 @@ namespace MultiPingMonitor.UI
         public StatusHistoryWindow(ObservableCollection<StatusChangeLog> statusChangeLog)
         {
             InitializeComponent();
+            RefreshStatusHistoryLabelLocalization();
+            RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "StatusHistoryWindow");
 
             RefreshMaximizeRestoreButton();
@@ -163,7 +165,7 @@ namespace MultiPingMonitor.UI
         {
             using (System.Windows.Forms.SaveFileDialog exportDialog = new System.Windows.Forms.SaveFileDialog())
             {
-                exportDialog.Title = "Export";
+                exportDialog.Title = StatusHistoryResourceText("StatusHistory_Export", "Export");
                 exportDialog.RestoreDirectory = true;
                 exportDialog.OverwritePrompt = true;
                 exportDialog.AddExtension = true;
@@ -356,5 +358,54 @@ namespace MultiPingMonitor.UI
         private void Window_Closed(object sender, EventArgs e)
         {
         }
+
+        private void RefreshTitleBarChromeLocalization()
+        {
+            SetTitleBarButtonText(titleBarMinimizeButton, "Tooltip_Minimize", "Minimize");
+            SetTitleBarButtonText(maximizeButton, "Tooltip_Maximize", "Maximize");
+            SetTitleBarButtonText(restoreButton, "Tooltip_RestoreDown", "Restore Down");
+            SetTitleBarButtonText(titleBarCloseButton, "Tooltip_Close", "Close");
+        }
+
+        private static string TitleBarResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+        private static void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
+        {
+            string text = TitleBarResourceText(key, fallback);
+            button.ToolTip = text;
+            System.Windows.Automation.AutomationProperties.SetName(button, text);
+        }
+
+
+
+        private void RefreshStatusHistoryLabelLocalization()
+        {
+            TimestampColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnTimestamp", "Timestamp");
+            AddressColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnAddress", "Address");
+            AliasColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnAlias", "Alias");
+            StatusColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnStatus", "Status");
+
+            FilterLabel.Text = StatusHistoryResourceText("StatusHistory_FilterLabel", "Filter");
+            IncludeLabel.Text = StatusHistoryResourceText("StatusHistory_IncludeLabel", "Include");
+
+            FilterProbeEvents.Content = StatusHistoryResourceText("StatusHistory_FilterProbeStatus", "Probe status");
+            FilterNetworkIdentityEvents.Content = StatusHistoryResourceText("NetworkIdentity_Title", "Network identity");
+            FilterCompactSetEvents.Content = StatusHistoryResourceText("StatusHistory_EventType_CompactSet", "Compact set");
+            FilterUp.Content = StatusHistoryResourceText("StatusHistory_FilterUp", "Up");
+            FilterDown.Content = StatusHistoryResourceText("StatusHistory_FilterDown", "Down");
+            FilterStart.Content = StatusHistoryResourceText("StatusHistory_FilterStart", "Start");
+            FilterStop.Content = StatusHistoryResourceText("StatusHistory_FilterStop", "Stop");
+            ExportButton.Content = StatusHistoryResourceText("StatusHistory_Export", "Export");
+        }
+
+        private static string StatusHistoryResourceText(string key, string fallback)
+        {
+            return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
+        }
+
+
     }
 }

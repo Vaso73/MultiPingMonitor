@@ -38,13 +38,13 @@
                        RenderOptions.BitmapScalingMode="HighQuality" />
                 <!-- Title text -->
                 <TextBlock x:Name="TitleText" Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
-                           Text="Live Ping Monitor" />
+                           Text="" />
                 <!-- Arrange menu button -->
                 <Button x:Name="ArrangeMenuButton" Grid.Column="2"
                         Style="{DynamicResource Style.TitleBarButton}"
                         Width="46" Click="ArrangeMenuButton_Click"
                         WindowChrome.IsHitTestVisibleInChrome="True"
-                        ToolTip="Arrange">
+                        ToolTip="">
                     <!-- Grid/arrange icon (four squares) -->
                     <Path Width="12" Height="12" Stretch="Uniform"
                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
@@ -115,7 +115,7 @@
                                 <Path Width="8" Height="10" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
                                       Data="M0,0 L10,5 0,10 Z" />
-                                <TextBlock x:Name="StartPingText" Text="Start" Margin="6,0,0,0"
+                                <TextBlock x:Name="StartPingText" Text="" Margin="6,0,0,0"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -153,7 +153,7 @@
                                 <Path x:Name="PinIcon" Width="10" Height="12" Stretch="Uniform"
                                       Fill="{DynamicResource Theme.Text.Secondary}" VerticalAlignment="Center"
                                       Data="M7,0 L9,0 9,4 12,6 12,8 8,8 8,14 7,14 7,8 3,8 3,6 7,4 Z" />
-                                <TextBlock x:Name="AlwaysOnTopText" Text="Always on top" Margin="4,0,0,0"
+                                <TextBlock x:Name="AlwaysOnTopText" Text="" Margin="4,0,0,0"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource Theme.Text.Primary}" />
                             </StackPanel>
@@ -166,7 +166,7 @@
                                 <Path Width="10" Height="11" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M4,0 L4,1 1,1 1,11 9,11 9,4 10,4 10,12 0,12 0,0 Z M3,0 L3,8 11,8 11,0 Z M4,1 L10,1 10,7 4,7 Z" />
-                                <TextBlock x:Name="CopyTargetText" Text="Copy Target" Margin="4,0,0,0"
+                                <TextBlock x:Name="CopyTargetText" Text="" Margin="4,0,0,0"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
@@ -177,7 +177,7 @@
                                 <Path Width="11" Height="10" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M0,0 L12,0 12,9 7,9 7,11 9,11 9,12 3,12 3,11 5,11 5,9 0,9 Z M1,1 L1,8 11,8 11,1 Z M4,3 L2,5 4,7 5,6 3.5,5 5,4 Z M8,3 L7,4 8.5,5 7,6 8,7 10,5 Z" />
-                                <TextBlock x:Name="CopyAddressText" Text="Copy Address" Margin="4,0,0,0"
+                                <TextBlock x:Name="CopyAddressText" Text="" Margin="4,0,0,0"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
@@ -191,7 +191,7 @@
                                 <Path Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"
                                       Fill="{DynamicResource Theme.Text.Secondary}"
                                       Data="M5,0 L5,4 9,4 9,6 5,6 5,10 3,10 3,6 0,6 0,4 3,4 3,0 Z" />
-                                <TextBlock x:Name="AddToSetText" Text="Add to Set..." Margin="4,0,0,0"
+                                <TextBlock x:Name="AddToSetText" Text="" Margin="4,0,0,0"
                                            VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
@@ -208,7 +208,7 @@
                     <Path Width="9" Height="11" Stretch="Uniform" VerticalAlignment="Center"
                           Fill="{DynamicResource Theme.Warning}" Margin="0,0,5,0"
                           Data="M 0,0 H 3 V 11 H 0 Z M 5,0 H 8 V 11 H 5 Z" />
-                    <TextBlock x:Name="PausedBannerText" Text="Paused" FontSize="11" FontStyle="Italic"
+                    <TextBlock x:Name="PausedBannerText" Text="" FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource Theme.Warning}" VerticalAlignment="Center" />
                 </StackPanel>
             </Border>
@@ -218,13 +218,13 @@
                 <DockPanel>
                     <!-- Buttons on the right -->
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button x:Name="StopResumeButton" Content="Stop" Click="StopResumeButton_Click"
+                        <Button x:Name="StopResumeButton" Content="" Click="StopResumeButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
                                 Margin="4,0,0,0" />
-                        <Button x:Name="ClearButton" Content="Clear" Click="ClearButton_Click"
+                        <Button x:Name="ClearButton" Content="" Click="ClearButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
                                 Margin="4,0,0,0" />
-                        <Button x:Name="CloseFooterButton" Content="Close" Click="CloseButton_Click"
+                        <Button x:Name="CloseFooterButton" Content="" Click="CloseButton_Click"
                                 Style="{DynamicResource Style.LivePingFooterButton}"
                                 Margin="4,0,0,0" />
                     </StackPanel>
@@ -232,7 +232,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Sent" FontSize="11"
+                                <TextBlock x:Name="StatsSentLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock x:Name="StatsSent" FontSize="12" FontWeight="Bold"
@@ -241,7 +241,7 @@
                         </Border>
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Recv" FontSize="11"
+                                <TextBlock x:Name="StatsReceivedLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock x:Name="StatsReceived" FontSize="12" FontWeight="Bold"
@@ -250,7 +250,7 @@
                         </Border>
                         <Border Style="{DynamicResource Style.LivePingStatSegment}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Lost" FontSize="11"
+                                <TextBlock x:Name="StatsLostLabel" Text="" FontSize="11"
                                            Foreground="{DynamicResource Theme.Text.Secondary}"
                                            VerticalAlignment="Center" Margin="0,0,5,0" />
                                 <TextBlock x:Name="StatsLost" FontSize="12" FontWeight="Bold"
