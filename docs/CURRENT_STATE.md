@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 05:29 UTC
+Last updated: 2026-07-10 05:39 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `9c8f77e`
-- HEAD label: `9c8f77e` — `Localize existing-key dialog and ping labels`
+- HEAD before checkpoint update: `93f2685`
+- HEAD label: `93f2685` — `Localize compact close tooltip`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 14`
+- Comparison with `origin/main`: `0 16`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -47,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, and existing-key dialog/ping label localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, and compact close tooltip localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `93f2685` — `Localize compact close tooltip`
 - `9c8f77e` — `Localize existing-key dialog and ping labels`
 - `e715b11` — `Localize remaining window chrome tooltips`
 - `ba4e23d` — `Localize main window chrome and probe stats`
@@ -343,6 +344,8 @@ Candidate next areas:
 
 Runtime validation note:
 
+- Compact Mode close tooltip/accessibility text must be visually checked on Windows in English and Slovenčina because the compact close button is now localized through `MainWindow` code-behind.
+
 - Existing-key dialog and ping labels must be visually checked on Windows in English and Slovenčina, especially `IsolatedPingWindow`, `ManageCompactTargetsWindow`, `MultiInputWindow`, and `UsageWindow`.
 
 - Remaining window chrome tooltip localization must be visually checked on Windows in English and Slovenčina because tooltip/accessibility text is now set through code-behind helpers in multiple windows.
@@ -505,6 +508,48 @@ Validation:
 - Targeted hardcoded check passed:
   - no remaining targeted `Copy Target`, `Sent`, `Recv`, `Lost`, `OK`, or `Cancel` hardcoded labels in the patched files
   - no unsafe `Strings.LivePing_*` typed XAML references in `IsolatedPingWindow.xaml`
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+
+## Completed slice: compact close tooltip localization
+
+Commit:
+
+- `93f2685` — `Localize compact close tooltip`
+
+Implemented:
+
+- Localized the remaining Compact Mode close button tooltip/accessibility text in `MainWindow.xaml`.
+- Added `x:Name="compactCloseButton"` to the Compact Mode close button.
+- Replaced hardcoded Compact Mode close button `AutomationProperties.Name="Close"` with runtime localization.
+- Replaced hardcoded Compact Mode close button `ToolTip="Close"` with runtime localization.
+- Updated `RefreshTitleBarChromeLocalization()` in `MainWindow.xaml.cs` to call:
+  - `SetTitleBarButtonText(compactCloseButton, "Tooltip_Close", "Close");`
+- Reused existing language-pack/resource key only:
+  - `Tooltip_Close`
+- Did not change language-pack key count.
+- Did not change `LanguagePackKeys.cs`.
+- Did not change `LanguagePackSeeds.cs`.
+- Did not change `.resx` resource content.
+
+Validation:
+
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+- Targeted hardcoded check passed:
+  - no remaining `AutomationProperties.Name="Close"` in `MainWindow.xaml`
+  - no remaining `ToolTip="Close"` in `MainWindow.xaml`
 
 Status:
 
