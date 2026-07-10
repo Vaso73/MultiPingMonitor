@@ -185,3 +185,21 @@ Workflow note:
 - Options language choices now include discovered external packs such as `Slovenčina (sk-SK)`.
 - Build, full tests, diff check, single-file publish contract, and Windows runtime validation passed.
 - The branch remains local-only and is not pushed because the next approved slice is live Options apply/save behavior.
+
+## 2026-07-10 — Sponsor Pro v1.1.0 accepted
+
+- Completed and merged the external language-pack and full localization feature through PR `#157`.
+- Merged the release-only v1.1.0 metadata through PR `#158`.
+- Corrected the canonical publisher remote-manifest guard through PR `#159`.
+- Published private release `multipingmonitor/v1.1.0` as release ID `352086825`.
+- Verified `MultiPingMonitor.zip` contains exactly one `MultiPingMonitor.exe`.
+- Verified ZIP size `66623359` and SHA-256
+  `5808d2f708233c2dc96fa761491a146af5ed53a6258b93f0a8bcb033dc350fe0`.
+- Verified the released executable SHA-256
+  `3f5440ad254a28eb9641ba81ff86cf549cb57a6d50220a4a18d2a6a95dc5fcab`.
+- Verified the private GitHub asset by downloading it back byte-for-byte.
+- Verified the updater backend reports v1.1.0 with matching tag, asset, size, SHA-256, and `status=ok`.
+- The user updated from accepted v1.0.28 through the in-app updater.
+- Windows showed FileVersion and ProductVersion `1.1.0`; the installed EXE hash matched the release.
+- The user confirmed all requested runtime and localization smoke tests as functional.
+- Final state: Sponsor Pro v1.1.0 `closed/accepted`.

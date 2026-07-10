@@ -1,43 +1,53 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 12:33 UTC
+Last updated: 2026-07-10 15:01 UTC
 
 ## Accepted baseline
 
-Sponsor Pro v1.0.28 remains the current accepted released runtime baseline.
+Sponsor Pro v1.1.0 is the current accepted released runtime baseline.
 
-The complete localization feature and the v1.1.0 release metadata are merged into `main`. Sponsor Pro v1.1.0 is not
-yet published because the canonical publisher stopped before any remote release modification on its remote-manifest
-guard. The updater backend therefore correctly remains on v1.0.28.
+The release was published through the canonical private Sponsor Pro workflow and accepted by the user after a
+successful in-app update from the previously accepted v1.0.28 runtime.
 
 ## Current live checkpoint
 
-Verified live state before this publisher-fix checkpoint:
+Verified release and acceptance state:
 
-- Repository: `/home/vaio/projects/MultiPingMonitor`
-- Branch before the fix branch: `main`
-- Synced `main` HEAD: `1d865cd5e5f31cdd2a7d8e9d42225ea870e91da3`
+- Public source repository: `Vaso73/MultiPingMonitor`
+- Private Sponsor Pro release repository: `Vaso73-Software/Sponsor-Pro-Releases`
+- Accepted version: `1.1.0`
+- Accepted private tag: `multipingmonitor/v1.1.0`
+- Private release ID: `352086825`
+- Release name: `MultiPingMonitor Pro v1.1.0`
+- Published at: `2026-07-10T12:40:39Z`
+- Release source `main` before this documentation checkpoint:
+  `f5689b32371ae713cf11093b677378bd7c1f9304`
 - Feature PR: `#157`, merged
 - Release PR: `#158`, merged
-- Version in merged source: `1.1.0`
-- Full automated test suite: 446 passed, 0 failed
-- Warning-free Release build: passed
-- Approved Sponsor Pro ZIP size: `66623359` bytes
-- Approved Sponsor Pro ZIP SHA-256:
+- Canonical publisher fix PR: `#159`, merged
+- Release asset: `MultiPingMonitor.zip`
+- ZIP entries: exactly one `MultiPingMonitor.exe`
+- ZIP size: `66623359` bytes
+- ZIP SHA-256:
   `5808d2f708233c2dc96fa761491a146af5ed53a6258b93f0a8bcb033dc350fe0`
-- Approved ZIP entries: exactly one `MultiPingMonitor.exe`
-- Approved executable SHA-256:
+- Released EXE SHA-256:
   `3f5440ad254a28eb9641ba81ff86cf549cb57a6d50220a4a18d2a6a95dc5fcab`
-- Private release/tag `multipingmonitor/v1.1.0`: absent
-- Backend latest version: `1.0.28`
-- Failed canonical publisher run stopped before remote modification
-- Failure: `remote_main_manifest_mismatch`
-- Root cause: the publisher decoded the GitHub Contents API `.content` field through a fragile jq/base64 pipeline;
-  a transient non-JSON response caused `invalid character '<' looking for beginning of value`
-- Recovery requirement: fix the version-controlled canonical publisher through a dedicated PR, merge it, then rerun
-  the canonical `--mode new` transaction with the already approved ZIP and release evidence
+- Released EXE FileVersion and ProductVersion: `1.1.0`
+- Canonical publish log and verification bundle:
+  `/home/vaio/backups/MultiPingMonitor/publish-v1.1.0-20260710-124019`
+- Private Latest: `multipingmonitor/v1.1.0`
+- Public Latest remains: `v0.4.6`
+- Public Sponsor Pro tag: none
+- Updater backend: `status=ok`, version `1.1.0`, correct tag, asset name, size, and SHA-256
+- GitHub download-back verification: passed byte-for-byte
+- Windows acceptance method: in-app updater from accepted v1.0.28
+- User-confirmed Windows runtime acceptance: passed
+- About window: Sponsor Pro active, version `1.1.0`, latest-version state confirmed
+- Installed Windows EXE SHA-256 matched the released executable
+- User confirmed all requested localization, tray-dialog, monitoring, Compact Mode, configuration, and shutdown
+  smoke tests as functional
 
-This section reflects the fresh live state. Older sections below may describe historical intermediate checkpoints.
+This release is `closed/accepted`.
 
 ## Current repository state
 
@@ -1211,28 +1221,16 @@ Status:
 
 ## Current scope
 
-Repair the version-controlled Sponsor Pro publisher through a dedicated branch and pull request.
+There is no active implementation or release scope.
 
-Approved scope:
-
-- replace the fragile GitHub Contents API `.content` plus base64 pipeline with the GitHub raw media response;
-- preserve fail-closed comparison of remote `main` manifest against the local merged manifest;
-- validate shell syntax and a live byte-for-byte remote manifest comparison;
-- update this pending release checkpoint;
-- push the dedicated fix branch, create a PR, verify exact scope, merge, and synchronize `main`.
-
-After this PR is merged, the already approved publishing phase continues through the canonical
-`scripts/publish-sponsor-pro-release.sh` entry point. Sponsor Pro v1.1.0 remains pending until that transaction
-publishes and downloads back the exact approved ZIP and the backend converges to v1.1.0.
-
-Manual Windows acceptance remains a separate final gate through the in-app updater from accepted v1.0.28.
+Sponsor Pro v1.1.0 is published, remotely verified, delivered through the in-app updater, and accepted on Windows.
+Release logs and recovery evidence must remain preserved. Future work requires a fresh live audit and one newly
+approved bounded scope.
 
 ## Immediate next action
 
-Merge the dedicated canonical-publisher fix PR and synchronize `main`.
-
-After the merge, run the canonical publisher in `--mode new` with the already verified v1.1.0 ZIP and release
-evidence. Do not improvise publication through unrelated commands or a temporary modified publisher.
+Before starting any new feature, fix, or release, perform a fresh read-only audit of `main`, the working tree, and
+the relevant project workflow files, then select exactly one bounded scope.
 
 ## Known risks and regression prevention
 
