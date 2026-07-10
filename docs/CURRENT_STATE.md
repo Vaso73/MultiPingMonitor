@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 05:39 UTC
+Last updated: 2026-07-10 05:49 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `93f2685`
-- HEAD label: `93f2685` — `Localize compact close tooltip`
+- HEAD before checkpoint update: `920c9bd`
+- HEAD label: `920c9bd` — `Localize status history and usage labels`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 16`
+- Comparison with `origin/main`: `0 18`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -47,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, and compact close tooltip localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, MainWindow chrome/probe stats localization, remaining window chrome tooltip localization, existing-key dialog/ping label localization, compact close tooltip localization, and status history/usage label localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `920c9bd` — `Localize status history and usage labels`
 - `93f2685` — `Localize compact close tooltip`
 - `9c8f77e` — `Localize existing-key dialog and ping labels`
 - `e715b11` — `Localize remaining window chrome tooltips`
@@ -337,12 +338,14 @@ Already completed or covered in this branch:
 
 Candidate next areas:
 
-- remaining dialog/body/button labels such as `Start`, `Stop`, `Export`, and the UsageWindow startup sentence
+- remaining Network Identity labels/messages in `MainWindow.xaml.cs`, especially hardcoded Slovak strings
 - Help window title-bar tooltips
 - Update window close tooltip
 - Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
 
 Runtime validation note:
+
+- Status History filters/export and UsageWindow `-minimized` description must be visually checked on Windows in English and Slovenčina because these labels now use newly added language-pack keys.
 
 - Compact Mode close tooltip/accessibility text must be visually checked on Windows in English and Slovenčina because the compact close button is now localized through `MainWindow` code-behind.
 
@@ -550,6 +553,64 @@ Validation:
 - Targeted hardcoded check passed:
   - no remaining `AutomationProperties.Name="Close"` in `MainWindow.xaml`
   - no remaining `ToolTip="Close"` in `MainWindow.xaml`
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
+
+
+## Completed slice: status history and usage label localization
+
+Commit:
+
+- `920c9bd` — `Localize status history and usage labels`
+
+Implemented:
+
+- Added four new language-pack/resource keys:
+  - `20525` — `StatusHistory_FilterStart`
+  - `20526` — `StatusHistory_FilterStop`
+  - `20527` — `StatusHistory_Export`
+  - `20528` — `Usage_StartMinimizedDescription`
+- Updated language-pack metadata:
+  - `EntryCount`: `525` → `529`
+  - last key: `20524` → `20528`
+- Updated `LanguagePackKeys.cs`.
+- Updated `LanguagePackSeeds.cs`.
+- Updated `Strings.resx`.
+- Updated `Strings.sk-SK.resx`.
+- Updated `LanguagePackServiceTests` expected count and last key.
+- Localized `StatusHistoryWindow` filter labels:
+  - `Start`
+  - `Stop`
+- Localized `StatusHistoryWindow` export button:
+  - `Export`
+- Localized `StatusHistoryWindow` export dialog title:
+  - `Export`
+- Localized `UsageWindow` startup command-line description:
+  - `Start the application in a minimized state.`
+- Used code-behind `ResourceManager.GetString(...)` lookup pattern for the new labels because newly added keys may not have typed `Strings.*` designer properties immediately available.
+
+Validation:
+
+- Initial targeted language-pack test correctly stopped because one test assertion still expected `525`.
+- Recovery updated remaining test expectations from `525` to `529` and from `20524` to `20528`.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+- Targeted hardcoded check passed:
+  - no remaining `Content="Start"` in the targeted `StatusHistoryWindow` files
+  - no remaining `Content="Stop"` in the targeted `StatusHistoryWindow` files
+  - no remaining `Content="Export"` in the targeted `StatusHistoryWindow` files
+  - no remaining `Text="Start the application in a minimized state."` in the targeted `UsageWindow` files
+  - no remaining `exportDialog.Title = "Export"` in the targeted `StatusHistoryWindow` code-behind
 
 Status:
 
