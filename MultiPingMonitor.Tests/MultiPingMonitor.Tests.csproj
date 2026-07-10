@@ -26,6 +26,9 @@
     <Compile Include="..\MultiPingMonitor\Classes\LanguagePackSeeds.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\LanguagePackService.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\ExternalLanguageResourceManager.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\LanguageRuntimeService.cs" />
+    <Compile Include="..\MultiPingMonitor\Properties\Strings.Designer.cs"
+             Link="Properties\Strings.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

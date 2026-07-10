@@ -1045,7 +1045,7 @@ namespace MultiPingMonitor.UI
         private void ManageCompactTargets_Click(object sender, RoutedEventArgs e)
         {
             var mainWindow = HostMainWindow;
-            mainWindow?.OpenManageCompactSets();
+            mainWindow?.OpenManageCompactSets(this);
         }
 
         private void UpdateCompactTargetsButtonVisibility()

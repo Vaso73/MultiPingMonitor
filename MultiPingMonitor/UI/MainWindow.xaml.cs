@@ -2017,10 +2017,31 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// Live changes are applied immediately via Owner-cast calls back into MainWindow.
         /// After the user closes it, does a final safety refresh.
         /// </summary>
-        internal void OpenManageCompactSets()
+        internal void OpenManageCompactSets(Window preferredOwner = null)
         {
-            var window = new ManageCompactSetsWindow();
-            window.Owner = this;
+            var window = new ManageCompactSetsWindow(this);
+
+            Window dialogOwner =
+                preferredOwner != null && preferredOwner.IsLoaded
+                    ? preferredOwner
+                    : IsLoaded
+                        ? this
+                        : null;
+
+            window.Topmost = dialogOwner?.Topmost ?? Topmost;
+
+            if (dialogOwner != null)
+            {
+                window.Owner = dialogOwner;
+            }
+            else if (
+                window.WindowStartupLocation
+                == WindowStartupLocation.CenterOwner)
+            {
+                window.WindowStartupLocation =
+                    WindowStartupLocation.CenterScreen;
+            }
+
             window.ShowDialog();
 
             // Final safety refresh after dialog closes: catches any edge cases

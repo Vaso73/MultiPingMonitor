@@ -1,9 +1,12 @@
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace MultiPingMonitor.Classes
@@ -13,8 +16,28 @@ namespace MultiPingMonitor.Classes
         public const string SystemLanguageCode = "System";
         public const string EnglishLanguageCode = "en";
 
-        private static readonly CultureInfo SystemDefaultCulture = CultureInfo.CurrentCulture;
-        private static readonly CultureInfo SystemDefaultUICulture = CultureInfo.CurrentUICulture;
+        private static readonly CultureInfo StartupCulture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo StartupUICulture = CultureInfo.CurrentUICulture;
+
+        [DllImport("kernel32.dll")]
+        private static extern ushort GetUserDefaultUILanguage();
+
+        internal static CultureInfo SelectSystemCulture(
+            CultureInfo windowsUserUICulture,
+            CultureInfo startupUICulture,
+            CultureInfo startupCulture)
+        {
+            if (!string.IsNullOrWhiteSpace(windowsUserUICulture?.Name))
+                return new CultureInfo(windowsUserUICulture.Name);
+
+            if (!string.IsNullOrWhiteSpace(startupUICulture?.Name))
+                return new CultureInfo(startupUICulture.Name);
+
+            if (!string.IsNullOrWhiteSpace(startupCulture?.Name))
+                return new CultureInfo(startupCulture.Name);
+
+            return CultureInfo.InvariantCulture;
+        }
 
         public static string NormalizeLanguageCode(string languageCode)
         {
@@ -76,15 +99,38 @@ namespace MultiPingMonitor.Classes
             return culture;
         }
 
+        private static CultureInfo TryGetWindowsUserDefaultUICulture()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return null;
+
+            try
+            {
+                ushort languageId = GetUserDefaultUILanguage();
+                return languageId == 0
+                    ? null
+                    : CultureInfo.GetCultureInfo((int)languageId);
+            }
+            catch (CultureNotFoundException)
+            {
+                return null;
+            }
+            catch (DllNotFoundException)
+            {
+                return null;
+            }
+            catch (EntryPointNotFoundException)
+            {
+                return null;
+            }
+        }
+
         private static CultureInfo GetSystemDefaultCulture()
         {
-            if (!string.IsNullOrWhiteSpace(SystemDefaultCulture.Name))
-                return new CultureInfo(SystemDefaultCulture.Name);
-
-            if (!string.IsNullOrWhiteSpace(SystemDefaultUICulture.Name))
-                return new CultureInfo(SystemDefaultUICulture.Name);
-
-            return CultureInfo.InvariantCulture;
+            return SelectSystemCulture(
+                TryGetWindowsUserDefaultUICulture(),
+                StartupUICulture,
+                StartupCulture);
         }
 
         public static CultureInfo ResolveCulture(string languageCode)
@@ -133,12 +179,12 @@ namespace MultiPingMonitor.Classes
 
             var currentNames = new[]
                 {
-                    SystemDefaultCulture.Name,
-                    SystemDefaultUICulture.Name,
                     culture.Name,
-                    SystemDefaultCulture.TwoLetterISOLanguageName,
-                    SystemDefaultUICulture.TwoLetterISOLanguageName,
                     culture.TwoLetterISOLanguageName,
+                    StartupUICulture.Name,
+                    StartupCulture.Name,
+                    StartupUICulture.TwoLetterISOLanguageName,
+                    StartupCulture.TwoLetterISOLanguageName,
                 }
                 .Where(name => !string.IsNullOrWhiteSpace(name))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
