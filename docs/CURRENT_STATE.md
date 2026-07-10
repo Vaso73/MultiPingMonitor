@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 08:19 UTC
+Last updated: 2026-07-10 09:04 UTC
 
 ## Accepted baseline
 
@@ -14,11 +14,14 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `eb6f0ac`
-- HEAD label: `eb6f0ac` — `Align menu instance and settings terminology`
+- HEAD before checkpoint update: `e3cddd7`
+- HEAD label: `e3cddd7` — `Localize Live Ping technical status labels`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 35`
+- Comparison with `origin/main`: `0 37`
 - Working tree before checkpoint update: clean
+- Language-pack entry count: 574
+- Language-pack ID range: `20000–20573`
+- Full automated test suite: 440 passed, 0 failed
 - Push state: local-only branch, not pushed
 - PR state: no PR created
 - Release state: no tag, no release, no Sponsor Pro publish for this branch
@@ -1032,6 +1035,56 @@ Status:
 - Not pushed.
 - Windows visual validation remains pending as part of the branch-wide localization runtime test.
 
+## Completed slice: Live Ping technical status localization
+
+Commit:
+
+- `e3cddd7` — `Localize Live Ping technical status labels`
+
+Implemented:
+
+- Added dedicated language-pack entries for Live Ping technical statuses:
+  - `20568` — `LivePing_Status_Up`
+  - `20569` — `LivePing_Status_Down`
+  - `20570` — `LivePing_Status_Error`
+  - `20571` — `LivePing_Status_HighLatency`
+  - `20572` — `LivePing_Status_Indeterminate`
+  - `20573` — `LivePing_Status_Inactive`
+- Replaced hardcoded Live Ping status names with language-resource lookups.
+- Kept status symbols such as `●`, `▼`, `✖`, and `⚠` in presentation code.
+- Built-in English defaults remain:
+  - `UP`
+  - `DOWN`
+  - `ERROR`
+  - `HIGH LATENCY`
+  - `INDETERMINATE`
+  - `INACTIVE`
+- Default Slovak values intentionally remain identical to English.
+- Users may manually translate these values in `sk-SK.lang` or another external `.lang` file.
+- Existing user-edited language-pack values are preserved because seed merging adds only missing entries.
+- Added focused regression tests for:
+  - English and Slovak default status values;
+  - Live Ping use of dedicated resource keys;
+  - absence of the previous hardcoded status assignments;
+  - availability of Slovak seed entries for manual editing.
+- Language-pack entry count increased from 568 to 574.
+- Language-pack IDs remain contiguous through `20573`.
+
+Validation:
+
+- Structured resource, seed, key, and ID validation: passed.
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Targeted Live Ping status localization tests: passed, 3 total, 0 failed.
+- Targeted language-pack service tests: passed, 7 total, 0 failed.
+- Full test suite: passed, 440 total, 0 failed.
+
+Status:
+
+- Closed technically and committed locally.
+- Not pushed.
+- Windows visual validation remains pending as part of the branch-wide localization runtime test.
+
 ## Current scope
 
 Continue localization completion work locally only on `feature/external-lang-pack-foundation`.
@@ -1041,25 +1094,32 @@ Current verified state:
 - English is the built-in fallback language.
 - Slovak resource parity is complete.
 - Runtime language switching works without restarting the application.
+- Arbitrary valid external `.lang` files are discovered by language code.
+- User-edited existing `.lang` entries are preserved during seed merging.
 - Alias and favorite action buttons are localized.
 - Popup status-history controls are localized.
-- Status History columns, headings, and filter labels are localized.
+- Status History columns, headings, and filters are localized.
 - Usage window explanatory headings and descriptions are localized.
 - Usage window technical commands and examples remain unchanged.
 - Main-menu, tray-menu, and compact-menu target actions are resource-backed.
 - User-facing application terminology uses `Settings` / `Nastavenia`.
 - Main-menu and tray-menu new-instance labels are aligned.
-- Language-pack entry count is 568.
-- Language-pack IDs are contiguous through `20567`.
+- Live Ping technical status names are language-pack backed.
+- Default Slovak technical status values intentionally remain in English.
+- Language-pack entry count is 574.
+- Language-pack IDs are contiguous through `20573`.
+- Full automated test suite currently has 440 passing tests.
 - No bulk replacement of XAML literals is approved.
 
-Remaining work before any push:
+Remaining localization work before the final Windows runtime test:
 
-- Run one final application-wide read-only localization coverage audit.
-- Resolve only confirmed remaining user-facing localization gaps, if any.
-- Confirm arbitrary external `.lang` file loading behavior.
-- Produce and test the real Windows portable executable locally.
-- Complete branch-wide visual and functional Windows runtime validation.
+- Localize confirmed instructional text in the multi-address and favorite-set input windows.
+- Localize confirmed drag-and-drop file validation and file-open errors.
+- Localize confirmed legacy favorite configuration errors.
+- Localize confirmed ping log and audio playback errors.
+- Replace the remaining hardcoded user-facing `Compact` label where an appropriate resource binding is required.
+- Re-run the final application-wide residual literal audit.
+- Confirm the completed result with a real local Windows portable runtime test.
 
 Out of scope until explicitly approved:
 
@@ -1075,39 +1135,37 @@ Out of scope until explicitly approved:
 - Changes outside MultiPingMonitor.
 ## Immediate next action
 
-Run exactly one final application-wide read-only localization coverage audit.
+Implement one bounded localization slice for the remaining confirmed nontechnical user-facing literals.
 
-The audit must inspect all application-owned user-facing surfaces, including:
+The slice should include:
 
-- XAML windows, dialogs, controls, menus, tooltips, headers, labels, buttons, and accessibility names;
-- visible strings created or assigned dynamically in C#;
-- WPF and WinForms tray-menu items;
-- help content;
-- popup notifications;
-- validation and error dialogs;
-- language-selection UI;
-- existing localization helper methods;
-- existing localization and language-pack tests.
+- instructional text in `MultiInputWindow`;
+- instructional text in `NewFavoriteWindow`;
+- shared drag-and-drop validation messages;
+- file-too-large and file-open error messages;
+- legacy favorite configuration errors;
+- ping log-write and audio-playback errors;
+- the remaining hardcoded `Compact` destination label.
 
-Every discovered visible literal must be classified as one of:
+Requirements:
 
-- already resource-backed;
-- runtime-localized;
-- technical text that must remain unchanged;
-- product name, protocol name, file name, executable name, command, argument, path, URL, placeholder, or example that must remain unchanged;
-- confirmed user-facing localization gap;
-- uncertain and requiring a separate narrow audit before modification.
-
-The audit must also verify:
-
-- no unintended user-facing `Options` terminology remains outside command-line documentation;
-- English fallback and Slovak resources remain in parity;
-- language-pack count remains 568;
-- IDs remain contiguous through `20567`;
-- external language-pack loading has no known source-level blocker;
-- current tests adequately cover the completed localization surfaces.
-
-Do not change source code, tests, resources, documentation, Git history, GitHub state, release state, or runtime configuration during this audit.
+- Do not translate or change technical status defaults:
+  - `UP`
+  - `DOWN`
+  - `ERROR`
+  - `HIGH LATENCY`
+  - `INDETERMINATE`
+  - `INACTIVE`
+- Reuse existing resource keys where their semantics match exactly.
+- Add new language-pack entries only where no correct key exists.
+- Use the next contiguous language-pack ID beginning at `20574`.
+- Keep English as the built-in fallback.
+- Add complete Slovak values for ordinary user-facing messages.
+- Preserve filenames, paths, exception messages, numeric values, units, and placeholders.
+- Add focused regression tests.
+- Run a warning-free Release build, targeted tests, and the complete test suite.
+- Commit locally only.
+- Do not push, open a PR, create a release, change a version, or update backend metadata.
 ## Known risks and regression prevention
 
 Known shell/workflow risk:
