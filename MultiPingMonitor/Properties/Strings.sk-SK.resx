@@ -607,7 +607,7 @@
     <value>Jazyk:</value>
   </data>
   <data name="Options_LanguageRestart" xml:space="preserve">
-    <value>(Zmena jazyka sa prejaví pri ďalšom spustení)</value>
+    <value>(Zmeny jazyka sa použijú po kliknutí na Použiť alebo Uložiť)</value>
   </data>
   <data name="Options_LatencyTriggers" xml:space="preserve">
     <value>Počet spúšťačov:</value>
@@ -1110,7 +1110,7 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
     <value>Jazyk</value>
   </data>
   <data name="Help_Options_Language_Text" xml:space="preserve">
-    <value>MultiPingMonitor podporuje angličtinu a slovenčinu. Jazyk je možné zmeniť v Nastaveniach. Zmena sa prejaví po reštarte aplikácie.</value>
+    <value>MultiPingMonitor podporuje vstavanú angličtinu a externé jazykové balíky. Jazyk je možné zmeniť v Nastaveniach. Zmeny sa použijú po kliknutí na Použiť alebo Uložiť.</value>
   </data>
   <data name="Help_Options_PortableConfig_Sub" xml:space="preserve">
     <value>Prenosná konfigurácia</value>

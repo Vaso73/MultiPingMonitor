@@ -311,7 +311,7 @@
     <value>Manage Favorites...</value>
   </data>
   <data name="Menu_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Menu_PopupAlerts" xml:space="preserve">
     <value>Popup Alerts</value>
@@ -546,7 +546,7 @@
     <value>Intro</value>
   </data>
   <data name="Help_Nav_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Help_Title" xml:space="preserve">
     <value>MultiPingMonitor Help</value>
@@ -660,7 +660,7 @@
     <value>From address</value>
   </data>
   <data name="Options_Header_AdvancedICMP" xml:space="preserve">
-    <value>Advanced ICMP Options</value>
+    <value>Advanced ICMP Settings</value>
   </data>
   <data name="Options_Header_AliasForeground" xml:space="preserve">
     <value>Alias Foreground</value>
@@ -672,7 +672,7 @@
     <value>Colors</value>
   </data>
   <data name="Options_Header_DisplayOptions" xml:space="preserve">
-    <value>Display Options</value>
+    <value>Display Settings</value>
   </data>
   <data name="Options_Header_EmailAddresses" xml:space="preserve">
     <value>Email Addresses</value>
@@ -699,7 +699,7 @@
     <value>Probe Foreground</value>
   </data>
   <data name="Options_Header_ProbeOptions" xml:space="preserve">
-    <value>Probe Options</value>
+    <value>Probe Settings</value>
   </data>
   <data name="Options_Header_Scanner" xml:space="preserve">
     <value>Scanner</value>
@@ -726,7 +726,7 @@
     <value>Language:</value>
   </data>
   <data name="Options_LanguageRestart" xml:space="preserve">
-    <value>(Language change takes effect on next start)</value>
+    <value>(Language changes apply when you click Apply or Save)</value>
   </data>
   <data name="Options_LatencyTriggers" xml:space="preserve">
     <value>Latency triggers:</value>
@@ -963,7 +963,7 @@
     <value>Open MultiPingMonitor</value>
   </data>
   <data name="Tray_Options" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Tray_StatusHistory" xml:space="preserve">
     <value>Status History</value>
@@ -987,7 +987,7 @@
     <value>Visual style</value>
   </data>
   <data name="Options_Title" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Tooltip_DontFragment" xml:space="preserve">
     <value>The don't fragment flag instructs routers to discard the packet if it is too big.
@@ -1184,7 +1184,7 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>The Flood Host utility generates a significant amount of ICMP packets. To limit the flow, it waits until a reply is received before sending the next packet. Access it from the menu (Ctrl-F).</value>
   </data>
   <data name="Help_Options_Header" xml:space="preserve">
-    <value>Options</value>
+    <value>Settings</value>
   </data>
   <data name="Help_Options_PingInterval_Sub" xml:space="preserve">
     <value>Ping interval</value>
@@ -1226,13 +1226,13 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
     <value>Start in tray</value>
   </data>
   <data name="Help_Options_StartInTray_Text" xml:space="preserve">
-    <value>When enabled in Options, MultiPingMonitor starts minimized to the system tray instead of showing the main window. Pinging begins immediately in the background. Double-click the tray icon to restore the window.</value>
+    <value>When enabled in Settings, MultiPingMonitor starts minimized to the system tray instead of showing the main window. Pinging begins immediately in the background. Double-click the tray icon to restore the window.</value>
   </data>
   <data name="Help_Options_Language_Sub" xml:space="preserve">
     <value>Language</value>
   </data>
   <data name="Help_Options_Language_Text" xml:space="preserve">
-    <value>MultiPingMonitor supports English and Slovak. The language can be changed in Options. The change takes effect after restarting the application.</value>
+    <value>MultiPingMonitor supports built-in English and external language packs. The language can be changed in Settings. Changes apply when you click Apply or Save.</value>
   </data>
   <data name="Help_Options_PortableConfig_Sub" xml:space="preserve">
     <value>Portable configuration</value>
