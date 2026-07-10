@@ -1736,4 +1736,22 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="Usage_ExamplesHeader" xml:space="preserve">
     <value>Príklady</value>
   </data>
+  <data name="LivePing_Status_Up" xml:space="preserve">
+    <value>UP</value>
+  </data>
+  <data name="LivePing_Status_Down" xml:space="preserve">
+    <value>DOWN</value>
+  </data>
+  <data name="LivePing_Status_Error" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="LivePing_Status_HighLatency" xml:space="preserve">
+    <value>HIGH LATENCY</value>
+  </data>
+  <data name="LivePing_Status_Indeterminate" xml:space="preserve">
+    <value>INDETERMINATE</value>
+  </data>
+  <data name="LivePing_Status_Inactive" xml:space="preserve">
+    <value>INACTIVE</value>
+  </data>
 </root>

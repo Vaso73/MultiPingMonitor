@@ -430,33 +430,33 @@ namespace MultiPingMonitor.UI
             {
                 case ProbeStatus.Up:
                 case ProbeStatus.LatencyNormal:
-                    HeaderStatus.Text = "● UP";
+                    HeaderStatus.Text = "● " + Text("LivePing_Status_Up", "UP");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Success");
                     HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Down:
-                    HeaderStatus.Text = "▼ DOWN";
+                    HeaderStatus.Text = "▼ " + Text("LivePing_Status_Down", "DOWN");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Danger");
                     // Emphasize DOWN state with tinted header background.
                     HeaderBorder.Background = new SolidColorBrush(Color.FromArgb(0x30, 0xF3, 0x8B, 0xA8));
                     break;
                 case ProbeStatus.Error:
-                    HeaderStatus.Text = "✖ ERROR";
+                    HeaderStatus.Text = "✖ " + Text("LivePing_Status_Error", "ERROR");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Danger");
                     HeaderBorder.Background = new SolidColorBrush(Color.FromArgb(0x30, 0xF3, 0x8B, 0xA8));
                     break;
                 case ProbeStatus.LatencyHigh:
-                    HeaderStatus.Text = "⚠ HIGH LATENCY";
+                    HeaderStatus.Text = "⚠ " + Text("LivePing_Status_HighLatency", "HIGH LATENCY");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Warning");
                     HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Indeterminate:
-                    HeaderStatus.Text = "⚠ INDETERMINATE";
+                    HeaderStatus.Text = "⚠ " + Text("LivePing_Status_Indeterminate", "INDETERMINATE");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Warning");
                     HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;
                 case ProbeStatus.Inactive:
-                    HeaderStatus.Text = "INACTIVE";
+                    HeaderStatus.Text = Text("LivePing_Status_Inactive", "INACTIVE");
                     HeaderStatus.Foreground = FindBrushResource("Theme.Text.Secondary");
                     HeaderBorder.SetResourceReference(Border.BackgroundProperty, "Theme.Surface");
                     break;

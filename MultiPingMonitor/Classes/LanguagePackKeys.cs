@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Classes
         public const string AppId = "multipingmonitor";
         public const string AppName = "MultiPingMonitor";
         public const int FirstKey = 20000;
-        public const int EntryCount = 568;
+        public const int EntryCount = 574;
 
         public static IReadOnlyDictionary<int, string> ResourceKeys { get; } =
             new Dictionary<int, string>
@@ -581,6 +581,12 @@ namespace MultiPingMonitor.Classes
                 [20565] = "Usage_MultipleHostnamesDescription",
                 [20566] = "Usage_FileDescription",
                 [20567] = "Usage_ExamplesHeader",
+                [20568] = "LivePing_Status_Up",
+                [20569] = "LivePing_Status_Down",
+                [20570] = "LivePing_Status_Error",
+                [20571] = "LivePing_Status_HighLatency",
+                [20572] = "LivePing_Status_Indeterminate",
+                [20573] = "LivePing_Status_Inactive",
             };
     }
 }

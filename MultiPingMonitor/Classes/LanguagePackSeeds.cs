@@ -592,6 +592,12 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20565, "Usage_MultipleHostnamesDescription", "You can provide multiple hostnames.", "Môžete zadať viacero názvov hostiteľov."),
                 new LanguagePackSeedEntry(20566, "Usage_FileDescription", "The path to a text file containing hostnames or IP addresses to ping. Wrap the path in quotes if it contains spaces. You can provide multiple files.", "Cesta k textovému súboru obsahujúcemu názvy hostiteľov alebo IP adresy na pingovanie. Ak cesta obsahuje medzery, uzavrite ju do úvodzoviek. Môžete zadať viacero súborov."),
                 new LanguagePackSeedEntry(20567, "Usage_ExamplesHeader", "Examples", "Príklady"),
+                new LanguagePackSeedEntry(20568, "LivePing_Status_Up", "UP", "UP"),
+                new LanguagePackSeedEntry(20569, "LivePing_Status_Down", "DOWN", "DOWN"),
+                new LanguagePackSeedEntry(20570, "LivePing_Status_Error", "ERROR", "ERROR"),
+                new LanguagePackSeedEntry(20571, "LivePing_Status_HighLatency", "HIGH LATENCY", "HIGH LATENCY"),
+                new LanguagePackSeedEntry(20572, "LivePing_Status_Indeterminate", "INDETERMINATE", "INDETERMINATE"),
+                new LanguagePackSeedEntry(20573, "LivePing_Status_Inactive", "INACTIVE", "INACTIVE"),
             };
     }
 }
