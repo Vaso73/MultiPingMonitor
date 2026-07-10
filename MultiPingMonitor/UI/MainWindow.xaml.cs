@@ -359,6 +359,7 @@ namespace MultiPingMonitor.UI
             SetTitleBarButtonText(maximizeButton, "Tooltip_Maximize", "Maximize");
             SetTitleBarButtonText(restoreButton, "Tooltip_RestoreDown", "Restore Down");
             SetTitleBarButtonText(closeButton, "Tooltip_Close", "Close");
+            SetTitleBarButtonText(compactCloseButton, "Tooltip_Close", "Close");
         }
 
         private void SetTitleBarButtonText(System.Windows.Controls.Button button, string key, string fallback)
