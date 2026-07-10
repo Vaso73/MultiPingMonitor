@@ -1,43 +1,43 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 11:40 UTC
+Last updated: 2026-07-10 12:33 UTC
 
 ## Accepted baseline
 
 Sponsor Pro v1.0.28 remains the current accepted released runtime baseline.
 
-The current branch contains additional local-only development work for external `.lang` localization. This branch is not pushed, not released, and has no pull request.
+The complete localization feature and the v1.1.0 release metadata are merged into `main`. Sponsor Pro v1.1.0 is not
+yet published because the canonical publisher stopped before any remote release modification on its remote-manifest
+guard. The updater backend therefore correctly remains on v1.0.28.
 
 ## Current live checkpoint
 
-Verified live state for this checkpoint update:
+Verified live state before this publisher-fix checkpoint:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
-- Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `3eb356b807d0f85c0f359d26f66cb1970a96a808`
-- HEAD label: `3eb356b` — `Fix system language and tray dialog ownership`
-- Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 42`
-- Working tree before checkpoint update: clean
-- Language-pack entry count: 588
-- Language-pack ID range: `20000–20587`
+- Branch before the fix branch: `main`
+- Synced `main` HEAD: `1d865cd5e5f31cdd2a7d8e9d42225ea870e91da3`
+- Feature PR: `#157`, merged
+- Release PR: `#158`, merged
+- Version in merged source: `1.1.0`
 - Full automated test suite: 446 passed, 0 failed
-- Warning-free Release build with `-warnaserror`: passed
-- Targeted language and tray-dialog tests: 12 passed, 0 failed
-- Local Windows x64 single-file publish: passed
-- Published local EXE SHA-256: `37a5f964f00946ca462e69089c41bc91aa0b44f92bfe8554b9fe16484e10d125`
-- Published local EXE size: `163500148` bytes
-- Publish output: exactly one `MultiPingMonitor.exe`
-- Packaged `.lang` files: 0
-- Real Windows runtime validation: accepted by the user
-- Live `English` to `System (OS default)` on Slovak Windows: passed without restart
-- Settings and tray localization refresh after Apply: passed
-- `Manage Compact Sets` opened repeatedly from Settings launched through tray: passed without exception or application crash
-- Push state: no push performed
-- PR state: no PR created
-- Release state: no tag, release, version bump, Sponsor Pro publish, or backend metadata change
+- Warning-free Release build: passed
+- Approved Sponsor Pro ZIP size: `66623359` bytes
+- Approved Sponsor Pro ZIP SHA-256:
+  `5808d2f708233c2dc96fa761491a146af5ed53a6258b93f0a8bcb033dc350fe0`
+- Approved ZIP entries: exactly one `MultiPingMonitor.exe`
+- Approved executable SHA-256:
+  `3f5440ad254a28eb9641ba81ff86cf549cb57a6d50220a4a18d2a6a95dc5fcab`
+- Private release/tag `multipingmonitor/v1.1.0`: absent
+- Backend latest version: `1.0.28`
+- Failed canonical publisher run stopped before remote modification
+- Failure: `remote_main_manifest_mismatch`
+- Root cause: the publisher decoded the GitHub Contents API `.content` field through a fragile jq/base64 pipeline;
+  a transient non-JSON response caused `invalid character '<' looking for beginning of value`
+- Recovery requirement: fix the version-controlled canonical publisher through a dedicated PR, merge it, then rerun
+  the canonical `--mode new` transaction with the already approved ZIP and release evidence
 
-This section reflects the latest verified live state. Older checkpoint sections below are historical and may describe previous intermediate states.
+This section reflects the fresh live state. Older sections below may describe historical intermediate checkpoints.
 
 ## Current repository state
 
@@ -1211,53 +1211,28 @@ Status:
 
 ## Current scope
 
-The branch-wide external language-pack and localization implementation is source-complete, committed locally, and
-accepted through real Windows runtime testing.
+Repair the version-controlled Sponsor Pro publisher through a dedicated branch and pull request.
 
-Current verified state:
+Approved scope:
 
-- HEAD before this documentation checkpoint: `3eb356b`.
-- Working tree is clean.
-- Language-pack entry count is 588.
-- Language-pack IDs are contiguous through `20587`.
-- Full automated test suite has 446 passing tests.
-- Warning-free Release build passes.
-- The portable publish contract is exactly one `MultiPingMonitor.exe`.
-- No `.lang`, DLL, PDB, helper executable, installer, or service is part of the publish output.
-- Runtime language switching works without restart.
-- `System (OS default)` correctly follows the Slovak Windows user UI language.
-- Settings and tray localization refresh correctly after Apply.
-- Tray-start `Manage Compact Sets` ownership is safe and no longer crashes the application.
-- The final residual localization audit found no unresolved confirmed application-owned localization gap.
-- Real local Windows runtime validation has passed.
+- replace the fragile GitHub Contents API `.content` plus base64 pipeline with the GitHub raw media response;
+- preserve fail-closed comparison of remote `main` manifest against the local merged manifest;
+- validate shell syntax and a live byte-for-byte remote manifest comparison;
+- update this pending release checkpoint;
+- push the dedicated fix branch, create a PR, verify exact scope, merge, and synchronize `main`.
 
-Still out of scope without a new explicit approval:
+After this PR is merged, the already approved publishing phase continues through the canonical
+`scripts/publish-sponsor-pro-release.sh` entry point. Sponsor Pro v1.1.0 remains pending until that transaction
+publishes and downloads back the exact approved ZIP and the backend converges to v1.1.0.
 
-- GitHub push.
-- Pull request.
-- Merge.
-- Tag.
-- Release.
-- Version bump.
-- Sponsor Pro publish.
-- Backend latest metadata update.
-- Updater release acceptance.
-- Changes outside MultiPingMonitor.
+Manual Windows acceptance remains a separate final gate through the in-app updater from accepted v1.0.28.
 
 ## Immediate next action
 
-Stop after creating this local documentation checkpoint.
+Merge the dedicated canonical-publisher fix PR and synchronize `main`.
 
-The next repository-changing step requires a new explicit approval and must begin with a fresh live audit. The expected
-next workflow is:
-
-- verify clean branch state and current HEAD;
-- compare the complete branch against `origin/main`;
-- run final pre-push scope and regression checks;
-- only after explicit approval, push the feature branch;
-- create a pull request rather than pushing directly to `main`.
-
-No push, PR, merge, tag, release, version bump, Sponsor Pro publish, or backend change is authorized by this checkpoint.
+After the merge, run the canonical publisher in `--mode new` with the already verified v1.1.0 ZIP and release
+evidence. Do not improvise publication through unrelated commands or a temporary modified publisher.
 
 ## Known risks and regression prevention
 

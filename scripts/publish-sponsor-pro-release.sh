@@ -393,9 +393,12 @@ preflight() {
 
   load_manifest || return 1
 
-  gh api "repos/$PUBLIC_REPO/contents/$MANIFEST_REL?ref=main" --jq '.content' \
-    | tr -d '\n' | base64 -d > "$WORK_DIR/remote-manifest.json"
-  if [ "$?" -ne 0 ] || ! cmp -s "$MANIFEST_REL" "$WORK_DIR/remote-manifest.json"; then
+  gh api \
+    -H "Accept: application/vnd.github.raw+json" \
+    "repos/$PUBLIC_REPO/contents/$MANIFEST_REL?ref=main" \
+    > "$WORK_DIR/remote-manifest.json"
+  remote_manifest_rc=$?
+  if [ "$remote_manifest_rc" -ne 0 ] || ! cmp -s "$MANIFEST_REL" "$WORK_DIR/remote-manifest.json"; then
     fail "remote_main_manifest_mismatch"
     return 1
   fi
