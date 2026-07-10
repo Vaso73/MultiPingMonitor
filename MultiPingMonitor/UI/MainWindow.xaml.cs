@@ -1198,6 +1198,11 @@ namespace MultiPingMonitor.UI
             return MultiPingMonitor.Properties.Strings.ResourceManager.GetString(key) ?? fallback;
         }
 
+        private static string NetworkIdentityFormat(string key, string fallback, params object[] args)
+        {
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, NetworkIdentityText(key, fallback), args);
+        }
+
         private static string BuildCompactNetworkFooterToolTipText(Classes.NetworkIdentityService svc)
         {
             var sb = new System.Text.StringBuilder();
@@ -1232,17 +1237,17 @@ namespace MultiPingMonitor.UI
             if (svc.NextScheduledWanRefresh.HasValue)
                 return svc.NextScheduledWanRefresh.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
-            return svc.IsRefreshing ? "po aktuálnej kontrole" : "\u2014";
+            return svc.IsRefreshing ? NetworkIdentityText("NetworkIdentity_AfterCurrentCheck", "after current check") : "\u2014";
         }
 
         private static string FormatCompactNetworkTooltipLookupState(WanLookupState state)
         {
             return state switch
             {
-                WanLookupState.NotStarted => "nespustená",
-                WanLookupState.Loading => "prebieha",
-                WanLookupState.Succeeded => "úspešná",
-                WanLookupState.Failed => "zlyhala",
+                WanLookupState.NotStarted => NetworkIdentityText("NetworkIdentity_StateNotStarted", "not started"),
+                WanLookupState.Loading => NetworkIdentityText("NetworkIdentity_StateInProgress", "in progress"),
+                WanLookupState.Succeeded => NetworkIdentityText("NetworkIdentity_StateSucceeded", "successful"),
+                WanLookupState.Failed => NetworkIdentityText("NetworkIdentity_StateFailed", "failed"),
                 _ => state.ToString()
             };
         }
@@ -1282,10 +1287,10 @@ namespace MultiPingMonitor.UI
                 Status = ProbeStatus.Up,
                 EventType = StatusChangeEventType.NetworkIdentity,
                 CustomGlyph = "h",
-                CustomStatusText = $"bola zmenená, aktuálna IP je {currentIp} (predtým {previousIp})",
-                PopupTitle = $"{label} zmenená",
-                PopupDetailPrimary = $"Aktuálna: {currentIp}",
-                PopupDetailSecondary = $"Predtým: {previousIp}"
+                CustomStatusText = NetworkIdentityFormat("NetworkIdentity_IpChangedStatus", "changed, current IP is {0} (previously {1})", currentIp, previousIp),
+                PopupTitle = NetworkIdentityFormat("NetworkIdentity_IpChangedTitle", "{0} changed", label),
+                PopupDetailPrimary = NetworkIdentityFormat("NetworkIdentity_CurrentIp", "Current: {0}", currentIp),
+                PopupDetailSecondary = NetworkIdentityFormat("NetworkIdentity_PreviousIp", "Previous: {0}", previousIp)
             };
 
             bool shouldPopup = ApplicationOptions.PopupOption == ApplicationOptions.PopupNotificationOption.Always

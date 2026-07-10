@@ -1761,4 +1761,32 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
     <value>Failed to copy IP</value>
   </data>
+
+  <data name="NetworkIdentity_AfterCurrentCheck" xml:space="preserve">
+    <value>after current check</value>
+  </data>
+  <data name="NetworkIdentity_StateNotStarted" xml:space="preserve">
+    <value>not started</value>
+  </data>
+  <data name="NetworkIdentity_StateInProgress" xml:space="preserve">
+    <value>in progress</value>
+  </data>
+  <data name="NetworkIdentity_StateSucceeded" xml:space="preserve">
+    <value>successful</value>
+  </data>
+  <data name="NetworkIdentity_StateFailed" xml:space="preserve">
+    <value>failed</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedStatus" xml:space="preserve">
+    <value>changed, current IP is {0} (previously {1})</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedTitle" xml:space="preserve">
+    <value>{0} changed</value>
+  </data>
+  <data name="NetworkIdentity_CurrentIp" xml:space="preserve">
+    <value>Current: {0}</value>
+  </data>
+  <data name="NetworkIdentity_PreviousIp" xml:space="preserve">
+    <value>Previous: {0}</value>
+  </data>
 </root>

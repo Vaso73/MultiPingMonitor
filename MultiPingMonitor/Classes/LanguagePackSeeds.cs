@@ -564,6 +564,15 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20537, "NetworkIdentity_LanCopied", "LAN IP copied", "LAN IP bola skopírovaná"),
                 new LanguagePackSeedEntry(20538, "NetworkIdentity_LanUnavailable", "LAN IP unavailable", "LAN IP nie je dostupná"),
                 new LanguagePackSeedEntry(20539, "NetworkIdentity_CopyFailed", "Failed to copy IP", "Nepodarilo sa skopírovať IP"),
+                new LanguagePackSeedEntry(20540, "NetworkIdentity_AfterCurrentCheck", "after current check", "po aktuálnej kontrole"),
+                new LanguagePackSeedEntry(20541, "NetworkIdentity_StateNotStarted", "not started", "nespustená"),
+                new LanguagePackSeedEntry(20542, "NetworkIdentity_StateInProgress", "in progress", "prebieha"),
+                new LanguagePackSeedEntry(20543, "NetworkIdentity_StateSucceeded", "successful", "úspešná"),
+                new LanguagePackSeedEntry(20544, "NetworkIdentity_StateFailed", "failed", "zlyhala"),
+                new LanguagePackSeedEntry(20545, "NetworkIdentity_IpChangedStatus", "changed, current IP is {0} (previously {1})", "bola zmenená, aktuálna IP je {0} (predtým {1})"),
+                new LanguagePackSeedEntry(20546, "NetworkIdentity_IpChangedTitle", "{0} changed", "{0} zmenená"),
+                new LanguagePackSeedEntry(20547, "NetworkIdentity_CurrentIp", "Current: {0}", "Aktuálna: {0}"),
+                new LanguagePackSeedEntry(20548, "NetworkIdentity_PreviousIp", "Previous: {0}", "Predtým: {0}"),
             };
     }
 }

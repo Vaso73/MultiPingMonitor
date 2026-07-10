@@ -1639,4 +1639,32 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="NetworkIdentity_CopyFailed" xml:space="preserve">
     <value>Nepodarilo sa skopírovať IP</value>
   </data>
+
+  <data name="NetworkIdentity_AfterCurrentCheck" xml:space="preserve">
+    <value>po aktuálnej kontrole</value>
+  </data>
+  <data name="NetworkIdentity_StateNotStarted" xml:space="preserve">
+    <value>nespustená</value>
+  </data>
+  <data name="NetworkIdentity_StateInProgress" xml:space="preserve">
+    <value>prebieha</value>
+  </data>
+  <data name="NetworkIdentity_StateSucceeded" xml:space="preserve">
+    <value>úspešná</value>
+  </data>
+  <data name="NetworkIdentity_StateFailed" xml:space="preserve">
+    <value>zlyhala</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedStatus" xml:space="preserve">
+    <value>bola zmenená, aktuálna IP je {0} (predtým {1})</value>
+  </data>
+  <data name="NetworkIdentity_IpChangedTitle" xml:space="preserve">
+    <value>{0} zmenená</value>
+  </data>
+  <data name="NetworkIdentity_CurrentIp" xml:space="preserve">
+    <value>Aktuálna: {0}</value>
+  </data>
+  <data name="NetworkIdentity_PreviousIp" xml:space="preserve">
+    <value>Predtým: {0}</value>
+  </data>
 </root>
