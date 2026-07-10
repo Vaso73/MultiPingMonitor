@@ -383,6 +383,19 @@ namespace MultiPingMonitor.UI
 
         private void RefreshStatusHistoryLabelLocalization()
         {
+            TimestampColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnTimestamp", "Timestamp");
+            AddressColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnAddress", "Address");
+            AliasColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnAlias", "Alias");
+            StatusColumn.Header = StatusHistoryResourceText("StatusHistory_ColumnStatus", "Status");
+
+            FilterLabel.Text = StatusHistoryResourceText("StatusHistory_FilterLabel", "Filter");
+            IncludeLabel.Text = StatusHistoryResourceText("StatusHistory_IncludeLabel", "Include");
+
+            FilterProbeEvents.Content = StatusHistoryResourceText("StatusHistory_FilterProbeStatus", "Probe status");
+            FilterNetworkIdentityEvents.Content = StatusHistoryResourceText("NetworkIdentity_Title", "Network identity");
+            FilterCompactSetEvents.Content = StatusHistoryResourceText("StatusHistory_EventType_CompactSet", "Compact set");
+            FilterUp.Content = StatusHistoryResourceText("StatusHistory_FilterUp", "Up");
+            FilterDown.Content = StatusHistoryResourceText("StatusHistory_FilterDown", "Down");
             FilterStart.Content = StatusHistoryResourceText("StatusHistory_FilterStart", "Start");
             FilterStop.Content = StatusHistoryResourceText("StatusHistory_FilterStop", "Stop");
             ExportButton.Content = StatusHistoryResourceText("StatusHistory_Export", "Export");

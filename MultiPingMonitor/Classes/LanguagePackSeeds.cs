@@ -574,6 +574,15 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20547, "NetworkIdentity_CurrentIp", "Current: {0}", "Aktuálna: {0}"),
                 new LanguagePackSeedEntry(20548, "NetworkIdentity_PreviousIp", "Previous: {0}", "Predtým: {0}"),
                 new LanguagePackSeedEntry(20549, "PopupNotification_OpenStatusHistory", "Open status history window", "Otvoriť okno histórie stavov"),
+                new LanguagePackSeedEntry(20550, "StatusHistory_ColumnTimestamp", "Timestamp", "Čas"),
+                new LanguagePackSeedEntry(20551, "StatusHistory_ColumnAddress", "Address", "Adresa"),
+                new LanguagePackSeedEntry(20552, "StatusHistory_ColumnAlias", "Alias", "Alias"),
+                new LanguagePackSeedEntry(20553, "StatusHistory_ColumnStatus", "Status", "Stav"),
+                new LanguagePackSeedEntry(20554, "StatusHistory_FilterLabel", "Filter", "Filter"),
+                new LanguagePackSeedEntry(20555, "StatusHistory_IncludeLabel", "Include", "Zahrnúť"),
+                new LanguagePackSeedEntry(20556, "StatusHistory_FilterProbeStatus", "Probe status", "Stav sondy"),
+                new LanguagePackSeedEntry(20557, "StatusHistory_FilterUp", "Up", "Dostupný"),
+                new LanguagePackSeedEntry(20558, "StatusHistory_FilterDown", "Down", "Nedostupný"),
             };
     }
 }

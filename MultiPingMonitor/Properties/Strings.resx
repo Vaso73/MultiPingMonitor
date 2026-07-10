@@ -1792,4 +1792,31 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="PopupNotification_OpenStatusHistory" xml:space="preserve">
     <value>Open status history window</value>
   </data>
+  <data name="StatusHistory_ColumnTimestamp" xml:space="preserve">
+    <value>Timestamp</value>
+  </data>
+  <data name="StatusHistory_ColumnAddress" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="StatusHistory_ColumnAlias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="StatusHistory_ColumnStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="StatusHistory_FilterLabel" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="StatusHistory_IncludeLabel" xml:space="preserve">
+    <value>Include</value>
+  </data>
+  <data name="StatusHistory_FilterProbeStatus" xml:space="preserve">
+    <value>Probe status</value>
+  </data>
+  <data name="StatusHistory_FilterUp" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="StatusHistory_FilterDown" xml:space="preserve">
+    <value>Down</value>
+  </data>
 </root>

@@ -1682,4 +1682,31 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="PopupNotification_OpenStatusHistory" xml:space="preserve">
     <value>Otvoriť okno histórie stavov</value>
   </data>
+  <data name="StatusHistory_ColumnTimestamp" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="StatusHistory_ColumnAddress" xml:space="preserve">
+    <value>Adresa</value>
+  </data>
+  <data name="StatusHistory_ColumnAlias" xml:space="preserve">
+    <value>Alias</value>
+  </data>
+  <data name="StatusHistory_ColumnStatus" xml:space="preserve">
+    <value>Stav</value>
+  </data>
+  <data name="StatusHistory_FilterLabel" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="StatusHistory_IncludeLabel" xml:space="preserve">
+    <value>Zahrnúť</value>
+  </data>
+  <data name="StatusHistory_FilterProbeStatus" xml:space="preserve">
+    <value>Stav sondy</value>
+  </data>
+  <data name="StatusHistory_FilterUp" xml:space="preserve">
+    <value>Dostupný</value>
+  </data>
+  <data name="StatusHistory_FilterDown" xml:space="preserve">
+    <value>Nedostupný</value>
+  </data>
 </root>

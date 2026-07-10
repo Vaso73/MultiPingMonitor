@@ -137,7 +137,7 @@
                 <DataGrid.Columns>
 
                     <!-- Timestamp and status glyph -->
-                    <DataGridTextColumn Binding="{Binding Timestamp}" Header="Timestamp" MinWidth="90">
+                    <DataGridTextColumn x:Name="TimestampColumn" Binding="{Binding Timestamp}" Header="Timestamp" MinWidth="90">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
                                 <Setter Property="FontWeight" Value="Regular"/>
@@ -195,7 +195,7 @@
                     </DataGridTextColumn>
 
                     <!-- Address -->
-                    <DataGridTextColumn Binding="{Binding Hostname}" Header="Address" MinWidth="90">
+                    <DataGridTextColumn x:Name="AddressColumn" Binding="{Binding Hostname}" Header="Address" MinWidth="90">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Padding" Value="5,2,25,2"/>
@@ -206,7 +206,7 @@
                     </DataGridTextColumn>
 
                     <!-- Alias -->
-                    <DataGridTextColumn Binding="{Binding Alias}" Header="Alias" MinWidth="50">
+                    <DataGridTextColumn x:Name="AliasColumn" Binding="{Binding Alias}" Header="Alias" MinWidth="50">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Padding" Value="5,2,25,2"/>
@@ -217,7 +217,7 @@
                     </DataGridTextColumn>
 
                     <!-- Status -->
-                    <DataGridTextColumn Binding="{Binding StatusAsString}" Header="Status" Width="*">
+                    <DataGridTextColumn x:Name="StatusColumn" Binding="{Binding StatusAsString}" Header="Status" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Padding" Value="5,2"/>
@@ -257,7 +257,7 @@
                 <DockPanel DockPanel.Dock="Left" Margin="12,6,6,9">
                     <!-- Filter -->
                     <StackPanel DockPanel.Dock="Left">
-                        <TextBlock Text="Filter" Foreground="#ecce51" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="FilterLabel" Text="Filter" Foreground="#ecce51" Margin="0,0,0,2"/>
                         <!-- Filter -->
                         <Grid>
                             <!-- Textbox -->
@@ -297,7 +297,7 @@
                     </StackPanel>
                     <!-- Filter checkbox options -->
                     <StackPanel Margin="15,0,0,0">
-                        <TextBlock Text="Include" Foreground="#ecce51" Margin="0,0,0,2"/>
+                        <TextBlock x:Name="IncludeLabel" Text="Include" Foreground="#ecce51" Margin="0,0,0,2"/>
                         <StackPanel Orientation="Horizontal">
                             <Grid Width="135">
                                 <CheckBox x:Name="FilterProbeEvents"
