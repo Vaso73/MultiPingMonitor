@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 04:33 UTC
+Last updated: 2026-07-10 04:47 UTC
 
 ## Accepted baseline
 
@@ -14,10 +14,10 @@ Verified live state for this checkpoint update:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
 - Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `365697eac7d4a046c07a6d98e2954b6b2bfc3051`
-- HEAD label: `365697e` — `Localize Live Ping window chrome`
+- HEAD before checkpoint update: `ba4e23d`
+- HEAD label: `ba4e23d` — `Localize main window chrome and probe stats`
 - Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 8`
+- Comparison with `origin/main`: `0 10`
 - Working tree before checkpoint update: clean
 - Push state: local-only branch, not pushed
 - PR state: no PR created
@@ -25,6 +25,7 @@ Verified live state for this checkpoint update:
 - Backend latest metadata: not changed
 
 This section reflects the latest verified live state. Older checkpoint sections below may describe previous intermediate states.
+
 
 ## Current repository state
 
@@ -46,10 +47,11 @@ Always verify live state before writing.
 
 ## Current local development status
 
-External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, and Live Ping window chrome localization are implemented and committed locally.
+External language-pack foundation, runtime use of external language packs, Options live localization apply/save behavior, fail-fast workflow documentation, user-facing Options to Settings text cleanup, Live Ping window chrome localization, and MainWindow chrome/probe stats localization are implemented and committed locally.
 
 Recent local commit chain:
 
+- `ba4e23d` — `Localize main window chrome and probe stats`
 - `365697e` — `Localize Live Ping window chrome`
 - `076cb8b` — `Rename options text to settings`
 - `6a23119` — `Update current localization checkpoint`
@@ -332,8 +334,7 @@ Already completed or covered in this branch:
 
 Candidate next areas:
 
-- main window title-bar tooltips such as minimize/maximize/restore/close
-- probe card stat labels such as `Sent`, `Received`, `Lost`
+- remaining title-bar close/minimize/maximize/restore tooltips in other windows
 - Help window title-bar tooltips
 - Update window close tooltip
 - Add-to-set/New-alias dialog close tooltips and any remaining hardcoded dialog labels
@@ -341,6 +342,59 @@ Candidate next areas:
 Runtime validation note:
 
 - Live Ping window must be visually checked on Windows in English and Slovenčina because text is set via code-behind and window reopen/apply behavior matters.
+
+
+## Completed slice: MainWindow chrome and probe stats localization
+
+Commit:
+
+- `ba4e23d` — `Localize main window chrome and probe stats`
+
+Implemented:
+
+- Localized MainWindow title-bar button tooltip/accessibility text:
+  - `Tooltip_Minimize`
+  - `Tooltip_Maximize`
+  - `Tooltip_RestoreDown`
+  - existing `Tooltip_Close`
+- Added `x:Name` to the main title-bar minimize and close buttons so code-behind can update their tooltip and automation name at runtime.
+- Added `RefreshWindowChromeLocalization()` and calls from startup/runtime option apply flow.
+- MainWindow probe-card stat labels now use existing resource keys:
+  - `Probe_Stat_Sent`
+  - `Probe_Stat_Received`
+  - `Probe_Stat_Lost`
+- `Probe-Util.cs` now builds `StatisticsText` from localized resource text.
+- Extended stable language-pack key set:
+  - `EntryCount=525`
+  - `ResourceKeys.Count=525`
+  - last key `20524`
+- Added new language-pack keys:
+  - `Tooltip_Minimize`
+  - `Tooltip_Maximize`
+  - `Tooltip_RestoreDown`
+- Updated `LanguagePackSeeds`.
+- Updated `LanguagePackServiceTests` expectations.
+
+Validation:
+
+- Initial patch correctly stopped at build failure:
+  - duplicate `ResourceText` helper in `MainWindow.xaml.cs`
+  - no commit was created from the failed build
+- Recovery patch removed the duplicate helper and kept the intended localization slice.
+- `git diff --check`: passed.
+- `dotnet build MultiPingMonitor.sln -c Release`: passed.
+- Targeted `LanguagePackServiceTests`: passed, 7 total, 0 failed.
+- Full test suite passed:
+  - total: 431
+  - failed: 0
+  - succeeded: 431
+  - skipped: 0
+
+Status:
+
+- Closed locally.
+- Committed locally.
+- Not pushed.
 
 
 ## Current scope
