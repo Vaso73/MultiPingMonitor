@@ -15,6 +15,7 @@ namespace MultiPingMonitor.UI
         public ManageFavoritesWindow()
         {
             InitializeComponent();
+            RefreshActionButtonLocalization();
             RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "ManageFavoritesWindow");
             RefreshFavoriteList();
@@ -124,6 +125,21 @@ namespace MultiPingMonitor.UI
                 Close();
             }
         }
+        private void RefreshActionButtonLocalization()
+        {
+            FavoriteNewButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_New") ?? "New");
+
+            FavoriteEditButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Edit") ?? "Edit");
+
+            FavoriteRemoveButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Remove") ?? "Remove");
+        }
+
 
         private void RefreshTitleBarChromeLocalization()
         {

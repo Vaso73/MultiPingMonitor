@@ -13,6 +13,7 @@ namespace MultiPingMonitor.UI
         public ManageAliasesWindow()
         {
             InitializeComponent();
+            RefreshActionButtonLocalization();
             RefreshTitleBarChromeLocalization();
             WindowPlacementService.Attach(this, "ManageAliasesWindow");
             RefreshAliasList();
@@ -102,6 +103,21 @@ namespace MultiPingMonitor.UI
                 Close();
             }
         }
+        private void RefreshActionButtonLocalization()
+        {
+            AliasNewButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_New") ?? "New");
+
+            AliasEditButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Edit") ?? "Edit");
+
+            AliasRemoveButton.Content = "_" + (
+                MultiPingMonitor.Properties.Strings.ResourceManager.GetString(
+                    "DialogButton_Remove") ?? "Remove");
+        }
+
 
         private void RefreshTitleBarChromeLocalization()
         {

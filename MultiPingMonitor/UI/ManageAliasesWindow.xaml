@@ -99,18 +99,18 @@
             <Button Click="New_Click"
                     Width="85"
                     Style="{DynamicResource Style.ButtonStandard}"
-                    Content="_New"/>
+                    x:Name="AliasNewButton" Content="_New"/>
             <Button Click="Edit_Click"
                     Margin="15,0"
                     Width="85"
                     Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Aliases, Path=SelectedItems.Count}"
-                    Content="_Edit"/>
+                    x:Name="AliasEditButton" Content="_Edit"/>
             <Button Click="Remove_Click"
                     Width="85"
                     Style="{DynamicResource Style.ButtonStandard}"
                     IsEnabled="{Binding ElementName=Aliases, Path=SelectedItems.Count}"
-                    Content="_Remove"/>
+                    x:Name="AliasRemoveButton" Content="_Remove"/>
         </StackPanel>
     </Grid>
     </DockPanel>
