@@ -372,12 +372,16 @@ namespace MultiPingMonitor.Classes
                 LoadColors(xd.SelectNodes("/vmping/colors/option"));
                 ApplicationOptions.UpdatePingOptions();
 
-                // Load window placements using XDocument (LINQ to XML).
+                // Load the portable fallback from the shared configuration,
+                // then overlay the exact profile for this computer.
                 try
                 {
                     var xdoc = XDocument.Load(FilePath);
-                    var placementsNode = xdoc.Root?.Element("windowPlacements");
-                    WindowPlacementService.LoadPlacements(placementsNode);
+                    WindowPlacementService.LoadPortablePlacements(
+                        xdoc.Root?.Element("windowPlacements"));
+
+                    WindowPlacementService.LoadMachinePlacements(
+                        WindowPlacementStorage.Load());
                 }
                 catch
                 {

@@ -59,10 +59,9 @@ Additional fields persisted per window:
 
 | Field | Purpose |
 |---|---|
-| `v` | Schema version (1 = legacy, 2 = current) |
+| `v` | Schema version (`1` legacy, `2` previous logical format, `3` rejected physical-pixel experiment, `4` current logical portable model) |
 | `monitor` | Monitor device name (e.g. `\\.\DISPLAY1`) |
 | `monitorLeft/Top/Width/Height` | Working area snapshot at save time |
-| `dpiX` / `dpiY` | DPI at save time (WPF units × 96) |
 | `savedAt` | UTC ISO-8601 timestamp |
 
 Restore logic (in order):
@@ -70,7 +69,7 @@ Restore logic (in order):
 1. Try to find the saved monitor by device name.
 2. If not found, find any monitor that intersects the saved rect.
 3. If none, fall back to primary monitor (centered).
-4. If DPI changed, proportionally rescale bounds.
+4. Prefer exact per-machine logical bounds; otherwise remap portable placement by edge anchor or relative position.
 5. Clamp bounds to the target working area.
 6. Enforce a minimum visible margin (`MinVisibleMargin = 40 px`) so the title bar
    is always reachable.
@@ -100,6 +99,22 @@ always co-located with the application binary.
 
 ---
 
+### Current portable placement model (schema v4)
+
+- Capture and restore use WPF logical units throughout.
+- `MultiPingMonitor.xml` stores portable fallback placement.
+- `data/machines/<COMPUTERNAME>/window-placement.xml` stores exact
+  same-machine placement using atomic replacement and backup recovery.
+- Machine placement has restore priority.
+- Portable fallback preserves an edge anchor within tolerance or maps relative
+  travel position to the target working area.
+- Oversized or invalid placement is resized and clamped so the full window is
+  visible.
+- `MainWindow` and `MainWindow.Compact` are independent.
+- Schema v3 physical-pixel records are ignored.
+- MainWindow uses explicit mode-aware saves and no static startup-mode closing
+  save.
+
 ## 5. Manual test checklist – window placement
 
 These scenarios must be verified manually after any placement change:
@@ -113,10 +128,10 @@ These scenarios must be verified manually after any placement change:
 | 5 | Large monitor (save) → move to smaller monitor → restart | Window clamped to fit smaller working area |
 | 6 | Save as maximized → restart | Window maximizes to the correct monitor |
 | 7 | Unplug monitor while app is open on it → replug → restart | Window still visible |
-| 8 | DPI change (e.g. 100% → 125%) between sessions | Window proportionally rescaled, still on correct monitor |
+| 8 | Move between 100% and 125% scale or another PC | Exact machine placement or safe portable fallback; no recursive shrink/drift |
 | 9 | Portable config next to exe | Config read/written next to exe |
 | 10 | No config file present | New config creation dialog shown; file created next to exe |
-| 11 | Config created by older build (v1 records, no v2 attributes) | Window restores without error; v2 fields written on next save |
+| 11 | Config created by an older build | Window restores without error; current schema fields are written on next save |
 | 12 | Set `RememberWindowPosition=false` | Window position not saved or restored |
 | 13 | All secondary windows (Options, StatusHistory, Traceroute, etc.) | Each window restores its own last position |
 
@@ -128,5 +143,5 @@ These scenarios must be verified manually after any placement change:
 |---|---|---|---|
 | v1 config file fails to load | Low | High | `LoadPlacements` uses safe defaults for missing attributes |
 | Monitor device name changes (driver reinstall) | Low | Low | Falls back to intersect check then primary monitor |
-| DPI rescale produces off-screen position | Low | Low | Clamp step (step 5) corrects this |
+| Display topology or scale differs | Medium | Low | Logical anchor remapping plus full-window resize/clamp keeps placement visible |
 | `RememberWindowPosition` serialization breaks existing config | None | None | New field; absent in old config → default `true` applied |

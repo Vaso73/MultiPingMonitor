@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -138,7 +138,15 @@ namespace MultiPingMonitor.UI
 
             // Attach window placement using a mode-specific key so Normal and Compact
             // each remember their own position and size independently.
-            WindowPlacementService.Attach(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));
+            // MainWindow saves the outgoing mode during mode switching and
+            // saves the current mode explicitly before Configuration.Save().
+            // A static Attach closing key would overwrite the other mode when
+            // the application closes in a mode different from its startup mode.
+            WindowPlacementService.Attach(
+                this,
+                PlacementKeyForMode(
+                    ApplicationOptions.CurrentDisplayMode),
+                saveOnClosing: false);
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 # MultiPingMonitor Current State
 
-Last updated: 2026-07-10 15:01 UTC
+Last updated: 2026-07-12 18:10 UTC
 
 ## Accepted baseline
 
@@ -51,55 +51,63 @@ This release is `closed/accepted`.
 
 ## Current repository state
 
-Verified live state before this checkpoint update:
+Checkpoint state after the local commit created in this transaction:
 
 - Repository: `/home/vaio/projects/MultiPingMonitor`
-- Branch: `feature/external-lang-pack-foundation`
-- HEAD before checkpoint update: `b38cfda17e671b941cf353e17b5aeae85351d6bb`
-- HEAD label: `b38cfda` — `Document fail-fast command workflow`
-- Upstream for the local branch: none configured
-- Comparison with `origin/main`: `0 5`
-- Working tree before checkpoint update: clean
-- Push state: local-only branch, not pushed
-- PR state: no PR created
-- Release state: no tag, no release, no Sponsor Pro publish for this branch
-- Backend latest metadata: not changed
+- Branch: `fix/window-placement-dpi-topology`
+- Base before the commit:
+  `a41987597943582d665acac747a10251d3c6aa40`
+- `origin/main` at checkpoint time:
+  `a41987597943582d665acac747a10251d3c6aa40`
+- Local branch: one commit ahead of `origin/main`
+- Upstream: none configured
+- Working tree after the commit: clean
+- Push state: local-only, not pushed
+- PR state: none
+- Version: unchanged at `1.1.0`
+- Release/backend state: unchanged
 
-Always verify live state before writing.
+Always verify live state before writing or publishing.
 
 ## Current local development status
 
-The external language-pack implementation, complete application localization, final residual localization cleanup,
-Windows system-language correction, and safe tray-dialog ownership handling are implemented and committed locally.
+The portable DPI/topology-safe window-placement correction is complete,
+accepted, and committed locally.
 
-Latest local commit chain:
+Accepted implementation:
 
-- `3eb356b` — `Fix system language and tray dialog ownership`
-- `52cf4af` — `Update current state after localization completion`
-- `70fe3c3` — `Localize final favorite validation messages`
-- `e336dbb` — `Localize remaining user-facing literals`
-- `e3cddd7` — `Localize Live Ping technical status labels`
-- `b38cfda` — `Document fail-fast command workflow`
-- `7e426a9` — `Add live apply behavior for options localization`
-- `de8755b` — `Use external language packs at runtime`
-- `420282f` — `Add external language pack foundation`
-- `716099b` — `Merge pull request #156 from Vaso73/release/bump-version-to-1-0-28`
-
-Current accepted local development state:
-
-- External `.lang` foundation and runtime lookup are implemented.
-- Built-in English fallback remains required.
-- Arbitrary valid external `lang/*.lang` packs are discoverable by language code.
-- User-edited existing language-pack `TEXT` values are preserved.
-- The default Slovak pack contains 588 contiguous entries with IDs `20000–20587`.
-- Confirmed application-owned user-facing localization gaps are resolved.
-- Technical status defaults remain `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`, `INDETERMINATE`, and `INACTIVE`.
-- `System (OS default)` resolves the Windows user UI language instead of a previously applied process language.
-- Dialogs opened through tray-safe paths no longer assign an unshown `MainWindow` as WPF owner.
-- `.lang` files are not packaged into publish output.
+- WPF logical units are used end to end.
+- No physical-pixel or manual DPI conversion remains.
+- Exact same-machine placement is stored in
+  `data/machines/<COMPUTERNAME>/window-placement.xml`.
+- Portable fallback placement remains in `MultiPingMonitor.xml`.
+- Machine placement has restore priority on the same computer.
+- Portable fallback preserves an edge anchor or relative position on another
+  display topology and clamps/resizes the window to remain fully visible.
+- Rejected schema v3 physical-pixel records are ignored.
+- Normal and Compact modes retain independent position and size.
+- MainWindow shutdown saves the actual current mode and cannot overwrite the
+  other mode through a static startup-mode closing key.
 - The application remains one portable `MultiPingMonitor.exe`.
-- The branch-wide real Windows runtime gate has passed.
-- The branch remains local-only and no GitHub operation has been authorized by this checkpoint.
+
+Final validation:
+
+- `git diff --check`: passed.
+- Warning-free Release build with `-warnaserror`: passed.
+- Final full automated suite: 461 passed, 0 failed.
+- Final focused placement suite: 15 passed, 0 failed.
+- Single-file publish contract: exactly one `MultiPingMonitor.exe`, no `.lang`
+  files.
+- Accepted diagnostic EXE size: `163504244` bytes.
+- Accepted diagnostic EXE SHA-256:
+  `fb00f59589186c62e0ce892e7e755bfa934c58dcdd772925b00a9adee76baa10`.
+- Surface runtime at 125% scale: accepted.
+- MINISFORUM runtime at 100% scale: accepted.
+- Repeated restart and Normal/Compact switching retained the correct
+  independent placement on both systems.
+
+No push, PR, merge, tag, version bump, release, Sponsor Pro publication, or
+backend metadata change was performed.
 
 ## Completed slice: external language-pack foundation
 
@@ -1219,20 +1227,62 @@ Status:
 - Not pushed.
 - No PR, merge, tag, release, version bump, Sponsor Pro publish, or backend metadata change.
 
+## Completed slice: portable DPI/topology-safe window placement
+
+Status:
+
+- `closed/accepted`
+- committed locally on `fix/window-placement-dpi-topology`
+- not pushed
+- no PR, merge, tag, version bump, release, Sponsor Pro publication, or
+  backend update
+
+Implemented:
+
+- Added schema v4 logical window-placement persistence.
+- Added `WindowPlacementGeometry`.
+- Added atomic `WindowPlacementStorage` with backup recovery.
+- Added exact per-machine placement and portable fallback.
+- Preserved independent Normal and Compact keys.
+- Added mode-safe shutdown persistence.
+- Added geometry, storage, and mode-switch regression tests.
+
+Acceptance evidence:
+
+- final full test suite: 461/461 PASS
+- final placement regression suite: 15/15 PASS
+- Surface 125% runtime: PASS
+- MINISFORUM 100% runtime: PASS
+- accepted diagnostic SHA-256:
+  `fb00f59589186c62e0ce892e7e755bfa934c58dcdd772925b00a9adee76baa10`
+
 ## Current scope
 
-There is no active implementation or release scope.
+There is no active implementation scope.
 
-Sponsor Pro v1.1.0 is published, remotely verified, delivered through the in-app updater, and accepted on Windows.
-Release logs and recovery evidence must remain preserved. Future work requires a fresh live audit and one newly
-approved bounded scope.
+The accepted window-placement correction is committed locally and remains
+local-only. The branch must not be pushed or published without a new explicit
+instruction.
 
 ## Immediate next action
 
-Before starting any new feature, fix, or release, perform a fresh read-only audit of `main`, the working tree, and
-the relevant project workflow files, then select exactly one bounded scope.
+Await an explicit user decision before any push, pull request, merge, version
+bump, release, Sponsor Pro publication, or backend change.
 
 ## Known risks and regression prevention
+
+Window-placement regression prevention:
+
+- Keep window geometry in WPF logical units.
+- Do not reintroduce manual physical-pixel or DPI conversion.
+- Do not feed `WINDOWPLACEMENT.rcNormalPosition` into `SetWindowPos`.
+- Preserve independent Normal and Compact placement keys.
+- MainWindow must not attach a static startup-mode closing save.
+- Continue ignoring rejected schema v3 records.
+- Preserve exact machine placement plus portable fallback.
+- Any future placement or WPF startup lifecycle change requires real Windows
+  tests at representative 100% and 125% scaling.
+
 
 Known shell/workflow risks:
 
