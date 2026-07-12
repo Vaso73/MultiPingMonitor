@@ -203,3 +203,20 @@ Workflow note:
 - Windows showed FileVersion and ProductVersion `1.1.0`; the installed EXE hash matched the release.
 - The user confirmed all requested runtime and localization smoke tests as functional.
 - Final state: Sponsor Pro v1.1.0 `closed/accepted`.
+
+## 2026-07-12 — Portable DPI/topology-safe window placement accepted
+
+- Replaced the rejected physical-pixel/PMv2 experiment with schema v4 WPF
+  logical placement.
+- Added exact per-machine persistence plus a portable shared fallback.
+- Preserved edge anchoring or relative placement across display topologies.
+- Preserved independent Normal and Compact position and size.
+- Fixed shutdown persistence so closing in a mode different from startup does
+  not overwrite the other mode.
+- Added geometry, storage, and mode-switch regression tests.
+- Final full automated suite passed: 461/461.
+- Single-file publish contract passed.
+- Runtime acceptance passed on Surface at 125% and MINISFORUM at 100%.
+- Accepted diagnostic SHA-256:
+  `fb00f59589186c62e0ce892e7e755bfa934c58dcdd772925b00a9adee76baa10`.
+- Final state: `closed/accepted`, committed locally, not pushed.

@@ -242,3 +242,34 @@ Consequences:
 - Preserve existing config files unless the user explicitly approves reset.
 - Provide exact Windows PowerShell `scp` commands for that fixed destination.
 - Do not treat isolated per-version folder tests as normal acceptance tests.
+
+## 2026-07-12 — Logical window placement with machine exactness and portable fallback
+
+Status: accepted
+
+Decision:
+
+- Persist window geometry only in WPF logical units.
+- Store exact placement per computer in
+  `data/machines/<COMPUTERNAME>/window-placement.xml`.
+- Store portable fallback placement in `MultiPingMonitor.xml`.
+- Prefer machine placement on the same computer.
+- On another topology, preserve edge anchoring or relative position and
+  clamp/resize the complete window into the available working area.
+- Keep separate keys for Normal and Compact modes.
+- Ignore schema v3 physical-pixel records.
+- MainWindow saves the actual current mode during shutdown and does not use a
+  static startup-mode closing key.
+
+Rationale:
+
+- WPF already operates in device-independent logical units.
+- Manual conversion caused recursive 0.8 shrink/drift at 125% scaling.
+- Portable operation requires exact same-machine restoration and safe
+  cross-machine fallback.
+
+Consequences:
+
+- Do not restore the rejected PMv2/native physical-pixel model.
+- Future placement changes require automated regression coverage and real
+  Windows tests at both 100% and 125% scaling.
