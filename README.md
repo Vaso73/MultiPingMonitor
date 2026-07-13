@@ -6,7 +6,6 @@
 [![Public downloads](https://img.shields.io/github/downloads/Vaso73/MultiPingMonitor/total?label=Public%20downloads)](https://github.com/Vaso73/MultiPingMonitor/releases)
 [![License](https://img.shields.io/github/license/Vaso73/MultiPingMonitor)](LICENSE)
 ![Windows](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4?logo=windows11&logoColor=white)
-[![Sponsor Pro](https://img.shields.io/badge/Sponsor%20Pro-GitHub%20Sponsors-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Vaso73)
 
 <p align="center">
   <picture>
@@ -18,9 +17,14 @@
 </p>
 
 <p align="center">
-  <strong><a href="https://github.com/sponsors/Vaso73">Sponsor development &amp; get Sponsor Pro</a></strong>
-  &nbsp;·&nbsp;
-  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Try the Free edition</a>
+  <a href="https://github.com/sponsors/Vaso73">
+    <img src="https://img.shields.io/badge/Sponsor_development-Get_Sponsor_Pro-EA4AAA?style=for-the-badge&amp;logo=githubsponsors&amp;logoColor=white"
+         alt="Sponsor development and get Sponsor Pro">
+  </a>
+</p>
+
+<p align="center">
+  <strong><a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Try Free v0.4.6</a></strong>
   &nbsp;·&nbsp;
   <a href="#compare-editions">Compare editions</a>
   &nbsp;·&nbsp;
@@ -85,17 +89,16 @@ use.
 
 ## Why Sponsor Pro?
 
-Free is a simple way to try the core monitoring workflow. Sponsor Pro becomes
-most useful when MultiPingMonitor is part of your daily operations.
+**Sponsor Pro gives you a quieter way to stay in control of the systems you
+depend on every day.**
 
-It provides a calmer, more efficient way to stay in control:
+Start with Free to try the core monitoring workflow. Sponsor Pro becomes most
+useful when MultiPingMonitor is part of your daily operations:
 
 - keep critical services visible without filling the desktop;
 - move between reusable monitoring groups with Compact Sets;
-- investigate a target in a focused Live Ping window;
-- see relevant WAN/LAN identity and WAN-address changes;
-- stay on the current supported release with authorized in-app updates;
-- support continued development and Windows compatibility work.
+- investigate problems in focused Live Ping windows;
+- stay on the current supported release with authorized in-app updates.
 
 ## Product tour
 
@@ -119,7 +122,7 @@ pause/resume controls, always-on-top operation, and quick target actions.
 <p align="center">
   <img src="docs/assets/readme/live-ping-modes.png"
        alt="MultiPingMonitor Live Ping DNS, TCP port probe and traceroute"
-       width="960">
+       width="800">
 </p>
 
 ### Compact Mode — Sponsor Pro
@@ -131,20 +134,19 @@ or export.
 <p align="center">
   <img src="docs/assets/readme/compact-mode.png"
        alt="MultiPingMonitor Compact Mode"
-       width="283">
+       width="360">
 </p>
 
 ## Built for everyday operations
 
-MultiPingMonitor fits environments where a small, clear desktop view
-complements existing monitoring tools:
+MultiPingMonitor complements existing monitoring tools with a small, clear
+desktop view.
 
-- network administrators and infrastructure operators;
-- ISPs and managed IT support;
-- homelabs and self-hosted environments;
-- servers, virtual machines, and gateways;
-- switches, access points, and cameras;
-- DNS, web, and other TCP services.
+**For people:** network administrators · infrastructure operators · ISPs ·
+managed IT support · homelab users
+
+**For systems:** servers · virtual machines · gateways · switches · access
+points · cameras · DNS, web, and other TCP services
 
 ## Quick start
 
@@ -180,34 +182,11 @@ flood-host testing, quick target actions, and focused monitoring windows.
 Technical states include `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`,
 `INDETERMINATE`, and `INACTIVE`.
 
-## Favorites, aliases, alerts, and history
-
-Favorites save recurring monitoring groups for quick reuse. Aliases replace
-technical hostnames or IP addresses with readable names.
-
-MultiPingMonitor also supports:
-
-- popup, audio, and email alerts;
-- status history, filtering, export, and optional log files;
-- Modern and Classic visual styles;
-- built-in light and dark themes;
-- automatic Windows light/dark theme selection;
-- themed controls and status indicators.
-
 ## Network Identity — Sponsor Pro
 
 Network Identity can display WAN and LAN addresses, provider, ASN, country,
 lookup state, scheduled checks, and WAN-address change notifications. Address
 values can be copied directly from the interface.
-
-## Localization
-
-English is built in as the fallback language.
-
-Sponsor Pro supports external `.lang` files selected from Settings without
-rebuilding the application. Language packs are stored in the `lang` directory
-beside `MultiPingMonitor.exe`. The application can create the Slovak
-`sk-SK.lang` seed while preserving user-edited text.
 
 ## Portable operation and updates
 
@@ -226,7 +205,33 @@ version, and removes temporary update files after success.
 
 The Free release channel remains available through public GitHub Releases.
 
-## Desktop and command-line integration
+<details>
+<summary><strong>Additional technical details</strong></summary>
+
+### Favorites, aliases, alerts, and history
+
+Favorites save recurring monitoring groups for quick reuse. Aliases replace
+technical hostnames or IP addresses with readable names.
+
+MultiPingMonitor also supports:
+
+- popup, audio, and email alerts;
+- status history, filtering, export, and optional log files;
+- Modern and Classic visual styles;
+- built-in light and dark themes;
+- automatic Windows light/dark theme selection;
+- themed controls and status indicators.
+
+### Localization
+
+English is built in as the fallback language.
+
+Sponsor Pro supports external `.lang` files selected from Settings without
+rebuilding the application. Language packs are stored in the `lang` directory
+beside `MultiPingMonitor.exe`. The application can create the Slovak
+`sk-SK.lang` seed while preserving user-edited text.
+
+### Desktop and command-line integration
 
 The application supports notification-area operation, start minimized,
 multi-monitor placement, and safe window restoration at common DPI settings.
@@ -235,8 +240,7 @@ MultiPingMonitor can also start with targets, input files, minimized operation,
 and selected probe settings. The built-in **Usage** window contains the current
 syntax and examples.
 
-<details>
-<summary><strong>Build from source</strong></summary>
+### Build from source
 
 Requirements:
 
@@ -275,7 +279,14 @@ funding continued work on monitoring, diagnostics, Compact Mode, localization,
 updater reliability, and Windows display compatibility.
 
 <p align="center">
-  <strong><a href="https://github.com/sponsors/Vaso73">Support development &amp; get Sponsor Pro</a></strong>
+  <a href="https://github.com/sponsors/Vaso73">
+    <img src="https://img.shields.io/badge/Support_development-Get_Sponsor_Pro-EA4AAA?style=for-the-badge&amp;logo=githubsponsors&amp;logoColor=white"
+         alt="Support development and get Sponsor Pro">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Prefer to start with Free? Download v0.4.6</a>
 </p>
 
 ## License
