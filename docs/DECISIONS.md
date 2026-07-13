@@ -116,49 +116,6 @@ Reason:
 
 Preserve review gates and reduce the blast radius of mistakes.
 
-## D-006 — Project-memory file responsibilities
-
-Date: 2026-07-07
-Status: active
-
-Decision:
-
-- `AGENTS.md` stores stable workflow and safety rules.
-- `docs/CURRENT_STATE.md` stores current checkpoint memory.
-- `docs/HANDOFF_TEMPLATE.md` stores the unchanged handoff request.
-- `docs/PROJECT_HISTORY.md` stores concise append-only history.
-- `docs/DECISIONS.md` stores long-lived decisions.
-- `docs/RELEASE.md` stores the complete release procedure.
-
-Reason:
-
-Prevent duplication, stale state, and loss of continuation context.
-
-Consequences:
-
-`docs/CURRENT_STATE.md` never replaces a live audit, and complete stable rules
-must not be copied into every handoff.
-
-## D-007 — The user's handoff request remains unchanged
-
-Date: 2026-07-07
-Status: active
-
-Decision:
-
-The user does not need to alter their established handoff request when new
-project-memory files are introduced.
-
-Reason:
-
-Project internals must adapt to the stable user workflow, not require repeated
-changes to the user's prompt.
-
-Consequences:
-
-`AGENTS.md` requires automatic consultation of all relevant project-memory
-files. The current user request always overrides a stale stored template.
-
 ## D-008 — Update checker, access control, and updater remain separate
 
 Date: 2026-07-07

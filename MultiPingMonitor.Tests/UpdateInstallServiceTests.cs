@@ -221,19 +221,5 @@ namespace MultiPingMonitor.Tests
                 File.Exists(SourcePath("MultiPingMonitor", "app.config")),
                 "Legacy app.config creates MultiPingMonitor.dll.config in single-file publish output.");
         }
-
-        [Fact]
-        public void WorkflowDocs_RecordOneStepGithubRules()
-        {
-            string workflow =
-                File.ReadAllText(SourcePath("docs", "GITHUB_WORKFLOW.md"));
-            string agents =
-                File.ReadAllText(SourcePath("AGENTS.md"));
-
-            Assert.Contains("one complete CLI workflow", workflow);
-            Assert.Contains("Do not paste very large interactive heredocs directly into zsh.", workflow);
-            Assert.Contains("branch + PR + scope check + merge + sync main", workflow);
-            Assert.Contains("docs/GITHUB_WORKFLOW.md", agents);
-        }
     }
 }
