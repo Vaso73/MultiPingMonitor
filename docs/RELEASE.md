@@ -3,7 +3,7 @@
 This document is the canonical Sponsor Pro build, packaging, publishing,
 correction, verification, acceptance, and cleanup procedure.
 
-Read `AGENTS.md` and `docs/CURRENT_STATE.md` before using this workflow.
+Verify the live repository, release manifest, accepted artifact identity, and required approvals before using this workflow.
 
 ## Local-first release preparation
 
@@ -533,8 +533,8 @@ Possible approved cleanup:
 - preserve final release metadata;
 - preserve final ZIP identities;
 - preserve logs and recovery bundle;
-- update `docs/CURRENT_STATE.md`;
-- append a concise `docs/PROJECT_HISTORY.md` entry;
+- update the local project-memory checkpoint when required;
+- update the local project-memory history when required;
 - update `docs/DECISIONS.md` only when a new long-term decision was made.
 
 Do not automatically delete release assets, tags, releases, drafts, recovery
