@@ -75,6 +75,7 @@ namespace MultiPingMonitor.UI
 
             Owner = owner;
             _isManualMode = true;
+            ManualTargetBox.TextChanged += ManualTargetBox_TextChanged;
 
             // Show manual input row.
             ManualInputRow.Visibility = Visibility.Visible;
@@ -93,12 +94,6 @@ namespace MultiPingMonitor.UI
             ArrangeMenuButton.ToolTip = Properties.Strings.LivePing_Arrange;
             StartPingText.Text = Properties.Strings.LivePing_StartPing;
             AddToSetText.Text = Properties.Strings.LivePing_AddToSet;
-            ClearButton.Content = Text("LivePing_Clear", "Clear");
-            CloseFooterButton.Content = Text("LivePing_Close", "Close");
-            StatsSentLabel.Text = Text("LivePing_StatsSent", "Sent");
-            StatsReceivedLabel.Text = Text("LivePing_StatsReceivedShort", "Recv");
-            StatsLostLabel.Text = Text("LivePing_StatsLost", "Lost");
-
             // Focus target input on load.
             Loaded += (_, _) => ManualTargetBox.Focus();
         }
@@ -115,6 +110,11 @@ namespace MultiPingMonitor.UI
             AlwaysOnTopText.Text = Properties.Strings.LivePing_AlwaysOnTop;
             CopyTargetText.Text = Properties.Strings.LivePing_CopyTarget;
             CopyAddressText.Text = Properties.Strings.LivePing_CopyAddress;
+            ClearButton.Content = Text("LivePing_Clear", "Clear");
+            CloseFooterButton.Content = Text("LivePing_Close", "Close");
+            StatsSentLabel.Text = Text("LivePing_StatsSent", "Sent");
+            StatsReceivedLabel.Text = Text("LivePing_StatsReceivedShort", "Recv");
+            StatsLostLabel.Text = Text("LivePing_StatsLost", "Lost");
 
             // Apply initial pin icon color based on always-on-top state.
             UpdatePinIconState();
@@ -130,6 +130,7 @@ namespace MultiPingMonitor.UI
 
             // Display session counters at zero.
             UpdateSessionStatisticsDisplay();
+            UpdateActionStates();
         }
 
         // ── Window placement with cascade ─────────────────────────────────
@@ -304,6 +305,7 @@ namespace MultiPingMonitor.UI
 
                 // Refresh session counter display.
                 UpdateSessionStatisticsDisplay();
+                UpdateActionStates();
 
                 if (_autoScroll)
                 {
@@ -314,6 +316,7 @@ namespace MultiPingMonitor.UI
             {
                 // History was cleared (probe restarted).
                 _logLines.Clear();
+                UpdateActionStates();
             }
         }
 
@@ -335,6 +338,7 @@ namespace MultiPingMonitor.UI
                 case nameof(Probe.Alias):
                 case nameof(Probe.Hostname):
                     UpdateHeader();
+                    UpdateActionStates();
                     break;
                 case nameof(Probe.History):
                     // History collection was replaced (probe restarted).
@@ -360,6 +364,7 @@ namespace MultiPingMonitor.UI
             }
 
             UpdateSessionStatisticsDisplay();
+            UpdateActionStates();
         }
 
         private void SubscribeHistory(ObservableCollection<string> history)
@@ -560,6 +565,25 @@ namespace MultiPingMonitor.UI
             return Properties.Strings.ResourceManager.GetString(key) ?? fallback;
         }
 
+        private void UpdateActionStates()
+        {
+            LivePingActionState state = LivePingActionState.Evaluate(
+                _isManualMode,
+                ManualTargetBox.Text ?? string.Empty,
+                _probe?.Hostname ?? string.Empty,
+                _lastReplyAddress ?? string.Empty,
+                _logLines.Count,
+                _sessionSent,
+                _sessionReceived,
+                _sessionLost);
+
+            StartPingButton.IsEnabled = state.CanStart;
+            CopyTargetButton.IsEnabled = state.CanCopyTarget;
+            CopyAddressButton.IsEnabled = state.CanCopyAddress;
+            StopResumeButton.IsEnabled = state.CanPauseResume;
+            ClearButton.IsEnabled = state.CanClear;
+        }
+
         // ── Stop / Resume ──
 
         private void StopResumeButton_Click(object sender, RoutedEventArgs e)
@@ -592,6 +616,7 @@ namespace MultiPingMonitor.UI
             // Clear also resets per-window session counters for a clean fresh state.
             ResetSessionCounters();
             UpdateSessionStatisticsDisplay();
+            UpdateActionStates();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -667,6 +692,13 @@ namespace MultiPingMonitor.UI
         }
 
         // ── Manual mode: target input ──
+
+        private void ManualTargetBox_TextChanged(
+            object sender,
+            TextChangedEventArgs e)
+        {
+            UpdateActionStates();
+        }
 
         private void ManualTargetBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -744,6 +776,7 @@ namespace MultiPingMonitor.UI
 
             // Start pinging.
             _probe.StartStop();
+            UpdateActionStates();
         }
 
         // ── Manual mode: Add to Set ──
