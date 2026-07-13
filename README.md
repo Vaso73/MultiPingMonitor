@@ -9,9 +9,20 @@
 ![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)
 [![Sponsor Pro](https://img.shields.io/badge/Sponsor%20Pro-GitHub%20Sponsors-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Vaso73)
 
-<!-- Short animated GIF/WebP demonstration will be added here. -->
+<p align="center">
+  <picture>
+    <source srcset="docs/assets/readme/overview-demo.webp" type="image/webp">
+    <img src="docs/assets/readme/overview-demo.gif"
+         alt="MultiPingMonitor Normal mode, Compact Mode and Live Ping overview"
+         width="960">
+  </picture>
+</p>
 
-<!-- README hero screenshot will be added here. -->
+<p align="center">
+  <img src="docs/assets/readme/hero-modern.png"
+       alt="MultiPingMonitor portable Windows network monitoring"
+       width="1200">
+</p>
 
 [Download Free](https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6)
 ·
@@ -41,6 +52,12 @@ MultiPingMonitor started as a derivative of
 - Keep status history and optional log files
 - Run portably without an installer
 - Support multiple displays, DPI scaling, themes, and languages
+
+<p align="center">
+  <img src="docs/assets/readme/application-modes.png"
+       alt="MultiPingMonitor Normal mode, Compact Mode and Live Ping diagnostics"
+       width="1200">
+</p>
 
 ## Editions
 
@@ -77,6 +94,12 @@ channel. Eligible monthly sponsors receive access through GitHub.
 No installer is required.
 
 ## Monitoring modes
+
+<p align="center">
+  <img src="docs/assets/readme/normal-mode.png"
+       alt="MultiPingMonitor Normal mode"
+       width="1200">
+</p>
 
 ### ICMP ping
 
@@ -136,7 +159,17 @@ quick copy or Compact Set actions.
 Technical states include `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`,
 `INDETERMINATE`, and `INACTIVE`.
 
-<!-- Live Ping screenshot will be added here. -->
+<p align="center">
+  <img src="docs/assets/readme/live-ping-dns.png"
+       alt="MultiPingMonitor Live Ping DNS lookup"
+       width="31%">
+  <img src="docs/assets/readme/live-ping-tcp.png"
+       alt="MultiPingMonitor Live Ping TCP port probe"
+       width="31%">
+  <img src="docs/assets/readme/live-ping-traceroute.png"
+       alt="MultiPingMonitor Live Ping traceroute"
+       width="31%">
+</p>
 
 ## Favorites and aliases
 
@@ -153,7 +186,11 @@ Compact Mode provides small, always-visible monitoring blocks with:
 - Compact Set import and export
 - independent Normal and Compact window placement
 
-<!-- Compact Mode screenshot will be added here. -->
+<p align="center">
+  <img src="docs/assets/readme/compact-mode.png"
+       alt="MultiPingMonitor Compact Mode"
+       width="283">
+</p>
 
 ## Network Identity — Sponsor Pro
 
@@ -179,7 +216,7 @@ multi-monitor placement, and safe restoration at 100% and 125% DPI scaling.
 Normal and Compact layouts retain independent positions and avoid off-screen
 restoration.
 
-<!-- Modern, Classic, and Settings screenshots will be added here. -->
+
 
 ## Localization
 
