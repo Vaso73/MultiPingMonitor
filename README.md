@@ -19,30 +19,28 @@
 ·
 [Report an issue](https://github.com/Vaso73/MultiPingMonitor/issues)
 
-MultiPingMonitor provides an immediate view of endpoint availability, latency,
-status changes, and network identity without requiring an installer or a
-background service.
+MultiPingMonitor provides an immediate view of endpoint availability,
+latency, and status changes without requiring an installer or background
+service.
 
-It started as a derivative of
+Core features include multi-target monitoring, Live Ping, alerts, history,
+themes, portable configuration, and external language packs. Sponsor Pro adds
+Compact Mode, Compact Sets, Network Identity, and authorized in-app updates.
+
+MultiPingMonitor started as a derivative of
 [vmPing](https://github.com/r-smith/vmPing) by
-[Ryan Smith](https://github.com/r-smith) and has evolved into a portable-first
-Windows monitoring application with Live Ping, alerts, history, customizable
-appearance, external language packs, DPI-safe window placement, automatic
-updates, and Sponsor Pro compact monitoring workflows.
+[Ryan Smith](https://github.com/r-smith).
 
 ## Why MultiPingMonitor?
 
-- Monitor many hosts simultaneously from one window
-- Detect availability and latency changes in real time
+- Monitor multiple hosts and services from one window
 - Probe ICMP, TCP ports, DNS resolution, and traceroute
-- Open dedicated Live Ping windows for focused diagnostics
+- Open independent Live Ping diagnostic windows
 - Receive popup, audio, and email alerts
+- Save favorites and readable target aliases
 - Keep status history and optional log files
-- Save recurring targets as favorites
-- Assign readable aliases to monitored targets
 - Run portably without an installer
-- Preserve window placement across displays and DPI configurations
-- Switch language, visual style, and theme from Settings
+- Support multiple displays, DPI scaling, themes, and languages
 
 ## Editions
 
@@ -130,157 +128,69 @@ MultiPingMonitor also provides:
 
 ## Live Ping
 
-Live Ping opens a dedicated real-time monitoring window for a selected target.
+Live Ping opens an independent real-time diagnostic window for a selected
+target. Multiple windows can run simultaneously and provide latency,
+packet-loss counters, pause and resume controls, always-on-top operation, and
+quick copy or Compact Set actions.
 
-It provides focused latency and packet-loss information independently from the
-main monitoring window. Multiple Live Ping windows can be used for different
-targets.
-
-Technical status labels include:
-
-```text
-UP
-DOWN
-ERROR
-HIGH LATENCY
-INDETERMINATE
-INACTIVE
-```
-
-The default labels remain technically recognizable but their displayed text can
-be customized through external language packs.
+Technical states include `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`,
+`INDETERMINATE`, and `INACTIVE`.
 
 <!-- Live Ping screenshot will be added here. -->
 
 ## Favorites and aliases
 
-Favorites let you save and restore recurring monitoring groups.
-
-Aliases provide readable names for IP addresses, hostnames, and service
-targets.
-
-Typical use cases include:
-
-- homelab infrastructure
-- gateways and WAN links
-- servers and virtual machines
-- switches and access points
-- cameras and network appliances
-- public or private service endpoints
-- customer and site monitoring groups
+Favorites save recurring monitoring groups for quick reuse. Aliases replace
+technical hostnames or IP addresses with readable target names.
 
 ## Compact Mode — Sponsor Pro
 
-Compact Mode is designed for small, always-visible monitoring blocks.
-
-It includes:
+Compact Mode provides small, always-visible monitoring blocks with:
 
 - dedicated Compact Sets
-- independent Compact Mode target data
-- custom compact targets
-- data source switching
+- independent compact targets and data sources
 - manual and drag-and-drop ordering
 - Compact Set import and export
 - independent Normal and Compact window placement
-- quick switching between normal and compact layouts
-
-Compact Mode is useful when monitoring should remain visible without occupying
-a full desktop window.
 
 <!-- Compact Mode screenshot will be added here. -->
 
 ## Network Identity — Sponsor Pro
 
-Network Identity provides a compact overview of the current network connection.
+Network Identity can display WAN and LAN addresses, provider, ASN, country,
+lookup state, scheduled checks, and WAN-address change notifications. Address
+values can be copied directly from the interface.
 
-Depending on available data, it can display:
+## Alerts, history, and appearance
 
-- WAN IP
-- LAN IP
-- provider
-- ASN
-- country
-- last WAN check
-- next scheduled check
-- lookup state
-- WAN IP change notifications
+MultiPingMonitor supports:
 
-WAN and LAN values can be copied directly from the interface.
+- popup, audio, and email alerts
+- status history, filtering, export, and optional log files
+- Modern and Classic visual styles
+- built-in light and dark themes
+- Windows light/dark automatic theme selection
+- themed controls and status indicators
 
-## Alerts, history, and logging
+## Desktop integration
 
-MultiPingMonitor can react to status changes with:
-
-- popup notifications
-- audio alerts
-- email alerts
-- status-history records
-- filtered history views
-- history export
-- optional log-file output
-
-Alerts can be configured without requiring a separate monitoring service.
-
-## Appearance
-
-MultiPingMonitor supports both **Modern** and **Classic** visual styles.
-
-It also provides multiple built-in light and dark themes, themed controls,
-status indicators, custom window chrome, and layouts suitable for normal and
-reduced window sizes.
-
-The Auto theme follows the Windows light or dark preference.
+The application supports notification-area operation, start minimized,
+multi-monitor placement, and safe restoration at 100% and 125% DPI scaling.
+Normal and Compact layouts retain independent positions and avoid off-screen
+restoration.
 
 <!-- Modern, Classic, and Settings screenshots will be added here. -->
 
-## Window placement and DPI handling
-
-Window placement is saved in WPF logical units rather than raw physical pixels.
-
-This provides:
-
-- correct restoration after restart
-- safe behavior across different display arrangements
-- support for 100% and 125% scaling
-- independent Normal and Compact placement
-- exact restoration on the same machine
-- a safe portable fallback on another computer or monitor topology
-- protection against off-screen restoration and recursive shrinking
-
-## System tray
-
-MultiPingMonitor can operate from the Windows notification area.
-
-Available workflows include:
-
-- start minimized
-- restore the main window
-- open Settings
-- create another application instance
-- open Compact Set management
-- exit the application cleanly
-
 ## Localization
 
-English is built into the application as the fallback language.
+English is built in as the fallback language. Slovak and additional external
+`.lang` files can be selected from Settings without rebuilding the application.
 
-MultiPingMonitor also supports:
+Language packs are stored in the `lang` directory beside
+`MultiPingMonitor.exe`. The application can create the Slovak `sk-SK.lang`
+seed while preserving user-edited text.
 
-- Slovak localization
-- immediate language switching from Settings
-- `System (OS default)` language selection
-- external `.lang` files
-- discovery of additional language packs beside the executable
-- preservation of user-edited language-pack text
-
-External language packs are stored in the `lang` directory beside
-`MultiPingMonitor.exe`.
-
-The application creates the Slovak `sk-SK.lang` seed when required. Additional
-valid `.lang` files can provide other languages without rebuilding the
-application.
-
-## Portable by design
+## Portable operation and updates
 
 The canonical Sponsor Pro package contains exactly one application file:
 
@@ -288,79 +198,40 @@ The canonical Sponsor Pro package contains exactly one application file:
 MultiPingMonitor.exe
 ```
 
-Runtime configuration is stored beside the executable:
+Configuration and language packs are stored beside the executable, so the
+application should be run from a normal writable folder.
 
-```text
-MultiPingMonitor.xml
-```
-
-Additional portable data, such as language packs and machine-specific window
-placement, is created beside the application when required.
-
-Run MultiPingMonitor from a normal writable folder rather than a protected
-Windows system directory.
-
-## In-app updates
-
-Current Sponsor Pro builds can check for authorized private releases and install
-them from inside the application.
-
-The updater:
-
-- checks the available Sponsor Pro version
-- validates expected release metadata
-- downloads the authorized package
-- replaces the executable transactionally
-- preserves portable configuration
-- restarts into the installed version
-- removes temporary update files after success
+Authorized Sponsor Pro releases can be installed through the in-app updater.
+The updater preserves portable configuration, restarts into the installed
+version, and removes temporary update files after success.
 
 The Free release channel remains available through public GitHub Releases.
 
 ## Command-line support
 
-MultiPingMonitor supports starting with targets and selected runtime options.
+MultiPingMonitor can start with targets, input files, minimized operation, and
+selected probe settings. The built-in **Usage** window contains the current
+syntax and examples.
 
-The built-in **Usage** window documents the currently supported parameters,
-input-file syntax, and command-line examples.
-
-## Build from source
+## Build and publish
 
 Requirements:
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - a Windows-capable .NET build environment
 
-Clone and build:
-
 ```bash
 git clone https://github.com/Vaso73/MultiPingMonitor.git
 cd MultiPingMonitor
 dotnet restore MultiPingMonitor.sln
 dotnet build MultiPingMonitor.sln -c Release
-```
-
-Run from source:
-
-```bash
-dotnet run --project MultiPingMonitor/MultiPingMonitor.csproj
-```
-
-Run the automated tests:
-
-```bash
 dotnet test MultiPingMonitor.sln -c Release
 ```
 
-## Single-file publish
-
-Create the portable Windows x64 executable:
+Create the canonical portable Windows x64 executable:
 
 ```bash
-dotnet publish \
-  MultiPingMonitor/MultiPingMonitor.csproj \
-  -c Release \
-  -p:PublishProfile=SingleFile
+dotnet publish   MultiPingMonitor/MultiPingMonitor.csproj   -c Release   -p:PublishProfile=SingleFile
 ```
 
 Expected output:
@@ -369,40 +240,14 @@ Expected output:
 MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe
 ```
 
-The canonical portable package contains exactly one
-`MultiPingMonitor.exe`.
-
-`FolderPublish.pubxml` is intended only for development diagnostics and is not
-the canonical Sponsor Pro release artifact.
-
-## Project status
-
-MultiPingMonitor is actively maintained.
-
-Current distribution model:
-
-- public Free releases through `v0.4.6`
-- ongoing Sponsor Pro releases through the private sponsor channel
-- portable single-file delivery
-- authorized Sponsor Pro in-app updates
-- English fallback with external language-pack support
-
-Issues and reproducible bug reports are welcome through
-[GitHub Issues](https://github.com/Vaso73/MultiPingMonitor/issues).
+The canonical package contains exactly one `MultiPingMonitor.exe`.
+`FolderPublish.pubxml` is intended only for development diagnostics.
 
 ## Why sponsor?
 
-Sponsorship supports continued work on:
-
-- monitoring and diagnostic features
-- Compact Mode workflows
-- visual and accessibility improvements
-- localization
-- updater reliability
-- portable deployment
-- Windows display and DPI compatibility
-
-Eligible tiers also provide access to current Sponsor Pro builds.
+Sponsorship supports continued work on monitoring, diagnostics, Compact Mode,
+localization, updater reliability, and Windows display compatibility. Eligible
+tiers also receive access to current Sponsor Pro builds.
 
 [Become a sponsor](https://github.com/sponsors/Vaso73)
 
