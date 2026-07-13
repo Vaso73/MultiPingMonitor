@@ -29,6 +29,7 @@
     <Compile Include="..\MultiPingMonitor\Classes\LanguageRuntimeService.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\WindowPlacementGeometry.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\WindowPlacementStorage.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\LivePingActionState.cs" />
     <Compile Include="..\MultiPingMonitor\Properties\Strings.Designer.cs"
              Link="Properties\Strings.Designer.cs" />
   </ItemGroup>
