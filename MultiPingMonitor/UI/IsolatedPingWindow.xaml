@@ -210,7 +210,7 @@
                          FontSize="{Binding Type, Converter={StaticResource ProbeTypeToFontSizeConverter}}"
                          Text="{Binding Path=HistoryAsString, Mode=OneWay}">
                     <TextBox.Resources>
-                        <Style TargetType="{x:Type ScrollBar}">
+                        <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource ScrollBarStyle.App}">
                             <Setter Property="Opacity" Value="0.4"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">

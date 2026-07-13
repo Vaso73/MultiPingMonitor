@@ -220,3 +220,32 @@ Workflow note:
 - Accepted diagnostic SHA-256:
   `fb00f59589186c62e0ce892e7e755bfa934c58dcdd772925b00a9adee76baa10`.
 - Final state: `closed/accepted`, committed locally, not pushed.
+
+## 2026-07-13 — Combined visual polish accepted locally
+
+- Sponsor Pro v1.1.2 remained the accepted runtime baseline.
+- The combined visual-polish implementation was completed on
+  `fix/live-ping-visual-polish`.
+- Scope contained six tracked application XAML files and three new regression
+  test files.
+- Added visible disabled states for Live Ping actions in Modern and Classic
+  styles.
+- Added the shared resizable-window inset frame behavior.
+- Replaced legacy scrollbar templates with shared themed vertical,
+  horizontal, probe and Compact variants.
+- Added vertical scrolling to all eight Settings tabs while preserving the
+  fixed footer.
+- Release build completed with zero warnings and zero errors.
+- Targeted visual/layout tests passed 2/2, 3/3 and 4/4.
+- Complete automated suite passed 477/477.
+- Single-file publish produced exactly one `MultiPingMonitor.exe`.
+- Accepted preview size: `163504244` bytes.
+- Accepted preview SHA-256:
+  `65333e1e08977f47c3042bc5620063a6be67be00e51f4f6f4ef1ada852ec9d65`.
+- Windows runtime validation passed for disabled states, Modern and Classic
+  borders, Settings scrolling, wheel scrolling, thumb dragging, track-click
+  paging and Compact scrollbar appearance.
+- The user explicitly approved publication through the complete GitHub and
+  Sponsor Pro release workflow.
+- Final acceptance of the next release remains pending in-app updater
+  validation.
