@@ -1,6 +1,6 @@
 # MultiPingMonitor
 
-**Portable Windows network monitoring for multiple hosts, services, and DNS targets from one desktop application.**
+**Know what is online, slow or unreachable — before it becomes a bigger problem.**
 
 [![Free release](https://img.shields.io/github/v/release/Vaso73/MultiPingMonitor?label=Free%20release&sort=semver)](https://github.com/Vaso73/MultiPingMonitor/releases)
 [![Public downloads](https://img.shields.io/github/downloads/Vaso73/MultiPingMonitor/total?label=Public%20downloads)](https://github.com/Vaso73/MultiPingMonitor/releases)
@@ -13,60 +13,122 @@
   <picture>
     <source srcset="docs/assets/readme/overview-demo.webp" type="image/webp">
     <img src="docs/assets/readme/overview-demo.gif"
-         alt="MultiPingMonitor Normal mode, Compact Mode and Live Ping overview"
+         alt="MultiPingMonitor Normal Mode, Compact Mode and Live Ping overview"
          width="960">
   </picture>
 </p>
 
 <p align="center">
-  <img src="docs/assets/readme/hero-modern.png"
-       alt="MultiPingMonitor portable Windows network monitoring"
+  <strong><a href="https://github.com/sponsors/Vaso73">Sponsor development &amp; get Sponsor Pro</a></strong>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Try the Free edition</a>
+  &nbsp;·&nbsp;
+  <a href="#compare-editions">Compare editions</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Vaso73/MultiPingMonitor/issues">Report an issue</a>
+</p>
+
+<p align="center">
+  <sub>Portable single EXE · No installer · Local configuration · Windows 10/11 · English fallback · External language packs in Sponsor Pro</sub>
+</p>
+
+Monitor hosts, TCP services, DNS resolution, and network routes from one
+portable Windows application. No installer, no background service, and no
+complicated setup.
+
+MultiPingMonitor gives network administrators, infrastructure operators,
+managed IT teams, and homelab users one place to see availability, latency,
+status changes, and focused diagnostics.
+
+## See problems sooner
+
+- **See failures immediately.** Keep many hosts and services visible in one status view.
+- **Watch the endpoints that matter.** Monitor ICMP, TCP ports, DNS resolution, and routes.
+- **Diagnose without switching tools.** Open focused Live Ping windows for active investigation.
+- **Keep critical services visible.** Use Compact Mode and reusable Compact Sets in Sponsor Pro.
+
+<a id="compare-editions"></a>
+## Compare editions
+
+The **Free edition** is a stable, feature-frozen release for trying the core
+multi-target monitoring workflow. Public Free releases currently end at
+**v0.4.6**.
+
+**Sponsor Pro** is the actively developed edition with current diagnostics,
+compact workflows, Network Identity, private releases, and authorized in-app
+updates.
+
+| Capability | Free v0.4.6 | Sponsor Pro |
+|---|:---:|:---:|
+| Normal multi-target monitoring | ✅ | ✅ |
+| ICMP, TCP, DNS, and traceroute probes | ✅ | ✅ |
+| Favorites and aliases | ✅ | ✅ |
+| Popup, audio, and email alerts | ✅ | ✅ |
+| Status history and optional logging | ✅ | ✅ |
+| Built-in themes | ✅ | ✅ |
+| Live Ping diagnostic windows | — | ✅ |
+| Compact Mode | — | ✅ |
+| Reusable Compact Sets | — | ✅ |
+| Network Identity | — | ✅ |
+| External `.lang` language packs | — | ✅ |
+| Current feature development | — | ✅ |
+| Authorized in-app updates | — | ✅ |
+| Private current releases | — | ✅ |
+
+<p align="center">
+  <strong><a href="https://github.com/sponsors/Vaso73">Get Sponsor Pro through GitHub Sponsors</a></strong>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Download Free v0.4.6</a>
+</p>
+
+## Why Sponsor Pro?
+
+Sponsor Pro is designed for users who want the current supported application
+and more efficient day-to-day monitoring workflows:
+
+- keep critical services visible without occupying the desktop;
+- organize reusable monitoring groups with Compact Sets;
+- investigate targets in independent Live Ping windows;
+- see WAN/LAN identity and WAN-address changes through Network Identity;
+- install authorized current releases from inside the application;
+- support continued development and Windows compatibility work.
+
+## Product tour
+
+### Normal Mode
+
+Monitor many hosts and services from one window with clear status, latency,
+aliases, actions, and history.
+
+<p align="center">
+  <img src="docs/assets/readme/normal-mode.png"
+       alt="MultiPingMonitor Normal Mode"
        width="1200">
 </p>
 
-[Download Free](https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6)
-·
-[Sponsor Pro](https://github.com/sponsors/Vaso73)
-·
-[Report an issue](https://github.com/Vaso73/MultiPingMonitor/issues)
+### Live Ping — Sponsor Pro
 
-MultiPingMonitor provides an immediate view of endpoint availability,
-latency, and status changes without requiring an installer or background
-service.
+Open independent real-time diagnostic windows for selected targets. Multiple
+windows can run simultaneously and provide latency, packet-loss counters,
+pause/resume controls, always-on-top operation, and quick target actions.
 
-Core features include multi-target monitoring, Live Ping, alerts, history,
-themes, portable configuration, and external language packs. Sponsor Pro adds
-Compact Mode, Compact Sets, Network Identity, and authorized in-app updates.
+<p align="center">
+  <img src="docs/assets/readme/live-ping-modes.png"
+       alt="MultiPingMonitor Live Ping DNS, TCP port probe and traceroute"
+       width="960">
+</p>
 
-MultiPingMonitor started as a derivative of
-[vmPing](https://github.com/r-smith/vmPing) by
-[Ryan Smith](https://github.com/r-smith).
+### Compact Mode — Sponsor Pro
 
-## Why MultiPingMonitor?
+Keep selected services visible in a narrow always-on-screen layout. Compact
+Sets provide reusable target groups, ordering, start/stop control, and import
+or export.
 
-- Monitor multiple hosts and services from one window
-- Probe ICMP, TCP ports, DNS resolution, and traceroute
-- Open independent Live Ping diagnostic windows
-- Receive popup, audio, and email alerts
-- Save favorites and readable target aliases
-- Keep status history and optional log files
-- Run portably without an installer
-- Support multiple displays, DPI scaling, themes, and languages
-
-## Editions
-
-MultiPingMonitor is distributed through two release channels.
-
-| Edition | Access | Intended use |
-|---|---|---|
-| **Free** | Public GitHub Releases through `v0.4.6` | Multi-target monitoring, favorites, aliases, alerts, logging, themes, and portable use |
-| **Sponsor Pro** | Private releases for eligible [GitHub Sponsors](https://github.com/sponsors/Vaso73) | Compact Mode, Compact Sets, Network Identity, current Pro development, and authorized in-app updates |
-
-The public Free release line currently ends at **v0.4.6**, the final public
-release before Compact Mode was introduced.
-
-Sponsor Pro builds are delivered through a private sponsor-only release
-channel. Eligible monthly sponsors receive access through GitHub.
+<p align="center">
+  <img src="docs/assets/readme/compact-mode.png"
+       alt="MultiPingMonitor Compact Mode"
+       width="283">
+</p>
 
 ## Quick start
 
@@ -87,98 +149,34 @@ channel. Eligible monthly sponsors receive access through GitHub.
 
 No installer is required.
 
-## Monitoring modes
+## Monitoring syntax
 
-<p align="center">
-  <img src="docs/assets/readme/normal-mode.png"
-       alt="MultiPingMonitor Normal mode"
-       width="1200">
-</p>
+| Probe | Syntax | Example |
+|---|---|---|
+| ICMP | `host` or `IP` | `1.1.1.1` |
+| TCP port | `host:port` or `IP:port` | `example.com:443` |
+| DNS resolution | `D/host` | `D/example.com` |
+| Traceroute | `T/host` or `T/IP` | `T/192.0.2.1` |
 
-### ICMP ping
-
-Enter a hostname or IP address to start continuous ICMP monitoring.
-
-```text
-1.1.1.1
-gateway.example.net
-192.168.1.1
-```
-
-### TCP port probe
-
-Append `:<port>` to a hostname or IP address:
-
-```text
-example.com:443
-192.168.1.10:22
-ns1.example.com:53
-```
-
-### DNS resolution probe
-
-Prefix the hostname with `D/`:
-
-```text
-D/example.com
-D/ns1.example.com
-```
-
-### Traceroute
-
-Prefix a hostname or IP address with `T/`:
-
-```text
-T/example.com
-T/192.168.1.1
-```
-
-### Additional diagnostics
-
-MultiPingMonitor also provides:
-
-- flood-host testing
-- configurable interval and timeout
-- configurable TTL and packet size
-- quick target actions
-- focused monitoring windows
-
-## Live Ping
-
-Live Ping opens an independent real-time diagnostic window for a selected
-target. Multiple windows can run simultaneously and provide latency,
-packet-loss counters, pause and resume controls, always-on-top operation, and
-quick copy or Compact Set actions.
+Additional controls include configurable interval, timeout, TTL, packet size,
+flood-host testing, quick target actions, and focused monitoring windows.
 
 Technical states include `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`,
 `INDETERMINATE`, and `INACTIVE`.
 
-<p align="center">
-  <img src="docs/assets/readme/live-ping-modes.png"
-       alt="MultiPingMonitor Live Ping DNS, TCP port probe and traceroute"
-       width="960">
-</p>
-
-## Favorites and aliases
+## Favorites, aliases, alerts, and history
 
 Favorites save recurring monitoring groups for quick reuse. Aliases replace
-technical hostnames or IP addresses with readable target names.
+technical hostnames or IP addresses with readable names.
 
-## Compact Mode — Sponsor Pro
+MultiPingMonitor also supports:
 
-Compact Mode provides small, always-visible monitoring blocks with:
-
-- dedicated Compact Sets
-- independent compact targets and data sources
-- manual and drag-and-drop ordering
-- Compact Set import and export
-- independent Normal and Compact window placement
-
-<p align="center">
-  <img src="docs/assets/readme/compact-mode.png"
-       alt="MultiPingMonitor Compact Mode"
-       width="283">
-</p>
+- popup, audio, and email alerts;
+- status history, filtering, export, and optional log files;
+- Modern and Classic visual styles;
+- built-in light and dark themes;
+- automatic Windows light/dark theme selection;
+- themed controls and status indicators.
 
 ## Network Identity — Sponsor Pro
 
@@ -186,36 +184,19 @@ Network Identity can display WAN and LAN addresses, provider, ASN, country,
 lookup state, scheduled checks, and WAN-address change notifications. Address
 values can be copied directly from the interface.
 
-## Alerts, history, and appearance
-
-MultiPingMonitor supports:
-
-- popup, audio, and email alerts
-- status history, filtering, export, and optional log files
-- Modern and Classic visual styles
-- built-in light and dark themes
-- Windows light/dark automatic theme selection
-- themed controls and status indicators
-
-## Desktop integration
-
-The application supports notification-area operation, start minimized,
-multi-monitor placement, and safe restoration at 100% and 125% DPI scaling.
-Normal and Compact layouts retain independent positions and avoid off-screen
-restoration.
-
-
-
 ## Localization
 
-English is built in as the fallback language. Slovak and additional external
-`.lang` files can be selected from Settings without rebuilding the application.
+English is built in as the fallback language.
 
-Language packs are stored in the `lang` directory beside
-`MultiPingMonitor.exe`. The application can create the Slovak `sk-SK.lang`
-seed while preserving user-edited text.
+Sponsor Pro supports external `.lang` files selected from Settings without
+rebuilding the application. Language packs are stored in the `lang` directory
+beside `MultiPingMonitor.exe`. The application can create the Slovak
+`sk-SK.lang` seed while preserving user-edited text.
 
 ## Portable operation and updates
+
+MultiPingMonitor runs from a normal writable folder and keeps its portable
+configuration beside the executable.
 
 The canonical Sponsor Pro package contains exactly one application file:
 
@@ -223,22 +204,23 @@ The canonical Sponsor Pro package contains exactly one application file:
 MultiPingMonitor.exe
 ```
 
-Configuration and language packs are stored beside the executable, so the
-application should be run from a normal writable folder.
-
 Authorized Sponsor Pro releases can be installed through the in-app updater.
 The updater preserves portable configuration, restarts into the installed
 version, and removes temporary update files after success.
 
 The Free release channel remains available through public GitHub Releases.
 
-## Command-line support
+## Desktop and command-line integration
 
-MultiPingMonitor can start with targets, input files, minimized operation, and
-selected probe settings. The built-in **Usage** window contains the current
+The application supports notification-area operation, start minimized,
+multi-monitor placement, and safe window restoration at common DPI settings.
+
+MultiPingMonitor can also start with targets, input files, minimized operation,
+and selected probe settings. The built-in **Usage** window contains the current
 syntax and examples.
 
-## Build and publish
+<details>
+<summary><strong>Build from source</strong></summary>
 
 Requirements:
 
@@ -256,7 +238,7 @@ dotnet test MultiPingMonitor.sln -c Release
 Create the canonical portable Windows x64 executable:
 
 ```bash
-dotnet publish   MultiPingMonitor/MultiPingMonitor.csproj   -c Release   -p:PublishProfile=SingleFile
+dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -p:PublishProfile=SingleFile
 ```
 
 Expected output:
@@ -265,16 +247,19 @@ Expected output:
 MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe
 ```
 
-The canonical package contains exactly one `MultiPingMonitor.exe`.
 `FolderPublish.pubxml` is intended only for development diagnostics.
 
-## Why sponsor?
+</details>
 
-Sponsorship supports continued work on monitoring, diagnostics, Compact Mode,
+## Support continued development
+
+Sponsorship funds continued work on monitoring, diagnostics, Compact Mode,
 localization, updater reliability, and Windows display compatibility. Eligible
-tiers also receive access to current Sponsor Pro builds.
+tiers receive access to current Sponsor Pro builds.
 
-[Become a sponsor](https://github.com/sponsors/Vaso73)
+<p align="center">
+  <strong><a href="https://github.com/sponsors/Vaso73">Support development &amp; get Sponsor Pro</a></strong>
+</p>
 
 ## License
 
@@ -283,5 +268,6 @@ See [LICENSE](LICENSE).
 ## Attribution
 
 MultiPingMonitor is derived from
-[vmPing](https://github.com/r-smith/vmPing) by Ryan Smith, originally released
-under the MIT License.
+[vmPing](https://github.com/r-smith/vmPing) by
+[Ryan Smith](https://github.com/r-smith), originally released under the MIT
+License.
