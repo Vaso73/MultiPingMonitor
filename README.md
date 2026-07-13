@@ -2,6 +2,17 @@
 
 **Portable Windows network monitoring for multiple hosts, services, and DNS targets from one desktop application.**
 
+[![Free release](https://img.shields.io/github/v/release/Vaso73/MultiPingMonitor?label=Free%20release&sort=semver)](https://github.com/Vaso73/MultiPingMonitor/releases)
+[![Public downloads](https://img.shields.io/github/downloads/Vaso73/MultiPingMonitor/total?label=Public%20downloads)](https://github.com/Vaso73/MultiPingMonitor/releases)
+[![License](https://img.shields.io/github/license/Vaso73/MultiPingMonitor)](LICENSE)
+![Windows](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4?logo=windows11&logoColor=white)
+![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)
+[![Sponsor Pro](https://img.shields.io/badge/Sponsor%20Pro-GitHub%20Sponsors-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Vaso73)
+
+<!-- Short animated GIF/WebP demonstration will be added here. -->
+
+<!-- README hero screenshot will be added here. -->
+
 [Download Free](https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6)
 ·
 [Sponsor Pro](https://github.com/sponsors/Vaso73)
@@ -19,15 +30,11 @@ Windows monitoring application with Live Ping, alerts, history, customizable
 appearance, external language packs, DPI-safe window placement, automatic
 updates, and Sponsor Pro compact monitoring workflows.
 
-<!-- README hero screenshot will be added here. -->
-
-<!-- Short animated GIF/WebP demonstration will be added here. -->
-
 ## Why MultiPingMonitor?
 
 - Monitor many hosts simultaneously from one window
 - Detect availability and latency changes in real time
-- Probe ICMP, TCP ports, and DNS resolution
+- Probe ICMP, TCP ports, DNS resolution, and traceroute
 - Open dedicated Live Ping windows for focused diagnostics
 - Receive popup, audio, and email alerts
 - Keep status history and optional log files
@@ -85,11 +92,12 @@ gateway.example.net
 
 ### TCP port probe
 
-Prefix the target with a TCP port:
+Append `:<port>` to a hostname or IP address:
 
 ```text
-443/example.com
-22/192.168.1.10
+example.com:443
+192.168.1.10:22
+ns1.example.com:53
 ```
 
 ### DNS resolution probe
@@ -98,13 +106,22 @@ Prefix the hostname with `D/`:
 
 ```text
 D/example.com
+D/ns1.example.com
+```
+
+### Traceroute
+
+Prefix a hostname or IP address with `T/`:
+
+```text
+T/example.com
+T/192.168.1.1
 ```
 
 ### Additional diagnostics
 
 MultiPingMonitor also provides:
 
-- traceroute
 - flood-host testing
 - configurable interval and timeout
 - configurable TTL and packet size
