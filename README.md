@@ -53,12 +53,6 @@ MultiPingMonitor started as a derivative of
 - Run portably without an installer
 - Support multiple displays, DPI scaling, themes, and languages
 
-<p align="center">
-  <img src="docs/assets/readme/application-modes.png"
-       alt="MultiPingMonitor Normal mode, Compact Mode and Live Ping diagnostics"
-       width="1200">
-</p>
-
 ## Editions
 
 MultiPingMonitor is distributed through two release channels.
@@ -160,15 +154,9 @@ Technical states include `UP`, `DOWN`, `ERROR`, `HIGH LATENCY`,
 `INDETERMINATE`, and `INACTIVE`.
 
 <p align="center">
-  <img src="docs/assets/readme/live-ping-dns.png"
-       alt="MultiPingMonitor Live Ping DNS lookup"
-       width="31%">
-  <img src="docs/assets/readme/live-ping-tcp.png"
-       alt="MultiPingMonitor Live Ping TCP port probe"
-       width="31%">
-  <img src="docs/assets/readme/live-ping-traceroute.png"
-       alt="MultiPingMonitor Live Ping traceroute"
-       width="31%">
+  <img src="docs/assets/readme/live-ping-modes.png"
+       alt="MultiPingMonitor Live Ping DNS, TCP port probe and traceroute"
+       width="960">
 </p>
 
 ## Favorites and aliases
