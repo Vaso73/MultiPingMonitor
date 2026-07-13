@@ -6,7 +6,6 @@
 [![Public downloads](https://img.shields.io/github/downloads/Vaso73/MultiPingMonitor/total?label=Public%20downloads)](https://github.com/Vaso73/MultiPingMonitor/releases)
 [![License](https://img.shields.io/github/license/Vaso73/MultiPingMonitor)](LICENSE)
 ![Windows](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4?logo=windows11&logoColor=white)
-![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)
 [![Sponsor Pro](https://img.shields.io/badge/Sponsor%20Pro-GitHub%20Sponsors-EA4AAA?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Vaso73)
 
 <p align="center">
@@ -36,16 +35,15 @@ Monitor hosts, TCP services, DNS resolution, and network routes from one
 portable Windows application. No installer, no background service, and no
 complicated setup.
 
-MultiPingMonitor gives network administrators, infrastructure operators,
-managed IT teams, and homelab users one place to see availability, latency,
-status changes, and focused diagnostics.
+Get a clear, calm view of the systems that matter without turning the desktop
+into another source of noise.
 
-## See problems sooner
+## Stay informed without adding noise
 
-- **See failures immediately.** Keep many hosts and services visible in one status view.
-- **Watch the endpoints that matter.** Monitor ICMP, TCP ports, DNS resolution, and routes.
-- **Diagnose without switching tools.** Open focused Live Ping windows for active investigation.
-- **Keep critical services visible.** Use Compact Mode and reusable Compact Sets in Sponsor Pro.
+- **See what needs attention.** Keep many hosts and services together in one clear status view.
+- **Watch many targets at once.** Monitor ICMP, TCP ports, DNS resolution, and routes.
+- **Move from signal to diagnosis.** Open a focused Live Ping window when a target needs investigation.
+- **Keep important services quietly visible.** Use Compact Mode and reusable Compact Sets in Sponsor Pro.
 
 <a id="compare-editions"></a>
 ## Compare editions
@@ -57,6 +55,10 @@ multi-target monitoring workflow. Public Free releases currently end at
 **Sponsor Pro** is the actively developed edition with current diagnostics,
 compact workflows, Network Identity, private releases, and authorized in-app
 updates.
+
+Start with Free to see whether the workflow fits. Sponsor Pro is available when
+you want the current supported release and compact operational tools for daily
+use.
 
 | Capability | Free v0.4.6 | Sponsor Pro |
 |---|:---:|:---:|
@@ -83,14 +85,16 @@ updates.
 
 ## Why Sponsor Pro?
 
-Sponsor Pro is designed for users who want the current supported application
-and more efficient day-to-day monitoring workflows:
+Free is a simple way to try the core monitoring workflow. Sponsor Pro becomes
+most useful when MultiPingMonitor is part of your daily operations.
 
-- keep critical services visible without occupying the desktop;
-- organize reusable monitoring groups with Compact Sets;
-- investigate targets in independent Live Ping windows;
-- see WAN/LAN identity and WAN-address changes through Network Identity;
-- install authorized current releases from inside the application;
+It provides a calmer, more efficient way to stay in control:
+
+- keep critical services visible without filling the desktop;
+- move between reusable monitoring groups with Compact Sets;
+- investigate a target in a focused Live Ping window;
+- see relevant WAN/LAN identity and WAN-address changes;
+- stay on the current supported release with authorized in-app updates;
 - support continued development and Windows compatibility work.
 
 ## Product tour
@@ -129,6 +133,18 @@ or export.
        alt="MultiPingMonitor Compact Mode"
        width="283">
 </p>
+
+## Built for everyday operations
+
+MultiPingMonitor fits environments where a small, clear desktop view
+complements existing monitoring tools:
+
+- network administrators and infrastructure operators;
+- ISPs and managed IT support;
+- homelabs and self-hosted environments;
+- servers, virtual machines, and gateways;
+- switches, access points, and cameras;
+- DNS, web, and other TCP services.
 
 ## Quick start
 
@@ -253,9 +269,10 @@ MultiPingMonitor/bin/publish/single-file/MultiPingMonitor.exe
 
 ## Support continued development
 
-Sponsorship funds continued work on monitoring, diagnostics, Compact Mode,
-localization, updater reliability, and Windows display compatibility. Eligible
-tiers receive access to current Sponsor Pro builds.
+Try the Free edition at your own pace. When Sponsor Pro fits your workflow, an
+eligible sponsorship tier provides access to current Sponsor Pro builds while
+funding continued work on monitoring, diagnostics, Compact Mode, localization,
+updater reliability, and Windows display compatibility.
 
 <p align="center">
   <strong><a href="https://github.com/sponsors/Vaso73">Support development &amp; get Sponsor Pro</a></strong>
