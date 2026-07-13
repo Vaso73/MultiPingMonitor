@@ -171,10 +171,20 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{DynamicResource Style.Window.CornerRadius}" />
         <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="UseLayoutRounding" Value="True" />
         <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ResizeMode}" Value="CanResize">
+                <Setter Property="Margin" Value="1" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ResizeMode}" Value="CanResizeWithGrip">
+                <Setter Property="Margin" Value="1" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="Margin" Value="0" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -373,6 +383,14 @@
                             <Setter TargetName="border" Property="Background"
                                     Value="{DynamicResource Theme.AccentHover}" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Surface}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Border}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.40" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -413,6 +431,14 @@
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="border" Property="Background"
                                     Value="{DynamicResource Theme.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background"
+                                    Value="{DynamicResource Theme.Surface}" />
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{DynamicResource Theme.Border}" />
+                            <Setter TargetName="border" Property="Opacity" Value="0.40" />
+                            <Setter Property="Cursor" Value="Arrow" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
