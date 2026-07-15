@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using Xunit;
 
@@ -29,6 +29,67 @@ namespace MultiPingMonitor.Tests
 
             Assert.Contains(
                 "WindowPlacementService.SaveWindow(this, PlacementKeyForMode(ApplicationOptions.CurrentDisplayMode));",
+                source);
+        }
+
+        [Fact]
+        public void MainWindow_InitialAttachUsesMachineProfileOnly()
+        {
+            string source =
+                File.ReadAllText(FindMainWindowSource());
+
+            Assert.Contains(
+                "WindowPlacementService.HasMachinePlacement(",
+                source);
+
+            Assert.Contains(
+                "allowPortableFallback: false",
+                source);
+
+            Assert.Contains(
+                "ApplyDefaultPlacement(" +
+                Environment.NewLine +
+                "                                initialDisplayMode," +
+                Environment.NewLine +
+                "                                usePrimaryMonitor: true)",
+                source);
+        }
+
+        [Fact]
+        public void MainWindow_ModeSwitchRejectsPortablePlacement()
+        {
+            string source =
+                File.ReadAllText(FindMainWindowSource());
+
+            Assert.Contains(
+                "WindowPlacementService.HasMachinePlacement(PlacementKeyForMode(targetMode))",
+                source);
+
+            Assert.Contains(
+                "WindowPlacementService.RestoreWindow(this, PlacementKeyForMode(targetMode), allowPortableFallback: false);",
+                source);
+        }
+
+        [Fact]
+        public void MainWindow_FirstMachineDefaultsAreDpiAwareAndEdgeAnchored()
+        {
+            string source =
+                File.ReadAllText(FindMainWindowSource());
+
+            Assert.Contains(
+                "System.Windows.Forms.Screen.PrimaryScreen",
+                source);
+
+            Assert.Contains(
+                "TransformFromDevice",
+                source);
+
+            Assert.Contains(
+                "workingArea.Bottom - height - verticalMargin",
+                source);
+
+            Assert.Contains(
+                "workingArea.Right - width - horizontalMargin",
                 source);
         }
 

@@ -35,8 +35,9 @@ namespace MultiPingMonitor.UI
         private System.Drawing.Icon _trayIconOffline;
 
         // Tracks the last aggregate state to avoid redundant icon/tooltip updates.
-        private enum TrayAggregateState { Neutral, Online, Offline }
-        private TrayAggregateState _trayState = TrayAggregateState.Neutral;
+        // Unknown is an invalidation sentinel used when the selected monitoring context changes.
+        private enum TrayAggregateState { Unknown, Neutral, Online, Offline }
+        private TrayAggregateState _trayState = TrayAggregateState.Unknown;
 
         // Shadow set of probes whose PropertyChanged is currently subscribed.
         // Required to cleanly unsubscribe on ObservableCollection Reset (Clear()),
@@ -136,17 +137,40 @@ namespace MultiPingMonitor.UI
             // The footer itself remains visible only in Compact mode.
             EnsureNetworkIdentityService();
 
-            // Attach window placement using a mode-specific key so Normal and Compact
-            // each remember their own position and size independently.
-            // MainWindow saves the outgoing mode during mode switching and
-            // saves the current mode explicitly before Configuration.Save().
-            // A static Attach closing key would overwrite the other mode when
-            // the application closes in a mode different from its startup mode.
+            // Attach MainWindow to the exact profile for this computer.
+            // Portable placement from another computer must not position the
+            // main window during the first run on a new machine.
+            var initialDisplayMode =
+                ApplicationOptions.CurrentDisplayMode;
+            string initialPlacementKey =
+                PlacementKeyForMode(initialDisplayMode);
+            bool hasInitialMachinePlacement =
+                WindowPlacementService.HasMachinePlacement(
+                    initialPlacementKey);
+
             WindowPlacementService.Attach(
                 this,
-                PlacementKeyForMode(
-                    ApplicationOptions.CurrentDisplayMode),
-                saveOnClosing: false);
+                initialPlacementKey,
+                saveOnClosing: false,
+                allowPortableFallback: false);
+
+            if (!hasInitialMachinePlacement)
+            {
+                EventHandler initialPlacementHandler = null;
+                initialPlacementHandler = (s, e) =>
+                {
+                    ContentRendered -= initialPlacementHandler;
+
+                    Dispatcher.BeginInvoke(
+                        System.Windows.Threading.DispatcherPriority.Loaded,
+                        new Action(
+                            () => ApplyDefaultPlacement(
+                                initialDisplayMode,
+                                usePrimaryMonitor: true)));
+                };
+
+                ContentRendered += initialPlacementHandler;
+            }
         }
 
         /// <summary>
@@ -563,14 +587,15 @@ namespace MultiPingMonitor.UI
             ApplicationOptions.CurrentDisplayMode = targetMode;
             ApplyDisplayMode(targetMode);
 
-            // Restore saved bounds for the target mode (if any).
-            if (WindowPlacementService.HasPlacement(PlacementKeyForMode(targetMode)))
+            // Restore only the exact profile for this computer. A portable
+            // placement from another computer is not a valid local layout.
+            if (WindowPlacementService.HasMachinePlacement(PlacementKeyForMode(targetMode)))
             {
-                WindowPlacementService.RestoreWindow(this, PlacementKeyForMode(targetMode));
+                WindowPlacementService.RestoreWindow(this, PlacementKeyForMode(targetMode), allowPortableFallback: false);
             }
             else
             {
-                // First switch to this mode: apply reasonable defaults.
+                // First use of this mode on this computer.
                 ApplyDefaultPlacement(targetMode);
             }
 
@@ -578,7 +603,7 @@ namespace MultiPingMonitor.UI
             UpdateTrayToggleText();
 
             // Force tray aggregate state to re-evaluate from the new active collection.
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
 
             // Persist immediately.
@@ -590,24 +615,142 @@ namespace MultiPingMonitor.UI
         /// that has no saved placement yet. Centers the new bounds on the current
         /// monitor to avoid a jarring position jump.
         /// </summary>
-        private void ApplyDefaultPlacement(ApplicationOptions.DisplayMode mode)
+        private void ApplyDefaultPlacement(
+            ApplicationOptions.DisplayMode mode,
+            bool usePrimaryMonitor = false)
         {
+            const double defaultPlacementMargin = 16.0;
+
+            System.Windows.Forms.Screen screen =
+                usePrimaryMonitor
+                    ? System.Windows.Forms.Screen.PrimaryScreen
+                    : System.Windows.Forms.Screen.FromHandle(
+                        new System.Windows.Interop.WindowInteropHelper(
+                            this).Handle);
+
+            if (screen == null)
+                return;
+
+            // Screen.WorkingArea is in physical pixels. Convert it to WPF
+            // device-independent pixels using the DPI of the current window.
+            var presentationSource =
+                PresentationSource.FromVisual(this);
+
+            System.Windows.Media.Matrix fromDevice;
+
+            if (presentationSource?.CompositionTarget != null)
+            {
+                fromDevice =
+                    presentationSource.CompositionTarget.TransformFromDevice;
+            }
+            else
+            {
+                System.Windows.DpiScale dpi =
+                    System.Windows.Media.VisualTreeHelper.GetDpi(this);
+
+                fromDevice = new System.Windows.Media.Matrix(
+                    1.0 / dpi.DpiScaleX,
+                    0,
+                    0,
+                    1.0 / dpi.DpiScaleY,
+                    0,
+                    0);
+            }
+
+            System.Drawing.Rectangle physicalArea =
+                screen.WorkingArea;
+
+            Point topLeft = fromDevice.Transform(
+                new Point(
+                    physicalArea.Left,
+                    physicalArea.Top));
+
+            Point bottomRight = fromDevice.Transform(
+                new Point(
+                    physicalArea.Right,
+                    physicalArea.Bottom));
+
+            var workingArea = new Rect(
+                topLeft.X,
+                topLeft.Y,
+                Math.Max(1.0, bottomRight.X - topLeft.X),
+                Math.Max(1.0, bottomRight.Y - topLeft.Y));
+
+            double requestedWidth =
+                mode == ApplicationOptions.DisplayMode.Compact
+                    ? CompactDefaultWidth
+                    : ResolveDefaultPlacementDimension(
+                        Width,
+                        ActualWidth,
+                        1000.0);
+
+            double requestedHeight =
+                mode == ApplicationOptions.DisplayMode.Compact
+                    ? CompactDefaultHeight
+                    : ResolveDefaultPlacementDimension(
+                        Height,
+                        ActualHeight,
+                        700.0);
+
+            double width = Math.Min(
+                Math.Max(1.0, requestedWidth),
+                workingArea.Width);
+
+            double height = Math.Min(
+                Math.Max(1.0, requestedHeight),
+                workingArea.Height);
+
+            double horizontalMargin = Math.Min(
+                defaultPlacementMargin,
+                Math.Max(0.0, (workingArea.Width - width) / 2.0));
+
+            double verticalMargin = Math.Min(
+                defaultPlacementMargin,
+                Math.Max(0.0, (workingArea.Height - height) / 2.0));
+
+            double left;
+            double top;
+
             if (mode == ApplicationOptions.DisplayMode.Compact)
             {
-                // Compact: slim, tall panel. Center on the current monitor.
-                var screen = System.Windows.Forms.Screen.FromRectangle(
-                    new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height));
-                var wa = screen.WorkingArea;
-
-                double newW = Math.Min(CompactDefaultWidth, wa.Width);
-                double newH = Math.Min(CompactDefaultHeight, wa.Height);
-                Left = wa.Left + (wa.Width - newW) / 2.0;
-                Top = wa.Top + (wa.Height - newH) / 2.0;
-                Width = newW;
-                Height = newH;
+                // First Compact placement: right edge, vertically centered.
+                left =
+                    workingArea.Right - width - horizontalMargin;
+                top =
+                    workingArea.Top +
+                    (workingArea.Height - height) / 2.0;
             }
-            // Normal mode fallback: keep current bounds (they came from the initial
-            // Attach placement or the XAML defaults), which is the least surprising.
+            else
+            {
+                // First Normal placement: horizontally centered at the bottom.
+                left =
+                    workingArea.Left +
+                    (workingArea.Width - width) / 2.0;
+                top =
+                    workingArea.Bottom - height - verticalMargin;
+            }
+
+            WindowStartupLocation =
+                WindowStartupLocation.Manual;
+            WindowState = WindowState.Normal;
+            Left = left;
+            Top = top;
+            Width = width;
+            Height = height;
+        }
+
+        private static double ResolveDefaultPlacementDimension(
+            double configured,
+            double actual,
+            double fallback)
+        {
+            if (double.IsFinite(configured) && configured > 0)
+                return configured;
+
+            if (double.IsFinite(actual) && actual > 0)
+                return actual;
+
+            return fallback;
         }
 
         /// <summary>
@@ -1484,6 +1627,11 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             // Scope notifications to the active monitoring context.
             ApplyNormalProbeNotificationScope();
             UpdateCompactStoppedIndicator();
+
+            // Options preview/save/cancel can call this method directly.
+            // Re-evaluate the tray from the selected monitoring context.
+            _trayState = TrayAggregateState.Unknown;
+            UpdateTrayIcon();
         }
 
         /// <summary>
@@ -1609,7 +1757,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             ApplyCompactDataSource();
             UpdateCompactSourceMenuChecks();
             // Force tray to re-evaluate from the (possibly new) active collection.
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
             Configuration.Save();
         }
@@ -1691,7 +1839,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             {
                 ApplyCompactDataSource();
             }
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
         }
 
@@ -1737,7 +1885,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
                     : CompactSetHistoryText("StatusHistory_CompactSet_Stopped", "Set stopped"));
 
             UpdateCompactStoppedIndicator();
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
             Configuration.Save();
         }
@@ -1937,7 +2085,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             }
 
             // Update tray to pick up any status change.
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
 
             // Open a Live Ping Monitor window if the checkbox was checked.
@@ -2016,7 +2164,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             UpdateCompactStartStopButton();
 
             // Update tray to pick up any status change.
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
         }
 
@@ -2285,7 +2433,7 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
             UpdateCompactStartStopButton();
 
-            _trayState = TrayAggregateState.Neutral;
+            _trayState = TrayAggregateState.Unknown;
             UpdateTrayIcon();
         }
 
@@ -3423,10 +3571,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset)
             {
                 // ObservableCollection.Clear() fires Reset with OldItems=null.
-                // Use the shadow set to unsubscribe all previously tracked probes.
-                foreach (var p in _subscribedProbes)
-                    p.PropertyChanged -= Probe_PropertyChanged;
-                _subscribedProbes.Clear();
+                // Reconcile both collections so clearing one does not unsubscribe
+                // probes that remain in the other monitoring context.
+                ReconcileProbeSubscriptions();
             }
             if (e.NewItems != null)
             {
@@ -3469,13 +3616,49 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         }
 
         /// <summary>
+        /// Reconciles PropertyChanged subscriptions against both probe collections.
+        /// A Reset from one collection must not unsubscribe probes that remain in the other.
+        /// </summary>
+        private void ReconcileProbeSubscriptions()
+        {
+            var currentProbes =
+                new System.Collections.Generic.HashSet<Probe>(_ProbeCollection);
+            currentProbes.UnionWith(_CompactProbeCollection);
+
+            foreach (var probe in
+                new System.Collections.Generic.List<Probe>(_subscribedProbes))
+            {
+                if (currentProbes.Contains(probe))
+                    continue;
+
+                probe.PropertyChanged -= Probe_PropertyChanged;
+                _subscribedProbes.Remove(probe);
+            }
+
+            foreach (var probe in currentProbes)
+            {
+                if (_subscribedProbes.Add(probe))
+                    probe.PropertyChanged += Probe_PropertyChanged;
+            }
+        }
+
+        /// <summary>
         /// Called when any property on a monitored probe changes.
         /// Refreshes the tray icon when the probe's Status changes.
         /// </summary>
         private void Probe_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Probe.Status) || e.PropertyName == nameof(Probe.IsActive))
-                UpdateTrayIcon();
+            if (e.PropertyName != nameof(Probe.Status)
+                && e.PropertyName != nameof(Probe.IsActive))
+            {
+                return;
+            }
+
+            // Background probes remain monitored, but only the currently selected
+            // Normal/Compact context is allowed to drive the tray indicator.
+            // Collection membership is evaluated later on the UI thread.
+            if (sender is Probe probe)
+                UpdateTrayIcon(probe);
         }
 
         /// <summary>
@@ -3502,21 +3685,28 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         ///   – Gray  : otherwise (no active probes with hostnames, or all indeterminate/inactive)
         /// Safe to call from any thread; all state evaluation and NotifyIcon updates run on the UI thread.
         /// </summary>
-        private void UpdateTrayIcon()
+        private void UpdateTrayIcon(Probe changedProbe = null)
         {
             if (NotifyIcon == null) return;
 
-            // Dispatch fully to the UI thread: both the collection iteration and the
+            // Dispatch fully to the UI thread: both collection access and the
             // NotifyIcon update must happen on the same thread (UI thread).
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (NotifyIcon == null) return;
 
+                var activeTrayProbes = GetActiveTrayProbeCollection();
+
+                // Status events from the background monitoring context must not
+                // drive the indicator for the currently selected context.
+                if (changedProbe != null && !activeTrayProbes.Contains(changedProbe))
+                    return;
+
                 // Determine aggregate state across all probes that are active and have a hostname.
                 bool anyOffline = false;
                 bool anyOnline  = false;
 
-                foreach (var probe in GetActiveTrayProbeCollection())
+                foreach (var probe in activeTrayProbes)
                 {
                     if (!probe.IsActive || string.IsNullOrWhiteSpace(probe.Hostname))
                         continue;
