@@ -19,6 +19,7 @@
   <!-- Compile NetworkIdentityService directly so behavioral tests can access
        internal members without needing a net8.0-windows project reference. -->
   <ItemGroup>
+    <Compile Include="..\MultiPingMonitor\Classes\ConcurrentLogFileWriter.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityService.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\NetworkIdentityDiagnostics.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\UpdateCheckService.cs" />

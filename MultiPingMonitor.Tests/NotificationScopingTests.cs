@@ -210,19 +210,24 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
-        public void ProbeUtil_WriteToLog_ChecksSuppressFileLoggingBeforeAppending()
+        public void ProbeUtil_WriteToLog_ChecksSuppressFileLoggingBeforeConcurrentAppend()
         {
             var source = File.ReadAllText(ProbeUtilSourcePath());
 
             int methodStart = source.IndexOf("private void WriteToLog(", StringComparison.Ordinal);
             Assert.True(methodStart >= 0, "WriteToLog method not found in Probe-Util.cs");
 
-            int appendIdx = source.IndexOf("File.AppendAllText", methodStart, StringComparison.Ordinal);
-            Assert.True(appendIdx > methodStart, "File.AppendAllText call not found in WriteToLog");
+            int appendIdx = source.IndexOf(
+                "ConcurrentLogFileWriter.AppendAllText",
+                methodStart,
+                StringComparison.Ordinal);
+            Assert.True(
+                appendIdx > methodStart,
+                "ConcurrentLogFileWriter.AppendAllText call not found in WriteToLog");
 
             int guardIdx = source.IndexOf("SuppressFileLogging", methodStart, StringComparison.Ordinal);
             Assert.True(guardIdx > methodStart && guardIdx < appendIdx,
-                "SuppressFileLogging check must appear before File.AppendAllText in WriteToLog");
+                "SuppressFileLogging check must appear before the concurrent append in WriteToLog");
         }
 
         [Fact]

@@ -186,7 +186,18 @@ namespace MultiPingMonitor.Classes
 
             try
             {
-                File.AppendAllText(logPath, message.Insert(1, $"{DateTime.Now.ToShortDateString()} ") + Environment.NewLine);
+                ConcurrentLogFileWriter.AppendAllText(
+                    logPath,
+                    message.Insert(1, $"{DateTime.Now.ToShortDateString()} ")
+                        + Environment.NewLine);
+            }
+            catch (IOException ex) when (ConcurrentLogFileWriter.IsSharingOrLockViolation(ex))
+            {
+                // Keep logging enabled. A later probe cycle retries automatically
+                // after the concurrent or external file lock has been released.
+                System.Diagnostics.Trace.TraceWarning(
+                    "Ping log write skipped because the file remained locked after retries: {0}",
+                    ex.Message);
             }
             catch (Exception ex)
             {
@@ -213,8 +224,17 @@ namespace MultiPingMonitor.Classes
             {
                 string expandedPath = PortablePath.ExpandTokens(ApplicationOptions.LogStatusChangesPath);
                 PortablePath.EnsureParentDirectoryExists(expandedPath);
-                File.AppendAllText(expandedPath,
+                ConcurrentLogFileWriter.AppendAllText(
+                    expandedPath,
                     $"{DateTime.Now.ToShortDateString()} {DateTime.Now.ToLongTimeString()}\t{status.Hostname}\t{status.Alias}\t{status.StatusAsString}{Environment.NewLine}");
+            }
+            catch (IOException ex) when (ConcurrentLogFileWriter.IsSharingOrLockViolation(ex))
+            {
+                // Keep logging enabled so a later status change can recover
+                // automatically after the file lock has been released.
+                System.Diagnostics.Trace.TraceWarning(
+                    "Status log write skipped because the file remained locked after retries: {0}",
+                    ex.Message);
             }
             catch (Exception ex)
             {
