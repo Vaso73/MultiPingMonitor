@@ -5,8 +5,10 @@
         Title="{x:Static resource:Strings.CompactSets_Title}"
         UseLayoutRounding="True"
         WindowStyle="None"
-        Height="520" MinHeight="400"
-        Width="680" MinWidth="500"
+        Height="560"
+        MinHeight="560"
+        Width="920"
+        MinWidth="840"
         Background="{DynamicResource Theme.Background}"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
@@ -18,137 +20,381 @@
                       CornerRadius="0" />
     </WindowChrome.WindowChrome>
 
+    <Window.Resources>
+        <Style x:Key="CompactManagerListBoxStyle"
+               TargetType="{x:Type ListBox}">
+            <Setter Property="Background"
+                    Value="{DynamicResource Theme.Surface}"/>
+            <Setter Property="Foreground"
+                    Value="{DynamicResource Theme.Text.Primary}"/>
+            <Setter Property="BorderBrush"
+                    Value="{DynamicResource Theme.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                    Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                    Value="Auto"/>
+        </Style>
+
+        <Style x:Key="CompactManagerListBoxItemStyle"
+               TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource Theme.Text.Primary}"/>
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="ItemBorder"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="1"
+                                CornerRadius="{DynamicResource Style.CornerRadius.Small}"
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Theme.SurfaceAlt}"/>
+                                <Setter TargetName="ItemBorder"
+                                        Property="BorderBrush"
+                                        Value="{DynamicResource Theme.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Theme.Accent}"/>
+                                <Setter TargetName="ItemBorder"
+                                        Property="BorderBrush"
+                                        Value="{DynamicResource Theme.Accent}"/>
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource Theme.AccentForeground}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ItemBorder"
+                                        Property="Opacity"
+                                        Value="0.45"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CompactManagerMenuItemStyle"
+               TargetType="{x:Type MenuItem}"
+               BasedOn="{StaticResource MenuItemStyle}">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource Theme.Text.Primary}"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource Theme.Text.Secondary}"/>
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Border Style="{DynamicResource Style.WindowMainPanel}">
-    <DockPanel Background="{DynamicResource Theme.Background}">
+        <DockPanel Background="{DynamicResource Theme.Background}">
 
-        <!-- Custom title bar -->
-        <Grid DockPanel.Dock="Top" Height="32" Background="{DynamicResource Theme.Surface}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Width="16" Height="16" Margin="8,0,4,0"
-                   Source="{StaticResource icon.compact-view}" />
-            <TextBlock Grid.Column="1" Style="{DynamicResource Style.TitleBar.Title}"
-                       Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-            <Button x:Name="titleBarCloseButton" Grid.Column="2" Click="OnCloseButtonClick"
-                    Style="{DynamicResource Style.TitleBarCloseButton}" AutomationProperties.Name=""
-                    ToolTip="" ToolTipService.InitialShowDelay="1000">
-                <Path Width="46" Height="32" Data="M 18,11 27,20 M 18,20 27,11"
-                      Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
-            </Button>
-        </Grid>
-        <Border DockPanel.Dock="Top" Style="{DynamicResource Style.TitleBarSeparator}" />
+            <Grid DockPanel.Dock="Top"
+                  Height="32"
+                  Background="{DynamicResource Theme.Surface}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-    <Grid Margin="9">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+                <Image Grid.Column="0"
+                       Width="16"
+                       Height="16"
+                       Margin="8,0,4,0"
+                       Source="{StaticResource icon.vmping-logo-simple}"/>
 
-        <!-- Header -->
-        <DockPanel LastChildFill="False">
-            <Image DockPanel.Dock="Left" Source="{StaticResource icon.compact-view}" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,8,0"/>
-            <TextBlock DockPanel.Dock="Left"
-                       Text="{x:Static resource:Strings.CompactSets_Header}"
-                       Style="{StaticResource OptionHeaderTextStyle}" />
+                <TextBlock Grid.Column="1"
+                           Style="{DynamicResource Style.TitleBar.Title}"
+                           Text="{Binding Path=Title, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+
+                <Button x:Name="titleBarCloseButton"
+                        Grid.Column="2"
+                        Click="OnCloseButtonClick"
+                        Style="{DynamicResource Style.TitleBarCloseButton}"
+                        AutomationProperties.Name=""
+                        ToolTip=""
+                        ToolTipService.InitialShowDelay="1000">
+                    <Path Width="46"
+                          Height="32"
+                          Data="M 18,11 27,20 M 18,20 27,11"
+                          Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                          StrokeThickness="1"/>
+                </Button>
+            </Grid>
+
+            <Border DockPanel.Dock="Top"
+                    Style="{DynamicResource Style.TitleBarSeparator}"/>
+
+            <Grid Margin="14,12,14,14">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.CompactSets_Header}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,0"/>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="LeftPaneColumn"
+                                          Width="300"
+                                          MinWidth="220"
+                                          MaxWidth="380"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"
+                                          MinWidth="360"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border x:Name="SetsCard"
+                            Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid x:Name="SetsToolbar"
+                                  Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="{x:Static resource:Strings.CompactSets_Sets}"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"
+                                           VerticalAlignment="Center"/>
+
+                                <Button x:Name="NewSetButton"
+                                        Grid.Column="1"
+                                        Style="{DynamicResource Style.ButtonStandard}"
+                                        Click="NewSet_Click"
+                                        Padding="12,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="＋"
+                                                   Margin="0,0,5,0"/>
+                                        <TextBlock Text="{x:Static resource:Strings.CompactSets_NewSet}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button x:Name="SetsMoreButton"
+                                        Grid.Column="3"
+                                        Width="40"
+                                        Padding="8,5"
+                                        Style="{DynamicResource Style.ButtonStandard}"
+                                        Content="⋯"
+                                        AutomationProperties.Name="{x:Static resource:Strings.CompactSets_Title}"
+                                        Click="SetsMoreButton_Click"/>
+                            </Grid>
+
+                            <ListBox x:Name="SetsListBox"
+                                     Grid.Row="2"
+                                     Style="{StaticResource CompactManagerListBoxStyle}"
+                                     ItemContainerStyle="{StaticResource CompactManagerListBoxItemStyle}"
+                                     SelectionChanged="SetsListBox_SelectionChanged"
+                                     AllowDrop="True"
+                                     PreviewMouseLeftButtonDown="SetsListBox_PreviewMouseLeftButtonDown"
+                                     PreviewMouseMove="SetsListBox_PreviewMouseMove"
+                                     PreviewMouseRightButtonUp="SetsListBox_PreviewMouseRightButtonUp"
+                                     DragOver="SetsListBox_DragOver"
+                                     Drop="SetsListBox_Drop">
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding ActiveMarker}"
+                                                       FontWeight="SemiBold"
+                                                       VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Name}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"/>
+
+                                            <Border Grid.Column="2"
+                                                    MinWidth="28"
+                                                    Margin="8,0,0,0"
+                                                    Padding="6,2"
+                                                    Background="{DynamicResource Theme.SurfaceAlt}"
+                                                    CornerRadius="{DynamicResource Style.CornerRadius.Small}">
+                                                <TextBlock Text="{Binding TargetCount}"
+                                                           Foreground="{DynamicResource Theme.Text.Primary}"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+
+                    <GridSplitter Grid.Column="1"
+                                  Background="Transparent"
+                                  HorizontalAlignment="Stretch"
+                                  Focusable="False"/>
+
+                    <Border x:Name="TargetsCard"
+                            Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="10"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="4"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid x:Name="TargetsToolbar"
+                                  Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock x:Name="TargetsHeader"
+                                           Grid.Column="0"
+                                           Text="{x:Static resource:Strings.CompactSets_Targets}"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"
+                                           VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+
+                                <Button x:Name="AddTargetButton"
+                                        Grid.Column="1"
+                                        Style="{DynamicResource Style.ButtonStandard}"
+                                        Click="AddTarget_Click"
+                                        Padding="12,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="＋"
+                                                   Margin="0,0,5,0"/>
+                                        <TextBlock Text="{x:Static resource:Strings.CompactSets_AddTarget}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button x:Name="EditTargetButton"
+                                        Grid.Column="3"
+                                        Style="{DynamicResource Style.ButtonStandard}"
+                                        Content="{x:Static resource:Strings.CompactSets_EditTarget}"
+                                        Padding="12,5"
+                                        Click="EditTarget_Click"/>
+
+                                <Button x:Name="RemoveTargetButton"
+                                        Grid.Column="5"
+                                        Style="{DynamicResource Style.ButtonStandard}"
+                                        Content="{x:Static resource:Strings.CompactSets_RemoveTarget}"
+                                        Padding="12,5"
+                                        Click="RemoveTarget_Click"/>
+                            </Grid>
+
+                            <Border Grid.Row="2"
+                                    Background="{DynamicResource Theme.SurfaceAlt}"
+                                    BorderBrush="{DynamicResource Theme.Border}"
+                                    BorderThickness="1"
+                                    Padding="10,6"
+                                    CornerRadius="{DynamicResource Style.CornerRadius.Small}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1.25*"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="{x:Static resource:Strings.CompactSets_Target}"
+                                               Foreground="{DynamicResource Theme.Text.Secondary}"
+                                               FontWeight="SemiBold"/>
+
+                                    <TextBlock Grid.Column="2"
+                                               Text="{x:Static resource:Strings.CompactSets_Alias}"
+                                               Foreground="{DynamicResource Theme.Text.Secondary}"
+                                               FontWeight="SemiBold"/>
+                                </Grid>
+                            </Border>
+
+                            <ListBox x:Name="TargetsListBox"
+                                     Grid.Row="4"
+                                     Style="{StaticResource CompactManagerListBoxStyle}"
+                                     ItemContainerStyle="{StaticResource CompactManagerListBoxItemStyle}"
+                                     SelectionChanged="TargetsListBox_SelectionChanged"
+                                     AllowDrop="True"
+                                     PreviewMouseLeftButtonDown="TargetsListBox_PreviewMouseLeftButtonDown"
+                                     PreviewMouseMove="TargetsListBox_PreviewMouseMove"
+                                     PreviewMouseRightButtonUp="TargetsListBox_PreviewMouseRightButtonUp"
+                                     MouseDoubleClick="TargetsListBox_MouseDoubleClick"
+                                     DragOver="TargetsListBox_DragOver"
+                                     Drop="TargetsListBox_Drop">
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.25*"/>
+                                                <ColumnDefinition Width="20"/>
+                                                <ColumnDefinition Width="1*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Target}"
+                                                       FontFamily="Consolas"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Alias}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
         </DockPanel>
-
-        <!-- Main content: split between sets list and targets list -->
-        <Grid Grid.Row="1" Margin="0,6,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="LeftPaneColumn" Width="250" MinWidth="180"/>
-                <ColumnDefinition Width="6"/>
-                <ColumnDefinition Width="*" MinWidth="200"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Left panel: Sets list -->
-            <DockPanel Grid.Column="0">
-                <TextBlock DockPanel.Dock="Top" Text="{x:Static resource:Strings.CompactSets_Sets}" FontWeight="SemiBold" Margin="0,0,0,4"
-                           Foreground="{DynamicResource Theme.Text.Primary}"/>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
-                    <Button x:Name="NewSetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_NewSet}"
-                            MinWidth="60" Click="NewSet_Click"/>
-                    <Button x:Name="RenameSetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_RenameSet}"
-                            MinWidth="60" Margin="4,0,0,0" Click="RenameSet_Click"/>
-                    <Button x:Name="DeleteSetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_DeleteSet}"
-                            MinWidth="60" Margin="4,0,0,0" Click="DeleteSet_Click"/>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="SetActiveButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_SetActive}"
-                            MinWidth="100" Click="SetActive_Click"/>
-                    <Button x:Name="MoveSetUpButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_MoveUp}"
-                            MinWidth="55" Margin="4,0,0,0" Click="MoveSetUp_Click"/>
-                    <Button x:Name="MoveSetDownButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_MoveDown}"
-                            MinWidth="55" Margin="4,0,0,0" Click="MoveSetDown_Click"/>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="ExportSelectedButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_ExportSelected}"
-                            MinWidth="95" Click="ExportSelected_Click"/>
-                    <Button x:Name="ExportAllButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_ExportAll}"
-                            MinWidth="80" Margin="4,0,0,0" Click="ExportAll_Click"/>
-                    <Button Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_Import}"
-                            MinWidth="65" Margin="4,0,0,0" Click="Import_Click"/>
-                </StackPanel>
-                <ListBox x:Name="SetsListBox"
-                         SelectionChanged="SetsListBox_SelectionChanged"
-                         HorizontalAlignment="Stretch"
-                         AllowDrop="True"
-                         PreviewMouseLeftButtonDown="SetsListBox_PreviewMouseLeftButtonDown"
-                         PreviewMouseMove="SetsListBox_PreviewMouseMove"
-                         DragOver="SetsListBox_DragOver"
-                         Drop="SetsListBox_Drop"/>
-            </DockPanel>
-
-            <!-- Splitter -->
-            <GridSplitter Grid.Column="1" Background="Transparent" HorizontalAlignment="Stretch" Focusable="False"/>
-
-            <!-- Right panel: Targets for selected set -->
-            <DockPanel Grid.Column="2">
-                <TextBlock x:Name="TargetsHeader" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,4"
-                           Foreground="{DynamicResource Theme.Text.Primary}"
-                           Text="{x:Static resource:Strings.CompactSets_Targets}"/>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,6,0,0">
-                    <Button x:Name="AddTargetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_AddTarget}"
-                            MinWidth="85" Click="AddTarget_Click"/>
-                    <Button x:Name="EditTargetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_EditTarget}"
-                            MinWidth="60" Margin="4,0,0,0" Click="EditTarget_Click"/>
-                    <Button x:Name="RemoveTargetButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_RemoveTarget}"
-                            MinWidth="70" Margin="4,0,0,0" Click="RemoveTarget_Click"/>
-                </StackPanel>
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,4,0,0">
-                    <Button x:Name="MoveTargetUpButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_MoveUp}"
-                            MinWidth="55" Click="MoveTargetUp_Click"/>
-                    <Button x:Name="MoveTargetDownButton" Style="{DynamicResource Style.ButtonStandard}"
-                            Content="{x:Static resource:Strings.CompactSets_MoveDown}"
-                            MinWidth="55" Margin="4,0,0,0" Click="MoveTargetDown_Click"/>
-                </StackPanel>
-                <ListBox x:Name="TargetsListBox"
-                         SelectionChanged="TargetsListBox_SelectionChanged"
-                         HorizontalAlignment="Stretch"
-                         FontFamily="Consolas" FontSize="13"
-                         AllowDrop="True"
-                         PreviewMouseLeftButtonDown="TargetsListBox_PreviewMouseLeftButtonDown"
-                         PreviewMouseMove="TargetsListBox_PreviewMouseMove"
-                         DragOver="TargetsListBox_DragOver"
-                         Drop="TargetsListBox_Drop"/>
-            </DockPanel>
-        </Grid>
-    </Grid>
-    </DockPanel>
     </Border>
 </Window>

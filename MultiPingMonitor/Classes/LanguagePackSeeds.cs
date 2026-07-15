@@ -312,7 +312,7 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20285, "Options_AutoUpdateFrequency_Weekly", "Once weekly", "Raz týždenne"),
                 new LanguagePackSeedEntry(20286, "Options_AutomaticUpdateCheck", "Automatically check for updates", "Automaticky kontrolovať aktualizácie"),
                 new LanguagePackSeedEntry(20287, "Options_AutomaticUpdateFrequency", "Frequency:", "Frekvencia:"),
-                new LanguagePackSeedEntry(20288, "Options_Browse", "Browse...", "Prehľadávať..."),
+                new LanguagePackSeedEntry(20288, "Options_Browse", "Browse...", "Prehľadať"),
                 new LanguagePackSeedEntry(20289, "Options_Bytes", "bytes", "bajtov"),
                 new LanguagePackSeedEntry(20290, "Options_Color_AliasForeground", "Alias Foreground", "Popredie aliasu"),
                 new LanguagePackSeedEntry(20291, "Options_Color_Down", "Down", "Nedostupný"),

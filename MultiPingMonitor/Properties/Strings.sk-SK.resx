@@ -487,7 +487,7 @@
     <value>Automaticky zavrieť upozornenia</value>
   </data>
   <data name="Options_Browse" xml:space="preserve">
-    <value>Prehľadávať...</value>
+    <value>Prehľadať</value>
   </data>
   <data name="Options_InsertAppData" xml:space="preserve">
     <value>Vložiť %APPDATA%\</value>

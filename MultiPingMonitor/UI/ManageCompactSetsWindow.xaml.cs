@@ -11,6 +11,25 @@ namespace MultiPingMonitor.UI
 {
     public partial class ManageCompactSetsWindow : Window
     {
+
+        private sealed class CompactSetListItem
+        {
+            public CompactSetListItem(
+                CompactTargetSet set,
+                bool isActive)
+            {
+                Name = set?.Name ?? string.Empty;
+                ActiveMarker = isActive ? "★" : string.Empty;
+                TargetCount = set?.Entries?.Count ?? 0;
+            }
+
+            public string Name { get; }
+
+            public string ActiveMarker { get; }
+
+            public int TargetCount { get; }
+        }
+
         private readonly MainWindow _hostMainWindow;
 
         public ManageCompactSetsWindow(MainWindow hostMainWindow)
@@ -42,10 +61,14 @@ namespace MultiPingMonitor.UI
             if (saved <= 0)
                 return; // No saved value – use XAML default.
 
-            // Clamp to the column's MinWidth.
+            // Clamp old saved values to the redesigned pane range.
             double min = LeftPaneColumn.MinWidth;
+            double max = LeftPaneColumn.MaxWidth;
+
             if (saved < min)
                 saved = min;
+            if (saved > max)
+                saved = max;
 
             LeftPaneColumn.Width = new GridLength(saved, GridUnitType.Pixel);
         }
@@ -66,17 +89,23 @@ namespace MultiPingMonitor.UI
 
             foreach (var set in ApplicationOptions.CompactSets)
             {
-                string display = set.Id == ApplicationOptions.ActiveCompactSetId
-                    ? $"{set.Name}  {Strings.CompactSets_Active}"
-                    : set.Name;
-                SetsListBox.Items.Add(display);
+                SetsListBox.Items.Add(
+                    new CompactSetListItem(
+                        set,
+                        set.Id
+                        == ApplicationOptions.ActiveCompactSetId));
             }
 
             // Restore selection.
-            if (previousSelection >= 0 && previousSelection < SetsListBox.Items.Count)
+            if (previousSelection >= 0
+                && previousSelection < SetsListBox.Items.Count)
+            {
                 SetsListBox.SelectedIndex = previousSelection;
+            }
             else if (SetsListBox.Items.Count > 0)
+            {
                 SetsListBox.SelectedIndex = 0;
+            }
 
             UpdateButtonStates();
         }
@@ -103,28 +132,12 @@ namespace MultiPingMonitor.UI
         private void UpdateButtonStates()
         {
             bool hasSet = SetsListBox.SelectedIndex >= 0;
-            int setIdx = SetsListBox.SelectedIndex;
-            int setCount = ApplicationOptions.CompactSets.Count;
-
-            RenameSetButton.IsEnabled = hasSet;
-            DeleteSetButton.IsEnabled = hasSet;
-            SetActiveButton.IsEnabled = hasSet;
             AddTargetButton.IsEnabled = hasSet;
-            ExportSelectedButton.IsEnabled = hasSet;
-            ExportAllButton.IsEnabled = setCount > 0;
 
-            MoveSetUpButton.IsEnabled = hasSet && setIdx > 0;
-            MoveSetDownButton.IsEnabled = hasSet && setIdx < setCount - 1;
-
-            bool hasTarget = TargetsListBox.SelectedIndex >= 0;
+            bool hasTarget =
+                hasSet && TargetsListBox.SelectedIndex >= 0;
             EditTargetButton.IsEnabled = hasTarget;
             RemoveTargetButton.IsEnabled = hasTarget;
-
-            var set = GetSelectedSet();
-            int targetIdx = TargetsListBox.SelectedIndex;
-            int targetCount = set?.Entries.Count ?? 0;
-            MoveTargetUpButton.IsEnabled = hasTarget && targetIdx > 0;
-            MoveTargetDownButton.IsEnabled = hasTarget && targetIdx < targetCount - 1;
         }
 
         // ── Set operations ────────────────────────────────────────────────────
@@ -421,14 +434,12 @@ namespace MultiPingMonitor.UI
                 return;
             }
 
-            TargetsHeader.Text = $"{set.Name} – {Strings.CompactSets_Targets}";
+            TargetsHeader.Text =
+                $"{set.Name}  ·  {set.Entries.Count}";
 
             foreach (var entry in set.Entries)
             {
-                string display = !string.IsNullOrWhiteSpace(entry.Alias)
-                    ? $"{entry.Target}  →  {entry.Alias}"
-                    : entry.Target;
-                TargetsListBox.Items.Add(display);
+                TargetsListBox.Items.Add(entry);
             }
 
             UpdateButtonStates();
@@ -569,6 +580,239 @@ namespace MultiPingMonitor.UI
                 return new CompactTargetEntry(target, dialog.Value2);
             }
             return null;
+        }
+
+
+        // ── Compact manager interactions ──────────────────────────────────────
+
+        private ContextMenu CreateThemedContextMenu()
+        {
+            var menu = new ContextMenu();
+            var style = TryFindResource("Style.ContextMenu") as Style;
+            if (style != null)
+                menu.Style = style;
+            return menu;
+        }
+
+        private MenuItem CreateThemedMenuItem(
+            string header,
+            RoutedEventHandler clickHandler,
+            bool isEnabled = true)
+        {
+            var item = new MenuItem
+            {
+                Header = header,
+                IsEnabled = isEnabled
+            };
+
+            var style =
+                TryFindResource(
+                    "CompactManagerMenuItemStyle") as Style;
+            if (style != null)
+                item.Style = style;
+
+            item.Click += clickHandler;
+            return item;
+        }
+
+        private static void AddMenuSeparator(ContextMenu menu)
+        {
+            menu.Items.Add(new Separator());
+        }
+
+        private ContextMenu CreateSetsContextMenu()
+        {
+            bool hasSet = SetsListBox.SelectedIndex >= 0;
+            int setIndex = SetsListBox.SelectedIndex;
+            int setCount = ApplicationOptions.CompactSets.Count;
+            var selectedSet = GetSelectedSet();
+
+            var menu = CreateThemedContextMenu();
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_NewSet,
+                    NewSet_Click));
+
+            AddMenuSeparator(menu);
+
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_SetActive,
+                    SetActive_Click,
+                    hasSet && !IsActiveSet(selectedSet)));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_RenameSet,
+                    RenameSet_Click,
+                    hasSet));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_MoveUp,
+                    MoveSetUp_Click,
+                    hasSet && setIndex > 0));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_MoveDown,
+                    MoveSetDown_Click,
+                    hasSet && setIndex < setCount - 1));
+
+            AddMenuSeparator(menu);
+
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_ExportSelected,
+                    ExportSelected_Click,
+                    hasSet));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_ExportAll,
+                    ExportAll_Click,
+                    setCount > 0));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_Import,
+                    Import_Click));
+
+            AddMenuSeparator(menu);
+
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_DeleteSet,
+                    DeleteSet_Click,
+                    hasSet));
+
+            return menu;
+        }
+
+        private ContextMenu CreateTargetsContextMenu()
+        {
+            bool hasSet = GetSelectedSet() != null;
+            bool hasTarget =
+                hasSet && TargetsListBox.SelectedIndex >= 0;
+            int targetIndex = TargetsListBox.SelectedIndex;
+            int targetCount =
+                GetSelectedSet()?.Entries.Count ?? 0;
+
+            var menu = CreateThemedContextMenu();
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_AddTarget,
+                    AddTarget_Click,
+                    hasSet));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_EditTarget,
+                    EditTarget_Click,
+                    hasTarget));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_RemoveTarget,
+                    RemoveTarget_Click,
+                    hasTarget));
+
+            AddMenuSeparator(menu);
+
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_MoveUp,
+                    MoveTargetUp_Click,
+                    hasTarget && targetIndex > 0));
+            menu.Items.Add(
+                CreateThemedMenuItem(
+                    Strings.CompactSets_MoveDown,
+                    MoveTargetDown_Click,
+                    hasTarget
+                    && targetIndex < targetCount - 1));
+
+            return menu;
+        }
+
+        private static void OpenContextMenu(
+            ContextMenu menu,
+            UIElement placementTarget,
+            System.Windows.Controls.Primitives.PlacementMode placement)
+        {
+            menu.PlacementTarget = placementTarget;
+            menu.Placement = placement;
+
+            if (placement
+                == System.Windows.Controls.Primitives.PlacementMode.Bottom)
+            {
+                menu.VerticalOffset = 4;
+            }
+
+            menu.IsOpen = true;
+        }
+
+        private void SetsMoreButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            OpenContextMenu(
+                CreateSetsContextMenu(),
+                sender as UIElement ?? SetsMoreButton,
+                System.Windows.Controls.Primitives.PlacementMode.Bottom);
+        }
+
+        private static bool SelectItemUnderPointer(
+            ListBox listBox,
+            MouseButtonEventArgs e)
+        {
+            var source = e.OriginalSource as DependencyObject;
+            var item = source == null
+                ? null
+                : ItemsControl.ContainerFromElement(
+                    listBox,
+                    source) as ListBoxItem;
+
+            if (item == null)
+                return false;
+
+            item.IsSelected = true;
+            item.Focus();
+            return true;
+        }
+
+        private void SetsListBox_PreviewMouseRightButtonUp(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            SelectItemUnderPointer(SetsListBox, e);
+
+            OpenContextMenu(
+                CreateSetsContextMenu(),
+                SetsListBox,
+                System.Windows.Controls.Primitives.PlacementMode.MousePoint);
+
+            e.Handled = true;
+        }
+
+        private void TargetsListBox_PreviewMouseRightButtonUp(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            SelectItemUnderPointer(TargetsListBox, e);
+
+            OpenContextMenu(
+                CreateTargetsContextMenu(),
+                TargetsListBox,
+                System.Windows.Controls.Primitives.PlacementMode.MousePoint);
+
+            e.Handled = true;
+        }
+
+        private void TargetsListBox_MouseDoubleClick(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left)
+                return;
+
+            if (!SelectItemUnderPointer(TargetsListBox, e))
+                return;
+
+            EditTarget_Click(sender, new RoutedEventArgs());
+            e.Handled = true;
         }
 
         // ── Drag-and-drop reorder (sets) ──────────────────────────────────────
