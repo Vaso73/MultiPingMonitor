@@ -120,6 +120,47 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
+        public void ExistingLanguagePack_UpgradesKnownLegacyBrowseDefault()
+        {
+            LanguagePackService.EnsureSeedLanguagePacks();
+            var file = LanguagePackService.SlovakLanguagePackPath;
+            var original = File.ReadAllText(file);
+
+            try
+            {
+                var legacy = Regex.Replace(
+                    original,
+                    @"KEY := 20288 \|\| SOURCE := Browse\.\.\. \|\| TEXT := .*",
+                    "KEY := 20288 || SOURCE := Browse... || TEXT := Prehľadávať...");
+
+                File.WriteAllText(file, legacy);
+                LanguagePackService.EnsureSeedLanguagePacks();
+
+                var upgraded = File.ReadAllText(file);
+                Assert.Contains(
+                    "KEY := 20288 || SOURCE := Browse... || TEXT := Prehľadať",
+                    upgraded);
+
+                var customized = Regex.Replace(
+                    upgraded,
+                    @"KEY := 20288 \|\| SOURCE := Browse\.\.\. \|\| TEXT := .*",
+                    "KEY := 20288 || SOURCE := Browse... || TEXT := MOJE HĽADAŤ");
+
+                File.WriteAllText(file, customized);
+                LanguagePackService.EnsureSeedLanguagePacks();
+
+                var preserved = File.ReadAllText(file);
+                Assert.Contains(
+                    "KEY := 20288 || SOURCE := Browse... || TEXT := MOJE HĽADAŤ",
+                    preserved);
+            }
+            finally
+            {
+                File.WriteAllText(file, original);
+            }
+        }
+
+        [Fact]
         public void ExternalLanguageResourceManager_UsesExternalTranslationAndEnglishFallback()
         {
             var fallback = new TestResourceManager();

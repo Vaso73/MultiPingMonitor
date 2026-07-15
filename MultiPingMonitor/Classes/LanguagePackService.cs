@@ -53,6 +53,9 @@ namespace MultiPingMonitor.Classes
                 @"^KEY\s*:=\s*(?<key>[0-9]+)\s*\|\|\s*SOURCE\s*:=\s*(?<source>.*?)\s*\|\|\s*TEXT\s*:=\s*(?<text>.*)$",
                 RegexOptions.Compiled);
 
+        private const int BrowseLanguagePackKey = 20288;
+        private const string LegacyBrowseTranslation = "Prehľadávať...";
+
         public static string LanguageDirectory =>
             Path.Combine(AppContext.BaseDirectory, "lang");
 
@@ -241,6 +244,16 @@ namespace MultiPingMonitor.Classes
         private static void MergeMissingSeedEntries(string filePath, IReadOnlyList<LanguagePackSeedEntry> entries)
         {
             var existingText = File.ReadAllText(filePath, Encoding.UTF8);
+            var upgradedText = UpgradeKnownSeedDefaults(existingText, entries);
+            if (!string.Equals(upgradedText, existingText, StringComparison.Ordinal))
+            {
+                File.WriteAllText(
+                    filePath,
+                    upgradedText,
+                    new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                existingText = upgradedText;
+            }
+
             var existingKeys = new HashSet<int>();
 
             foreach (var line in existingText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
@@ -272,6 +285,62 @@ namespace MultiPingMonitor.Classes
             }
 
             File.AppendAllText(filePath, builder.ToString(), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        }
+
+        private static string UpgradeKnownSeedDefaults(
+            string existingText,
+            IReadOnlyList<LanguagePackSeedEntry> entries)
+        {
+            var currentBrowse = entries.FirstOrDefault(
+                entry => entry.Key == BrowseLanguagePackKey);
+
+            if (currentBrowse.Key != BrowseLanguagePackKey)
+                return existingText;
+
+            string newline = existingText.Contains("\r\n", StringComparison.Ordinal)
+                ? "\r\n"
+                : "\n";
+
+            var lines = existingText.Split(
+                new[] { "\r\n", "\n" },
+                StringSplitOptions.None);
+
+            bool changed = false;
+            for (int index = 0; index < lines.Length; index++)
+            {
+                var match = EntryRegex.Match(lines[index]);
+                if (!match.Success)
+                    continue;
+
+                if (!int.TryParse(
+                        match.Groups["key"].Value,
+                        NumberStyles.None,
+                        CultureInfo.InvariantCulture,
+                        out var key)
+                    || key != BrowseLanguagePackKey)
+                {
+                    continue;
+                }
+
+                if (!string.Equals(
+                        Unescape(match.Groups["text"].Value),
+                        LegacyBrowseTranslation,
+                        StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var builder = new StringBuilder();
+                AppendEntry(builder, currentBrowse);
+                lines[index] = builder
+                    .ToString()
+                    .TrimEnd('\r', '\n');
+                changed = true;
+            }
+
+            return changed
+                ? string.Join(newline, lines)
+                : existingText;
         }
 
         private static void AppendHeader(

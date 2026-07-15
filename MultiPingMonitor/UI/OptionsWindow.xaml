@@ -5,10 +5,10 @@
         Title="{x:Static resource:Strings.Options_Title}"
         UseLayoutRounding="True"
         WindowStyle="None"
-        Height="540"
-        Width="640"
-        MinHeight="500"
-        MinWidth="640"
+        Height="640"
+        Width="940"
+        MinHeight="560"
+        MinWidth="840"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Background="{DynamicResource Theme.Background}">
@@ -65,678 +65,909 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl TabStripPlacement="Left" HorizontalContentAlignment="Left">
+        <TabControl x:Name="SettingsTabControl"
+                    Grid.Row="0"
+                    Style="{DynamicResource Style.SettingsTabControl}"
+                    TabStripPlacement="Left">
             <!-- Tab: General -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_General}" Name="GeneralTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0" LastChildFill="False">
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_ProbeOptions}"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
-                    <!-- Ping interval -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_PingInterval}"
-                                   Width="200"/>
-                        <TextBox Name="PingInterval"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="5"/>
-                        <ComboBox Name="PingIntervalUnits" Width="100" Margin="10,0,0,0">
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Seconds}" IsSelected="True"/>
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Minutes}"/>
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Hours}"/>
-                        </ComboBox>
-                    </StackPanel>
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_General}"
+         Name="GeneralTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.menu.options}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Ping timeout -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_PingTimeout}"
-                                   Width="200"/>
-                        <TextBox Name="PingTimeout"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="2"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Tab_General}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,10"/>
 
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <!-- Alert threshold -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_AlertThreshold}"
-                                   Width="155"/>
-                        <TextBox Name="AlertThreshold"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="2"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_DroppedPings}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- Latency detection separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
-
-                    <!-- Latency detection header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_LatencyDetection}"
-                               Style="{StaticResource OptionSubHeaderTextStyle}"/>
-
-                    <!-- Latency detection mode -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,8,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_DetectionMode}"
-                                   Width="155"/>
-                        <ComboBox Name="LatencyDetectionMode" Width="80">
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Off}"/>
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Auto}"/>
-                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Fixed}"/>
-                        </ComboBox>
-                    </StackPanel>
-
-                    <!-- High latency threshold -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,8,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_HighLatency}"
-                                   Width="155"/>
-                        <TextBox Name="HighLatencyMilliseconds"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="6"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Ms}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- High latency trigger count -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,8,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_LatencyTriggers}"
-                                   Width="155"/>
-                        <TextBox Name="HighLatencyTriggerCount"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="3"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Probes}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
-
-
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
-
-                    <!-- Automatic update check -->
-                    <TextBlock x:Name="AutomaticUpdateHeader"
-                               DockPanel.Dock="Top"
-                               Text="Updates"
-                               Margin="0,10,0,10"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
-
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,5,0,0">
-                        <CheckBox x:Name="AutomaticUpdateCheckEnabled"
-                                  DockPanel.Dock="Left"
-                                  Content="Automatically check for updates"/>
-                    </DockPanel>
-
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0"
-                                IsEnabled="{Binding IsChecked, ElementName=AutomaticUpdateCheckEnabled}">
-                        <TextBlock x:Name="AutomaticUpdateCheckFrequencyLabel"
-                                   Text="Frequency:"
-                                   Width="200"/>
-                        <ComboBox x:Name="AutomaticUpdateCheckFrequency"
-                                  Width="160"/>
-                    </StackPanel>
-
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock x:Name="LastAutomaticUpdateCheckLabel"
-                                   Text="Last check:"
-                                   Width="200"/>
-                        <TextBlock x:Name="LastAutomaticUpdateCheck"
-                                   Text="Never"
-                                   Foreground="{DynamicResource Theme.Text.Secondary}"/>
-                    </StackPanel>
-                    <!-- Startup header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_Startup}"
-                               Margin="0,25,0,10"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_StartupPrompt}"
-                               Margin="0,0,0,5"/>
-                    <!-- Startup mode selection -->
-                    <ComboBox DockPanel.Dock="Top"
-                              Name="StartupMode"
-                              Width="200">
-                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupBlank}" Tag="Standard" IsSelected="True"/>
-                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupListInput}" Tag="Standard"/>
-                        <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupFavorite}" Tag="Favorite"/>
-                    </ComboBox>
-                    <!-- Initial probe / column count -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,13,0,0">
-                        <!-- Style to control visibility based on selected startup mode -->
-                        <StackPanel.Style>
-                            <Style>
-                                <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=StartupMode, Path=SelectedItem.Tag}" Value="Standard">
-                                        <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                        <!-- Probe count -->
-                        <StackPanel Margin="0,0,30,0">
-                            <TextBlock Text="{x:Static resource:Strings.Options_ProbeCount}"
-                                       Margin="0,0,0,4"/>
-                            <TextBox Name="InitialProbeCount"
-                                     PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                     Width="60"
-                                     HorizontalAlignment="Left"
-                                     MaxLength="2"/>
-                        </StackPanel>
-                        <!-- Column count-->
+                    <Border Grid.Row="0"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
                         <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_ColumnCount}"
-                                       Margin="0,0,0,4"/>
-                            <TextBox Name="InitialColumnCount"
-                                     PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                     Width="60"
-                                     HorizontalAlignment="Left"
-                                     MaxLength="2"/>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_ProbeOptions}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
+
+                            <Grid Margin="0,2,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_PingInterval}"
+                                               Margin="0,0,0,4"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Name="PingInterval"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="58"
+                                                 MaxLength="5"/>
+                                        <ComboBox Name="PingIntervalUnits"
+                                                  Width="98"
+                                                  Margin="8,0,0,0">
+                                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Seconds}"
+                                                          IsSelected="True"/>
+                                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Minutes}"/>
+                                            <ComboBoxItem Content="{x:Static resource:Strings.Options_Hours}"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_PingTimeout}"
+                                               Margin="0,0,0,4"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Name="PingTimeout"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="58"
+                                                 MaxLength="2"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_AlertThreshold}"
+                                               Margin="0,0,0,4"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Name="AlertThreshold"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="44"
+                                                 MaxLength="2"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_DroppedPings}"
+                                                   Margin="6,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
-                    </StackPanel>
-                    <!-- Select a favorite -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,13,0,0">
-                        <!-- Style to control visibility based on selected startup mode -->
-                        <StackPanel.Style>
-                            <Style>
-                                <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=StartupMode, Path=SelectedItem.Tag}" Value="Favorite">
-                                        <Setter Property="StackPanel.Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                        <!-- Favorite selection -->
-                        <StackPanel Margin="0,0,35,0">
-                            <TextBlock Text="{x:Static resource:Strings.Options_SelectFavorite}"
-                                       Margin="0,0,0,4"/>
-                            <ComboBox DockPanel.Dock="Top"
-                                      Name="InitialFavorite"
-                                      Width="250">
+                    </Border>
+
+                    <Border Grid.Row="2"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_LatencyDetection}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
+
+                            <Grid Margin="0,2,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_DetectionMode}"
+                                               Margin="0,0,0,4"/>
+                                    <ComboBox Name="LatencyDetectionMode"
+                                              Width="150"
+                                              HorizontalAlignment="Left">
+                                        <ComboBoxItem Content="{x:Static resource:Strings.Options_Off}"/>
+                                        <ComboBoxItem Content="{x:Static resource:Strings.Options_Auto}"/>
+                                        <ComboBoxItem Content="{x:Static resource:Strings.Options_Fixed}"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_HighLatency}"
+                                               Margin="0,0,0,4"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Name="HighLatencyMilliseconds"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="64"
+                                                 MaxLength="6"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_Ms}"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_LatencyTriggers}"
+                                               Margin="0,0,0,4"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Name="HighLatencyTriggerCount"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="64"
+                                                 MaxLength="3"/>
+                                        <TextBlock Text="{x:Static resource:Strings.Options_Probes}"
+                                                   Margin="8,0,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                            <StackPanel>
+                                <TextBlock x:Name="AutomaticUpdateHeader"
+                                           Text="Updates"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"/>
+
+                                <CheckBox x:Name="AutomaticUpdateCheckEnabled"
+                                          Margin="0,0,0,8"
+                                          Content="Automatically check for updates"/>
+
+                                <StackPanel IsEnabled="{Binding IsChecked, ElementName=AutomaticUpdateCheckEnabled}">
+                                    <TextBlock x:Name="AutomaticUpdateCheckFrequencyLabel"
+                                               Text="Frequency:"
+                                               Margin="0,0,0,4"/>
+                                    <ComboBox x:Name="AutomaticUpdateCheckFrequency"
+                                              Width="220"
+                                              HorizontalAlignment="Left"/>
+
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Name="LastAutomaticUpdateCheckLabel"
+                                                   Text="Last check:"
+                                                   Margin="0,0,10,0"/>
+                                        <TextBlock x:Name="LastAutomaticUpdateCheck"
+                                                   Grid.Column="1"
+                                                   Text="Never"
+                                                   Foreground="{DynamicResource Theme.Text.Secondary}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Column="2"
+                                Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_Startup}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
+
+                            <TextBlock Text="{x:Static resource:Strings.Options_StartupPrompt}"
+                                       Foreground="{DynamicResource Theme.Text.Secondary}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,6"/>
+
+                            <ComboBox Name="StartupMode"
+                                      Width="220"
+                                      HorizontalAlignment="Left">
+                                <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupBlank}"
+                                              Tag="Standard"
+                                              IsSelected="True"/>
+                                <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupListInput}"
+                                              Tag="Standard"/>
+                                <ComboBoxItem Content="{x:Static resource:Strings.Options_StartupFavorite}"
+                                              Tag="Favorite"/>
                             </ComboBox>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,10,0,0">
+                                <StackPanel.Style>
+                                    <Style>
+                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=StartupMode, Path=SelectedItem.Tag}"
+                                                         Value="Standard">
+                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <StackPanel Margin="0,0,24,0">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_ProbeCount}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBox Name="InitialProbeCount"
+                                             PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                             Width="60"
+                                             HorizontalAlignment="Left"
+                                             MaxLength="2"/>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_ColumnCount}"
+                                               Margin="0,0,0,4"/>
+                                    <TextBox Name="InitialColumnCount"
+                                             PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                             Width="60"
+                                             HorizontalAlignment="Left"
+                                             MaxLength="2"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,10,0,0">
+                                <StackPanel.Style>
+                                    <Style>
+                                        <Setter Property="StackPanel.Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=StartupMode, Path=SelectedItem.Tag}"
+                                                         Value="Favorite">
+                                                <Setter Property="StackPanel.Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+
+                                <TextBlock Text="{x:Static resource:Strings.Options_SelectFavorite}"
+                                           Margin="0,0,0,4"/>
+                                <ComboBox Name="InitialFavorite"
+                                          Width="260"
+                                          HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </DockPanel>
-                    </ScrollViewer>
-                </Border>
-            </TabItem>
+                    </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
 
             <!-- Tab: Advanced -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Advanced}" Name="AdvancedTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0" LastChildFill="False">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Advanced}"
+         Name="AdvancedTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.menu.traceroute}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_AdvancedICMP}"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Header_AdvancedICMP}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,14"/>
 
-                    <!-- TTL -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_TTL}"
-                                   Width="135"/>
-                        <TextBox Name="TTL"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="80"
-                                 MaxLength="3"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Hops}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_AdvancedICMP}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
 
-                    <!-- Packet size -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0">
-                        <RadioButton GroupName="IcmpData"
-                                     Content="{x:Static resource:Strings.Options_PacketDataSize}"
-                                     Name="PacketSizeOption"
-                                     Checked="PacketSizeOption_Checked"
-                                     IsChecked="True"
-                                     Width="160"/>
-                        <TextBox Name="PacketSize"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 TextChanged="PacketData_TextChanged"
-                                 Width="80"
-                                 MaxLength="5"
-                                 Visibility="{Binding IsChecked, ElementName=PacketSizeOption, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Bytes}" Margin="10,0,0,0"
-                                   Visibility="{Binding IsChecked, ElementName=PacketSizeOption, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"/>
-                    </StackPanel>
+                            <Grid Margin="0,4,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                    <!-- Packet data -->
-                    <DockPanel DockPanel.Dock="Top"
-                                Margin="0,7,0,0">
-                        <RadioButton GroupName="IcmpData"
-                                     Content="{x:Static resource:Strings.Options_CustomPacketData}"
-                                     Name="UseCustomPacketOption"
-                                     Checked="UseCustomPacketOption_Checked"
-                                     DockPanel.Dock="Left"
-                                     VerticalAlignment="Top"
-                                     Width="160"/>
-                        <TextBox Name="PacketData"
-                                 TextChanged="PacketData_TextChanged"
-                                 Height="80"
-                                 DockPanel.Dock="Right"
-                                 VerticalContentAlignment="Top"
-                                 TextWrapping="Wrap"
-                                 AcceptsReturn="True"
-                                 VerticalScrollBarVisibility="Auto"
-                                 MaxLength="65500"
-                                 Visibility="{Binding IsChecked, ElementName=UseCustomPacketOption, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    </DockPanel>
+                                <TextBlock Text="{x:Static resource:Strings.Options_TTL}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,4,12,4"/>
+                                <StackPanel Grid.Column="1"
+                                            Orientation="Horizontal"
+                                            Margin="0,4,0,4">
+                                    <TextBox Name="TTL"
+                                             PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                             Width="74"
+                                             MaxLength="3"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_Hops}"
+                                               Margin="8,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
 
-                    <!-- Total packet size -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,15,0,0">
-                        <TextBlock Foreground="{DynamicResource Theme.Text.Primary}"
-                                   Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
-                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
-                                   Name="Bytes"
-                                   Margin="6,0,4,0"
-                                   Text="64"/>
-                        <TextBlock Foreground="{DynamicResource Theme.Accent}"
-                                   Text="{x:Static resource:Strings.Options_Bytes}"/>
-                    </StackPanel>
+                            <DockPanel LastChildFill="False"
+                                       Margin="0,8,0,0">
+                                <CheckBox DockPanel.Dock="Left"
+                                          Name="DontFragment"
+                                          Content="{x:Static resource:Strings.Options_DontFragment}"/>
+                                <Label DockPanel.Dock="Left"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_DontFragment}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </DockPanel>
+                        </StackPanel>
+                    </Border>
 
-                    <!-- Separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20"/>
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_PacketDataSize}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
 
-                    <!-- Fragment / Don't fragment -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="DontFragment"
-                                  Content="{x:Static resource:Strings.Options_DontFragment}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_DontFragment}" TextWrapping="Wrap"/>
-                        </Label>
-                    </DockPanel>
-                </DockPanel>
-                    </ScrollViewer>
-                </Border>
-            </TabItem>
-            
+                            <Grid Margin="0,2,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <RadioButton Grid.Row="0"
+                                             GroupName="IcmpData"
+                                             Content="{x:Static resource:Strings.Options_PacketDataSize}"
+                                             Name="PacketSizeOption"
+                                             Checked="PacketSizeOption_Checked"
+                                             IsChecked="True"
+                                             Margin="0,4,0,4"/>
+
+                                <StackPanel Grid.Row="1"
+                                            Orientation="Horizontal"
+                                            Margin="24,0,0,4">
+                                    <TextBox Name="PacketSize"
+                                             PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                             TextChanged="PacketData_TextChanged"
+                                             Width="74"
+                                             MaxLength="5"
+                                             Visibility="{Binding IsChecked, ElementName=PacketSizeOption, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"/>
+                                    <TextBlock Text="{x:Static resource:Strings.Options_Bytes}"
+                                               Margin="8,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Visibility="{Binding IsChecked, ElementName=PacketSizeOption, Converter={StaticResource BooleanToHiddenVisibilityConverter}}"/>
+                                </StackPanel>
+
+                                <RadioButton Grid.Row="2"
+                                             GroupName="IcmpData"
+                                             Content="{x:Static resource:Strings.Options_CustomPacketData}"
+                                             Name="UseCustomPacketOption"
+                                             Checked="UseCustomPacketOption_Checked"
+                                             Margin="0,6,0,4"/>
+                            </Grid>
+
+                            <TextBox Name="PacketData"
+                                     TextChanged="PacketData_TextChanged"
+                                     Height="72"
+                                     Margin="0,6,0,0"
+                                     VerticalContentAlignment="Top"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     MaxLength="65500"
+                                     Visibility="{Binding IsChecked, ElementName=UseCustomPacketOption, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,12,0,0">
+                                <TextBlock Text="{x:Static resource:Strings.Options_TotalPacketSize}"/>
+                                <TextBlock Name="Bytes"
+                                           Text="64"
+                                           Foreground="{DynamicResource Theme.Accent}"
+                                           FontWeight="SemiBold"
+                                           Margin="6,0,4,0"/>
+                                <TextBlock Text="{x:Static resource:Strings.Options_Bytes}"
+                                           Foreground="{DynamicResource Theme.Accent}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
+
             <!-- Tab: Popup Alerts -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Notifications}" Name="PopupAlertsTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0" LastChildFill="False">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Notifications}"
+         Name="PopupAlertsTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.settings.notifications}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{x:Static resource:Strings.Options_Header_PopupAlerts}"
-                                   Style="{StaticResource OptionHeaderTextStyle}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_PopupAlerts}" TextWrapping="Wrap"/>
-                        </Label>
-                    </DockPanel>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Tab_Notifications}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,14"/>
 
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <!-- Popup notification option radio button group -->
-                    <RadioButton DockPanel.Dock="Top"
-                                 GroupName="PopupAlerts"
-                                 Content="{x:Static resource:Strings.Options_Disabled}"
-                                 Name="PopupsDisabledOption"
-                                 Margin="0,15,0,0"/>
-                    <RadioButton DockPanel.Dock="Top"
-                                 GroupName="PopupAlerts"
-                                 Content="{x:Static resource:Strings.Options_ShowWhenMinimized}"
-                                 Name="PopupsMinimizedOption"
-                                 Margin="0,6"/>
-                    <RadioButton DockPanel.Dock="Top"
-                                 GroupName="PopupAlerts"
-                                 Content="{x:Static resource:Strings.Options_AlwaysShow}"
-                                 Name="PopupsAlwaysOption"
-                                 IsChecked="True"/>
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <DockPanel LastChildFill="False"
+                                       Margin="0,0,0,8">
+                                <TextBlock DockPanel.Dock="Left"
+                                           Text="{x:Static resource:Strings.Options_Header_PopupAlerts}"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"
+                                           Margin="0"/>
+                                <Label DockPanel.Dock="Left"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_PopupAlerts}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </DockPanel>
 
-                    <!-- Auto-dismiss enabled checkbox -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,20,0,5">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="IsAutoDismissEnabled"
-                                  Content="{x:Static resource:Strings.Options_AutoDismiss}"
-                                  IsChecked="True"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_AutoDismiss}"/>
-                    </DockPanel>
+                            <RadioButton GroupName="PopupAlerts"
+                                         Content="{x:Static resource:Strings.Options_Disabled}"
+                                         Name="PopupsDisabledOption"
+                                         Margin="0,4,0,4"/>
+                            <RadioButton GroupName="PopupAlerts"
+                                         Content="{x:Static resource:Strings.Options_ShowWhenMinimized}"
+                                         Name="PopupsMinimizedOption"
+                                         Margin="0,4,0,4"/>
+                            <RadioButton GroupName="PopupAlerts"
+                                         Content="{x:Static resource:Strings.Options_AlwaysShow}"
+                                         Name="PopupsAlwaysOption"
+                                         IsChecked="True"
+                                         Margin="0,4,0,4"/>
+                        </StackPanel>
+                    </Border>
 
-                    <!-- Auto-dismiss interval textbox -->
-                    <StackPanel DockPanel.Dock="Top"
-                                Visibility="{Binding IsChecked, ElementName=IsAutoDismissEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Margin="50,0,0,0"
-                                Orientation="Horizontal">
-                        <TextBox Name="AutoDismissInterval"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="2"/>
-                        <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
-                </DockPanel>
-                    </ScrollViewer>
-                </Border>
-            </TabItem>
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <DockPanel LastChildFill="False"
+                                       Margin="0,0,0,10">
+                                <TextBlock DockPanel.Dock="Left"
+                                           Text="{x:Static resource:Strings.Options_AutoDismiss}"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"
+                                           Margin="0"/>
+                                <Label DockPanel.Dock="Left"
+                                       Style="{StaticResource LabelToolTip}"
+                                       Content="{x:Static resource:Strings.Tooltip_AutoDismiss}"/>
+                            </DockPanel>
+
+                            <CheckBox Name="IsAutoDismissEnabled"
+                                      Content="{x:Static resource:Strings.Options_AutoDismiss}"
+                                      IsChecked="True"/>
+
+                            <StackPanel Visibility="{Binding IsChecked, ElementName=IsAutoDismissEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Margin="28,12,0,0"
+                                        Orientation="Horizontal">
+                                <TextBox Name="AutoDismissInterval"
+                                         PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                         Width="64"
+                                         MaxLength="2"/>
+                                <TextBlock Text="{x:Static resource:Strings.Options_Seconds}"
+                                           Margin="8,0,0,0"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
 
             <!-- Tab: Email Alerts -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Email}" Name="EmailAlertsTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Disabled"
-                              CanContentScroll="False"
-                              PanningMode="VerticalOnly">
-                    <DockPanel Margin="20,0,20,15">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Email}"
+         Name="EmailAlertsTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.settings.email}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                        <!-- Header -->
-                        <TextBlock DockPanel.Dock="Top"
-                                   Text="{x:Static resource:Strings.Options_Header_EmailAlerts}"
-                                   Style="{StaticResource OptionHeaderTextStyle}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Header_EmailAlerts}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,14"/>
 
-                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,15">
-                            <CheckBox DockPanel.Dock="Top"
-                                      Name="IsEmailAlertsEnabled"
-                                      Content="{x:Static resource:Strings.Options_EnableEmailAlerts}"
-                                      Click="IsEmailAlertsEnabled_Click"
-                                      IsChecked="True"/>
-                            <Label Style="{StaticResource LabelToolTip}"
-                                   Content="{x:Static resource:Strings.Tooltip_EnableEmailAlerts}"/>
-                        </StackPanel>
+                <Border Grid.Row="1"
+                        Style="{DynamicResource Style.SettingsCard}">
+                    <DockPanel LastChildFill="False">
+                        <CheckBox DockPanel.Dock="Left"
+                                  Name="IsEmailAlertsEnabled"
+                                  Click="IsEmailAlertsEnabled_Click"
+                                  IsChecked="True"
+                                  Content="{x:Static resource:Strings.Options_EnableEmailAlerts}"/>
+                        <Label DockPanel.Dock="Left"
+                               Style="{StaticResource LabelToolTip}"
+                               Content="{x:Static resource:Strings.Tooltip_EnableEmailAlerts}"/>
+                    </DockPanel>
+                </Border>
 
-                        <DockPanel LastChildFill="False"
-                                   DockPanel.Dock="Top"
-                                   Margin="0"
-                                   Visibility="{Binding IsChecked, ElementName=IsEmailAlertsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <DockPanel.Resources>
-                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-                                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                                    <Setter Property="Margin" Value="0,0,12,0"/>
-                                </Style>
-                                <Style TargetType="{x:Type DockPanel}">
-                                    <Setter Property="Margin" Value="0,3,0,3"/>
-                                    <Setter Property="DockPanel.Dock" Value="Top"/>
-                                </Style>
-                            </DockPanel.Resources>
+                <Grid Grid.Row="3"
+                      Visibility="{Binding IsChecked, ElementName=IsEmailAlertsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                            <!-- Server information subheading -->
-                            <TextBlock DockPanel.Dock="Top"
-                                       Text="{x:Static resource:Strings.Options_Header_ServerInfo}"
-                                       Style="{StaticResource OptionSubHeaderTextStyle}"/>
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_ServerInfo}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
 
-                            <!-- SMTP Server-->
-                            <DockPanel>
-                                <Grid Width="165">
-                                    <TextBlock Text="{x:Static resource:Strings.Options_SmtpServer}"/>
-                                </Grid>
-                                <TextBox Name="SmtpServer"/>
-                            </DockPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="112"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <!-- Smtp Port -->
-                            <DockPanel>
-                                <Grid Width="165">
-                                    <TextBlock Text="{x:Static resource:Strings.Options_Port}"/>
-                                </Grid>
-                                <TextBox Name="SmtpPort"
+                                <TextBlock Grid.Row="0"
+                                           Text="{x:Static resource:Strings.Options_SmtpServer}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,4,10,4"/>
+                                <TextBox Grid.Row="0"
+                                         Grid.Column="1"
+                                         Name="SmtpServer"
+                                         Margin="0,4,0,4"/>
+
+                                <TextBlock Grid.Row="1"
+                                           Text="{x:Static resource:Strings.Options_Port}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,4,10,4"/>
+                                <TextBox Grid.Row="1"
+                                         Grid.Column="1"
+                                         Name="SmtpPort"
                                          PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                         HorizontalAlignment="Left"
                                          MaxLength="5"
-                                         Width="75"/>
-                                <CheckBox Name="IsSmtpSslEnabled"
-                                          Content="{x:Static resource:Strings.Options_EnableSSL}"
-                                          FontSize="13"
-                                          Margin="50,0,0,0"/>
-                            </DockPanel>
+                                         Width="76"
+                                         HorizontalAlignment="Left"
+                                         Margin="0,4,0,4"/>
 
-                            <!-- Authentication section -->
-                            <!-- Smtp Authentication -->
-                            <CheckBox DockPanel.Dock="Top"
-                                      Name="IsSmtpAuthenticationRequired"
-                                      Content="{x:Static resource:Strings.Options_SmtpAuth}"
+                                <CheckBox Grid.Row="2"
+                                          Grid.Column="1"
+                                          Name="IsSmtpSslEnabled"
+                                          FontSize="13"
+                                          Margin="0,6,0,4"
+                                          Content="{x:Static resource:Strings.Options_EnableSSL}"/>
+                            </Grid>
+
+                            <CheckBox Name="IsSmtpAuthenticationRequired"
                                       Click="IsSmtpAuthenticationRequired_Click"
                                       Foreground="{DynamicResource Theme.Text.Secondary}"
                                       FontSize="13"
-                                      Margin="165,8,0,0"/>
-                            <StackPanel DockPanel.Dock="Top"
-                                        Visibility="{Binding IsChecked, ElementName=IsSmtpAuthenticationRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <!-- Smtp User -->
-                                <DockPanel>
-                                    <Grid Width="165">
-                                        <TextBlock Text="{x:Static resource:Strings.Options_Username}"/>
-                                    </Grid>
-                                    <TextBox Name="SmtpUsername"/>
-                                </DockPanel>
+                                      Margin="0,8,0,4"
+                                      Content="{x:Static resource:Strings.Options_SmtpAuth}"/>
 
-                                <!-- Smtp Password -->
-                                <DockPanel>
-                                    <Grid Width="165">
-                                        <TextBlock Text="{x:Static resource:Strings.Options_Password}"/>
-                                    </Grid>
-                                    <PasswordBox Name="SmtpPassword"/>
-                                </DockPanel>
+                            <StackPanel Visibility="{Binding IsChecked, ElementName=IsSmtpAuthenticationRequired, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="112"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0"
+                                               Text="{x:Static resource:Strings.Options_Username}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,4,10,4"/>
+                                    <TextBox Grid.Row="0"
+                                             Grid.Column="1"
+                                             Name="SmtpUsername"
+                                             Margin="0,4,0,4"/>
+
+                                    <TextBlock Grid.Row="1"
+                                               Text="{x:Static resource:Strings.Options_Password}"
+                                               VerticalAlignment="Center"
+                                               Margin="0,4,10,4"/>
+                                    <PasswordBox Grid.Row="1"
+                                                 Grid.Column="1"
+                                                 Name="SmtpPassword"
+                                                 Margin="0,4,0,4"/>
+                                </Grid>
                             </StackPanel>
+                        </StackPanel>
+                    </Border>
 
-                            <!-- Email addresses subheading -->
-                            <TextBlock DockPanel.Dock="Top"
-                                       Text="{x:Static resource:Strings.Options_Header_EmailAddresses}"
-                                       Margin="0,12,0,5"
-                                       Style="{StaticResource OptionSubHeaderTextStyle}"/>
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_Header_EmailAddresses}"
+                                       Style="{DynamicResource Style.SettingsCardTitle}"/>
 
-                            <!-- Recipient Address-->
-                            <DockPanel>
-                                <Grid Width="165">
-                                    <TextBlock Text="{x:Static resource:Strings.Options_RecipientAddress}"/>
-                                </Grid>
-                                <TextBox Name="EmailRecipientAddress"
-                                         LostFocus="EmailRecipientAddress_LostFocus"/>
-                            </DockPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_RecipientAddress}"
+                                       Margin="0,2,0,4"/>
+                            <TextBox Name="EmailRecipientAddress"
+                                     LostFocus="EmailRecipientAddress_LostFocus"/>
 
-                            <!-- From Address-->
-                            <DockPanel>
-                                <Grid Width="165">
-                                    <TextBlock Text="{x:Static resource:Strings.Options_FromAddress}"/>
-                                </Grid>
-                                <TextBox Name="EmailFromAddress"/>
-                            </DockPanel>
+                            <TextBlock Text="{x:Static resource:Strings.Options_FromAddress}"
+                                       Margin="0,12,0,4"/>
+                            <TextBox Name="EmailFromAddress"/>
 
-                            <!-- Test button -->
                             <Button Style="{DynamicResource Style.ButtonStandard}"
                                     Name="TestEmailButton"
-                                    Visibility="{Binding IsChecked, ElementName=IsEmailAlertsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    DockPanel.Dock="Top"
+                                    Visibility="{Binding IsChecked, ElementName=IsEmailAlertsEnabled,Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Click="TestEmail_Click"
-                                    Width="85"
-                                    Margin="0,18,0,0"
+                                    Width="100"
+                                    Margin="0,16,0,0"
                                     Content="{x:Static resource:Strings.Options_Test}"
                                     HorizontalAlignment="Left"/>
-                        </DockPanel>
-                    </DockPanel>
-                </ScrollViewer>
-                </Border>
-            </TabItem>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
 
             <!-- Tab: Audio Alerts -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Sounds}" Name="AudioAlertTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Sounds}"
+         Name="AudioAlertTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.settings.sounds}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_AudioAlerts}"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Header_AudioAlerts}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,14"/>
 
-                    <!-- Audio Alert Down: checkbox / tooltip -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <CheckBox Name="IsAudioDownAlertEnabled"
-                                  Click="IsAudioDownAlertEnabled_Click"
-                                  Content="{x:Static resource:Strings.Options_EnableAudioDown}"
-                                  IsChecked="True"/>
-                        <Label Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_AudioDown}"/>
-                    </StackPanel>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <!-- Audio Alert Down: Filepath / play button / browse button -->
-                    <Grid DockPanel.Dock="Top"
-                          Margin="30,10,0,0"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding IsChecked, ElementName=IsAudioDownAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}">
                         <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
-                            <TextBox Name="AudioDownFilePath"
-                                     Margin="0,4,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <!-- Browse button -->
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="AudioDownBrowse_Click"
-                                        Width="85"
-                                        Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <!-- Play button -->
-                                <Grid>
-                                    <Grid.Style>
-                                        <Style TargetType="Grid">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text.Length, ElementName=AudioDownFilePath}" Value="0">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Style>
+                            <Grid Margin="0,3,0,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsAudioDownAlertEnabled"
+                                          Click="IsAudioDownAlertEnabled_Click"
+                                          IsChecked="True"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_EnableAudioDown}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_EnableAudioDown}"
+                                               Style="{DynamicResource Style.SettingsCardTitle}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}"
+                                       Content="{x:Static resource:Strings.Tooltip_AudioDown}"/>
+                            </Grid>
+
+                            <StackPanel Margin="0,12,0,0"
+                                        Visibility="{Binding IsChecked, ElementName=IsAudioDownAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"
+                                           Margin="0,0,0,4"/>
+                                <TextBox Name="AudioDownFilePath"
+                                         Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
                                     <Button Style="{DynamicResource Style.ButtonStandard}"
-                                            Click="AudioDownPlay_Click"
-                                            Width="85"
-                                            Margin="10,0,0,0"
-                                            Content="{x:Static resource:Strings.Options_Test}">
-                                    </Button>
-                                </Grid>
+                                            Click="AudioDownBrowse_Click"
+                                            Width="96"
+                                            Content="{x:Static resource:Strings.Options_Browse}"/>
+                                    <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text.Length, ElementName=AudioDownFilePath}"
+                                                                 Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Button Style="{DynamicResource Style.ButtonStandard}"
+                                                Click="AudioDownPlay_Click"
+                                                Width="88"
+                                                Margin="8,0,0,0"
+                                                Content="{x:Static resource:Strings.Options_Test}"/>
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
-                    </Grid>
+                    </Border>
 
-                    <!-- Hidden separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="Transparent" Margin="0,20,0,0"
-                               Visibility="{Binding IsChecked, ElementName=IsAudioDownAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
-                    <!-- Audio Alert Up: checkbox / tooltip -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <CheckBox Name="IsAudioUpAlertEnabled"
-                                  Click="IsAudioUpAlertEnabled_Click"
-                                  Content="{x:Static resource:Strings.Options_EnableAudioUp}"
-                                  IsChecked="True"/>
-                        <Label Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_AudioUp}"/>
-                    </StackPanel>
-
-                    <!-- Audio Alert Down: Filepath / play button / browse button -->
-                    <Grid DockPanel.Dock="Top"
-                          Margin="30,10,0,0"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding IsChecked, ElementName=IsAudioUpAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}">
                         <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
-                            <TextBox Name="AudioUpFilePath"
-                                     Margin="0,4,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <!-- Browse button -->
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="AudioUpBrowse_Click"
-                                        Width="85"
-                                        Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <!-- Play button -->
-                                <Grid>
-                                    <Grid.Style>
-                                        <Style TargetType="Grid">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text.Length, ElementName=AudioUpFilePath}" Value="0">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Grid.Style>
+                            <Grid Margin="0,3,0,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsAudioUpAlertEnabled"
+                                          Click="IsAudioUpAlertEnabled_Click"
+                                          IsChecked="True"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_EnableAudioUp}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_EnableAudioUp}"
+                                               Style="{DynamicResource Style.SettingsCardTitle}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}"
+                                       Content="{x:Static resource:Strings.Tooltip_AudioUp}"/>
+                            </Grid>
+
+                            <StackPanel Margin="0,12,0,0"
+                                        Visibility="{Binding IsChecked, ElementName=IsAudioUpAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"
+                                           Margin="0,0,0,4"/>
+                                <TextBox Name="AudioUpFilePath"
+                                         Margin="0,0,0,8"/>
+                                <StackPanel Orientation="Horizontal">
                                     <Button Style="{DynamicResource Style.ButtonStandard}"
-                                            Click="AudioUpPlay_Click"
-                                            Width="85"
-                                            Margin="10,0,0,0"
-                                            Content="{x:Static resource:Strings.Options_Test}">
-                                    </Button>
-                                </Grid>
+                                            Click="AudioUpBrowse_Click"
+                                            Width="96"
+                                            Content="{x:Static resource:Strings.Options_Browse}"/>
+                                    <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text.Length, ElementName=AudioUpFilePath}"
+                                                                 Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Button Style="{DynamicResource Style.ButtonStandard}"
+                                                Click="AudioUpPlay_Click"
+                                                Width="88"
+                                                Margin="8,0,0,0"
+                                                Content="{x:Static resource:Strings.Options_Test}"/>
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
-                    </Grid>
-                    <!-- Hidden separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="Transparent" Margin="0,20,0,0"
-                               Visibility="{Binding IsChecked, ElementName=IsAudioUpAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Border>
+                </Grid>
 
-                    <!-- Audio Alert Network Identity: checkbox / tooltip -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <CheckBox Name="IsAudioNetworkIdentityAlertEnabled"
-                                  Click="IsAudioNetworkIdentityAlertEnabled_Click"
-                                  Content="{x:Static resource:Strings.Options_EnableAudioNetworkIdentity}"
-                                  IsChecked="False"/>
-                        <Label Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_AudioNetworkIdentity}"/>
-                    </StackPanel>
+                <Border Grid.Row="3"
+                        Style="{DynamicResource Style.SettingsCard}">
+                    <StackPanel>
+                        <Grid Margin="0,3,0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Grid.Column="0"
+                                      Name="IsAudioNetworkIdentityAlertEnabled"
+                                      Click="IsAudioNetworkIdentityAlertEnabled_Click"
+                                      IsChecked="False"
+                                      HorizontalContentAlignment="Stretch"
+                                      AutomationProperties.Name="{x:Static resource:Strings.Options_EnableAudioNetworkIdentity}">
+                                <TextBlock Text="{x:Static resource:Strings.Options_EnableAudioNetworkIdentity}"
+                                           Style="{DynamicResource Style.SettingsCardTitle}"
+                                           Margin="4,0,8,0"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"/>
+                            </CheckBox>
+                            <Label Grid.Column="1"
+                                   Style="{StaticResource LabelToolTip}"
+                                   Content="{x:Static resource:Strings.Tooltip_AudioNetworkIdentity}"/>
+                        </Grid>
 
-                    <!-- Audio Alert Network Identity: Filepath / play button / browse button -->
-                    <Grid DockPanel.Dock="Top"
-                          Margin="30,10,0,0"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding IsChecked, ElementName=IsAudioNetworkIdentityAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"/>
-                            <TextBox Name="AudioNetworkIdentityFilePath"
-                                     Margin="0,4,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Grid Margin="0,12,0,0"
+                              Visibility="{Binding IsChecked, ElementName=IsAudioNetworkIdentityAlertEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,12,0">
+                                <TextBlock Text="{x:Static resource:Strings.Options_AudioFilePath}"
+                                           Margin="0,0,0,4"/>
+                                <TextBox Name="AudioNetworkIdentityFilePath"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Bottom">
                                 <Button Style="{DynamicResource Style.ButtonStandard}"
                                         Click="AudioNetworkIdentityBrowse_Click"
-                                        Width="85"
+                                        Width="96"
                                         Content="{x:Static resource:Strings.Options_Browse}"/>
                                 <Grid>
                                     <Grid.Style>
                                         <Style TargetType="Grid">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text.Length, ElementName=AudioNetworkIdentityFilePath}" Value="0">
+                                                <DataTrigger Binding="{Binding Text.Length, ElementName=AudioNetworkIdentityFilePath}"
+                                                             Value="0">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -744,257 +975,449 @@
                                     </Grid.Style>
                                     <Button Style="{DynamicResource Style.ButtonStandard}"
                                             Click="AudioNetworkIdentityPlay_Click"
-                                            Width="85"
-                                            Margin="10,0,0,0"
-                                            Content="{x:Static resource:Strings.Options_Test}">
-                                    </Button>
+                                            Width="88"
+                                            Margin="8,0,0,0"
+                                            Content="{x:Static resource:Strings.Options_Test}"/>
                                 </Grid>
                             </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </DockPanel>
-                    </ScrollViewer>
+                        </Grid>
+                    </StackPanel>
                 </Border>
-            </TabItem>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
 
             <!-- Tab: Logging -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Logging}" Name="LogOutputTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Logging}"
+         Name="LogOutputTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.settings.logging}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_LogOutput}"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Header_LogOutput}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,14"/>
 
-                    <!-- Log all ping output -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <CheckBox Name="IsLogOutputEnabled"
-                                  Content="{x:Static resource:Strings.Options_WritePingOutput}"
-                                  IsChecked="True"/>
-                        <Label Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_LogOutput}" TextWrapping="Wrap"/>
-                        </Label>
-                    </StackPanel>
-                    <Grid DockPanel.Dock="Top"
-                          Margin="30,10,0,0"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding IsChecked, ElementName=IsLogOutputEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}">
                         <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_LogPath}"/>
-                            <TextBox Name="LogPath"
-                                     Margin="0,4,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="BrowseLogPath_Click"
-                                        Width="85"
-                                        Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="InsertAppDataLogPath_Click"
-                                        Margin="10,0,0,0"
-                                        Padding="10,5"
-                                        Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                            <Grid Margin="0,3,0,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsLogOutputEnabled"
+                                          IsChecked="True"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_WritePingOutput}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_WritePingOutput}"
+                                               Style="{DynamicResource Style.SettingsCardTitle}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_LogOutput}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </Grid>
+
+                            <StackPanel Margin="0,12,0,0"
+                                        Visibility="{Binding IsChecked, ElementName=IsLogOutputEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static resource:Strings.Options_LogPath}"
+                                           Margin="0,0,0,4"/>
+                                <TextBox Name="LogPath"
+                                         Margin="0,0,0,8"/>
+
+                                <WrapPanel>
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                                            Click="BrowseLogPath_Click"
+                                            Width="96"
+                                            Content="{x:Static resource:Strings.Options_Browse}"/>
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                                            Click="InsertAppDataLogPath_Click"
+                                            Margin="8,0,0,0"
+                                            Padding="10,5"
+                                            Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                                </WrapPanel>
+
+                                <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
+                                           Style="{DynamicResource Style.SettingsCardHint}"/>
                             </StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_LogPathHint}"
-                                       Foreground="{DynamicResource Theme.Text.Secondary}"
-                                       FontSize="11"
-                                       Margin="0,6,0,0"
-                                       TextWrapping="Wrap"/>
                         </StackPanel>
-                    </Grid>
+                    </Border>
 
-                    <!-- Hidden separator -->
-                    <Separator DockPanel.Dock="Top" Height="1" Background="Transparent" Margin="0,20,0,0"
-                               Visibility="{Binding IsChecked, ElementName=IsLogOutputEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
-                    <!-- Log status changes -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <CheckBox Name="IsLogStatusChangesEnabled"
-                                  Content="{x:Static resource:Strings.Options_LogStatusChanges}"
-                                  IsChecked="True"/>
-                        <Label Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_LogStatusChanges}" TextWrapping="Wrap"/>
-                        </Label>
-                    </StackPanel>
-                    <Grid DockPanel.Dock="Top"
-                          Margin="30,10,0,0"
-                          VerticalAlignment="Top"
-                          Visibility="{Binding IsChecked, ElementName=IsLogStatusChangesEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}">
                         <StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_LogPathSimple}"/>
-                            <TextBox Name="LogStatusChangesPath"
-                                     Margin="0,4,0,8"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="BrowseLogStatusChangesPath_Click"
-                                        Width="85"
-                                        Content="{x:Static resource:Strings.Options_Browse}"/>
-                                <Button Style="{DynamicResource Style.ButtonStandard}"
-                                        Click="InsertAppDataLogStatusChangesPath_Click"
-                                        Margin="10,0,0,0"
-                                        Padding="10,5"
-                                        Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                            <Grid Margin="0,3,0,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsLogStatusChangesEnabled"
+                                          IsChecked="True"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_LogStatusChanges}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_LogStatusChanges}"
+                                               Style="{DynamicResource Style.SettingsCardTitle}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_LogStatusChanges}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </Grid>
+
+                            <StackPanel Margin="0,12,0,0"
+                                        Visibility="{Binding IsChecked, ElementName=IsLogStatusChangesEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{x:Static resource:Strings.Options_LogPathSimple}"
+                                           Margin="0,0,0,4"/>
+                                <TextBox Name="LogStatusChangesPath"
+                                         Margin="0,0,0,8"/>
+
+                                <WrapPanel>
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                                            Click="BrowseLogStatusChangesPath_Click"
+                                            Width="96"
+                                            Content="{x:Static resource:Strings.Options_Browse}"/>
+                                    <Button Style="{DynamicResource Style.ButtonStandard}"
+                                            Click="InsertAppDataLogStatusChangesPath_Click"
+                                            Margin="8,0,0,0"
+                                            Padding="10,5"
+                                            Content="{x:Static resource:Strings.Options_InsertAppData}"/>
+                                </WrapPanel>
+
+                                <TextBlock Text="{x:Static resource:Strings.Options_LogStatusChangesPathHint}"
+                                           Style="{DynamicResource Style.SettingsCardHint}"/>
                             </StackPanel>
-                            <TextBlock Text="{x:Static resource:Strings.Options_LogStatusChangesPathHint}"
-                                       Foreground="{DynamicResource Theme.Text.Secondary}"
-                                       FontSize="11"
-                                       Margin="0,6,0,0"
-                                       TextWrapping="Wrap"/>
                         </StackPanel>
-                    </Grid>
-                </DockPanel>
-                    </ScrollViewer>
-                </Border>
-            </TabItem>
+                    </Border>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
 
             <!-- Tab: Display -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Display}" Name="DisplayTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                <DockPanel Margin="20,0" LastChildFill="False">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Display}"
+         Name="DisplayTab"
+         Style="{DynamicResource Style.SettingsTabItem}"
+         Tag="{StaticResource geom.menu.toggle-display}">
+    <Border Style="{DynamicResource Style.SettingsPagePanel}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False"
+                      PanningMode="VerticalOnly"
+                      Focusable="False"
+                      FocusVisualStyle="{x:Null}">
+            <Grid Margin="8,0,8,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                    <!-- Header -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_DisplayOptions}"
-                               Style="{StaticResource OptionHeaderTextStyle}"/>
+                <TextBlock Grid.Row="0"
+                           Text="{x:Static resource:Strings.Options_Header_DisplayOptions}"
+                           Style="{StaticResource OptionHeaderTextStyle}"
+                           Margin="4,0,4,10"/>
 
-                    <!-- Always on top -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="IsAlwaysOnTopEnabled"
-                                  Content="{x:Static resource:Strings.Options_AlwaysOnTop}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_AlwaysOnTop}"/>
-                    </DockPanel>
-                    <!-- Minimze to tray -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="IsMinimizeToTrayEnabled"
-                                  Content="{x:Static resource:Strings.Options_MinimizeToTray}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_MinimizeToTray}" TextWrapping="Wrap"/>
-                        </Label>
-                    </DockPanel>
-                    <!-- Exit to tray -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="IsExitToTrayEnabled"
-                                  Content="{x:Static resource:Strings.Options_ExitToTray}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_ExitToTray}" TextWrapping="Wrap"/>
-                        </Label>
-                    </DockPanel>
-                    <!-- Start in tray -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="StartInTray"
-                                  Content="{x:Static resource:Strings.Options_StartInTray}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}">
-                            <TextBlock Text="{x:Static resource:Strings.Tooltip_StartInTray}" TextWrapping="Wrap"/>
-                        </Label>
-                    </DockPanel>
-                    <!-- Remember window position -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,15,0,0">
-                        <CheckBox DockPanel.Dock="Left"
-                                  Name="RememberWindowPosition"
-                                  Content="{x:Static resource:Strings.Options_RememberWindowPosition}"/>
-                        <Label DockPanel.Dock="Left" Style="{StaticResource LabelToolTip}"
-                               Content="{x:Static resource:Strings.Tooltip_RememberWindowPosition}"/>
-                    </DockPanel>
-                    <!-- Theme selection -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,15,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_Theme}" Width="120"/>
-                        <ComboBox x:Name="ThemeComboBox" Width="160" SelectionChanged="ThemeComboBox_SelectionChanged"/>
-                    </StackPanel>
-                    <!-- Visual style selection -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_VisualStyle}" Width="120"/>
-                        <ComboBox x:Name="VisualStyleComboBox" Width="160" SelectionChanged="VisualStyleComboBox_SelectionChanged"/>
-                    </StackPanel>
-                    <!-- Display mode selection -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_DisplayMode}" Width="120"/>
-                        <ComboBox x:Name="DisplayModeComboBox" Width="160" SelectionChanged="DisplayModeComboBox_SelectionChanged"/>
-                    </StackPanel>
-                    <!-- Compact data source -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,10,0,0">
-                        <TextBlock DockPanel.Dock="Left"
-                                   Text="{x:Static resource:Strings.Options_CompactDataSource}"
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                        <StackPanel>
+
+                            <Grid Margin="0,2,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsAlwaysOnTopEnabled"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_AlwaysOnTop}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_AlwaysOnTop}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}"
+                                       Content="{x:Static resource:Strings.Tooltip_AlwaysOnTop}"/>
+                            </Grid>
+
+                            <Grid Margin="0,2,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsMinimizeToTrayEnabled"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_MinimizeToTray}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_MinimizeToTray}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_MinimizeToTray}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </Grid>
+
+                            <Grid Margin="0,2,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="IsExitToTrayEnabled"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_ExitToTray}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_ExitToTray}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_ExitToTray}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </Grid>
+
+                            <Grid Margin="0,2,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="StartInTray"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_StartInTray}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_StartInTray}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}">
+                                    <TextBlock Text="{x:Static resource:Strings.Tooltip_StartInTray}"
+                                               TextWrapping="Wrap"/>
+                                </Label>
+                            </Grid>
+
+                            <Grid Margin="0,2,0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0"
+                                          Name="RememberWindowPosition"
+                                          HorizontalContentAlignment="Stretch"
+                                          AutomationProperties.Name="{x:Static resource:Strings.Options_RememberWindowPosition}">
+                                    <TextBlock Text="{x:Static resource:Strings.Options_RememberWindowPosition}"
+                                               Margin="4,0,8,0"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Center"/>
+                                </CheckBox>
+                                <Label Grid.Column="1"
+                                       Style="{StaticResource LabelToolTip}"
+                                       Content="{x:Static resource:Strings.Tooltip_RememberWindowPosition}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2"
+                            Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                           Text="{x:Static resource:Strings.Options_Theme}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,4,10,4"/>
+                                <ComboBox Grid.Row="0"
+                                          Grid.Column="1"
+                                          x:Name="ThemeComboBox"
+                                          SelectionChanged="ThemeComboBox_SelectionChanged"
+                                          Margin="0,4,0,4"/>
+
+                                <TextBlock Grid.Row="1"
+                                           Text="{x:Static resource:Strings.Options_VisualStyle}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,4,10,4"/>
+                                <ComboBox Grid.Row="1"
+                                          Grid.Column="1"
+                                          x:Name="VisualStyleComboBox"
+                                          SelectionChanged="VisualStyleComboBox_SelectionChanged"
+                                          Margin="0,4,0,4"/>
+
+                                <TextBlock Grid.Row="2"
+                                           Grid.ColumnSpan="2"
+                                           Text="{x:Static resource:Strings.Options_Language}"
+                                           Margin="0,6,0,4"/>
+                                <ComboBox Grid.Row="3"
+                                          Grid.ColumnSpan="2"
+                                          x:Name="LanguageComboBox"
+                                          Margin="0,0,0,6"/>
+
+                                <Grid Grid.Row="4"
+                                      Grid.ColumnSpan="2"
+                                      Margin="0,4,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{x:Static resource:Strings.Options_ProbeFontSize}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,4"/>
+                                        <TextBox Name="FontSizeProbe"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="64"
+                                                 HorizontalAlignment="Left"
+                                                 MaxLength="2"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="{x:Static resource:Strings.Options_ScannerFontSize}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,4"/>
+                                        <TextBox Name="FontSizeScanner"
+                                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
+                                                 Width="64"
+                                                 HorizontalAlignment="Left"
+                                                 MaxLength="2"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+
+                            <TextBlock x:Name="LanguageApplyHintText"
+                                       Text="{x:Static resource:Strings.Options_LanguageRestart}"
+                                       Style="{DynamicResource Style.SettingsCardHint}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Row="3"
+                        Style="{DynamicResource Style.SettingsCard}"
+                            Padding="14,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="190"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Text="{x:Static resource:Strings.Options_DisplayMode}"
                                    VerticalAlignment="Center"
+                                   Margin="0,4,12,4"/>
+                        <ComboBox Grid.Row="0"
+                                  Grid.Column="1"
+                                  x:Name="DisplayModeComboBox"
+                                  Width="160"
+                                  HorizontalAlignment="Left"
+                                  SelectionChanged="DisplayModeComboBox_SelectionChanged"
+                                  Margin="0,4,0,4"/>
+
+                        <TextBlock Grid.Row="1"
+                                   Text="{x:Static resource:Strings.Options_CompactDataSource}"
                                    TextWrapping="Wrap"
-                                   MinWidth="120" MaxWidth="200"
-                                   Margin="0,0,8,0"/>
-                        <ComboBox DockPanel.Dock="Left"
+                                   VerticalAlignment="Center"
+                                   Margin="0,4,12,4"/>
+                        <ComboBox Grid.Row="1"
+                                  Grid.Column="1"
                                   x:Name="CompactSourceComboBox"
-                                  Width="250"
-                                  VerticalAlignment="Center"
-                                  SelectionChanged="CompactSourceComboBox_SelectionChanged"/>
-                    </DockPanel>
-                    <!-- Manage compact sets button -->
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,6,0,0">
-                        <Button x:Name="ManageCompactTargetsButton"
-                                DockPanel.Dock="Left"
+                                  SelectionChanged="CompactSourceComboBox_SelectionChanged"
+                                  Margin="0,4,0,4"/>
+
+                        <Button Grid.Row="2"
+                                Grid.Column="1"
+                                x:Name="ManageCompactTargetsButton"
                                 Style="{DynamicResource Style.ButtonStandard}"
-                                Content="{x:Static resource:Strings.Options_CompactManageSets}"
-                                MinWidth="140"
-                                Click="ManageCompactTargets_Click"/>
-                    </DockPanel>
-                    <!-- Language selection -->
-                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_Language}" Width="120"/>
-                        <ComboBox x:Name="LanguageComboBox" Width="160"/>
-                    </StackPanel>
-                    <TextBlock x:Name="LanguageApplyHintText"
-                               DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_LanguageRestart}"
-                               Foreground="{DynamicResource Theme.Text.Secondary}" FontSize="12" Margin="122,3,0,0"/>
-
-                    <Separator DockPanel.Dock="Top" Height="1" Background="{DynamicResource Theme.Border}" Margin="0,20,0,5"/>
-
-                    <!-- Font Sizes -->
-                    <TextBlock DockPanel.Dock="Top"
-                               Text="{x:Static resource:Strings.Options_Header_FontSizes}"
-                               Margin="0,10,0,0"
-                               Style="{StaticResource OptionSubHeaderTextStyle}"/>
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_ProbeFontSize}"
-                                   Width="200"/>
-                        <TextBox Name="FontSizeProbe"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="2"/>
-                    </StackPanel>
-                    <StackPanel DockPanel.Dock="Top"
-                                Orientation="Horizontal"
-                                Margin="0,10,0,0">
-                        <TextBlock Text="{x:Static resource:Strings.Options_ScannerFontSize}"
-                                   Width="200"/>
-                        <TextBox Name="FontSizeScanner"
-                                 PreviewTextInput="NumericTextbox_PreviewTextInput"
-                                 Width="60"
-                                 MaxLength="2"/>
-                    </StackPanel>
-                </DockPanel>
-                    </ScrollViewer>
+                                MinWidth="220"
+                                Padding="10,5"
+                                Margin="0,6,0,0"
+                                HorizontalAlignment="Right"
+                                Click="ManageCompactTargets_Click"
+                                Content="{x:Static resource:Strings.Options_CompactManageSets}"/>
+                    </Grid>
                 </Border>
-            </TabItem>
+            </Grid>
+        </ScrollViewer>
+    </Border>
+</TabItem>
             
             <!-- Tab: Layout -->
-            <TabItem Header="{x:Static resource:Strings.Options_Tab_Colors}" Name="LayoutTab">
-                <Border Style="{DynamicResource Style.ContentPanel}">
+            <TabItem Header="{x:Static resource:Strings.Options_Tab_Colors}"
+                     Name="LayoutTab"
+                     Style="{DynamicResource Style.SettingsTabItem}"
+                     Tag="{StaticResource geom.menu.columns-grid}">
+                <Border Style="{DynamicResource Style.SettingsPagePanel}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled"
                               CanContentScroll="False"
-                              PanningMode="VerticalOnly">
+                              PanningMode="VerticalOnly"
+                              Focusable="False"
+                              FocusVisualStyle="{x:Null}">
                     <DockPanel LastChildFill="False"
                                Name="ColorsDockPanel"
                                Margin="20,0,20,20">
@@ -1186,26 +1609,33 @@
 
 
         <!-- Button Section -->
-        <Border Grid.Row="1" Style="{DynamicResource Style.FooterPanel}">
+        <Border Grid.Row="1" Style="{DynamicResource Style.SettingsFooterPanel}">
             <DockPanel HorizontalAlignment="Right">
-                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,9,0,0" HorizontalAlignment="Right">
+                <StackPanel DockPanel.Dock="Bottom"
+                            Orientation="Horizontal"
+                            Margin="0"
+                            HorizontalAlignment="Right">
                     <Button x:Name="ApplyButton"
                             Style="{DynamicResource Style.ButtonStandard}"
                             Click="Apply_Click"
                             Margin="0,0,9,0"
-                            Width="85"
+                            Width="96"
                             Content="Apply"/>
                     <Button x:Name="SaveButton"
                             Style="{DynamicResource Style.ButtonStandard}"
                             Click="Save_Click"
                             Margin="0,0,9,0"
                             IsDefault="True"
-                            Width="85"
+                            Width="112"
+                            FontWeight="SemiBold"
+                            Background="{DynamicResource Theme.Accent}"
+                            BorderBrush="{DynamicResource Theme.Accent}"
+                            Foreground="{DynamicResource Theme.Background}"
                             Content="{x:Static resource:Strings.DialogButton_Save}"/>
                     <Button x:Name="CancelButton"
                             Style="{DynamicResource Style.ButtonStandard}"
                             IsCancel="True"
-                            Width="85"
+                            Width="96"
                             Content="{x:Static resource:Strings.DialogButton_Cancel}"/>
                 </StackPanel>
             </DockPanel>

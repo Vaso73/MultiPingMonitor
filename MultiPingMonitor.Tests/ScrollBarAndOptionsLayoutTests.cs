@@ -235,7 +235,7 @@ namespace MultiPingMonitor.Tests
                     element =>
                         string.Equals(
                             (string?)element.Attribute("Style"),
-                            "{DynamicResource Style.FooterPanel}",
+                            "{DynamicResource Style.SettingsFooterPanel}",
                             StringComparison.Ordinal));
 
             Assert.Equal(
