@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -28,15 +28,16 @@ namespace MultiPingMonitor.Classes
         public static void Attach(
             Window window,
             string key,
-            bool saveOnClosing = true)
+            bool saveOnClosing = true,
+            bool allowPortableFallback = true)
         {
-            Restore(window, key);
+            Restore(window, key, allowPortableFallback);
 
             window.SourceInitialized += (s, e) =>
-                Restore(window, key);
+                Restore(window, key, allowPortableFallback);
 
             if (ApplicationOptions.RememberWindowPosition &&
-                HasPlacement(key))
+                HasPlacement(key, allowPortableFallback))
             {
                 EventHandler contentRenderedHandler = null;
                 contentRenderedHandler = (s, e) =>
@@ -44,14 +45,18 @@ namespace MultiPingMonitor.Classes
                     window.ContentRendered -= contentRenderedHandler;
 
                     if (!ApplicationOptions.RememberWindowPosition ||
-                        !HasPlacement(key))
+                        !HasPlacement(key, allowPortableFallback))
                     {
                         return;
                     }
 
                     window.Dispatcher.BeginInvoke(
                         System.Windows.Threading.DispatcherPriority.Loaded,
-                        new Action(() => Restore(window, key)));
+                        new Action(
+                            () => Restore(
+                                window,
+                                key,
+                                allowPortableFallback)));
                 };
 
                 window.ContentRendered += contentRenderedHandler;
@@ -68,15 +73,26 @@ namespace MultiPingMonitor.Classes
             Save(window, key);
         }
 
-        public static void RestoreWindow(Window window, string key)
+        public static void RestoreWindow(
+            Window window,
+            string key,
+            bool allowPortableFallback = true)
         {
-            Restore(window, key);
+            Restore(window, key, allowPortableFallback);
         }
 
-        public static bool HasPlacement(string key)
+        public static bool HasPlacement(
+            string key,
+            bool allowPortableFallback = true)
         {
             return MachinePlacements.ContainsKey(key) ||
-                   PortablePlacements.ContainsKey(key);
+                   (allowPortableFallback &&
+                    PortablePlacements.ContainsKey(key));
+        }
+
+        public static bool HasMachinePlacement(string key)
+        {
+            return MachinePlacements.ContainsKey(key);
         }
 
         private static void Save(Window window, string key)
@@ -145,7 +161,10 @@ namespace MultiPingMonitor.Classes
             return data;
         }
 
-        private static void Restore(Window window, string key)
+        private static void Restore(
+            Window window,
+            string key,
+            bool allowPortableFallback)
         {
             if (!ApplicationOptions.RememberWindowPosition)
                 return;
@@ -156,7 +175,8 @@ namespace MultiPingMonitor.Classes
                     out PlacementData data);
 
             if (!hasMachinePlacement &&
-                !PortablePlacements.TryGetValue(key, out data))
+                (!allowPortableFallback ||
+                 !PortablePlacements.TryGetValue(key, out data)))
             {
                 return;
             }

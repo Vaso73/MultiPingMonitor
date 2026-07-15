@@ -343,6 +343,142 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("SuppressFileLogging", body);
         }
 
+        [Fact]
+        public void MainWindow_ProbeCollectionReset_ReconcilesBothCollections()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int handlerStart = source.IndexOf(
+                "private void ProbeCollection_CollectionChanged(",
+                StringComparison.Ordinal);
+            Assert.True(handlerStart >= 0);
+
+            int handlerEnd = source.IndexOf(
+                "\n        /// <summary>",
+                handlerStart,
+                StringComparison.Ordinal);
+            Assert.True(handlerEnd > handlerStart);
+
+            string handlerBody =
+                source.Substring(handlerStart, handlerEnd - handlerStart);
+
+            Assert.Contains("ReconcileProbeSubscriptions();", handlerBody);
+            Assert.DoesNotContain("_subscribedProbes.Clear();", handlerBody);
+
+            int helperStart = source.IndexOf(
+                "private void ReconcileProbeSubscriptions()",
+                StringComparison.Ordinal);
+            Assert.True(helperStart >= 0);
+
+            int helperEnd = source.IndexOf(
+                "\n        /// <summary>",
+                helperStart,
+                StringComparison.Ordinal);
+            Assert.True(helperEnd > helperStart);
+
+            string helperBody =
+                source.Substring(helperStart, helperEnd - helperStart);
+
+            Assert.Contains("_ProbeCollection", helperBody);
+            Assert.Contains("_CompactProbeCollection", helperBody);
+            Assert.Contains(
+                "PropertyChanged -= Probe_PropertyChanged",
+                helperBody);
+            Assert.Contains(
+                "PropertyChanged += Probe_PropertyChanged",
+                helperBody);
+        }
+
+        [Fact]
+        public void MainWindow_ProbeStatusChange_FiltersSelectedContextOnUiThread()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int handlerStart = source.IndexOf(
+                "private void Probe_PropertyChanged(",
+                StringComparison.Ordinal);
+            Assert.True(handlerStart >= 0);
+
+            int handlerEnd = source.IndexOf(
+                "\n        /// <summary>",
+                handlerStart,
+                StringComparison.Ordinal);
+            Assert.True(handlerEnd > handlerStart);
+
+            string handlerBody =
+                source.Substring(handlerStart, handlerEnd - handlerStart);
+
+            Assert.Contains("UpdateTrayIcon(probe);", handlerBody);
+            Assert.DoesNotContain(
+                "GetActiveTrayProbeCollection().Contains(probe)",
+                handlerBody);
+
+            int updateStart = source.IndexOf(
+                "private void UpdateTrayIcon(Probe changedProbe = null)",
+                StringComparison.Ordinal);
+            Assert.True(updateStart >= 0);
+
+            int updateEnd = source.IndexOf(
+                "\n        /// <summary>",
+                updateStart,
+                StringComparison.Ordinal);
+            Assert.True(updateEnd > updateStart);
+
+            string updateBody =
+                source.Substring(updateStart, updateEnd - updateStart);
+
+            int dispatchIndex = updateBody.IndexOf(
+                "Dispatcher.BeginInvoke",
+                StringComparison.Ordinal);
+            int filterIndex = updateBody.IndexOf(
+                "changedProbe != null && !activeTrayProbes.Contains(changedProbe)",
+                StringComparison.Ordinal);
+
+            Assert.True(dispatchIndex >= 0);
+            Assert.True(filterIndex > dispatchIndex);
+            Assert.Contains(
+                "var activeTrayProbes = GetActiveTrayProbeCollection();",
+                updateBody);
+        }
+
+        [Fact]
+        public void MainWindow_CompactSourceApply_RefreshesTrayImmediately()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            int methodStart = source.IndexOf(
+                "internal void ApplyCompactDataSource()",
+                StringComparison.Ordinal);
+            Assert.True(methodStart >= 0);
+
+            int methodEnd = source.IndexOf(
+                "\n        /// <summary>",
+                methodStart,
+                StringComparison.Ordinal);
+            Assert.True(methodEnd > methodStart);
+
+            string body =
+                source.Substring(methodStart, methodEnd - methodStart);
+
+            Assert.Contains(
+                "_trayState = TrayAggregateState.Unknown;",
+                body);
+            Assert.Contains("UpdateTrayIcon();", body);
+        }
+
+        [Fact]
+        public void MainWindow_TrayStateUsesUnknownInvalidationSentinel()
+        {
+            var source = File.ReadAllText(MainWindowSourcePath());
+
+            Assert.Contains(
+                "TrayAggregateState { Unknown, Neutral, Online, Offline }",
+                source);
+            Assert.Contains(
+                "_trayState = TrayAggregateState.Unknown;",
+                source);
+        }
+
 
     }
 }
