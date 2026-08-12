@@ -9,15 +9,15 @@ namespace MultiPingMonitor.Tests
     public class SponsorProLoginRegistrationTests
     {
         [Fact]
-        public void AboutWindow_HasGitHubSponsorProLoginButton()
+        public void AboutWindow_HasGitHubSponsorProAccountButton()
         {
             string xaml = File.ReadAllText(SourcePath(
                 "MultiPingMonitor",
                 "UI",
                 "AboutWindow.xaml"));
 
-            Assert.Contains("SponsorProLoginButton", xaml);
-            Assert.Contains("SponsorProLoginButton_Click", xaml);
+            Assert.Contains("SponsorProAccountButton", xaml);
+            Assert.Contains("SponsorProAccountButton_Click", xaml);
         }
 
         [Fact]
@@ -37,17 +37,20 @@ namespace MultiPingMonitor.Tests
 
 
         [Fact]
-        public void AboutWindow_HidesGitHubLoginButtonWhenSessionIsUsable()
+        public void AboutWindow_ChangesAccountButtonToLogoutWhenSessionIsUsable()
         {
             string source = File.ReadAllText(SourcePath(
                 "MultiPingMonitor",
                 "UI",
                 "AboutWindow.xaml.cs"));
 
-            Assert.Contains("SponsorProLoginButton.Visibility =", source);
-            Assert.Contains("Visibility.Collapsed", source);
-            Assert.Contains("Visibility.Visible", source);
-            Assert.DoesNotContain("About_SponsorProSignInAgain", source);
+            Assert.Contains("SponsorProAccountButton.Content =", source);
+            Assert.Contains("About_SponsorProLogout", source);
+            Assert.Contains("SignOutOfSponsorPro", source);
+            Assert.Contains("_sponsorProSessionStore.Clear()", source);
+            Assert.Contains(
+                "RefreshSponsorProStatus();\n            if (_sponsorProSession == null",
+                source);
         }
 
 
@@ -87,6 +90,7 @@ namespace MultiPingMonitor.Tests
 
             Assert.Contains("AccountPanel", xaml);
             Assert.Contains("AccountGitHubIcon", xaml);
+            Assert.Contains("AccountAvatar", xaml);
             Assert.Contains("geom.account.github", xaml);
             Assert.Contains("Fill=\"#FF000000\"", xaml);
             Assert.Contains("Canvas Width=\"16\"", xaml);
@@ -95,6 +99,9 @@ namespace MultiPingMonitor.Tests
             Assert.Contains("InstallUpdateButton", xaml);
             Assert.Contains("About_AccountSignedInTitle", source);
             Assert.Contains("About_AccountSponsorActive", source);
+            Assert.Contains("GitHubAvatarService", source);
+            Assert.Contains("LoadAccountAvatarAsync", source);
+            Assert.Contains("ResetAccountAvatar", source);
             Assert.Contains("InstallUpdateButton.IsEnabled = false", source);
         }
 
@@ -147,6 +154,9 @@ namespace MultiPingMonitor.Tests
 
         [Theory]
         [InlineData("About_SponsorProLogin")]
+        [InlineData("About_SponsorProLogout")]
+        [InlineData("About_SponsorProLoggedOut")]
+        [InlineData("About_SponsorProLogoutFailed")]
         [InlineData("About_SponsorProSignInAgain")]
         [InlineData("About_SponsorProLoginStarting")]
         [InlineData("About_SponsorProLoginWaiting")]

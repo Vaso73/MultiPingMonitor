@@ -1460,6 +1460,15 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="About_SponsorProLogin" xml:space="preserve">
     <value>Prihlásiť cez GitHub</value>
   </data>
+  <data name="About_SponsorProLogout" xml:space="preserve">
+    <value>Odhlásiť</value>
+  </data>
+  <data name="About_SponsorProLoggedOut" xml:space="preserve">
+    <value>Lokálne prihlásenie bolo odstránené. Relácia GitHub v prehliadači sa nezmenila.</value>
+  </data>
+  <data name="About_SponsorProLogoutFailed" xml:space="preserve">
+    <value>Lokálne prihlásenie MultiPingMonitor sa nepodarilo odstrániť. Zatvorte MultiPingMonitor a skúste to znova.</value>
+  </data>
   <data name="About_SponsorProSignInAgain" xml:space="preserve">
     <value>Prihlásiť znova</value>
   </data>

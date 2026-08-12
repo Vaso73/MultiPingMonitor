@@ -1570,6 +1570,15 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="About_SponsorProLogin" xml:space="preserve">
     <value>Sign in with GitHub</value>
   </data>
+  <data name="About_SponsorProLogout" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="About_SponsorProLoggedOut" xml:space="preserve">
+    <value>Signed out locally. Your GitHub browser session was not changed.</value>
+  </data>
+  <data name="About_SponsorProLogoutFailed" xml:space="preserve">
+    <value>The local MultiPingMonitor sign-in could not be removed. Close MultiPingMonitor and try again.</value>
+  </data>
   <data name="About_SponsorProSignInAgain" xml:space="preserve">
     <value>Sign in again</value>
   </data>
