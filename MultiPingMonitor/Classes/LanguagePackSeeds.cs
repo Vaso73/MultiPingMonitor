@@ -612,6 +612,9 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20585, "LivePing_AddToSet_CompactDestination", "Compact", "Kompaktné"),
                 new LanguagePackSeedEntry(20586, "NewFavorite_Error_InvalidColumns", "Please enter a valid number of columns (between 1 and 10).", "Zadajte platný počet stĺpcov (od 1 do 10)."),
                 new LanguagePackSeedEntry(20587, "NewFavorite_Error_NoHosts", "You have not entered any hosts. Provide at least one host for this favorite set.", "Nezadali ste žiadnych hostiteľov. Zadajte aspoň jedného hostiteľa pre túto obľúbenú sadu."),
+                new LanguagePackSeedEntry(20588, "About_SponsorProLogout", "Sign out", "Odhlásiť"),
+                new LanguagePackSeedEntry(20589, "About_SponsorProLoggedOut", "Signed out locally. Your GitHub browser session was not changed.", "Lokálne prihlásenie bolo odstránené. Relácia GitHub v prehliadači sa nezmenila."),
+                new LanguagePackSeedEntry(20590, "About_SponsorProLogoutFailed", "The local MultiPingMonitor sign-in could not be removed. Close MultiPingMonitor and try again.", "Lokálne prihlásenie MultiPingMonitor sa nepodarilo odstrániť. Zatvorte MultiPingMonitor a skúste to znova."),
             };
     }
 }

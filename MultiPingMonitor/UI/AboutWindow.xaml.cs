@@ -1,9 +1,12 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MultiPingMonitor.Classes;
 using MultiPingMonitor.Properties;
 
@@ -18,7 +21,8 @@ namespace MultiPingMonitor.UI
         private UpdateManifest _availableUpdateManifest;
         private CancellationTokenSource _checkCancellation;
         private CancellationTokenSource _authCancellation;
-        private CancellationTokenSource _installCancellation;
+        private CancellationTokenSource _avatarCancellation;
+        private string _avatarRequestedLogin;
 
         public AboutWindow()
         {
@@ -42,7 +46,7 @@ namespace MultiPingMonitor.UI
                 $"{Text("About_EditionLabel", "Edition")}: " +
                 Text("About_EditionSponsorPro", "Sponsor Pro");
 
-            SponsorProLoginButton.Content =
+            SponsorProAccountButton.Content =
                 Text("About_SponsorProLogin", "Sign in with GitHub");
             CheckForUpdatesButton.Content =
                 Text("About_CheckForUpdates", "Check for updates");
@@ -57,6 +61,7 @@ namespace MultiPingMonitor.UI
 
         private void RefreshSponsorProStatus()
         {
+            _sponsorProSession = _sponsorProSessionStore.Load();
             if (_sponsorProSession != null && _sponsorProSession.IsUsable)
             {
                 string login =
@@ -70,11 +75,16 @@ namespace MultiPingMonitor.UI
                     login);
                 AccountStatusText.Text =
                     Text("About_AccountSponsorActive", "Sponsor Pro active");
-                SponsorProLoginButton.Visibility =
-                    Visibility.Collapsed;
+                SponsorProAccountButton.Content =
+                    Text("About_SponsorProLogout", "Sign out");
+                if (!string.IsNullOrWhiteSpace(_sponsorProSession.GithubLogin))
+                    _ = LoadAccountAvatarAsync(_sponsorProSession.GithubLogin);
+                else
+                    ResetAccountAvatar();
                 return;
             }
 
+            ResetAccountAvatar();
             AccountTitleText.Text =
                 Text(
                     "About_AccountNotConnectedTitle",
@@ -83,10 +93,70 @@ namespace MultiPingMonitor.UI
                 Text(
                     "About_AccountNotConnectedStatus",
                     "Sign in to enable Sponsor Pro updates.");
-            SponsorProLoginButton.Visibility =
-                Visibility.Visible;
-            SponsorProLoginButton.Content =
+            SponsorProAccountButton.Content =
                 Text("About_SponsorProLogin", "Sign in with GitHub");
+        }
+
+        private async System.Threading.Tasks.Task LoadAccountAvatarAsync(
+            string githubLogin)
+        {
+            if (string.Equals(
+                    _avatarRequestedLogin,
+                    githubLogin,
+                    StringComparison.OrdinalIgnoreCase))
+                return;
+
+            _avatarCancellation?.Cancel();
+            _avatarCancellation?.Dispose();
+            _avatarCancellation = new CancellationTokenSource();
+            CancellationToken cancellationToken = _avatarCancellation.Token;
+            _avatarRequestedLogin = githubLogin;
+            AccountAvatar.Fill = null;
+            AccountAvatar.Visibility = Visibility.Collapsed;
+            AccountGitHubIcon.Visibility = Visibility.Visible;
+
+            try
+            {
+                using var service = new GitHubAvatarService();
+                byte[] bytes =
+                    await service.DownloadAsync(githubLogin, cancellationToken);
+                if (bytes == null)
+                    return;
+
+                using var stream = new MemoryStream(bytes, writable: false);
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = stream;
+                bitmap.EndInit();
+                bitmap.Freeze();
+
+                cancellationToken.ThrowIfCancellationRequested();
+                if (_sponsorProSession == null
+                    || !_sponsorProSession.IsUsable
+                    || !string.Equals(
+                        _sponsorProSession.GithubLogin,
+                        githubLogin,
+                        StringComparison.OrdinalIgnoreCase))
+                    return;
+
+                AccountAvatar.Fill = new ImageBrush(bitmap);
+                AccountAvatar.Visibility = Visibility.Visible;
+                AccountGitHubIcon.Visibility = Visibility.Collapsed;
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception) { }
+        }
+
+        private void ResetAccountAvatar()
+        {
+            _avatarCancellation?.Cancel();
+            _avatarCancellation?.Dispose();
+            _avatarCancellation = null;
+            _avatarRequestedLogin = null;
+            AccountAvatar.Fill = null;
+            AccountAvatar.Visibility = Visibility.Collapsed;
+            AccountGitHubIcon.Visibility = Visibility.Visible;
         }
 
         private void ResetUpdateState()
@@ -100,10 +170,17 @@ namespace MultiPingMonitor.UI
                     "Check for updates to compare this installation with the latest Sponsor Pro version.");
         }
 
-        private async void SponsorProLoginButton_Click(
+        private async void SponsorProAccountButton_Click(
             object sender,
             RoutedEventArgs e)
         {
+            RefreshSponsorProStatus();
+            if (_sponsorProSession != null && _sponsorProSession.IsUsable)
+            {
+                SignOutOfSponsorPro();
+                return;
+            }
+
             _authCancellation?.Cancel();
             _authCancellation?.Dispose();
             _authCancellation = new CancellationTokenSource();
@@ -173,10 +250,26 @@ namespace MultiPingMonitor.UI
             }
         }
 
+        private void SignOutOfSponsorPro()
+        {
+            _authCancellation?.Cancel();
+            bool cleared = _sponsorProSessionStore.Clear();
+            RefreshSponsorProStatus();
+            ResetUpdateState();
+            StatusText.Text = cleared
+                ? Text(
+                    "About_SponsorProLoggedOut",
+                    "Signed out locally. Your GitHub browser session was not changed.")
+                : Text(
+                    "About_SponsorProLogoutFailed",
+                    "The local MultiPingMonitor sign-in could not be removed. Close MultiPingMonitor and try again.");
+        }
+
         private async void CheckForUpdatesButton_Click(
             object sender,
             RoutedEventArgs e)
         {
+            RefreshSponsorProStatus();
             if (_sponsorProSession == null || !_sponsorProSession.IsUsable)
             {
                 StatusText.Text =
@@ -290,7 +383,7 @@ namespace MultiPingMonitor.UI
         private void SetInstallingState(bool installing)
         {
             CheckForUpdatesButton.IsEnabled = !installing;
-            SponsorProLoginButton.IsEnabled = !installing;
+            SponsorProAccountButton.IsEnabled = !installing;
             InstallUpdateButton.IsEnabled =
                 !installing
                 && _availableVersion != null
@@ -303,7 +396,7 @@ namespace MultiPingMonitor.UI
         private void SetCheckingState(bool checking)
         {
             CheckForUpdatesButton.IsEnabled = !checking;
-            SponsorProLoginButton.IsEnabled = !checking;
+            SponsorProAccountButton.IsEnabled = !checking;
             InstallUpdateButton.IsEnabled =
                 !checking
                 && _availableVersion != null
@@ -314,7 +407,7 @@ namespace MultiPingMonitor.UI
 
         private void SetAuthState(bool authenticating)
         {
-            SponsorProLoginButton.IsEnabled = !authenticating;
+            SponsorProAccountButton.IsEnabled = !authenticating;
             CheckForUpdatesButton.IsEnabled = !authenticating;
             InstallUpdateButton.IsEnabled =
                 !authenticating
@@ -337,9 +430,7 @@ namespace MultiPingMonitor.UI
             _authCancellation?.Cancel();
             _authCancellation?.Dispose();
             _authCancellation = null;
-            _installCancellation?.Cancel();
-            _installCancellation?.Dispose();
-            _installCancellation = null;
+            ResetAccountAvatar();
             base.OnClosed(e);
         }
 

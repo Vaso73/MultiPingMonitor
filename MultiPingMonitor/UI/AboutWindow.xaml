@@ -145,18 +145,22 @@
                                 CornerRadius="21"
                                 Margin="0,0,12,0"
                                 Background="{DynamicResource Theme.Accent}">
-                            <Viewbox Width="22"
-                                     Height="22"
-                                     Stretch="Uniform"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center">
-                                <Canvas Width="16"
-                                        Height="16">
-                                    <Path x:Name="AccountGitHubIcon"
-                                          Data="{StaticResource geom.account.github}"
-                                          Fill="#FF000000" />
-                                </Canvas>
-                            </Viewbox>
+                            <Grid>
+                                <Ellipse x:Name="AccountAvatar"
+                                         Visibility="Collapsed" />
+                                <Viewbox x:Name="AccountGitHubIcon"
+                                         Width="22"
+                                         Height="22"
+                                         Stretch="Uniform"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center">
+                                    <Canvas Width="16"
+                                            Height="16">
+                                        <Path Data="{StaticResource geom.account.github}"
+                                              Fill="#FF000000" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Grid>
                         </Border>
 
                         <StackPanel Grid.Column="1"
@@ -173,13 +177,13 @@
                                        TextWrapping="Wrap" />
                         </StackPanel>
 
-                        <Button x:Name="SponsorProLoginButton"
+                        <Button x:Name="SponsorProAccountButton"
                                 Grid.Column="2"
                                 Style="{DynamicResource Style.ButtonStandard}"
                                 Width="170"
                                 Margin="14,0,0,0"
                                 VerticalAlignment="Center"
-                                Click="SponsorProLoginButton_Click" />
+                                Click="SponsorProAccountButton_Click" />
                     </Grid>
                 </Border>
 

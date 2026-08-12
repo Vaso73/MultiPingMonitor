@@ -99,17 +99,19 @@ namespace MultiPingMonitor.Classes
             File.WriteAllBytes(_filePath, protectedBytes);
         }
 
-        public void Clear()
+        public bool Clear()
         {
             try
             {
                 if (File.Exists(_filePath))
                     File.Delete(_filePath);
+                return !File.Exists(_filePath);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(
                     $"SponsorProSessionStore.Clear: {ex.GetType().Name}: {ex.Message}");
+                return false;
             }
         }
     }
