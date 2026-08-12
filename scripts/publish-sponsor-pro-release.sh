@@ -5,7 +5,8 @@ umask 077
 
 PUBLIC_REPO="Vaso73/MultiPingMonitor"
 PRIVATE_REPO="Vaso73-Software/Sponsor-Pro-Releases"
-EXPECTED_ROOT="/home/vaio/projects/MultiPingMonitor"
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+EXPECTED_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd -P)
 MANIFEST_REL="updates/sponsor-pro.json"
 ASSEMBLY_REL="MultiPingMonitor/Properties/AssemblyInfo.cs"
 ASSET_NAME="MultiPingMonitor.zip"
@@ -462,7 +463,7 @@ preflight() {
   fi
   release_count=$(printf '%s\n' "$release_ids" | awk 'NF {n++} END {print n+0}')
 
-  private_tag_matches=$(git ls-remote --tags "git@github.com:$PRIVATE_REPO.git" "refs/tags/$TAG")
+  private_tag_matches=$(git ls-remote --tags "https://github.com/$PRIVATE_REPO.git" "refs/tags/$TAG")
   if [ $? -ne 0 ]; then
     fail "private_tag_lookup_failed"
     return 1
