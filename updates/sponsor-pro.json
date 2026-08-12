@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "channel": "sponsor-pro",
-  "latestVersion": "1.1.5",
-  "releaseTag": "multipingmonitor/v1.1.5",
+  "latestVersion": "1.1.6",
+  "releaseTag": "multipingmonitor/v1.1.6",
   "assetName": "MultiPingMonitor.zip",
-  "assetSize": 66631880,
-  "sha256": "c3ad44cfe4821fa57543a4ee557ca6c25f409620dd690ef856c7bd5b4552e006"
+  "assetSize": 66711630,
+  "sha256": "59c8e6e1fd782818ecd38caee9043fd5a60513a5ba8b2d53b0bbcee7711f2acd"
 }
