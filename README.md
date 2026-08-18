@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <strong><a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Try Free v0.4.6</a></strong>
+  <strong><a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/free%2Fv1.0.0">Try Public Free v1.0.0</a></strong>
   &nbsp;·&nbsp;
   <a href="#compare-editions">Compare editions</a>
   &nbsp;·&nbsp;
@@ -52,9 +52,8 @@ into another source of noise.
 <a id="compare-editions"></a>
 ## Compare editions
 
-The **Free edition** is a stable, feature-frozen release for trying the core
-multi-target monitoring workflow. Public Free releases currently end at
-**v0.4.6**.
+The **Public Free edition** provides the current Normal Mode monitoring workflow
+and a direct path to Sponsor Pro. The current public release is **v1.0.0**.
 
 **Sponsor Pro** is the actively developed edition with current diagnostics,
 compact workflows, Network Identity, private releases, and authorized in-app
@@ -64,7 +63,7 @@ Start with Free to see whether the workflow fits. Sponsor Pro is available when
 you want the current supported release and compact operational tools for daily
 use.
 
-| Capability | Free v0.4.6 | Sponsor Pro |
+| Capability | Public Free v1.0.0 | Sponsor Pro |
 |---|:---:|:---:|
 | Normal multi-target monitoring | ✅ | ✅ |
 | ICMP, TCP, DNS, and traceroute probes | ✅ | ✅ |
@@ -84,7 +83,7 @@ use.
 <p align="center">
   <strong><a href="https://github.com/sponsors/Vaso73">Get Sponsor Pro through GitHub Sponsors</a></strong>
   &nbsp;·&nbsp;
-  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Download Free v0.4.6</a>
+  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/free%2Fv1.0.0">Download Public Free v1.0.0</a>
 </p>
 
 ## Why Sponsor Pro?
@@ -152,7 +151,7 @@ points · cameras · DNS, web, and other TCP services
 
 ### Free
 
-1. Open the [v0.4.6 release](https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6).
+1. Open the [Public Free v1.0.0 release](https://github.com/Vaso73/MultiPingMonitor/releases/tag/free%2Fv1.0.0).
 2. Download the release archive.
 3. Extract it to a writable folder.
 4. Run `MultiPingMonitor.exe`.
@@ -286,7 +285,7 @@ updater reliability, and Windows display compatibility.
 </p>
 
 <p align="center">
-  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/v0.4.6">Prefer to start with Free? Download v0.4.6</a>
+  <a href="https://github.com/Vaso73/MultiPingMonitor/releases/tag/free%2Fv1.0.0">Prefer to start with Free? Download Public Free v1.0.0</a>
 </p>
 
 ## License

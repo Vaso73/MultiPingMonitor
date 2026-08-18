@@ -1,10 +1,9 @@
-name: Build + Release (Windows)
+name: Build + Release Public Free (Windows)
 
 on:
   push:
     tags:
-      - "v*"
-  workflow_dispatch:
+      - "free/v*"
 
 permissions:
   contents: write
@@ -21,23 +20,33 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Restore
-        run: dotnet restore MultiPingMonitor/MultiPingMonitor.csproj
+        run: dotnet restore MultiPingMonitor.sln
+
+      - name: Test Sponsor Pro defaults
+        run: dotnet test MultiPingMonitor.sln -c Release --no-restore -m:1
+
+      - name: Test Public Free edition
+        run: dotnet test MultiPingMonitor.sln -c Release --no-restore -m:1 -p:MultiPingMonitorEdition=PublicFree
 
       - name: Publish (win-x64)
-        run: dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
+        run: dotnet publish MultiPingMonitor/MultiPingMonitor.csproj -c Release -r win-x64 --self-contained true -p:MultiPingMonitorEdition=PublicFree -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish
 
-      - name: Clean publish output
+      - name: Verify and package the single executable
         shell: pwsh
         run: |
-          Remove-Item publish\MultiPingMonitor.dll.config -ErrorAction SilentlyContinue
-          Remove-Item publish\MultiPingMonitor.pdb -ErrorAction SilentlyContinue
-
-      - name: Zip
-        shell: pwsh
-        run: Compress-Archive -Path publish\* -DestinationPath MultiPingMonitor.zip -Force
+          $files = @(Get-ChildItem publish -File)
+          if ($files.Count -ne 1 -or $files[0].Name -ne "MultiPingMonitor.exe") {
+            throw "Expected exactly one published file: MultiPingMonitor.exe"
+          }
+          $version = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($files[0].FullName).FileVersion
+          if ($version -ne "1.0.0.0") {
+            throw "Unexpected Public Free file version: $version"
+          }
+          Compress-Archive -LiteralPath $files[0].FullName -DestinationPath MultiPingMonitor-Free.zip -Force
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: MultiPingMonitor.zip
+          name: MultiPingMonitor Public Free ${{ github.ref_name }}
+          files: MultiPingMonitor-Free.zip
           generate_release_notes: true
