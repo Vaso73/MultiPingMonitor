@@ -8,7 +8,7 @@ namespace MultiPingMonitor.Classes
         public const string AppId = "multipingmonitor";
         public const string AppName = "MultiPingMonitor";
         public const int FirstKey = 20000;
-        public const int EntryCount = 591;
+        public const int EntryCount = 601;
 
         public static IReadOnlyDictionary<int, string> ResourceKeys { get; } =
             new Dictionary<int, string>
@@ -604,6 +604,16 @@ namespace MultiPingMonitor.Classes
                 [20588] = "About_SponsorProLogout",
                 [20589] = "About_SponsorProLoggedOut",
                 [20590] = "About_SponsorProLogoutFailed",
+                [20591] = "About_EditionPublicFree",
+                [20592] = "About_CheckSponsorPro",
+                [20593] = "About_InstallSponsorPro",
+                [20594] = "About_VerifySponsorPro",
+                [20595] = "About_AccountSponsorVerified",
+                [20596] = "About_SponsorProAvailableTitle",
+                [20597] = "About_SponsorProAvailableStatus",
+                [20598] = "About_SponsorProBenefits",
+                [20599] = "About_NoSponsorProPackage",
+                [20600] = "About_SupportProject",
             };
     }
 }

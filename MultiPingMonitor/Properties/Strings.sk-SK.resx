@@ -1805,4 +1805,34 @@ V časti 'Oblasť upozornení' kliknite na 'Vybrať ikony zobrazené na paneli �
   <data name="NewFavorite_Error_NoHosts" xml:space="preserve">
     <value>Nezadali ste žiadnych hostiteľov. Zadajte aspoň jedného hostiteľa pre túto obľúbenú sadu.</value>
   </data>
+  <data name="About_EditionPublicFree" xml:space="preserve">
+    <value>Public Free</value>
+  </data>
+  <data name="About_CheckSponsorPro" xml:space="preserve">
+    <value>Skontrolovať Sponsor Pro</value>
+  </data>
+  <data name="About_InstallSponsorPro" xml:space="preserve">
+    <value>Nainštalovať Sponsor Pro</value>
+  </data>
+  <data name="About_VerifySponsorPro" xml:space="preserve">
+    <value>Overiť Sponsor Pro prístup</value>
+  </data>
+  <data name="About_AccountSponsorVerified" xml:space="preserve">
+    <value>Sponsor Pro prístup overený</value>
+  </data>
+  <data name="About_SponsorProAvailableTitle" xml:space="preserve">
+    <value>MultiPingMonitor Sponsor Pro</value>
+  </data>
+  <data name="About_SponsorProAvailableStatus" xml:space="preserve">
+    <value>Dostupné pre aktívnych GitHub sponzorov.</value>
+  </data>
+  <data name="About_SponsorProBenefits" xml:space="preserve">
+    <value>Sponsor Pro pridáva Compact Mode, opakovane použiteľné Compact Sets, Live Ping diagnostiku, Network Identity a súkromné aktualizácie.</value>
+  </data>
+  <data name="About_NoSponsorProPackage" xml:space="preserve">
+    <value>Sponsor Pro balík momentálne nie je dostupný.</value>
+  </data>
+  <data name="About_SupportProject" xml:space="preserve">
+    <value>Podporiť projekt</value>
+  </data>
 </root>

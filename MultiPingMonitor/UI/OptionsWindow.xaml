@@ -234,6 +234,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Border Grid.Column="0"
+                                x:Name="AutomaticUpdateSettingsCard"
                                 Style="{DynamicResource Style.SettingsCard}"
                             Padding="14,10">
                             <StackPanel>
@@ -271,6 +272,7 @@
                         </Border>
 
                         <Border Grid.Column="2"
+                                x:Name="StartupSettingsCard"
                                 Style="{DynamicResource Style.SettingsCard}"
                             Padding="14,10">
                         <StackPanel>
@@ -917,6 +919,7 @@
                 </Grid>
 
                 <Border Grid.Row="3"
+                        x:Name="NetworkIdentityAudioSettingsCard"
                         Style="{DynamicResource Style.SettingsCard}">
                     <StackPanel>
                         <Grid Margin="0,3,0,3">
@@ -1353,6 +1356,7 @@
                 </Grid>
 
                 <Border Grid.Row="3"
+                        x:Name="DisplayModeSettingsCard"
                         Style="{DynamicResource Style.SettingsCard}"
                             Padding="14,10">
                     <Grid>

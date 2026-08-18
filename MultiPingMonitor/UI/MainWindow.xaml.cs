@@ -135,7 +135,8 @@ namespace MultiPingMonitor.UI
             InitializeTrayIcon();
             // Start LAN/WAN identity monitoring for footer auto-refresh and IP-change alerts.
             // The footer itself remains visible only in Compact mode.
-            EnsureNetworkIdentityService();
+            if (MultiPingMonitorProductEdition.SupportsNetworkIdentity)
+                EnsureNetworkIdentityService();
 
             // Attach MainWindow to the exact profile for this computer.
             // Portable placement from another computer must not position the
@@ -189,6 +190,7 @@ namespace MultiPingMonitor.UI
             LoadFavorites();
             LoadAliases();
             Configuration.Load();
+            EnforceProductEdition();
             ThemeManager.ApplyTheme(ThemeManager.ParseTheme(ApplicationOptions.Theme));
             VisualStyleManager.ApplyStyle(VisualStyleManager.ParseStyle(ApplicationOptions.VisualStyle));
             RefreshGuiState();
@@ -199,6 +201,18 @@ namespace MultiPingMonitor.UI
             // Apply display mode after setting default ItemsSource.
             // ApplyDisplayMode will override ItemsSource if compact + custom targets.
             ApplyDisplayMode(ApplicationOptions.CurrentDisplayMode);
+        }
+
+        private void EnforceProductEdition()
+        {
+            if (!MultiPingMonitorProductEdition.SupportsCompactMode)
+            {
+                ApplicationOptions.CurrentDisplayMode = ApplicationOptions.DisplayMode.Normal;
+                ApplicationOptions.CompactSource = ApplicationOptions.CompactSourceMode.NormalTargets;
+                ToggleDisplayModeMenu.Visibility = Visibility.Collapsed;
+                NewLivePingMenu.Visibility = Visibility.Collapsed;
+                CompactTargetsMenu.Visibility = Visibility.Collapsed;
+            }
         }
 
 
@@ -260,6 +274,9 @@ namespace MultiPingMonitor.UI
 
         private void StartAutomaticUpdateCheckIfDue()
         {
+            if (!MultiPingMonitorProductEdition.SupportsSponsorProUpdates)
+                return;
+
             if (_automaticUpdateCheckStarted)
             {
                 return;
@@ -575,6 +592,10 @@ namespace MultiPingMonitor.UI
         /// </summary>
         internal void SwitchDisplayMode(ApplicationOptions.DisplayMode targetMode)
         {
+            if (targetMode == ApplicationOptions.DisplayMode.Compact
+                && !MultiPingMonitorProductEdition.SupportsCompactMode)
+                return;
+
             if (ApplicationOptions.CurrentDisplayMode == targetMode)
                 return;
 
@@ -775,6 +796,13 @@ namespace MultiPingMonitor.UI
         /// </summary>
         internal void ApplyDisplayMode(ApplicationOptions.DisplayMode mode)
         {
+            if (mode == ApplicationOptions.DisplayMode.Compact
+                && !MultiPingMonitorProductEdition.SupportsCompactMode)
+            {
+                mode = ApplicationOptions.DisplayMode.Normal;
+                ApplicationOptions.CurrentDisplayMode = mode;
+            }
+
             bool compact = mode == ApplicationOptions.DisplayMode.Compact;
 
             // Save the original templates on first call (before any switch).
@@ -1609,6 +1637,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// </summary>
         internal void ApplyCompactDataSource()
         {
+            if (!MultiPingMonitorProductEdition.SupportsCompactMode)
+                return;
+
             if (ApplicationOptions.CurrentDisplayMode != ApplicationOptions.DisplayMode.Compact)
                 return;
 
@@ -2175,6 +2206,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// </summary>
         internal void OpenManageCompactSets(Window preferredOwner = null)
         {
+            if (!MultiPingMonitorProductEdition.SupportsCompactSets)
+                return;
+
             var window = new ManageCompactSetsWindow(this);
 
             Window dialogOwner =
@@ -3031,6 +3065,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// </summary>
         private void ToggleDisplayMode_Click(object sender, RoutedEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsCompactMode)
+                return;
+
             var target = ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
                 ? ApplicationOptions.DisplayMode.Normal
                 : ApplicationOptions.DisplayMode.Compact;
@@ -3247,6 +3284,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
         private void IsolatedView_Click(object sender, RoutedEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsLivePing)
+                return;
+
             var probe = (sender as Button).DataContext as Probe;
             if (probe.LivePingMonitorWindow != null && probe.LivePingMonitorWindow.IsLoaded)
             {
@@ -3262,6 +3302,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
 
         private void CompactItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsLivePing)
+                return;
+
             if (e.ClickCount != 2)
                 return;
 
@@ -3293,6 +3336,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// <param name="cascade">true for Cascade layout; false for Tile layout.</param>
         private void OpenAllLiveWindowsAndArrange(bool cascade)
         {
+            if (!MultiPingMonitorProductEdition.SupportsLivePing)
+                return;
+
             // Determine the active compact probe collection.
             var probes = ApplicationOptions.CompactSource == ApplicationOptions.CompactSourceMode.NormalTargets
                 ? _ProbeCollection
@@ -3345,6 +3391,9 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
         /// </summary>
         private void NewLivePingMenu_Click(object sender, RoutedEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsLivePing)
+                return;
+
             var window = new LivePingMonitorWindow(this);
             window.Show();
         }
@@ -3794,7 +3843,8 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             menu.Opened += (s, e) => ApplyTrayPopupRegion(menu);
             menu.Resize += (s, e) => ApplyTrayPopupRegion(menu);
 
-            menu.Items.Add(MakeItem(Strings.Menu_NewLivePing,   () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), "geom.menu.new-live-ping"));
+            if (MultiPingMonitorProductEdition.SupportsLivePing)
+                menu.Items.Add(MakeItem(Strings.Menu_NewLivePing, () => Dispatcher.Invoke(() => NewLivePingMenu_Click(null, null)), "geom.menu.new-live-ping"));
             menu.Items.Add(MakeItem(Strings.Tray_Open,        () => Dispatcher.Invoke(ShowMainWindowFromTray), TrayIcon.Open));
             menu.Items.Add(MakeItem(Strings.Tray_NewInstance, () => Dispatcher.Invoke(LaunchNewInstance),       TrayIcon.NewInstance));
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
@@ -3852,13 +3902,16 @@ if (shouldPopup && !Application.Current.Windows.OfType<PopupNotificationWindow>(
             menu.Items.Add(MakeItem(Strings.Tray_StatusHistory, () => Dispatcher.Invoke(() => StatusHistoryExecute(null, null)), TrayIcon.StatusHistory));
             menu.Items.Add(styleParent);
 
-            _trayNativeToggleItem = MakeItem(
-                ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
-                    ? Strings.Tray_SwitchToNormal
-                    : Strings.Tray_SwitchToCompact,
-                () => Dispatcher.Invoke(() => ToggleDisplayMode_Click(null, null)),
-                TrayIcon.ToggleDisplay);
-            menu.Items.Add(_trayNativeToggleItem);
+            if (MultiPingMonitorProductEdition.SupportsCompactMode)
+            {
+                _trayNativeToggleItem = MakeItem(
+                    ApplicationOptions.CurrentDisplayMode == ApplicationOptions.DisplayMode.Compact
+                        ? Strings.Tray_SwitchToNormal
+                        : Strings.Tray_SwitchToCompact,
+                    () => Dispatcher.Invoke(() => ToggleDisplayMode_Click(null, null)),
+                    TrayIcon.ToggleDisplay);
+                menu.Items.Add(_trayNativeToggleItem);
+            }
 
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
 

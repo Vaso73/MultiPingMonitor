@@ -57,12 +57,12 @@
                             Margin="10">
                     <Button x:Name="CheckForUpdatesButton"
                             Style="{DynamicResource Style.ButtonStandard}"
-                            Width="180"
+                            Width="200"
                             Click="CheckForUpdatesButton_Click" />
 
                     <Button x:Name="InstallUpdateButton"
                             Style="{DynamicResource Style.ButtonStandard}"
-                            Width="130"
+                            Width="190"
                             Margin="8,0,0,0"
                             IsEnabled="False"
                             Click="InstallUpdateButton_Click" />
@@ -180,7 +180,7 @@
                         <Button x:Name="SponsorProAccountButton"
                                 Grid.Column="2"
                                 Style="{DynamicResource Style.ButtonStandard}"
-                                Width="170"
+                                Width="200"
                                 Margin="14,0,0,0"
                                 VerticalAlignment="Center"
                                 Click="SponsorProAccountButton_Click" />
@@ -198,12 +198,19 @@
                         Margin="0,18,0,0"
                         Padding="18"
                         Background="{DynamicResource Theme.Surface}">
-                    <TextBlock x:Name="StatusText"
-                               VerticalAlignment="Center"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               Foreground="{DynamicResource Theme.Text.Primary}"
-                               FontSize="13" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="StatusText"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource Theme.Text.Primary}"
+                                   FontSize="13" />
+                        <Button x:Name="SponsorProjectButton"
+                                Style="{DynamicResource Style.ButtonStandard}"
+                                Width="180"
+                                Margin="0,14,0,0"
+                                HorizontalAlignment="Center"
+                                Click="SponsorProjectButton_Click" />
+                    </StackPanel>
                 </Border>
             </Grid>
         </DockPanel>

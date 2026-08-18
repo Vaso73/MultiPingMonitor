@@ -615,6 +615,16 @@ namespace MultiPingMonitor.Classes
                 new LanguagePackSeedEntry(20588, "About_SponsorProLogout", "Sign out", "Odhlásiť"),
                 new LanguagePackSeedEntry(20589, "About_SponsorProLoggedOut", "Signed out locally. Your GitHub browser session was not changed.", "Lokálne prihlásenie bolo odstránené. Relácia GitHub v prehliadači sa nezmenila."),
                 new LanguagePackSeedEntry(20590, "About_SponsorProLogoutFailed", "The local MultiPingMonitor sign-in could not be removed. Close MultiPingMonitor and try again.", "Lokálne prihlásenie MultiPingMonitor sa nepodarilo odstrániť. Zatvorte MultiPingMonitor a skúste to znova."),
+                new LanguagePackSeedEntry(20591, "About_EditionPublicFree", "Public Free", "Public Free"),
+                new LanguagePackSeedEntry(20592, "About_CheckSponsorPro", "Check Sponsor Pro", "Skontrolovať Sponsor Pro"),
+                new LanguagePackSeedEntry(20593, "About_InstallSponsorPro", "Install Sponsor Pro", "Nainštalovať Sponsor Pro"),
+                new LanguagePackSeedEntry(20594, "About_VerifySponsorPro", "Verify Sponsor Pro access", "Overiť Sponsor Pro prístup"),
+                new LanguagePackSeedEntry(20595, "About_AccountSponsorVerified", "Sponsor Pro access verified", "Sponsor Pro prístup overený"),
+                new LanguagePackSeedEntry(20596, "About_SponsorProAvailableTitle", "MultiPingMonitor Sponsor Pro", "MultiPingMonitor Sponsor Pro"),
+                new LanguagePackSeedEntry(20597, "About_SponsorProAvailableStatus", "Available for active GitHub Sponsors.", "Dostupné pre aktívnych GitHub sponzorov."),
+                new LanguagePackSeedEntry(20598, "About_SponsorProBenefits", "Sponsor Pro adds Compact Mode, reusable Compact Sets, Live Ping diagnostics, Network Identity and private updates.", "Sponsor Pro pridáva Compact Mode, opakovane použiteľné Compact Sets, Live Ping diagnostiku, Network Identity a súkromné aktualizácie."),
+                new LanguagePackSeedEntry(20599, "About_NoSponsorProPackage", "No Sponsor Pro package is available right now.", "Sponsor Pro balík momentálne nie je dostupný."),
+                new LanguagePackSeedEntry(20600, "About_SupportProject", "Support project", "Podporiť projekt"),
             };
     }
 }

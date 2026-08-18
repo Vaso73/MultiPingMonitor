@@ -117,6 +117,7 @@ namespace MultiPingMonitor.Classes
 
         public async Task<UpdateCheckResult> CheckAsync(
             Version currentVersion,
+            bool allowSameVersion,
             CancellationToken cancellationToken = default)
         {
             if (currentVersion == null)
@@ -169,6 +170,7 @@ namespace MultiPingMonitor.Classes
                 Version normalizedLatest = Normalize(latestVersion);
 
                 return normalizedLatest > normalizedCurrent
+                    || (allowSameVersion && normalizedLatest == normalizedCurrent)
                     ? UpdateCheckResult.UpdateAvailable(latestVersion, manifest)
                     : UpdateCheckResult.UpToDate(latestVersion, manifest);
             }
@@ -185,6 +187,11 @@ namespace MultiPingMonitor.Classes
                 return UpdateCheckResult.Failed(ex.Message);
             }
         }
+
+        public Task<UpdateCheckResult> CheckAsync(
+            Version currentVersion,
+            CancellationToken cancellationToken = default) =>
+            CheckAsync(currentVersion, false, cancellationToken);
 
         private static UpdateManifest ParseManifest(string json)
         {

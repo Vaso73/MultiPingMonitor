@@ -9,6 +9,10 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MultiPingMonitorEdition)' == 'PublicFree'">
+    <DefineConstants>$(DefineConstants);MULTIPINGMONITOR_FREE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
@@ -32,6 +36,7 @@
     <Compile Include="..\MultiPingMonitor\Classes\WindowPlacementGeometry.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\WindowPlacementStorage.cs" />
     <Compile Include="..\MultiPingMonitor\Classes\LivePingActionState.cs" />
+    <Compile Include="..\MultiPingMonitor\Classes\MultiPingMonitorProductEdition.cs" />
     <Compile Include="..\MultiPingMonitor\Properties\Strings.Designer.cs"
              Link="Properties\Strings.Designer.cs" />
   </ItemGroup>

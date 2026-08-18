@@ -1915,4 +1915,34 @@ Under 'Notifications area' click 'Select which icons to appear on the taskbar'. 
   <data name="NewFavorite_Error_NoHosts" xml:space="preserve">
     <value>You have not entered any hosts. Provide at least one host for this favorite set.</value>
   </data>
+  <data name="About_EditionPublicFree" xml:space="preserve">
+    <value>Public Free</value>
+  </data>
+  <data name="About_CheckSponsorPro" xml:space="preserve">
+    <value>Check Sponsor Pro</value>
+  </data>
+  <data name="About_InstallSponsorPro" xml:space="preserve">
+    <value>Install Sponsor Pro</value>
+  </data>
+  <data name="About_VerifySponsorPro" xml:space="preserve">
+    <value>Verify Sponsor Pro access</value>
+  </data>
+  <data name="About_AccountSponsorVerified" xml:space="preserve">
+    <value>Sponsor Pro access verified</value>
+  </data>
+  <data name="About_SponsorProAvailableTitle" xml:space="preserve">
+    <value>MultiPingMonitor Sponsor Pro</value>
+  </data>
+  <data name="About_SponsorProAvailableStatus" xml:space="preserve">
+    <value>Available for active GitHub Sponsors.</value>
+  </data>
+  <data name="About_SponsorProBenefits" xml:space="preserve">
+    <value>Sponsor Pro adds Compact Mode, reusable Compact Sets, Live Ping diagnostics, Network Identity and private updates.</value>
+  </data>
+  <data name="About_NoSponsorProPackage" xml:space="preserve">
+    <value>No Sponsor Pro package is available right now.</value>
+  </data>
+  <data name="About_SupportProject" xml:space="preserve">
+    <value>Support project</value>
+  </data>
 </root>
