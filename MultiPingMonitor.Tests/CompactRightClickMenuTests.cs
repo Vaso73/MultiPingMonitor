@@ -17,7 +17,8 @@ namespace MultiPingMonitor.Tests
         [Fact]
         public void CompactRightClickMenu_ReusesAddHostActionAndVisualStyle()
         {
-            var source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"));
+            var source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"))
+                .Replace("\r\n", "\n");
 
             Assert.Contains("CompactWindow_PreviewMouseRightButtonUp", source);
             Assert.Contains("CreateCompactRightClickMenu", source);

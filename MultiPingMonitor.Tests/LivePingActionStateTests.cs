@@ -127,7 +127,8 @@ namespace MultiPingMonitor.Tests
                 RepositoryPath(
                     "MultiPingMonitor",
                     "UI",
-                    "LivePingMonitorWindow.xaml.cs"));
+                    "LivePingMonitorWindow.xaml.cs"))
+                .Replace("\r\n", "\n");
 
             Assert.Contains(
                 "ManualTargetBox.TextChanged += ManualTargetBox_TextChanged;",
