@@ -14,6 +14,8 @@ namespace MultiPingMonitor.UI
 {
     public partial class AboutWindow : Window
     {
+        private const string GitHubSponsorsUrl = "https://github.com/sponsors/Vaso73";
+
         private readonly Version _currentVersion;
         private readonly SponsorProSessionStore _sponsorProSessionStore;
         private SponsorProSession _sponsorProSession;
@@ -44,16 +46,28 @@ namespace MultiPingMonitor.UI
                 FormatVersion(_currentVersion);
             EditionValueText.Text =
                 $"{Text("About_EditionLabel", "Edition")}: " +
-                Text("About_EditionSponsorPro", "Sponsor Pro");
+                (MultiPingMonitorProductEdition.IsPublicFree
+                    ? Text("About_EditionPublicFree", "Public Free")
+                    : Text("About_EditionSponsorPro", "Sponsor Pro"));
 
             SponsorProAccountButton.Content =
                 Text("About_SponsorProLogin", "Sign in with GitHub");
             CheckForUpdatesButton.Content =
-                Text("About_CheckForUpdates", "Check for updates");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text("About_CheckSponsorPro", "Check Sponsor Pro")
+                    : Text("About_CheckForUpdates", "Check for updates");
             InstallUpdateButton.Content =
-                Text("About_Update", "Update");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text("About_InstallSponsorPro", "Install Sponsor Pro")
+                    : Text("About_Update", "Update");
             CloseButton.Content =
                 Text("About_Close", "Close");
+            SponsorProjectButton.Content =
+                Text("About_SupportProject", "Support project");
+            SponsorProjectButton.Visibility =
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
 
             RefreshSponsorProStatus();
             ResetUpdateState();
@@ -74,9 +88,13 @@ namespace MultiPingMonitor.UI
                     Text("About_AccountSignedInTitle", "GitHub: {0}"),
                     login);
                 AccountStatusText.Text =
-                    Text("About_AccountSponsorActive", "Sponsor Pro active");
+                    MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                        ? Text("About_AccountSponsorVerified", "Sponsor Pro access verified")
+                        : Text("About_AccountSponsorActive", "Sponsor Pro active");
                 SponsorProAccountButton.Content =
                     Text("About_SponsorProLogout", "Sign out");
+                SponsorProjectButton.Visibility = Visibility.Collapsed;
+                CheckForUpdatesButton.IsEnabled = true;
                 if (!string.IsNullOrWhiteSpace(_sponsorProSession.GithubLogin))
                     _ = LoadAccountAvatarAsync(_sponsorProSession.GithubLogin);
                 else
@@ -86,15 +104,26 @@ namespace MultiPingMonitor.UI
 
             ResetAccountAvatar();
             AccountTitleText.Text =
-                Text(
-                    "About_AccountNotConnectedTitle",
-                    "GitHub account not connected");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text("About_SponsorProAvailableTitle", "MultiPingMonitor Sponsor Pro")
+                    : Text(
+                        "About_AccountNotConnectedTitle",
+                        "GitHub account not connected");
             AccountStatusText.Text =
-                Text(
-                    "About_AccountNotConnectedStatus",
-                    "Sign in to enable Sponsor Pro updates.");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text("About_SponsorProAvailableStatus", "Available for active GitHub Sponsors.")
+                    : Text(
+                        "About_AccountNotConnectedStatus",
+                        "Sign in to enable Sponsor Pro updates.");
             SponsorProAccountButton.Content =
-                Text("About_SponsorProLogin", "Sign in with GitHub");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text("About_VerifySponsorPro", "Verify Sponsor Pro access")
+                    : Text("About_SponsorProLogin", "Sign in with GitHub");
+            SponsorProjectButton.Visibility =
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            CheckForUpdatesButton.IsEnabled = false;
         }
 
         private async System.Threading.Tasks.Task LoadAccountAvatarAsync(
@@ -165,9 +194,13 @@ namespace MultiPingMonitor.UI
             _availableUpdateManifest = null;
             InstallUpdateButton.IsEnabled = false;
             StatusText.Text =
-                Text(
-                    "About_StatusIdle",
-                    "Check for updates to compare this installation with the latest Sponsor Pro version.");
+                MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                    ? Text(
+                        "About_SponsorProBenefits",
+                        "Sponsor Pro adds Compact Mode, reusable Compact Sets, Live Ping diagnostics, Network Identity and private updates.")
+                    : Text(
+                        "About_StatusIdle",
+                        "Check for updates to compare this installation with the latest Sponsor Pro version.");
         }
 
         private async void SponsorProAccountButton_Click(
@@ -298,6 +331,7 @@ namespace MultiPingMonitor.UI
                 UpdateCheckResult result =
                     await service.CheckAsync(
                         _currentVersion,
+                        MultiPingMonitorProductEdition.SupportsSponsorProUpgrade,
                         _checkCancellation.Token);
 
                 switch (result.Status)
@@ -316,9 +350,13 @@ namespace MultiPingMonitor.UI
 
                     case UpdateCheckStatus.UpToDate:
                         StatusText.Text =
-                            Text(
-                                "About_StatusUpToDate",
-                                "You are using the latest Sponsor Pro version.");
+                            MultiPingMonitorProductEdition.SupportsSponsorProUpgrade
+                                ? Text(
+                                    "About_NoSponsorProPackage",
+                                    "No Sponsor Pro package is available right now.")
+                                : Text(
+                                    "About_StatusUpToDate",
+                                    "You are using the latest Sponsor Pro version.");
                         break;
 
                     case UpdateCheckStatus.InvalidManifest:
@@ -420,6 +458,15 @@ namespace MultiPingMonitor.UI
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void SponsorProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(
+                new ProcessStartInfo(GitHubSponsorsUrl)
+                {
+                    UseShellExecute = true
+                });
         }
 
         protected override void OnClosed(EventArgs e)

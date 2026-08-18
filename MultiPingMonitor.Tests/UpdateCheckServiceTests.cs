@@ -56,6 +56,23 @@ namespace MultiPingMonitor.Tests
         }
 
         [Fact]
+        public async Task CheckAsync_SameVersionUpgrade_ReturnsUpdateAvailableWhenAllowed()
+        {
+            using var client = ClientWithJson(Manifest("1.1.6"));
+            using var service =
+                new UpdateCheckService(
+                    client,
+                    new Uri("https://example.test/update.json"));
+
+            UpdateCheckResult result =
+                await service.CheckAsync(
+                    new Version(1, 1, 6),
+                    allowSameVersion: true);
+
+            Assert.Equal(UpdateCheckStatus.UpdateAvailable, result.Status);
+        }
+
+        [Fact]
         public async Task CheckAsync_UnsupportedSchema_ReturnsInvalidManifest()
         {
             const string json =
@@ -125,6 +142,12 @@ namespace MultiPingMonitor.Tests
         [InlineData("About_StatusUpToDate")]
         [InlineData("About_StatusUpdateAvailable")]
         [InlineData("About_StatusCheckFailed")]
+        [InlineData("About_EditionPublicFree")]
+        [InlineData("About_CheckSponsorPro")]
+        [InlineData("About_InstallSponsorPro")]
+        [InlineData("About_VerifySponsorPro")]
+        [InlineData("About_SponsorProBenefits")]
+        [InlineData("About_SupportProject")]
         public void Resources_ContainUpdateKeysInEnglishAndSlovak(
             string key)
         {

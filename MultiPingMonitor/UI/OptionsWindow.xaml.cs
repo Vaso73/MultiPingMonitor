@@ -287,7 +287,8 @@ namespace MultiPingMonitor.UI
 
             // Display mode.
             DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Normal);
-            DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
+            if (MultiPingMonitorProductEdition.SupportsCompactMode)
+                DisplayModeComboBox.Items.Add(Properties.Strings.Options_DisplayMode_Compact);
             DisplayModeComboBox.SelectedIndex = (int)ApplicationOptions.CurrentDisplayMode;
 
             // Compact data source.
@@ -295,6 +296,28 @@ namespace MultiPingMonitor.UI
             CompactSourceComboBox.Items.Add(Properties.Strings.Options_CompactSource_CustomTargets);
             CompactSourceComboBox.SelectedIndex = (int)ApplicationOptions.CompactSource;
             UpdateCompactTargetsButtonVisibility();
+            DisplayModeSettingsCard.Visibility =
+                MultiPingMonitorProductEdition.SupportsCompactMode
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            NetworkIdentityAudioSettingsCard.Visibility =
+                MultiPingMonitorProductEdition.SupportsNetworkIdentity
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            AutomaticUpdateSettingsCard.Visibility =
+                MultiPingMonitorProductEdition.SupportsSponsorProUpdates
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            if (MultiPingMonitorProductEdition.SupportsSponsorProUpdates)
+            {
+                Grid.SetColumn(StartupSettingsCard, 2);
+                Grid.SetColumnSpan(StartupSettingsCard, 1);
+            }
+            else
+            {
+                Grid.SetColumn(StartupSettingsCard, 0);
+                Grid.SetColumnSpan(StartupSettingsCard, 3);
+            }
 
             PopulateLanguageOptions();
 
@@ -1024,6 +1047,9 @@ namespace MultiPingMonitor.UI
 
         private void DisplayModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsCompactMode)
+                return;
+
             if (DisplayModeComboBox.SelectedIndex < 0) return;
             var mode = (ApplicationOptions.DisplayMode)DisplayModeComboBox.SelectedIndex;
             if (mode == ApplicationOptions.CurrentDisplayMode) return;
@@ -1032,6 +1058,9 @@ namespace MultiPingMonitor.UI
 
         private void CompactSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!MultiPingMonitorProductEdition.SupportsCompactMode)
+                return;
+
             if (CompactSourceComboBox.SelectedIndex < 0) return;
             UpdateCompactTargetsButtonVisibility();
 

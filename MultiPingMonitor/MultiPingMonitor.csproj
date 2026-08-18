@@ -20,6 +20,9 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(MultiPingMonitorEdition)' == 'PublicFree'">
+    <DefineConstants>$(DefineConstants);MULTIPINGMONITOR_FREE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="MultiPingMonitor.ico" />
     <Resource Include="MultiPingMonitor.ico" />

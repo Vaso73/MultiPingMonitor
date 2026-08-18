@@ -838,6 +838,7 @@
                                             ToolTipService.InitialShowDelay="1500"
                                             ToolTipService.ShowDuration="2000"
                                             Cursor="Arrow"
+                                            Visibility="{Binding Source={x:Static classes:MultiPingMonitorProductEdition.SupportsLivePing}, Converter={StaticResource BooleanToVisibilityConverter}}"
                                             Click="IsolatedView_Click">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
