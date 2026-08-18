@@ -43,7 +43,8 @@ namespace MultiPingMonitor.Tests
             string source = File.ReadAllText(SourcePath(
                 "MultiPingMonitor",
                 "UI",
-                "AboutWindow.xaml.cs"));
+                "AboutWindow.xaml.cs"))
+                .Replace("\r\n", "\n");
 
             Assert.Contains("SponsorProAccountButton.Content =", source);
             Assert.Contains("About_SponsorProLogout", source);

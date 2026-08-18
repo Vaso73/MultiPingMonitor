@@ -36,7 +36,8 @@ namespace MultiPingMonitor.Tests
         [Fact]
         public void CompactMenuButton_ReusesSameThemedContextMenuFactory()
         {
-            var source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"));
+            var source = File.ReadAllText(SourcePath("MultiPingMonitor", "UI", "MainWindow.xaml.cs"))
+                .Replace("\r\n", "\n");
 
             Assert.Contains("private ContextMenu CreateThemedCompactContextMenu()", source);
             Assert.Contains("private void CompactMenuButton_Click(object sender, RoutedEventArgs e)\n        {\n            var menu = CreateThemedCompactContextMenu();", source);
